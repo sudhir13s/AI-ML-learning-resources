@@ -27,3 +27,77 @@ Temporary Items
 .apdisk
 
 .idea
+
+# ==========================================
+# Standard Ignores Enforced for All Projects
+# ==========================================
+
+# Node.js / Web Development
+node_modules/
+npm-debug.log
+yarn-error.log
+.pnp.*
+
+# Next.js / React
+.next/
+out/
+build/
+dist/
+
+# Mobile (Android/iOS)
+.gradle/
+local.properties
+.cxx/
+Pods/
+DerivedData/
+*.xcworkspace
+xcuserdata/
+
+# Java
+target/
+*.class
+*.jar
+*.war
+*.ear
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+.env/
+.venv/
+test-venv/
+test_venv/
+
+# macOS / MacBook
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+
+# IDEs (JetBrains, IntelliJ, Visual Studio Code, Cloud Code, etc.)
+.idea/
+*.iml
+.vscode/
+.cloudcode/
+*.swp
+*.swo
+.project
+.classpath
+.settings/
+.vs/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Cache / Env / Virtual Environments
+.env
+.env.local
+.env.*.local
+*.cache
+.cache/
+# ==========================================

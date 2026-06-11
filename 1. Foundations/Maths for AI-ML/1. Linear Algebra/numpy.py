@@ -1,9 +1,22 @@
 import numpy as np
 import scipy
 
+# numpy
+# https://hands-on.cloud/numpy-python-tutorial/
 # https://cs231n.github.io/python-numpy-tutorial/#numpy
 # https://numpy.org/doc/stable/reference/routines.math.html
 # https://numpy.org/doc/stable/reference/routines.linalg.html
+# https://jakevdp.github.io/PythonDataScienceHandbook/
+
+# scipy
+# https://lectures.scientific-python.org/#
+# https://hands-on.cloud/introduction-to-scipy/
+
+
+# matplotlib
+# https://hands-on.cloud/introduction-to-matplotlib/
+
+
 # Array indexing
 
 # Create the following rank 2 array with shape (3, 4)
