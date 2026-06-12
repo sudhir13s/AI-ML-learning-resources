@@ -27,4 +27,4 @@ updated: 2026-06-11
 - [Speech and Language Processing (3rd ed.)](https://web.stanford.edu/~jurafsky/slp3/) — **Jurafsky & Martin** — free draft; the field's standard reference.
 
 ## 🔗 In this platform
-- Math: [AIML-intuition 1.02 embeddings, 1.15 tokenization, Module 4 attention](../../AIML-intuition/) · LLMs: [8. LLMs](../8.%20LLMs/README.md)
+- Math: [AI-ML-intuition 1.02 embeddings, 1.15 tokenization, Module 4 attention](../../AI-ML-intuition/) · LLMs: [8. LLMs](../8.%20LLMs/README.md)

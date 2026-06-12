@@ -31,5 +31,5 @@ master index.
 ## How to help here
 - Add/curate resources, keep the bar high (best explainer, free, ~2 per type, with a "why").
 - Keep the one-README-per-topic pattern + frontmatter (the dataset contract).
-- Cross-link into [`AIML-intuition`](../AIML-intuition/) (the *why*) and
+- Cross-link into [`AI-ML-intuition`](../AI-ML-intuition/) (the *why*) and
   [`AI-ML-problemsets`](../AI-ML-problemsets/) (the *practice*); don't duplicate their depth here.

@@ -30,4 +30,4 @@ updated: 2026-06-11
 - [Transformer Circuits / mechanistic interpretability](https://transformer-circuits.pub/) — **Anthropic** — how transformers actually compute.
 
 ## 🔗 In this platform
-- Build one: [project_06 ChatGPT-from-scratch](../../AI-ML-problemsets/projects/project_06_chatgpt_from_scratch/) · Intuition: [AIML-intuition Modules 4–8](../../AIML-intuition/) · Systems: [LLM Systems curriculum](../llm_systems_curriculum.md)
+- Build one: [project_06 ChatGPT-from-scratch](../../AI-ML-problemsets/projects/project_06_chatgpt_from_scratch/) · Intuition: [AI-ML-intuition Modules 4–8](../../AI-ML-intuition/) · Systems: [LLM Systems curriculum](../llm_systems_curriculum.md)

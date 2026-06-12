@@ -26,4 +26,4 @@ updated: 2026-06-11
 - [The Elements of Statistical Learning](https://hastie.su.domains/ElemStatLearn/) — **Hastie et al.** — free; the rigorous reference.
 
 ## 🔗 In this platform
-- Losses & metrics: [AIML-intuition Module 3](../../AIML-intuition/Module_3_Evaluation/) · Practice: [problemsets](../../AI-ML-problemsets/)
+- Losses & metrics: [AI-ML-intuition Module 3](../../AI-ML-intuition/Module_3_Evaluation/) · Practice: [problemsets](../../AI-ML-problemsets/)

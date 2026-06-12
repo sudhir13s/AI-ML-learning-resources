@@ -28,4 +28,4 @@ updated: 2026-06-11
 - [Reinforcement Learning: An Introduction](http://incompleteideas.net/book/the-book-2nd.html) — **Sutton & Barto** — free; *the* RL textbook.
 
 ## 🔗 In this platform
-- Math: [AIML-intuition Module 6 (RL & Alignment)](../../AIML-intuition/Module_6_Reinforcement_Learning/)
+- Math: [AI-ML-intuition Module 6 (RL & Alignment)](../../AI-ML-intuition/Module_6_Reinforcement_Learning/)

@@ -28,4 +28,4 @@ updated: 2026-06-11
 ## 🧭 How to read
 - Don't chase everything. Pick 1–2 newsletters, skim weekly; deep-read a paper only when it
   changes how you'd build something. Anchor new ideas to the stable concepts in
-  [AIML-intuition](../../AIML-intuition/) rather than the hype cycle.
+  [AI-ML-intuition](../../AI-ML-intuition/) rather than the hype cycle.

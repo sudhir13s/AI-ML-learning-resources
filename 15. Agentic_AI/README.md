@@ -29,4 +29,4 @@ updated: 2026-06-11
 - [LLM Powered Autonomous Agents](https://lilianweng.github.io/posts/2023-06-23-agent/) — **Lilian Weng** — the canonical survey (planning, memory, tools).
 
 ## 🔗 In this platform
-- Math/mechanism: [AIML-intuition 8.03 Agents & Tool Use](../../AIML-intuition/Module_8_LLMs_and_Agentic_Systems/8.03_Agents_and_Tool_Use.md)
+- Math/mechanism: [AI-ML-intuition 8.03 Agents & Tool Use](../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.03_Agents_and_Tool_Use.md)

@@ -25,4 +25,4 @@ updated: 2026-06-11
 - [An Introduction to Statistical Learning (ISLP), Ch. 12](https://www.statlearning.com/) — **James et al.** — free; clustering & PCA, applied.
 
 ## 🔗 In this platform
-- The geometry behind it: [AIML-intuition 1.05 PCA/SVD, 1.11–1.12 t-SNE/UMAP, 1.18 k-Means](../../AIML-intuition/Module_1_Representation/)
+- The geometry behind it: [AI-ML-intuition 1.05 PCA/SVD, 1.11–1.12 t-SNE/UMAP, 1.18 k-Means](../../AI-ML-intuition/Module_1_Representation/)

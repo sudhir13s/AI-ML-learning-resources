@@ -2,7 +2,7 @@
 
 > Elective deep-dive track, absorbed and expanded from the retired `math-for-AIML-Q5`
 > neuroscience specialization. Format: what to study → why → best resources → connections
-> back to [AIML-intuition](../../AIML-intuition/).
+> back to [AI-ML-intuition](../../AI-ML-intuition/).
 
 **Goal:** the mathematics of biological computation — neuron dynamics, plasticity, neural
 coding — and the two-way street between neuroscience and modern AI (what the brain inspired,
@@ -18,13 +18,13 @@ and where the analogies break).
 
 | Module | Key sub-topics | Best resources | Connections |
 | :--- | :--- | :--- | :--- |
-| **N1. Dynamical-systems foundations** | neural state variables, linear stability, attractors, noise | Neuromatch W2D2; Strogatz *Nonlinear Dynamics* ch. 1–6 | the continuous-time view behind [6.04's MDP loop](../../AIML-intuition/Module_6_Reinforcement_Learning/6.04_MDPs_and_Exploration.md) |
-| **N2. Single-neuron models** | leaky integrate-and-fire, Hodgkin-Huxley intuition, firing rates vs spikes | Gerstner ch. 1–2, 4; Neuromatch W2D3 | the *real* neuron vs the [4.14 artificial one](../../AIML-intuition/Module_4_Stabilization/4D_Nonlinearities/4.14_Activation_Functions_and_Softmax.md) (a LIF neuron ≈ leaky ReLU with state) |
-| **N3. Synapses & plasticity** | Hebbian learning ("fire together, wire together"), STDP, homeostasis | Gerstner ch. 19; Kirsanov's STDP video | contrast with [backprop](../../AIML-intuition/Module_2_Optimization/2.02_Backpropagation_The_Chain_Rule.md): local vs global credit assignment — the field's deepest open analogy gap |
-| **N4. Neural coding** | rate/temporal/population codes, tuning curves, **information theory in the brain**, Bayesian brain | Dayan & Abbott ch. 1–3; Neuromatch W1D5 | [5.01 Entropy/MI](../../AIML-intuition/Module_5_Generation/5.01_Information_Theory_Entropy_KL_Divergence.md), [0.01 Bayes](../../AIML-intuition/Module_0_Foundations/0.01_Probability_and_Bayes_Theorem.md) |
-| **N5. Recurrent circuits & memory** | attractor networks, Hopfield nets, working memory | Gerstner ch. 17; [Hopfield is all you need](https://arxiv.org/abs/2008.02217) | [4.07 gating/LSTM](../../AIML-intuition/Module_4_Stabilization/4B_Architectural_Motifs/4.07_Gating_Mechanisms_LSTM_GRU.md); modern Hopfield ↔ [attention](../../AIML-intuition/Module_4_Stabilization/4B_Architectural_Motifs/4.08_Multi-Head_Attention_Routing.md) |
-| **N6. Decision & reward** | evidence accumulation (drift-diffusion), **dopamine = TD error**, predictive coding | Neuromatch W3D2; Schultz's reward-prediction papers | the famous bridge: dopamine neurons compute the [Bellman/TD error](../../AIML-intuition/Module_6_Reinforcement_Learning/6.01_Bellman_Optimality_Q-Learning.md) — RL's biological vindication |
-| **N7. Spiking networks & neuromorphic** | SNNs, event-driven computation, neuromorphic hardware overview | Gerstner ch. 6–8; Intel Loihi / SpiNNaker overviews | the energy argument vs [7.05 quantization](../../AIML-intuition/Module_7_Scaling_and_Adaptation/7.05_Quantization.md)-style efficiency |
+| **N1. Dynamical-systems foundations** | neural state variables, linear stability, attractors, noise | Neuromatch W2D2; Strogatz *Nonlinear Dynamics* ch. 1–6 | the continuous-time view behind [6.04's MDP loop](../../AI-ML-intuition/Module_6_Reinforcement_Learning/6.04_MDPs_and_Exploration.md) |
+| **N2. Single-neuron models** | leaky integrate-and-fire, Hodgkin-Huxley intuition, firing rates vs spikes | Gerstner ch. 1–2, 4; Neuromatch W2D3 | the *real* neuron vs the [4.14 artificial one](../../AI-ML-intuition/Module_4_Stabilization/4D_Nonlinearities/4.14_Activation_Functions_and_Softmax.md) (a LIF neuron ≈ leaky ReLU with state) |
+| **N3. Synapses & plasticity** | Hebbian learning ("fire together, wire together"), STDP, homeostasis | Gerstner ch. 19; Kirsanov's STDP video | contrast with [backprop](../../AI-ML-intuition/Module_2_Optimization/2.02_Backpropagation_The_Chain_Rule.md): local vs global credit assignment — the field's deepest open analogy gap |
+| **N4. Neural coding** | rate/temporal/population codes, tuning curves, **information theory in the brain**, Bayesian brain | Dayan & Abbott ch. 1–3; Neuromatch W1D5 | [5.01 Entropy/MI](../../AI-ML-intuition/Module_5_Generation/5.01_Information_Theory_Entropy_KL_Divergence.md), [0.01 Bayes](../../AI-ML-intuition/Module_0_Foundations/0.01_Probability_and_Bayes_Theorem.md) |
+| **N5. Recurrent circuits & memory** | attractor networks, Hopfield nets, working memory | Gerstner ch. 17; [Hopfield is all you need](https://arxiv.org/abs/2008.02217) | [4.07 gating/LSTM](../../AI-ML-intuition/Module_4_Stabilization/4B_Architectural_Motifs/4.07_Gating_Mechanisms_LSTM_GRU.md); modern Hopfield ↔ [attention](../../AI-ML-intuition/Module_4_Stabilization/4B_Architectural_Motifs/4.08_Multi-Head_Attention_Routing.md) |
+| **N6. Decision & reward** | evidence accumulation (drift-diffusion), **dopamine = TD error**, predictive coding | Neuromatch W3D2; Schultz's reward-prediction papers | the famous bridge: dopamine neurons compute the [Bellman/TD error](../../AI-ML-intuition/Module_6_Reinforcement_Learning/6.01_Bellman_Optimality_Q-Learning.md) — RL's biological vindication |
+| **N7. Spiking networks & neuromorphic** | SNNs, event-driven computation, neuromorphic hardware overview | Gerstner ch. 6–8; Intel Loihi / SpiNNaker overviews | the energy argument vs [7.05 quantization](../../AI-ML-intuition/Module_7_Scaling_and_Adaptation/7.05_Quantization.md)-style efficiency |
 | **N8. Brain ↔ modern AI** | local learning vs backprop, energy/predictive-coding views, memory & attention parallels | [Backprop and the brain (Hinton/Lillicrap)](https://www.nature.com/articles/s41583-020-0277-3); Kirsanov | the honest scorecard: where the analogy works (RL, attention-ish) and where it doesn't (backprop, scale) |
 
 ### Suggested first pass

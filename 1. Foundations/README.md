@@ -30,4 +30,4 @@ updated: 2026-06-11
 
 ## 🔗 In this platform
 - The full math curriculum (phases + specializations): [Maths for AI-ML](Maths%20for%20AI-ML/README.md)
-- Math-as-ML-concepts deep dives: [AIML-intuition Module 0–2](../../AIML-intuition/)
+- Math-as-ML-concepts deep dives: [AI-ML-intuition Module 0–2](../../AI-ML-intuition/)

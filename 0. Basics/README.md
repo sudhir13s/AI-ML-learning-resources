@@ -29,4 +29,4 @@ updated: 2026-06-11
 - [Mathematics for Machine Learning](https://mml-book.github.io/) — **Deisenroth, Faisal & Ong** — free; the math you'll actually need.
 
 ## 🔗 In this platform
-- Intuition: [AIML-intuition](../../AIML-intuition/) · Practice: [AI-ML-problemsets](../../AI-ML-problemsets/) · Math: [Foundations](../1.%20Foundations/)
+- Intuition: [AI-ML-intuition](../../AI-ML-intuition/) · Practice: [AI-ML-problemsets](../../AI-ML-problemsets/) · Math: [Foundations](../1.%20Foundations/)
