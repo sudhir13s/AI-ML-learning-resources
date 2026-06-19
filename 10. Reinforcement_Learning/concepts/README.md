@@ -38,15 +38,15 @@ updated: 2026-06-20
 
 ## Exploration & decision-making
 
-14. ⬜ [Exploration vs Exploitation (ε-greedy · UCB · Thompson · intrinsic)](14-Exploration-vs-Exploitation.md)
-15. ⬜ [Multi-Armed Bandits (stochastic · contextual)](15-Multi-Armed-Bandits.md)
+14. ✅ [Exploration vs Exploitation (ε-greedy · UCB · Thompson · intrinsic)](14-Exploration-vs-Exploitation.md)
+15. ✅ [Multi-Armed Bandits (stochastic · contextual)](15-Multi-Armed-Bandits.md)
 
 ## Advanced paradigms
 
-16. ⬜ [Model-Based RL (Dyna · MPC · MuZero)](16-Model-Based-RL.md)
-17. ⬜ [Offline RL (batch RL · CQL · distribution shift)](17-Offline-RL.md)
-18. ⬜ [Reward Shaping (potential-based · sparse rewards · HER)](18-Reward-Shaping.md)
-19. ⬜ [Multi-Agent RL (MADDPG · self-play · cooperation/competition)](19-Multi-Agent-RL.md)
+16. ✅ [Model-Based RL (Dyna · MPC · MuZero)](16-Model-Based-RL.md)
+17. ✅ [Offline RL (batch RL · CQL · distribution shift)](17-Offline-RL.md)
+18. ✅ [Reward Shaping (potential-based · sparse rewards · HER)](18-Reward-Shaping.md)
+19. ✅ [Multi-Agent RL (MADDPG · self-play · cooperation/competition)](19-Multi-Agent-RL.md)
 
 ## Related concepts (covered in another section)
 > These topics are used across many areas, so they're kept in one place to avoid repetition.
