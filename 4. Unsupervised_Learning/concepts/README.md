@@ -27,16 +27,16 @@ updated: 2026-06-19
 
 ## Density & anomaly
 
-9. ⬜ Anomaly / Outlier Detection (Isolation Forest · LOF · One-Class SVM)
-10. ⬜ Kernel Density Estimation
+9. ✅ [Anomaly / Outlier Detection (Isolation Forest · LOF · One-Class SVM)](09-Anomaly-Outlier-Detection.md)
+10. ✅ [Kernel Density Estimation](10-Kernel-Density-Estimation.md)
 
 ## Patterns & structure
 
-11. ⬜ Association Rule Learning (Apriori · FP-Growth)
+11. ✅ [Association Rule Learning (Apriori · FP-Growth)](11-Association-Rule-Learning.md)
 
 ## Representation (self-supervised)
 
-12. ⬜ Contrastive / Self-Supervised Learning
+12. ✅ [Contrastive / Self-Supervised Learning](12-Contrastive-Self-Supervised-Learning.md)
 
 ## Related concepts (covered in another section)
 > These topics are used across many areas, so they're kept in one place to avoid repetition.
