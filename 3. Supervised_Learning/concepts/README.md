@@ -29,14 +29,14 @@ updated: 2026-06-19
 
 ## Ensembles
 
-8. ⬜ Bagging
-9. ⬜ Random Forests
+8. ✅ [Bagging](09-Bagging.md)
+9. ✅ [Random Forests](10-Random-Forests.md)
 10. ✅ [Gradient Boosting (XGBoost · LightGBM · CatBoost)](04-Gradient-Boosting-XGBoost.md)
-11. ⬜ Stacking & Blending
+11. ✅ [Stacking & Blending](11-Stacking-and-Blending.md)
 
 ## Theory & evaluation
 
-12. ⬜ Bias–Variance Tradeoff
+12. ✅ [Bias–Variance Tradeoff](12-Bias-Variance-Tradeoff.md)
 13. ⬜ Cross-Validation
 14. ⬜ Classification Metrics (precision · recall · F1 · ROC-AUC · PR-AUC)
 15. ⬜ Regression Metrics (RMSE · MAE · R²)
