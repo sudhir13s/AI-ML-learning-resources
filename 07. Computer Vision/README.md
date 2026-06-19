@@ -35,3 +35,9 @@ thinking, projective geometry and cameras, deep vision architectures, and genera
 
 **Completion target:** explain convolution's two priors and parameter math, walk a pinhole
 camera model, justify ViT patch tokenization, and read a diffusion-vision paper without fear.
+
+## 📑 Per-concept resources
+> This README covers the **mathematical spine** of computer vision (where to learn the field). For
+> **per-concept** resource cards — one curated card per interview topic (filtering & features, CNN
+> backbones, object detection, segmentation, ViT, self-supervised vision, OCR, depth, …) — see the
+> dedicated index: **[concepts/ → Concept index](concepts/README.md)**.
