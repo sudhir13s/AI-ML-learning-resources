@@ -25,5 +25,10 @@ updated: 2026-06-11
 - [An Introduction to Statistical Learning (ISLP)](https://www.statlearning.com/) — **James, Witten, Hastie & Tibshirani** — free; the best applied-ML textbook, with Python labs.
 - [The Elements of Statistical Learning](https://hastie.su.domains/ElemStatLearn/) — **Hastie et al.** — free; the rigorous reference.
 
+## 📑 Per-concept resources
+> This README covers Supervised Learning **as a whole** (where to learn the field). For **per-concept**
+> resource cards — one curated card per interview topic (linear/logistic regression, trees, gradient
+> boosting, …) — see the dedicated index: **[concepts/ → Concept index](concepts/README.md)**.
+
 ## 🔗 In this platform
 - Losses & metrics: [AI-ML-intuition Module 3](../../AI-ML-intuition/Module_3_Evaluation/) · Practice: [problemsets](../../AI-ML-problemsets/)
