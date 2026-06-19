@@ -27,5 +27,10 @@ updated: 2026-06-11
 ## 📚 Books (free)
 - [Reinforcement Learning: An Introduction](http://incompleteideas.net/book/the-book-2nd.html) — **Sutton & Barto** — free; *the* RL textbook.
 
+## 📑 Per-concept resources
+> This README covers RL **as a whole** (where to learn the field). For **per-concept** resource
+> cards — one curated card per interview topic (MDPs, Bellman, Q-learning, DQN, policy gradients,
+> PPO, …) — see the dedicated index: **[concepts/ → Concept index](concepts/README.md)**.
+
 ## 🔗 In this platform
 - Math: [AI-ML-intuition Module 6 (RL & Alignment)](../../AI-ML-intuition/Module_6_Reinforcement_Learning/)
