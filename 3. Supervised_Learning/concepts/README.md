@@ -37,9 +37,9 @@ updated: 2026-06-19
 ## Theory & evaluation
 
 12. ✅ [Bias–Variance Tradeoff](12-Bias-Variance-Tradeoff.md)
-13. ⬜ Cross-Validation
-14. ⬜ Classification Metrics (precision · recall · F1 · ROC-AUC · PR-AUC)
-15. ⬜ Regression Metrics (RMSE · MAE · R²)
+13. ✅ [Cross-Validation](13-Cross-Validation.md)
+14. ✅ [Classification Metrics (precision · recall · F1 · ROC-AUC · PR-AUC)](14-Classification-Metrics.md)
+15. ✅ [Regression Metrics (RMSE · MAE · R²)](15-Regression-Metrics.md)
 
 ## Related concepts (covered in another section)
 > These topics are used across many areas, so they're kept in one place to avoid repetition.
