@@ -25,9 +25,9 @@ updated: 2026-06-20
 
 ## Diffusion & score-based models
 
-5. ⬜ [Diffusion Models — DDPM (forward/reverse process)](05-Diffusion-Models-DDPM.md)
-6. ⬜ [Score-Based & SDE Diffusion (score matching · probability-flow ODE)](06-Score-Based-and-SDE-Diffusion.md)
-7. ⬜ [Latent Diffusion & Stable Diffusion (VAE + U-Net + text)](07-Latent-Diffusion-Stable-Diffusion.md)
+5. ✅ [Diffusion Models — DDPM (forward/reverse process)](05-Diffusion-Models-DDPM.md)
+6. ✅ [Score-Based & SDE Diffusion (score matching · probability-flow ODE)](06-Score-Based-and-SDE-Diffusion.md)
+7. ✅ [Latent Diffusion & Stable Diffusion (VAE + U-Net + text)](07-Latent-Diffusion-Stable-Diffusion.md)
 
 ## Energy-based models & systems
 
