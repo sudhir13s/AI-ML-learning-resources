@@ -2,7 +2,7 @@
 
 > Elective deep-dive track for research-grade ML math, absorbed and expanded from the retired
 > `math-for-AIML-Q5` research specialization. This is the *third tier*: study after the
-> [main curriculum's](../1.%20Foundations/Maths%20for%20AI-ML/README.md) phases and the corresponding
+> [main curriculum's](../01.%20Foundations/Maths%20for%20AI-ML/README.md) phases and the corresponding
 > [AI-ML-intuition](../../AI-ML-intuition/) modules. Each row names the payoff that justifies it.
 
 ### Core resource backbone

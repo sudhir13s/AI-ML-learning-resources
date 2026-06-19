@@ -16,9 +16,9 @@ parseable.
   curated sections in this order: **⭐ Start here · 🎓 Courses · 🎥 Videos · 📄 Papers ·
   📰 Articles · 📚 Books · 🔗 In this platform**. ~2 entries per section, format
   `[Title](url) — **Author/Institution** — why it's the best.`
-- Canonical example: [5. Deep_Learning/README.md](5.%20Deep_Learning/README.md).
+- Canonical example: [05. Deep_Learning/README.md](05.%20Deep_Learning/README.md).
 
-## Topics (numbered folders; names keep the `N. Name` style of the originals)
+## Topics (numbered folders; **zero-padded** `NN. Name` so they sort correctly everywhere, incl. GitHub)
 00 Basics · 01 Foundations (+ `Maths for AI-ML/` deep math curriculum) · 02 Data-Preprocessing ·
 03 Supervised · 04 Unsupervised · 05 Deep-Learning · 06 NLP · 07 Computer-Vision · 08 LLMs ·
 09 GenAI · 10 RL · 11 Tools-and-Frameworks · 12 MLOps-and-Deployment · 13 Neuroscience ·
