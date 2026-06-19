@@ -32,12 +32,12 @@ updated: 2026-06-20
 ## Energy-based models & systems
 
 9. ✅ [Energy-Based Models (EBM · contrastive divergence)](09-Energy-Based-Models.md)
-11. ⬜ [Text-to-Image Systems (DALL·E · Imagen · CLIP guidance)](11-Text-to-Image-Systems.md)
+11. ✅ [Text-to-Image Systems (DALL·E · Imagen · CLIP guidance)](11-Text-to-Image-Systems.md)
 
 ## Sampling, guidance & evaluation
 
-12. ⬜ [Evaluation of Generative Models (FID · Inception Score · precision/recall)](12-Evaluation-of-Generative-Models.md)
-13. ⬜ [Sampling & Guidance Techniques (DDIM · ancestral · guidance scale)](13-Sampling-and-Guidance-Techniques.md)
+12. ✅ [Evaluation of Generative Models (FID · Inception Score · precision/recall)](12-Evaluation-of-Generative-Models.md)
+13. ✅ [Sampling & Guidance Techniques (DDIM · ancestral · guidance scale)](13-Sampling-and-Guidance-Techniques.md)
 
 ## Related concepts (covered in another section)
 > These topics are foundational or live in another domain, so they're kept in one place to avoid repetition.
