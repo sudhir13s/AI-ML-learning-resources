@@ -29,5 +29,10 @@ updated: 2026-06-11
 - [What are Diffusion Models? (Lil'Log)](https://lilianweng.github.io/posts/2021-07-11-diffusion-models/) — **Lilian Weng** — the canonical math walkthrough.
 - [The Annotated Diffusion Model](https://huggingface.co/blog/annotated-diffusion) — **Hugging Face** — runnable code + math.
 
+## 📑 Per-concept resources
+For a guided, per-topic learning path — VAEs, GANs, diffusion, latent diffusion, normalizing flows,
+text-to-image, evaluation, and more — see the **[Concept Index](concepts/README.md)**. Each concept has
+its own card with a suggested path plus the best free courses, videos, papers, articles, and books.
+
 ## 🔗 In this platform
 - Math: [AI-ML-intuition Module 5 (Generation)](../../AI-ML-intuition/Module_5_Generation/)
