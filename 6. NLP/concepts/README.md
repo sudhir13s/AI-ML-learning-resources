@@ -14,11 +14,11 @@ updated: 2026-06-19
 ## Representation & classical models
 
 1. ⬜ Text Preprocessing & Normalization (tokenize, stem, lemmatize, stopwords)
-2. ⬜ Tokenization & Subword Algorithms (BPE · WordPiece · SentencePiece · Unigram)
+2. ✅ [Tokenization & Subword Algorithms (BPE · WordPiece · SentencePiece · Unigram)](02-Tokenization-and-Subword-Algorithms.md)
 3. ⬜ Bag-of-Words & TF-IDF
 4. ⬜ N-gram Language Models & Smoothing
 5. ✅ [Word Embeddings — Word2Vec · GloVe · FastText](05-Word-Embeddings-Word2Vec-GloVe-FastText.md)
-6. ⬜ Contextual Embeddings (ELMo · BERT-as-embeddings)
+6. ✅ [Contextual Embeddings (ELMo · BERT-as-embeddings)](06-Contextual-Embeddings-ELMo-BERT.md)
 7. ⬜ Sentence & Document Embeddings (Sentence-BERT · USE)
 
 ## Sequence modeling & tasks

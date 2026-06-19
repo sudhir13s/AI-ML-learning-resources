@@ -18,6 +18,7 @@ negative sampling vs hierarchical softmax, why GloVe uses global co-occurrence, 
 OOV/morphology via subwords, and the limits (static, context-free) that motivate BERT.
 
 **⭐ Start here — suggested path:**
+
 1. **Build intuition** — watch [StatQuest: Word2Vec](https://www.youtube.com/watch?v=viZrOnJclY0), then read the ⭐ [Illustrated Word2Vec](https://jalammar.github.io/illustrated-word2vec/). *Fastest way to a correct mental model before any math.*
 2. **See why it works** — [Computerphile: Vectoring Words](https://www.youtube.com/watch?v=gQddtTdmG_8). *Makes the "king − man + woman ≈ queen" geometry click.*
 3. **Get the math** — [CS224N Lec 2](https://www.youtube.com/watch?v=ERibwqs9p38) + [SLP3 Ch. 6](https://web.stanford.edu/~jurafsky/slp3/6.pdf). *The objective, gradients, and negative sampling you'll be asked to derive.*
@@ -53,5 +54,5 @@ OOV/morphology via subwords, and the limits (static, context-free) that motivate
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 1.02 Dense Embeddings](../../../AI-ML-intuition/Module_1_Representation/1.02_Dense_Embeddings.md) · [1.02a Word2Vec / Skip-Gram](../../../AI-ML-intuition/Module_1_Representation/1.02a_Word_Embeddings_Word2Vec_Skip-Gram.md)
-- Next concepts: [06 Contextual Embeddings (ELMo/BERT)](06-Contextual-Embeddings-ELMo-BERT.md) · [02 Tokenization & Subword](02-Tokenization-and-Subword.md)
+- Next concepts: [06 Contextual Embeddings (ELMo/BERT)](06-Contextual-Embeddings-ELMo-BERT.md) · [02 Tokenization & Subword](02-Tokenization-and-Subword-Algorithms.md)
 - Related domain: [8. LLMs](../../8.%20LLMs/README.md)
