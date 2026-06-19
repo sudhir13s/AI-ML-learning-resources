@@ -26,5 +26,10 @@ updated: 2026-06-11
 ## 📚 Books (free)
 - [Speech and Language Processing (3rd ed.)](https://web.stanford.edu/~jurafsky/slp3/) — **Jurafsky & Martin** — free draft; the field's standard reference.
 
+## 📑 Per-concept resources
+> This README covers NLP **as a whole** (where to learn the field). For **per-concept** resource
+> cards — one curated card per interview topic (word embeddings, NER, decoding, …) — see the
+> dedicated index: **[concepts/ → Concept index](concepts/README.md)**.
+
 ## 🔗 In this platform
 - Math: [AI-ML-intuition 1.02 embeddings, 1.15 tokenization, Module 4 attention](../../AI-ML-intuition/) · LLMs: [8. LLMs](../8.%20LLMs/README.md)
