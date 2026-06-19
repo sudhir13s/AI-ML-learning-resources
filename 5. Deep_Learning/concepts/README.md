@@ -22,11 +22,11 @@ updated: 2026-06-19
 
 ## Training & optimization
 
-7. ⬜ Optimizers (SGD · Momentum · Adam · AdamW · RMSprop)
-8. ⬜ Learning-Rate Schedules & Warmup
-9. ⬜ Regularization (L1/L2 · weight decay · early stopping)
-10. ⬜ Dropout
-11. ⬜ Normalization (Batch · Layer · Group)
+7. ✅ [Optimizers (SGD · Momentum · Adam · AdamW · RMSprop)](07-Optimizers.md)
+8. ✅ [Learning-Rate Schedules & Warmup](08-Learning-Rate-Schedules-and-Warmup.md)
+9. ✅ [Regularization (L1/L2 · weight decay · early stopping)](09-Regularization.md)
+10. ✅ [Dropout](10-Dropout.md)
+11. ✅ [Normalization (Batch · Layer · Group)](11-Normalization.md)
 12. ⬜ Hyperparameter Tuning
 
 ## Architectures
