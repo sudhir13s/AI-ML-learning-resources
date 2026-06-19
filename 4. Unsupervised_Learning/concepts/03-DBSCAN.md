@@ -50,6 +50,7 @@ spatial index, and its weakness on **varying-density** clusters (the motivation 
 - [The Elements of Statistical Learning — **§14.3 "Cluster Analysis"**](https://hastie.su.domains/ElemStatLearn/) — **Hastie, Tibshirani & Friedman** — free PDF; places DBSCAN-style density clustering against k-means and hierarchical.
 
 ## 🔗 In this platform
+- Concept depth (the *why*): [AI-ML-intuition 1.07–1.08 Distances (Euclidean vs Cosine)](../../../AI-ML-intuition/Module_1_Representation/1.07-1.08_Similarities_Distances_Euclidean_vs_Cosine.md) — density/neighborhoods are defined by the distance metric
 - Compare with: [01 K-Means Clustering](01-K-Means-Clustering.md) · [02 Hierarchical Clustering](02-Hierarchical-Clustering.md) · [04 Gaussian Mixture Models & EM](04-Gaussian-Mixture-Models-and-EM.md)
 - Related: Anomaly / Outlier Detection (coming soon) — DBSCAN's "noise" label is a form of outlier detection.
 - Field overview: [4. Unsupervised Learning](../README.md)

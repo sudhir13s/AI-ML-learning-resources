@@ -53,6 +53,7 @@ landmark architectures (LeNet → AlexNet → VGG → ResNet) progressively went
 - [Deep Learning — **Ch. 9 "Convolutional Networks"**](https://www.deeplearningbook.org/contents/convnets.html) — **Goodfellow, Bengio & Courville** — the rigorous treatment of convolution, pooling, and the priors CNNs encode.
 
 ## 🔗 In this platform
+- Concept depth (the *why*): [AI-ML-intuition 4.13 Convolution](../../../AI-ML-intuition/Module_4_Stabilization/4B_Architectural_Motifs/4.13_Convolution.md)
 - Prerequisite: [02 Backpropagation & Computational Graphs](02-Backpropagation-and-Computational-Graphs.md)
 - Field overview: [Deep Learning](../README.md)
 - Related domain: [7. Computer Vision](../../7.%20Computer%20Vision/README.md) (vision architectures, detection, segmentation in depth)

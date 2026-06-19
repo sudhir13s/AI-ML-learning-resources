@@ -55,6 +55,7 @@ sequence length is the key advantage over RNNs.
 - [Speech and Language Processing, 3rd ed. — **Ch. 9 "RNNs and LSTMs" → Ch. 10 (Transformers)**](https://web.stanford.edu/~jurafsky/slp3/) — **Jurafsky & Martin** — self-attention and transformers framed for language, free draft.
 
 ## 🔗 In this platform
+- Concept depth (the *why*): [AI-ML-intuition 4.15 The Transformer Block](../../../AI-ML-intuition/Module_4_Stabilization/4D_Nonlinearities/4.15_The_Transformer_Block.md) · [4.08 Multi-Head Attention](../../../AI-ML-intuition/Module_4_Stabilization/4B_Architectural_Motifs/4.08_Multi-Head_Attention_Routing.md) · [1.03 Positional Encoding](../../../AI-ML-intuition/Module_1_Representation/1.03_Positional_Encoding.md)
 - Prerequisite: [14 RNN / LSTM / GRU](14-RNN-LSTM-GRU.md) (what the transformer replaced)
 - Field overview: [Deep Learning](../README.md)
 - Related domains: [6. NLP](../../6.%20NLP/README.md) · [8. LLMs](../../8.%20LLMs/README.md) (where transformers are scaled and pretrained)
