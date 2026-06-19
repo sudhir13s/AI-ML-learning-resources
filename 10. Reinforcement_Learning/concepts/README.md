@@ -31,10 +31,10 @@ updated: 2026-06-20
 ## Deep RL — policy-based & actor-critic
 
 9. ✅ [Policy Gradients (REINFORCE)](09-Policy-Gradients-REINFORCE.md)
-10. ⬜ [Actor-Critic (A2C · A3C · GAE)](10-Actor-Critic-A2C-A3C.md)
-11. ⬜ [Trust Region Policy Optimization (TRPO)](11-Trust-Region-Policy-Optimization-TRPO.md)
-12. ⬜ [Proximal Policy Optimization (PPO)](12-Proximal-Policy-Optimization-PPO.md)
-13. ⬜ [Continuous Control — DDPG · TD3 · SAC](13-Continuous-Control-DDPG-TD3-SAC.md)
+10. ✅ [Actor-Critic (A2C · A3C · GAE)](10-Actor-Critic-A2C-A3C.md)
+11. ✅ [Trust Region Policy Optimization (TRPO)](11-Trust-Region-Policy-Optimization-TRPO.md)
+12. ✅ [Proximal Policy Optimization (PPO)](12-Proximal-Policy-Optimization-PPO.md)
+13. ✅ [Continuous Control — DDPG · TD3 · SAC](13-Continuous-Control-DDPG-TD3-SAC.md)
 
 ## Exploration & decision-making
 
