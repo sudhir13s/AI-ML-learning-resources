@@ -42,12 +42,12 @@ updated: 2026-06-20
 
 16. ✅ [Prompting & In-Context Learning](16-Prompting-and-In-Context-Learning.md)
 17. ✅ [Chain-of-Thought Reasoning](17-Chain-of-Thought-Reasoning.md)
-18. ⬜ [Decoding & Sampling for LLMs (temperature · top-k · top-p)](18-Decoding-and-Sampling.md)
+18. ✅ [Decoding & Sampling for LLMs (temperature · top-k · top-p)](18-Decoding-and-Sampling.md)
 
 ## Evaluation & safety
 
-19. ⬜ [LLM Evaluation & Benchmarks](19-LLM-Evaluation-and-Benchmarks.md)
-20. ⬜ [Hallucination & Alignment basics](20-Hallucination-and-Alignment-Basics.md)
+19. ✅ [LLM Evaluation & Benchmarks](19-LLM-Evaluation-and-Benchmarks.md)
+20. ✅ [Hallucination & Alignment basics](20-Hallucination-and-Alignment-Basics.md)
 
 ## Related concepts (covered in another section)
 > These topics are foundations or applications of LLMs, but their canonical home is another section —
