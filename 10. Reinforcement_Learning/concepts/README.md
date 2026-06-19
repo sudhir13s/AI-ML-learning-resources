@@ -21,16 +21,16 @@ updated: 2026-06-20
 
 4. ✅ [Monte Carlo Methods (first-visit · every-visit · MC control)](04-Monte-Carlo-Methods.md)
 5. ✅ [Temporal-Difference Learning (TD(0) · TD(λ) · n-step)](05-Temporal-Difference-Learning.md)
-6. ⬜ [Q-Learning (off-policy TD control)](06-Q-Learning.md)
-7. ⬜ [SARSA (on-policy TD control)](07-SARSA.md)
+6. ✅ [Q-Learning (off-policy TD control)](06-Q-Learning.md)
+7. ✅ [SARSA (on-policy TD control)](07-SARSA.md)
 
 ## Deep RL — value-based
 
-8. ⬜ [Deep Q-Networks (DQN + Double · Dueling · Prioritized · Rainbow)](08-Deep-Q-Networks-DQN.md)
+8. ✅ [Deep Q-Networks (DQN + Double · Dueling · Prioritized · Rainbow)](08-Deep-Q-Networks-DQN.md)
 
 ## Deep RL — policy-based & actor-critic
 
-9. ⬜ [Policy Gradients (REINFORCE)](09-Policy-Gradients-REINFORCE.md)
+9. ✅ [Policy Gradients (REINFORCE)](09-Policy-Gradients-REINFORCE.md)
 10. ⬜ [Actor-Critic (A2C · A3C · GAE)](10-Actor-Critic-A2C-A3C.md)
 11. ⬜ [Trust Region Policy Optimization (TRPO)](11-Trust-Region-Policy-Optimization-TRPO.md)
 12. ⬜ [Proximal Policy Optimization (PPO)](12-Proximal-Policy-Optimization-PPO.md)
