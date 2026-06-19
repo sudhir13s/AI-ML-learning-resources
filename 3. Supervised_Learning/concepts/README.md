@@ -15,23 +15,23 @@ updated: 2026-06-19
 
 1. ✅ [Linear Regression](01-Linear-Regression.md)
 2. ✅ [Logistic Regression](02-Logistic-Regression.md)
-3. ✅ [Regularization for Linear Models (Ridge · Lasso · Elastic-Net)](05-Regularization-Linear-Models.md)
+3. ✅ [Regularization for Linear Models (Ridge · Lasso · Elastic-Net)](03-Regularization-Linear-Models.md)
 
 ## Instance-based & probabilistic
 
-4. ✅ [k-Nearest Neighbors (k-NN)](06-k-Nearest-Neighbors.md)
-5. ✅ [Naive Bayes](07-Naive-Bayes.md)
+4. ✅ [k-Nearest Neighbors (k-NN)](04-k-Nearest-Neighbors.md)
+5. ✅ [Naive Bayes](05-Naive-Bayes.md)
 
 ## Margin & tree models
 
-6. ✅ [Support Vector Machines (SVM)](08-Support-Vector-Machines.md)
-7. ✅ [Decision Trees](03-Decision-Trees.md)
+6. ✅ [Support Vector Machines (SVM)](06-Support-Vector-Machines.md)
+7. ✅ [Decision Trees](07-Decision-Trees.md)
 
 ## Ensembles
 
-8. ✅ [Bagging](09-Bagging.md)
-9. ✅ [Random Forests](10-Random-Forests.md)
-10. ✅ [Gradient Boosting (XGBoost · LightGBM · CatBoost)](04-Gradient-Boosting-XGBoost.md)
+8. ✅ [Bagging](08-Bagging.md)
+9. ✅ [Random Forests](09-Random-Forests.md)
+10. ✅ [Gradient Boosting (XGBoost · LightGBM · CatBoost)](10-Gradient-Boosting-XGBoost.md)
 11. ✅ [Stacking & Blending](11-Stacking-and-Blending.md)
 
 ## Theory & evaluation

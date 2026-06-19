@@ -55,5 +55,5 @@ the difference between stacking (k-fold) and blending (holdout) — speed/leakag
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 3.08 Ensembles (Bagging/Boosting)](../../../AI-ML-intuition/Module_3_Evaluation/3.08_Ensembles_Bagging_Boosting.md) · [3.07 Bias–Variance & Generalization](../../../AI-ML-intuition/Module_3_Evaluation/3.07_Bias_Variance_and_Generalization.md)
 - Math prerequisites (the *why*): [1. Foundations](../../1.%20Foundations/README.md) — cross-validation, leakage, model combination.
-- Prior concepts: [09 Bagging](09-Bagging.md) · [10 Random Forests](10-Random-Forests.md) · [04 Gradient Boosting](04-Gradient-Boosting-XGBoost.md) — the base learners you stack.
+- Prior concepts: [08 Bagging](08-Bagging.md) · [09 Random Forests](09-Random-Forests.md) · [10 Gradient Boosting](10-Gradient-Boosting-XGBoost.md) — the base learners you stack.
 - Related concept: Cross-Validation *(coming soon)* — out-of-fold predictions are the heart of leak-free stacking.
