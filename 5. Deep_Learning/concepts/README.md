@@ -27,17 +27,17 @@ updated: 2026-06-19
 9. ✅ [Regularization (L1/L2 · weight decay · early stopping)](09-Regularization.md)
 10. ✅ [Dropout](10-Dropout.md)
 11. ✅ [Normalization (Batch · Layer · Group)](11-Normalization.md)
-12. ⬜ Hyperparameter Tuning
+12. ✅ [Hyperparameter Tuning](12-Hyperparameter-Tuning.md)
 
 ## Architectures
 
 13. ✅ [CNNs & Convolution](13-CNNs-and-Convolution.md)
 14. ✅ [RNN / LSTM / GRU](14-RNN-LSTM-GRU.md)
-15. ⬜ Attention Mechanism
+15. ✅ [Attention Mechanism](15-Attention-Mechanism.md)
 16. ✅ [Transformer Architecture](16-Transformer-Architecture.md)
-17. ⬜ Positional Encoding
-18. ⬜ Residual / Skip Connections
-19. ⬜ Autoencoders
+17. ✅ [Positional Encoding](17-Positional-Encoding.md)
+18. ✅ [Residual / Skip Connections](18-Residual-Skip-Connections.md)
+19. ✅ [Autoencoders](19-Autoencoders.md)
 
 ## Related concepts (covered in another section)
 > These topics are used across many areas, so they're kept in one place to avoid repetition.
