@@ -51,6 +51,7 @@ assignments and shared spherical covariance**. EM also generalizes far beyond GM
 - [Mathematics for Machine Learning — **Ch. 11 "Density Estimation with GMMs"**](https://mml-book.github.io/) — **Deisenroth, Faisal & Ong** — free; the full GMM + EM derivation from first principles.
 
 ## 🔗 In this platform
+- Concept depth (the *why*): [AI-ML-intuition 5.06 GMMs & EM](../../../AI-ML-intuition/Module_5_Generation/5.06_GMMs_and_EM.md) · [0.02 Distributions & the Gaussian](../../../AI-ML-intuition/Module_0_Foundations/0.02_Distributions_and_the_Gaussian.md)
 - Compare with: [01 K-Means Clustering](01-K-Means-Clustering.md) (the hard-assignment special case) · [03 DBSCAN](03-DBSCAN.md)
 - Prereq math: [Foundations — Linear Algebra (vectors & matrices)](../../1.%20Foundations/Maths%20for%20AI-ML/1.%20Linear%20Algebra/VectorsAndMatrices.md)
 - Field overview: [4. Unsupervised Learning](../README.md)

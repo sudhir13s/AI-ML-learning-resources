@@ -54,6 +54,7 @@ transformers (sequential compute, no parallel training, but cheap streaming infe
 - [Speech and Language Processing, 3rd ed. — **Ch. 9 "RNNs and LSTMs"**](https://web.stanford.edu/~jurafsky/slp3/9.pdf) — **Jurafsky & Martin** — RNNs/LSTMs framed for language, free draft chapter.
 
 ## 🔗 In this platform
+- Concept depth (the *why*): [AI-ML-intuition 4.07 Gating Mechanisms (LSTM/GRU)](../../../AI-ML-intuition/Module_4_Stabilization/4B_Architectural_Motifs/4.07_Gating_Mechanisms_LSTM_GRU.md)
 - Prerequisite: [02 Backpropagation & Computational Graphs](02-Backpropagation-and-Computational-Graphs.md)
 - Next concept: [16 Transformer Architecture](16-Transformer-Architecture.md) (what replaced RNNs for most sequence tasks)
 - Related domain: [6. NLP](../../6.%20NLP/README.md) (sequence-to-sequence, machine translation)

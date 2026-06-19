@@ -52,6 +52,7 @@ unequal-density clusters (the setup for DBSCAN and GMMs).
 - [Mathematics for Machine Learning — **Ch. 10 (PCA) / clustering context**](https://mml-book.github.io/) — **Deisenroth, Faisal & Ong** — free; the linear-algebra footing behind distances and centroids.
 
 ## 🔗 In this platform
+- Concept depth (the *why*): [AI-ML-intuition 1.18 K-Means Clustering](../../../AI-ML-intuition/Module_1_Representation/1.18_KMeans_Clustering.md)
 - Next concepts: [02 Hierarchical Clustering](02-Hierarchical-Clustering.md) · [03 DBSCAN](03-DBSCAN.md) · [04 Gaussian Mixture Models & EM](04-Gaussian-Mixture-Models-and-EM.md)
 - Prereq math: [Foundations — Linear Algebra (vectors & matrices)](../../1.%20Foundations/Maths%20for%20AI-ML/1.%20Linear%20Algebra/VectorsAndMatrices.md)
 - Field overview: [4. Unsupervised Learning](../README.md)
