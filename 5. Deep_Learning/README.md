@@ -35,6 +35,11 @@ updated: 2026-06-11
 - [Neural Networks and Deep Learning](http://neuralnetworksanddeeplearning.com/) — **Michael Nielsen** — free, the clearest from-first-principles introduction.
 - [Deep Learning](https://www.deeplearningbook.org/) — **Goodfellow, Bengio & Courville** — free online; the rigorous reference text.
 
+## 📑 Per-concept resources
+> This README covers Deep Learning **as a whole** (where to learn the field). For **per-concept**
+> resource cards — one curated card per interview topic (backpropagation, CNNs, RNN/LSTM/GRU,
+> transformers, …) — see the dedicated index: **[concepts/ → Concept index](concepts/README.md)**.
+
 ## 🔗 In this platform
 - **Understand the math:** [AI-ML-intuition — Module 2 (Optimization)](../../AI-ML-intuition/Module_2_Optimization/) · [Module 4 (Stabilization)](../../AI-ML-intuition/Module_4_Stabilization/)
 - **Build it:** [AI-ML-problemsets](../../AI-ML-problemsets/)
