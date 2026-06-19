@@ -34,10 +34,10 @@ updated: 2026-06-20
 
 11. ✅ [Vision Transformers (ViT)](11-Vision-Transformers.md)
 12. ✅ [Self-Supervised Vision (SimCLR · MAE · DINO)](12-Self-Supervised-Vision.md)
-13. ⬜ [Pose Estimation](13-Pose-Estimation.md)
-14. ⬜ [Optical Flow & Video Understanding](14-Optical-Flow-and-Video.md)
-15. ⬜ [Optical Character Recognition (OCR)](15-OCR.md)
-16. ⬜ [3D & Depth Estimation](16-3D-and-Depth-Estimation.md)
+13. ✅ [Pose Estimation](13-Pose-Estimation.md)
+14. ✅ [Optical Flow & Video Understanding](14-Optical-Flow-and-Video.md)
+15. ✅ [Optical Character Recognition (OCR)](15-OCR.md)
+16. ✅ [3D & Depth Estimation](16-3D-and-Depth-Estimation.md)
 
 ## Related concepts (covered in another section)
 > These topics are foundational or generative and live in their canonical home to avoid repetition.
