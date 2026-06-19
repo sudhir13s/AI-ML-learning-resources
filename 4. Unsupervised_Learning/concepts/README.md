@@ -17,13 +17,13 @@ updated: 2026-06-19
 2. ✅ [Hierarchical Clustering (agglomerative & divisive)](02-Hierarchical-Clustering.md)
 3. ✅ [DBSCAN (density-based clustering)](03-DBSCAN.md)
 4. ✅ [Gaussian Mixture Models & EM](04-Gaussian-Mixture-Models-and-EM.md)
-5. ⬜ Spectral Clustering
+5. ✅ [Spectral Clustering](05-Spectral-Clustering.md)
 
 ## Dimensionality reduction & manifold learning
 
-6. ⬜ Dimensionality Reduction — overview (PCA · SVD framing, cross-link to math)
-7. ⬜ t-SNE
-8. ⬜ UMAP
+6. ✅ [Dimensionality Reduction — overview (PCA · SVD framing, cross-link to math)](06-Dimensionality-Reduction-Overview.md)
+7. ✅ [t-SNE](07-t-SNE.md)
+8. ✅ [UMAP](08-UMAP.md)
 
 ## Density & anomaly
 
