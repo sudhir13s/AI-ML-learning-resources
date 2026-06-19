@@ -31,13 +31,13 @@ updated: 2026-06-20
 
 ## Applied agents
 
-10. ⬜ [Code Agents](10-Code-Agents.md)
-11. ⬜ [Computer-Use & GUI Agents](11-Computer-Use-and-GUI-Agents.md)
+10. ✅ [Code Agents](10-Code-Agents.md)
+11. ✅ [Computer-Use & GUI Agents](11-Computer-Use-and-GUI-Agents.md)
 
 ## Evaluation & safety
 
-12. ⬜ [Agent Evaluation & Benchmarks (AgentBench · SWE-bench)](12-Agent-Evaluation-and-Benchmarks.md)
-13. ⬜ [Safety, Guardrails & Human-in-the-Loop](13-Safety-Guardrails-and-Human-in-the-Loop.md)
+12. ✅ [Agent Evaluation & Benchmarks (AgentBench · SWE-bench)](12-Agent-Evaluation-and-Benchmarks.md)
+13. ✅ [Safety, Guardrails & Human-in-the-Loop](13-Safety-Guardrails-and-Human-in-the-Loop.md)
 
 ## Related concepts (covered in another section)
 > These topics are foundations or applications of agents, but their canonical home is another section —
