@@ -22,29 +22,29 @@ dataset for the interview-prep project.*
 ### Foundations
 | # | Topic | Level |
 | :-- | :--- | :--- |
-| 00 | [Getting Started](0.%20Basics/README.md) | beginner |
-| 01 | [Math & Programming Foundations](1.%20Foundations/README.md) — incl. [full math curriculum](1.%20Foundations/Maths%20for%20AI-ML/README.md) | beginner |
-| 02 | [Data Handling & Feature Engineering](2.%20Data_Preprocessing/README.md) | beginner |
+| 00 | [Getting Started](00.%20Basics/README.md) | beginner |
+| 01 | [Math & Programming Foundations](01.%20Foundations/README.md) — incl. [full math curriculum](01.%20Foundations/Maths%20for%20AI-ML/README.md) | beginner |
+| 02 | [Data Handling & Feature Engineering](02.%20Data_Preprocessing/README.md) | beginner |
 
 ### Core Machine Learning
 | # | Topic | Level |
 | :-- | :--- | :--- |
-| 03 | [Supervised Learning](3.%20Supervised_Learning/README.md) | intermediate |
-| 04 | [Unsupervised Learning](4.%20Unsupervised_Learning/README.md) | intermediate |
-| 05 | [Deep Learning](5.%20Deep_Learning/README.md) | intermediate |
+| 03 | [Supervised Learning](03.%20Supervised_Learning/README.md) | intermediate |
+| 04 | [Unsupervised Learning](04.%20Unsupervised_Learning/README.md) | intermediate |
+| 05 | [Deep Learning](05.%20Deep_Learning/README.md) | intermediate |
 
 ### Domains
 | # | Topic | Level |
 | :-- | :--- | :--- |
-| 06 | [Natural Language Processing](6.%20NLP/README.md) | intermediate |
-| 07 | [Computer Vision](7.%20Computer%20Vision/README.md) | intermediate |
+| 06 | [Natural Language Processing](06.%20NLP/README.md) | intermediate |
+| 07 | [Computer Vision](07.%20Computer%20Vision/README.md) | intermediate |
 | 10 | [Reinforcement Learning](10.%20Reinforcement_Learning/README.md) | advanced |
 
 ### Generative & LLMs
 | # | Topic | Level |
 | :-- | :--- | :--- |
-| 08 | [Large Language Models](8.%20LLMs/README.md) | advanced |
-| 09 | [Generative AI](9.%20GenAI/README.md) | advanced |
+| 08 | [Large Language Models](08.%20LLMs/README.md) | advanced |
+| 09 | [Generative AI](09.%20GenAI/README.md) | advanced |
 | 15 | [Agentic AI & Tool Use](15.%20Agentic_AI/README.md) | advanced |
 | 16 | [RAG & LLM Applications](16.%20RAG_and_LLM_Applications/README.md) | advanced |
 
@@ -56,7 +56,7 @@ dataset for the interview-prep project.*
 | 17 | [Frontier & Staying Current](17.%20Frontier_and_Staying_Current/README.md) | advanced |
 
 ### Specializations (deep-dive curricula)
-- [Computer Vision math](7.%20Computer%20Vision/README.md) · [Neuroscience & Brain-Inspired AI](13.%20Neuroscience_and_Brain_Inspired_AI/README.md) · [Advanced Research Math](14.%20Advanced_Research_Mathematics/README.md) — full what/why/resources curricula
+- [Computer Vision math](07.%20Computer%20Vision/README.md) · [Neuroscience & Brain-Inspired AI](13.%20Neuroscience_and_Brain_Inspired_AI/README.md) · [Advanced Research Math](14.%20Advanced_Research_Mathematics/README.md) — full what/why/resources curricula
 - [LLM Systems Engineering curriculum](llm_systems_curriculum.md) — 14-chapter inference-stack syllabus
 
 ## 🔗 Sibling projects
