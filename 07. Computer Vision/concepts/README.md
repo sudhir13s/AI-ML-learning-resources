@@ -20,13 +20,13 @@ updated: 2026-06-20
 
 3. ✅ [Classic CNN Architectures (LeNet · AlexNet · VGG · ResNet · Inception · EfficientNet)](03-Classic-CNN-Architectures.md)
 4. ✅ [Image Classification](04-Image-Classification.md)
-5. ⬜ [Transfer Learning for Vision](05-Transfer-Learning-for-Vision.md)
-6. ⬜ [Data Augmentation](06-Data-Augmentation.md)
+5. ✅ [Transfer Learning for Vision](05-Transfer-Learning-for-Vision.md)
+6. ✅ [Data Augmentation](06-Data-Augmentation.md)
 
 ## Detection & segmentation
 
-7. ⬜ [Object Detection (R-CNN family · YOLO · SSD)](07-Object-Detection.md)
-8. ⬜ [Semantic Segmentation (FCN · U-Net · DeepLab)](08-Semantic-Segmentation.md)
+7. ✅ [Object Detection (R-CNN family · YOLO · SSD)](07-Object-Detection.md)
+8. ✅ [Semantic Segmentation (FCN · U-Net · DeepLab)](08-Semantic-Segmentation.md)
 9. ⬜ [Instance Segmentation (Mask R-CNN)](09-Instance-Segmentation.md)
 10. ⬜ [Detection & Segmentation Metrics (IoU · mAP)](10-Detection-and-Segmentation-Metrics.md)
 
