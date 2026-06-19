@@ -35,12 +35,12 @@ updated: 2026-06-20
 11. ✅ [RAG Evaluation (RAGAS · faithfulness · groundedness)](11-RAG-Evaluation.md)
 12. ✅ [Long-Context vs RAG](12-Long-Context-vs-RAG.md)
 13. ✅ [Citations & Attribution](13-Citations-and-Attribution.md)
-14. ⬜ [Guardrails & Hallucination Mitigation](14-Guardrails-and-Hallucination-Mitigation.md)
+14. ✅ [Guardrails & Hallucination Mitigation](14-Guardrails-and-Hallucination-Mitigation.md)
 
 ## Building & operating LLM apps
 
-15. ⬜ [LLM App Orchestration (chains · routing)](15-LLM-App-Orchestration.md)
-16. ⬜ [Caching & Cost Optimization for LLM Apps](16-Caching-and-Cost-Optimization.md)
+15. ✅ [LLM App Orchestration (chains · routing)](15-LLM-App-Orchestration.md)
+16. ✅ [Caching & Cost Optimization for LLM Apps](16-Caching-and-Cost-Optimization.md)
 
 ## Related concepts (covered in another section)
 > These topics are foundations or neighbors of RAG, but their canonical home is another section —
