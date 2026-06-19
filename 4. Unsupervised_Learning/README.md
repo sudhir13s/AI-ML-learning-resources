@@ -24,5 +24,10 @@ updated: 2026-06-11
 ## 📚 Books (free)
 - [An Introduction to Statistical Learning (ISLP), Ch. 12](https://www.statlearning.com/) — **James et al.** — free; clustering & PCA, applied.
 
+## 📑 Per-concept resources
+> This README covers unsupervised learning **as a whole** (where to learn the field). For **per-concept**
+> resource cards — one curated card per interview topic (k-means, DBSCAN, GMMs, …) — see the
+> dedicated index: **[concepts/ → Concept index](concepts/README.md)**.
+
 ## 🔗 In this platform
 - The geometry behind it: [AI-ML-intuition 1.05 PCA/SVD, 1.11–1.12 t-SNE/UMAP, 1.18 k-Means](../../AI-ML-intuition/Module_1_Representation/)
