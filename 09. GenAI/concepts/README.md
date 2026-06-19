@@ -14,8 +14,8 @@ updated: 2026-06-20
 ## Likelihood-based models (VAEs, flows, autoregressive)
 
 1. ✅ [Variational Autoencoders (VAE · ELBO · reparameterization)](01-Variational-Autoencoders-VAE-ELBO.md)
-8. ⬜ [Normalizing Flows (RealNVP · Glow · exact likelihood)](08-Normalizing-Flows.md)
-10. ⬜ [Autoregressive Image Generation (PixelRNN · PixelCNN)](10-Autoregressive-Image-Generation-PixelCNN.md)
+8. ✅ [Normalizing Flows (RealNVP · Glow · exact likelihood)](08-Normalizing-Flows.md)
+10. ✅ [Autoregressive Image Generation (PixelRNN · PixelCNN)](10-Autoregressive-Image-Generation-PixelCNN.md)
 
 ## Adversarial models (GANs)
 
@@ -31,7 +31,7 @@ updated: 2026-06-20
 
 ## Energy-based models & systems
 
-9. ⬜ [Energy-Based Models (EBM · contrastive divergence)](09-Energy-Based-Models.md)
+9. ✅ [Energy-Based Models (EBM · contrastive divergence)](09-Energy-Based-Models.md)
 11. ⬜ [Text-to-Image Systems (DALL·E · Imagen · CLIP guidance)](11-Text-to-Image-Systems.md)
 
 ## Sampling, guidance & evaluation
