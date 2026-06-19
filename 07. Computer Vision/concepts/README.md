@@ -27,13 +27,13 @@ updated: 2026-06-20
 
 7. ✅ [Object Detection (R-CNN family · YOLO · SSD)](07-Object-Detection.md)
 8. ✅ [Semantic Segmentation (FCN · U-Net · DeepLab)](08-Semantic-Segmentation.md)
-9. ⬜ [Instance Segmentation (Mask R-CNN)](09-Instance-Segmentation.md)
-10. ⬜ [Detection & Segmentation Metrics (IoU · mAP)](10-Detection-and-Segmentation-Metrics.md)
+9. ✅ [Instance Segmentation (Mask R-CNN)](09-Instance-Segmentation.md)
+10. ✅ [Detection & Segmentation Metrics (IoU · mAP)](10-Detection-and-Segmentation-Metrics.md)
 
 ## Modern & specialized vision
 
-11. ⬜ [Vision Transformers (ViT)](11-Vision-Transformers.md)
-12. ⬜ [Self-Supervised Vision (SimCLR · MAE · DINO)](12-Self-Supervised-Vision.md)
+11. ✅ [Vision Transformers (ViT)](11-Vision-Transformers.md)
+12. ✅ [Self-Supervised Vision (SimCLR · MAE · DINO)](12-Self-Supervised-Vision.md)
 13. ⬜ [Pose Estimation](13-Pose-Estimation.md)
 14. ⬜ [Optical Flow & Video Understanding](14-Optical-Flow-and-Video.md)
 15. ⬜ [Optical Character Recognition (OCR)](15-OCR.md)
