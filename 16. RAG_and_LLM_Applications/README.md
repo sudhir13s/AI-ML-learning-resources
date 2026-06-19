@@ -27,5 +27,11 @@ updated: 2026-06-11
 ## 📚 Books
 - [AI Engineering](https://www.oreilly.com/library/view/ai-engineering/9781098166298/) — **Chip Huyen (2025)** — the definitive text on building LLM products (RAG, agents, eval).
 
+## 📑 Per-concept resources
+Field-level picks above are the fast on-ramp. For a **guided, concept-by-concept** path —
+chunking, vector indexes, hybrid search, re-ranking, query transformation, evaluation, guardrails,
+agentic RAG, and more — each with its own curated free resources, see the
+**[Concept Index → `concepts/README.md`](concepts/README.md)**.
+
 ## 🔗 In this platform
 - Math/mechanism: [AI-ML-intuition 8.02 RAG](../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.02_Retrieval_Augmented_Generation.md), [8.01 Prompting](../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.01_In-Context_Learning_and_Prompting.md)
