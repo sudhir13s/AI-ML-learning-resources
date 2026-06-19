@@ -24,14 +24,14 @@ math.
 3. ✅ [Norms, Inner Products & Orthogonality](03-Norms-Inner-Products-and-Orthogonality.md)
 4. ✅ [Eigenvalues & Eigenvectors](04-Eigenvalues-and-Eigenvectors.md)
 5. ✅ [Matrix Decompositions (LU · QR · Cholesky)](05-Matrix-Decompositions.md)
-6. ⬜ [Singular Value Decomposition (SVD)](06-Singular-Value-Decomposition.md)
-7. ⬜ [Principal Component Analysis (PCA) — the math](07-Principal-Component-Analysis-Math.md)
+6. ✅ [Singular Value Decomposition (SVD)](06-Singular-Value-Decomposition.md)
+7. ✅ [Principal Component Analysis (PCA) — the math](07-Principal-Component-Analysis-Math.md)
 
 ## Calculus & Optimization
 
-8. ⬜ [Derivatives & Gradients](08-Derivatives-and-Gradients.md)
-9. ⬜ [The Chain Rule (& Backpropagation)](09-The-Chain-Rule.md)
-10. ⬜ [Jacobian & Hessian](10-Jacobian-and-Hessian.md)
+8. ✅ [Derivatives & Gradients](08-Derivatives-and-Gradients.md)
+9. ✅ [The Chain Rule (& Backpropagation)](09-The-Chain-Rule.md)
+10. ✅ [Jacobian & Hessian](10-Jacobian-and-Hessian.md)
 11. ⬜ [Taylor Expansion](11-Taylor-Expansion.md)
 12. ⬜ [Convexity & Convex Functions](12-Convexity.md)
 13. ⬜ [Gradient Descent — theory & convergence](13-Gradient-Descent-Theory.md)
