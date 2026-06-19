@@ -23,10 +23,10 @@ updated: 2026-06-19
 
 ## Sequence modeling & tasks
 
-8. ⬜ Sequence-to-Sequence & Encoder–Decoder for MT *(applies the DL attention/transformer to language)*
-9. ⬜ Sequence Labeling — POS & NER (HMM/CRF → neural)
-10. ⬜ Text Classification & Sentiment Analysis
-11. ⬜ Question Answering (extractive & generative)
+8. ✅ [Sequence-to-Sequence & Encoder–Decoder for MT](08-Sequence-to-Sequence-and-Encoder-Decoder.md) *(applies the DL attention/transformer to language)*
+9. ✅ [Sequence Labeling — POS & NER (HMM/CRF → neural)](09-Sequence-Labeling-POS-and-NER.md)
+10. ✅ [Text Classification & Sentiment Analysis](10-Text-Classification-and-Sentiment-Analysis.md)
+11. ✅ [Question Answering (extractive & generative)](11-Question-Answering.md)
 12. ⬜ Machine Translation
 13. ⬜ Text Summarization (extractive & abstractive)
 14. ⬜ Coreference Resolution
