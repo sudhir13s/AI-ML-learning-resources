@@ -3,7 +3,7 @@ id: "12-mlops-and-deployment"
 topic: "MLOps & Deployment"
 level: advanced
 prereqs: ["tools-and-frameworks", "software-engineering"]
-updated: 2026-06-11
+updated: 2026-06-20
 ---
 
 # MLOps & Deployment
@@ -25,6 +25,10 @@ updated: 2026-06-11
 
 ## 📚 Books
 - [Designing Machine Learning Systems](https://www.oreilly.com/library/view/designing-machine-learning/9781098107956/) — **Chip Huyen** — the definitive modern text (paid, but chapters/notes are free online).
+
+## 📑 Per-concept resources
+For a guided, per-concept breakdown — each with its own learning path and the best free
+courses, videos, papers, articles, and books — see the **[Concept Index](concepts/README.md)**.
 
 ## 🔗 In this platform
 - Inference economics: [AI-ML-intuition Module 7](../../AI-ML-intuition/Module_7_Scaling_and_Adaptation/) · [LLM Systems curriculum](../llm_systems_curriculum.md)
