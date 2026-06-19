@@ -27,10 +27,10 @@ updated: 2026-06-19
 9. ✅ [Sequence Labeling — POS & NER (HMM/CRF → neural)](09-Sequence-Labeling-POS-and-NER.md)
 10. ✅ [Text Classification & Sentiment Analysis](10-Text-Classification-and-Sentiment-Analysis.md)
 11. ✅ [Question Answering (extractive & generative)](11-Question-Answering.md)
-12. ⬜ Machine Translation
-13. ⬜ Text Summarization (extractive & abstractive)
-14. ⬜ Coreference Resolution
-15. ⬜ Topic Modeling (LDA · NMF)
+12. ✅ [Machine Translation](12-Machine-Translation.md)
+13. ✅ [Text Summarization (extractive & abstractive)](13-Text-Summarization.md)
+14. ✅ [Coreference Resolution](14-Coreference-Resolution.md)
+15. ✅ [Topic Modeling (LDA · NMF)](15-Topic-Modeling-LDA-NMF.md)
 16. ⬜ Information Retrieval & Semantic Search
 
 ## Generation & evaluation
