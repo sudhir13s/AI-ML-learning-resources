@@ -21,13 +21,13 @@ updated: 2026-06-20
 
 4. ✅ [Vector Databases & ANN Indexes (HNSW · IVF)](04-Vector-Databases-and-ANN-Indexes.md)
 5. ✅ [Hybrid Search (BM25 + dense)](05-Hybrid-Search-BM25-and-Dense.md)
-6. ⬜ [Re-ranking (cross-encoders)](06-Re-ranking-Cross-Encoders.md)
-7. ⬜ [Query Transformation (HyDE · multi-query)](07-Query-Transformation-HyDE-Multi-Query.md)
+6. ✅ [Re-ranking (cross-encoders)](06-Re-ranking-Cross-Encoders.md)
+7. ✅ [Query Transformation (HyDE · multi-query)](07-Query-Transformation-HyDE-Multi-Query.md)
 
 ## Advanced retrieval architectures
 
-8. ⬜ [Advanced RAG (parent-doc · fusion · self-RAG)](08-Advanced-RAG-Parent-Doc-Fusion-Self-RAG.md)
-9. ⬜ [GraphRAG](09-GraphRAG.md)
+8. ✅ [Advanced RAG (parent-doc · fusion · self-RAG)](08-Advanced-RAG-Parent-Doc-Fusion-Self-RAG.md)
+9. ✅ [GraphRAG](09-GraphRAG.md)
 10. ⬜ [Agentic RAG](10-Agentic-RAG.md)
 
 ## Quality, reliability & evaluation
