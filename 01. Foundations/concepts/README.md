@@ -32,14 +32,14 @@ math.
 8. ✅ [Derivatives & Gradients](08-Derivatives-and-Gradients.md)
 9. ✅ [The Chain Rule (& Backpropagation)](09-The-Chain-Rule.md)
 10. ✅ [Jacobian & Hessian](10-Jacobian-and-Hessian.md)
-11. ⬜ [Taylor Expansion](11-Taylor-Expansion.md)
-12. ⬜ [Convexity & Convex Functions](12-Convexity.md)
-13. ⬜ [Gradient Descent — theory & convergence](13-Gradient-Descent-Theory.md)
-14. ⬜ [Lagrange Multipliers & Constrained Optimization](14-Lagrange-Multipliers-Constrained-Optimization.md)
+11. ✅ [Taylor Expansion](11-Taylor-Expansion.md)
+12. ✅ [Convexity & Convex Functions](12-Convexity.md)
+13. ✅ [Gradient Descent — theory & convergence](13-Gradient-Descent-Theory.md)
+14. ✅ [Lagrange Multipliers & Constrained Optimization](14-Lagrange-Multipliers-Constrained-Optimization.md)
 
 ## Probability & Statistics
 
-15. ⬜ [Probability & Bayes' Theorem](15-Probability-and-Bayes-Theorem.md)
+15. ✅ [Probability & Bayes' Theorem](15-Probability-and-Bayes-Theorem.md)
 16. ⬜ [Random Variables & Distributions](16-Random-Variables-and-Distributions.md)
 17. ⬜ [Expectation, Variance & Covariance](17-Expectation-Variance-Covariance.md)
 18. ⬜ [Law of Large Numbers & the CLT](18-LLN-and-CLT.md)
