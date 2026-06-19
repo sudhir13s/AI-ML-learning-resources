@@ -28,6 +28,9 @@ updated: 2026-06-11
 - [Mathematics for Machine Learning](https://mml-book.github.io/) — **Deisenroth et al.** — the on-ramp to all of it.
 - [Think Stats](https://greenteapress.com/wp/think-stats-2e/) — **Allen B. Downey** — free, computational statistics in Python.
 
+## 📑 Per-concept resources
+- Best free course/video/paper/book for each individual math concept: **[concepts/](concepts/README.md)** — vectors, eigenvalues, SVD, PCA, gradients, convexity, probability, MLE, entropy/KL, and more. These are the canonical homes other domains cross-link to.
+
 ## 🔗 In this platform
 - The full math curriculum (phases + specializations): [Maths for AI-ML](Maths%20for%20AI-ML/README.md)
 - Math-as-ML-concepts deep dives: [AI-ML-intuition Module 0–2](../../AI-ML-intuition/)
