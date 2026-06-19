@@ -28,13 +28,13 @@ updated: 2026-06-20
 
 ## Compression
 
-10. ⬜ [Quantization (GPTQ · AWQ · GGUF)](10-Quantization.md)
-11. ⬜ [Knowledge Distillation](11-Knowledge-Distillation.md)
+10. ✅ [Quantization (GPTQ · AWQ · GGUF)](10-Quantization.md)
+11. ✅ [Knowledge Distillation](11-Knowledge-Distillation.md)
 
 ## Adaptation & alignment
 
-12. ⬜ [LoRA / PEFT (parameter-efficient fine-tuning)](12-LoRA-and-PEFT.md)
-13. ⬜ [Supervised Fine-Tuning (SFT)](13-Supervised-Fine-Tuning.md)
+12. ✅ [LoRA / PEFT (parameter-efficient fine-tuning)](12-LoRA-and-PEFT.md)
+13. ✅ [Supervised Fine-Tuning (SFT)](13-Supervised-Fine-Tuning.md)
 14. ⬜ [Instruction Tuning](14-Instruction-Tuning.md)
 15. ⬜ [RLHF & DPO (preference alignment)](15-RLHF-and-DPO.md)
 
