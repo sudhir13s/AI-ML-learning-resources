@@ -34,6 +34,8 @@ sequence length.
 ## 🎥 Videos
 - [Tokenization & Byte Pair Encoding](https://www.youtube.com/watch?v=gstdcCDqdlc) — **Luis Serrano** — gentle, visual intuition for what BPE does and why.
 - [Byte Pair Encoding Tokenization](https://www.youtube.com/watch?v=HEikzVL-lZU) — **Hugging Face** — concise, official walkthrough of the BPE training loop.
+- [WordPiece Tokenization](https://www.youtube.com/watch?v=qpv6ms_t_1A) — **Hugging Face** — how BERT's tokenizer scores and merges (vs BPE).
+- [Unigram Tokenization](https://www.youtube.com/watch?v=TGZfZVuF9Yc) — **Hugging Face** — the probabilistic model behind SentencePiece/T5.
 - [Let's build the GPT Tokenizer](https://www.youtube.com/watch?v=zduSFxRajkE) — **Andrej Karpathy** — build a byte-level BPE tokenizer line by line (≈2 hrs, deep).
 
 ## 📄 Key Papers
