@@ -35,13 +35,13 @@ updated: 2026-06-20
 
 12. ✅ [LoRA / PEFT (parameter-efficient fine-tuning)](12-LoRA-and-PEFT.md)
 13. ✅ [Supervised Fine-Tuning (SFT)](13-Supervised-Fine-Tuning.md)
-14. ⬜ [Instruction Tuning](14-Instruction-Tuning.md)
-15. ⬜ [RLHF & DPO (preference alignment)](15-RLHF-and-DPO.md)
+14. ✅ [Instruction Tuning](14-Instruction-Tuning.md)
+15. ✅ [RLHF & DPO (preference alignment)](15-RLHF-and-DPO.md)
 
 ## Prompting, reasoning & decoding
 
-16. ⬜ [Prompting & In-Context Learning](16-Prompting-and-In-Context-Learning.md)
-17. ⬜ [Chain-of-Thought Reasoning](17-Chain-of-Thought-Reasoning.md)
+16. ✅ [Prompting & In-Context Learning](16-Prompting-and-In-Context-Learning.md)
+17. ✅ [Chain-of-Thought Reasoning](17-Chain-of-Thought-Reasoning.md)
 18. ⬜ [Decoding & Sampling for LLMs (temperature · top-k · top-p)](18-Decoding-and-Sampling.md)
 
 ## Evaluation & safety
