@@ -28,13 +28,13 @@ updated: 2026-06-20
 
 8. ✅ [Advanced RAG (parent-doc · fusion · self-RAG)](08-Advanced-RAG-Parent-Doc-Fusion-Self-RAG.md)
 9. ✅ [GraphRAG](09-GraphRAG.md)
-10. ⬜ [Agentic RAG](10-Agentic-RAG.md)
+10. ✅ [Agentic RAG](10-Agentic-RAG.md)
 
 ## Quality, reliability & evaluation
 
-11. ⬜ [RAG Evaluation (RAGAS · faithfulness · groundedness)](11-RAG-Evaluation.md)
-12. ⬜ [Long-Context vs RAG](12-Long-Context-vs-RAG.md)
-13. ⬜ [Citations & Attribution](13-Citations-and-Attribution.md)
+11. ✅ [RAG Evaluation (RAGAS · faithfulness · groundedness)](11-RAG-Evaluation.md)
+12. ✅ [Long-Context vs RAG](12-Long-Context-vs-RAG.md)
+13. ✅ [Citations & Attribution](13-Citations-and-Attribution.md)
 14. ⬜ [Guardrails & Hallucination Mitigation](14-Guardrails-and-Hallucination-Mitigation.md)
 
 ## Building & operating LLM apps
