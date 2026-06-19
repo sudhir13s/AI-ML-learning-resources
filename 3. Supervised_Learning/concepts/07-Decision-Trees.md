@@ -56,5 +56,5 @@ explain how a split is chosen (information gain / Gini), why trees overfit and h
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 3.07 Bias–Variance & Generalization](../../../AI-ML-intuition/Module_3_Evaluation/3.07_Bias_Variance_and_Generalization.md) · [3.08 Ensembles (Bagging/Boosting)](../../../AI-ML-intuition/Module_3_Evaluation/3.08_Ensembles_Bagging_Boosting.md)
 - Math prerequisites (the *why*): [1. Foundations](../../1.%20Foundations/README.md) — entropy, information gain, Gini impurity.
-- Next concepts: [04 Gradient Boosting (XGBoost)](04-Gradient-Boosting-XGBoost.md) · Random Forests *(coming soon)* · Bagging *(coming soon)* · Bias–Variance Tradeoff *(coming soon)*
+- Next concepts: [10 Gradient Boosting (XGBoost)](10-Gradient-Boosting-XGBoost.md) · Random Forests *(coming soon)* · Bagging *(coming soon)* · Bias–Variance Tradeoff *(coming soon)*
 - Related domain: [2. Data Preprocessing](../../2.%20Data_Preprocessing/README.md) — trees need no scaling but care about encoding and leakage.

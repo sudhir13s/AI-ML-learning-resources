@@ -55,5 +55,5 @@ computed (and their bias toward high-cardinality features).
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 3.08 Ensembles (Bagging/Boosting)](../../../AI-ML-intuition/Module_3_Evaluation/3.08_Ensembles_Bagging_Boosting.md) · [3.07 Bias–Variance & Generalization](../../../AI-ML-intuition/Module_3_Evaluation/3.07_Bias_Variance_and_Generalization.md)
 - Math prerequisites (the *why*): [1. Foundations](../../1.%20Foundations/README.md) — variance of an average, correlation, the bootstrap.
-- Prior / next concepts: [09 Bagging](09-Bagging.md) — forests are bagging + feature randomness · [03 Decision Trees](03-Decision-Trees.md) — the base learner.
-- Contrast: [04 Gradient Boosting](04-Gradient-Boosting-XGBoost.md) — boosting reduces **bias** sequentially; forests reduce **variance** in parallel.
+- Prior / next concepts: [08 Bagging](08-Bagging.md) — forests are bagging + feature randomness · [07 Decision Trees](07-Decision-Trees.md) — the base learner.
+- Contrast: [10 Gradient Boosting](10-Gradient-Boosting-XGBoost.md) — boosting reduces **bias** sequentially; forests reduce **variance** in parallel.
