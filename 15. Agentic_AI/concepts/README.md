@@ -20,14 +20,14 @@ updated: 2026-06-20
 ## Reasoning, planning & memory
 
 4. ✅ [Planning — Task Decomposition & Plan-and-Execute](04-Planning-Task-Decomposition.md)
-5. ⬜ [Reflection & Self-Critique](05-Reflection-and-Self-Critique.md)
-6. ⬜ [Memory for Agents (short- & long-term)](06-Memory-for-Agents.md)
+5. ✅ [Reflection & Self-Critique](05-Reflection-and-Self-Critique.md)
+6. ✅ [Memory for Agents (short- & long-term)](06-Memory-for-Agents.md)
 
 ## Systems, protocols & frameworks
 
-7. ⬜ [Multi-Agent Systems & Orchestration](07-Multi-Agent-Systems-and-Orchestration.md)
-8. ⬜ [Model Context Protocol (MCP)](08-Model-Context-Protocol-MCP.md)
-9. ⬜ [Agent Frameworks (LangGraph, etc., conceptual)](09-Agent-Frameworks.md)
+7. ✅ [Multi-Agent Systems & Orchestration](07-Multi-Agent-Systems-and-Orchestration.md)
+8. ✅ [Model Context Protocol (MCP)](08-Model-Context-Protocol-MCP.md)
+9. ✅ [Agent Frameworks (LangGraph, etc., conceptual)](09-Agent-Frameworks.md)
 
 ## Applied agents
 
