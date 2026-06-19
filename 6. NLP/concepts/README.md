@@ -31,12 +31,12 @@ updated: 2026-06-19
 13. ✅ [Text Summarization (extractive & abstractive)](13-Text-Summarization.md)
 14. ✅ [Coreference Resolution](14-Coreference-Resolution.md)
 15. ✅ [Topic Modeling (LDA · NMF)](15-Topic-Modeling-LDA-NMF.md)
-16. ⬜ Information Retrieval & Semantic Search
+16. ✅ [Information Retrieval & Semantic Search](16-Information-Retrieval-and-Semantic-Search.md)
 
 ## Generation & evaluation
 
-17. ⬜ Decoding Strategies (greedy · beam · top-k · top-p/nucleus · temperature)
-18. ⬜ NLP Evaluation Metrics (BLEU · ROUGE · METEOR · perplexity · BERTScore · F1/EM)
+17. ✅ [Decoding Strategies (greedy · beam · top-k · top-p/nucleus · temperature)](17-Decoding-Strategies.md)
+18. ✅ [NLP Evaluation Metrics (BLEU · ROUGE · METEOR · perplexity · BERTScore · F1/EM)](18-NLP-Evaluation-Metrics.md)
 
 ## Related concepts (covered in another section)
 > These topics are used across many areas, so they're kept in one place to avoid repetition.
