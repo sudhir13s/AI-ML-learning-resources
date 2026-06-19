@@ -40,11 +40,11 @@ math.
 ## Probability & Statistics
 
 15. ✅ [Probability & Bayes' Theorem](15-Probability-and-Bayes-Theorem.md)
-16. ⬜ [Random Variables & Distributions](16-Random-Variables-and-Distributions.md)
-17. ⬜ [Expectation, Variance & Covariance](17-Expectation-Variance-Covariance.md)
-18. ⬜ [Law of Large Numbers & the CLT](18-LLN-and-CLT.md)
-19. ⬜ [Maximum Likelihood Estimation (MLE)](19-Maximum-Likelihood-Estimation.md)
-20. ⬜ [Bayesian Inference (priors, posteriors, MAP)](20-Bayesian-Inference.md)
+16. ✅ [Random Variables & Distributions](16-Random-Variables-and-Distributions.md)
+17. ✅ [Expectation, Variance & Covariance](17-Expectation-Variance-Covariance.md)
+18. ✅ [Law of Large Numbers & the CLT](18-LLN-and-CLT.md)
+19. ✅ [Maximum Likelihood Estimation (MLE)](19-Maximum-Likelihood-Estimation.md)
+20. ✅ [Bayesian Inference (priors, posteriors, MAP)](20-Bayesian-Inference.md)
 21. ⬜ [Hypothesis Testing & Confidence Intervals](21-Hypothesis-Testing-and-Confidence-Intervals.md)
 
 ## Information Theory
