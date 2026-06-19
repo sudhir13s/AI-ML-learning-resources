@@ -21,10 +21,10 @@ updated: 2026-06-20
 ## Efficient attention & inference
 
 5. ✅ [KV Cache](05-KV-Cache.md)
-6. ⬜ [Efficient Attention (FlashAttention)](06-Efficient-Attention-FlashAttention.md)
-7. ⬜ [Mixture-of-Experts (MoE)](07-Mixture-of-Experts.md)
-8. ⬜ [Long-Context Methods (RoPE scaling, ALiBi, sparse/sliding)](08-Long-Context-Methods.md)
-9. ⬜ [Inference Optimization & Serving (vLLM · paged attention)](09-Inference-Optimization-and-Serving.md)
+6. ✅ [Efficient Attention (FlashAttention)](06-Efficient-Attention-FlashAttention.md)
+7. ✅ [Mixture-of-Experts (MoE)](07-Mixture-of-Experts.md)
+8. ✅ [Long-Context Methods (RoPE scaling, ALiBi, sparse/sliding)](08-Long-Context-Methods.md)
+9. ✅ [Inference Optimization & Serving (vLLM · paged attention)](09-Inference-Optimization-and-Serving.md)
 
 ## Compression
 
