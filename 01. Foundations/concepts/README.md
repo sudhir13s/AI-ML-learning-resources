@@ -45,13 +45,13 @@ math.
 18. ✅ [Law of Large Numbers & the CLT](18-LLN-and-CLT.md)
 19. ✅ [Maximum Likelihood Estimation (MLE)](19-Maximum-Likelihood-Estimation.md)
 20. ✅ [Bayesian Inference (priors, posteriors, MAP)](20-Bayesian-Inference.md)
-21. ⬜ [Hypothesis Testing & Confidence Intervals](21-Hypothesis-Testing-and-Confidence-Intervals.md)
+21. ✅ [Hypothesis Testing & Confidence Intervals](21-Hypothesis-Testing-and-Confidence-Intervals.md)
 
 ## Information Theory
 
-22. ⬜ [Entropy](22-Entropy.md)
-23. ⬜ [Cross-Entropy & KL Divergence](23-Cross-Entropy-and-KL-Divergence.md)
-24. ⬜ [Mutual Information](24-Mutual-Information.md)
+22. ✅ [Entropy](22-Entropy.md)
+23. ✅ [Cross-Entropy & KL Divergence](23-Cross-Entropy-and-KL-Divergence.md)
+24. ✅ [Mutual Information](24-Mutual-Information.md)
 
 ## Related concepts (covered in another section)
 > These build *on* the math above but live where they're applied, to avoid repetition.
