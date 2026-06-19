@@ -13,12 +13,12 @@ updated: 2026-06-19
 
 ## Foundations of neural nets
 
-1. ⬜ Perceptron & MLP (Feedforward Networks)
+1. ✅ [Perceptron & MLP (Feedforward Networks)](01-Perceptron-and-MLP.md)
 2. ✅ [Backpropagation & Computational Graphs](02-Backpropagation-and-Computational-Graphs.md)
-3. ⬜ Activation Functions (ReLU · GELU · sigmoid · tanh · softmax)
-4. ⬜ Loss Functions (MSE · cross-entropy)
-5. ⬜ Weight Initialization (Xavier/Glorot · He)
-6. ⬜ Vanishing / Exploding Gradients & Gradient Clipping
+3. ✅ [Activation Functions (ReLU · GELU · sigmoid · tanh · softmax)](03-Activation-Functions.md)
+4. ✅ [Loss Functions (MSE · cross-entropy)](04-Loss-Functions.md)
+5. ✅ [Weight Initialization (Xavier/Glorot · He)](05-Weight-Initialization.md)
+6. ✅ [Vanishing / Exploding Gradients & Gradient Clipping](06-Vanishing-Exploding-Gradients.md)
 
 ## Training & optimization
 
