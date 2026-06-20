@@ -32,4 +32,4 @@ updated: 2026-06-11
 > dedicated index: **[concepts/ → Concept index](concepts/README.md)**.
 
 ## 🔗 In this platform
-- Math: [AI-ML-intuition 1.02 embeddings, 1.15 tokenization, Module 4 attention](../../AI-ML-intuition/) · LLMs: [08. LLMs](../08.%20LLMs/README.md)
+- Math: [AI-ML-intuition 1.02 embeddings, 1.15 tokenization, Module 4 attention](../../AI-ML-intuition/) · LLMs: [09. LLMs](../09.%20LLMs/README.md)

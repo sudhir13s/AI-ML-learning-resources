@@ -55,4 +55,4 @@ autograd is doing under the hood when you call `.backward()`.
 - Concept depth (the *why*): [AI-ML-intuition 2.02 Backpropagation / Chain Rule](../../../AI-ML-intuition/Module_2_Optimization/2.02_Backpropagation_The_Chain_Rule.md) · [2.04 Computational Graphs & Autograd](../../../AI-ML-intuition/Module_2_Optimization/2.04_Computational_Graphs_Autograd.md)
 - Field overview: [Deep Learning](../README.md)
 - Next concepts: [13 CNNs & Convolution](13-CNNs-and-Convolution.md) · [14 RNN / LSTM / GRU](14-RNN-LSTM-GRU.md)
-- Related domain: [11. Tools & Frameworks](../../11.%20Tools_and_Frameworks/concepts/README.md) (PyTorch / autograd in practice)
+- Related domain: [11. Tools & Frameworks](../../13.%20Tools_and_Frameworks/concepts/README.md) (PyTorch / autograd in practice)

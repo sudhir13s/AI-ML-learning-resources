@@ -52,4 +52,4 @@ into one production-grade pattern.
 ## 🔗 In this platform
 - Builds on: [02 Feature Scaling](02-Feature-Scaling-and-Normalization.md) · [03 Encoding Categoricals](03-Encoding-Categorical-Variables.md) · [04 Missing Data Imputation](04-Missing-Data-Imputation.md)
 - Prevents: [11 Data Leakage](11-Data-Leakage.md) — pipelines are the structural fix.
-- Related domain: [12. Deployment & MLOps](../../12.%20Deployment_and_MLOps/concepts/README.md) — where pipelines become serving-time feature transforms.
+- Related domain: [12. Deployment & MLOps](../../14.%20Deployment_and_MLOps/concepts/README.md) — where pipelines become serving-time feature transforms.

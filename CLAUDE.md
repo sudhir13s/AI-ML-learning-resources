@@ -19,10 +19,11 @@ parseable.
 - Canonical example: [05. Deep_Learning/README.md](05.%20Deep_Learning/README.md).
 
 ## Topics (numbered folders; **zero-padded** `NN. Name` so they sort correctly everywhere, incl. GitHub)
-00 Basics · 01 Foundations (+ `Maths for AI-ML/` deep math curriculum) · 02 Data-Preprocessing ·
-03 Supervised · 04 Unsupervised · 05 Deep-Learning · 06 NLP · 07 Computer-Vision · 08 LLMs ·
-09 GenAI · 10 RL · 11 Tools-and-Frameworks · 12 MLOps-and-Deployment · 13 Neuroscience ·
-14 Advanced-Research-Math · **15 Agentic-AI · 16 RAG-and-LLM-Apps · 17 Frontier-Staying-Current** (new).
+Ordered by learning progression: 00 Basics · 01 Foundations (+ `Maths for AI-ML/` deep math curriculum) ·
+02 Data-Preprocessing · 03 Supervised · 04 Unsupervised · 05 Deep-Learning · 06 NLP · 07 Computer-Vision ·
+08 Reinforcement-Learning · 09 LLMs · 10 GenAI · 11 RAG-and-LLM-Apps · 12 Agentic-AI ·
+13 Tools-and-Frameworks · 14 MLOps-and-Deployment · 15 Advanced-Research-Math · 16 Neuroscience ·
+17 Frontier-Staying-Current.
 
 Specialization folders (07/13/14) hold deeper *curricula* (what/why/resources by sub-module);
 `llm_systems_curriculum.md` is the 14-chapter LLM-systems syllabus. The root `README.md` is the

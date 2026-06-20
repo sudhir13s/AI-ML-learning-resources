@@ -41,4 +41,4 @@ updated: 2026-06-20
 - **The supervised algorithms** — linear/logistic regression · trees · SVMs · ensembles → [03. Supervised Learning](../../03.%20Supervised_Learning/concepts/README.md)
 - **The unsupervised algorithms** — clustering · PCA · dimensionality reduction → [04. Unsupervised Learning](../../04.%20Unsupervised_Learning/concepts/README.md)
 - **Neural networks & deep learning** — MLPs · backprop · CNNs · transformers → [05. Deep Learning](../../05.%20Deep_Learning/concepts/README.md)
-- **Frameworks in depth** — PyTorch · TensorFlow · scikit-learn pipelines → [11. Tools & Frameworks](../../11.%20Tools_and_Frameworks/concepts/README.md)
+- **Frameworks in depth** — PyTorch · TensorFlow · scikit-learn pipelines → [11. Tools & Frameworks](../../13.%20Tools_and_Frameworks/concepts/README.md)

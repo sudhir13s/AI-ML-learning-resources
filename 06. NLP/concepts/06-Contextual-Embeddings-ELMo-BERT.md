@@ -52,4 +52,4 @@ to pool) versus fine-tuning the whole model.
 ## 🔗 In this platform
 - Contrast with static vectors: [05 Word Embeddings](05-Word-Embeddings-Word2Vec-GloVe-FastText.md) · more in the [concept index](README.md)
 - Concept depth (the *why*): [AI-ML-intuition 1.02 Dense Embeddings](../../../AI-ML-intuition/Module_1_Representation/1.02_Dense_Embeddings.md)
-- Canonical homes: the BERT/Transformer models live in [08. LLMs](../../08.%20LLMs/concepts/README.md) and [5. Deep Learning](../../05.%20Deep_Learning/concepts/README.md) — this card is about *using* them for representations.
+- Canonical homes: the BERT/Transformer models live in [09. LLMs](../../09.%20LLMs/concepts/README.md) and [5. Deep Learning](../../05.%20Deep_Learning/concepts/README.md) — this card is about *using* them for representations.

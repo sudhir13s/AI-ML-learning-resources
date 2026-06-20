@@ -58,4 +58,4 @@ real project.
 - Next concepts: [03 The ML Workflow & Lifecycle](03-The-ML-Workflow-and-Lifecycle.md) · [04 How Models Learn](04-How-Models-Learn.md)
 - Go deeper — supervised: [03. Supervised Learning](../../03.%20Supervised_Learning/concepts/README.md)
 - Go deeper — unsupervised: [04. Unsupervised Learning](../../04.%20Unsupervised_Learning/concepts/README.md)
-- Go deeper — reinforcement: [10. Reinforcement Learning](../../10.%20Reinforcement_Learning/concepts/README.md)
+- Go deeper — reinforcement: [10. Reinforcement Learning](../../08.%20Reinforcement_Learning/concepts/README.md)

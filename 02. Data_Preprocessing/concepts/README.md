@@ -46,5 +46,5 @@ updated: 2026-06-20
 - **Clustering · t-SNE · UMAP** → [04. Unsupervised Learning](../../04.%20Unsupervised_Learning/concepts/README.md)
 - **Tokenization · text normalization · subword algorithms** → [06. NLP](../../06.%20NLP/concepts/README.md)
 - **Image augmentation & vision-specific preprocessing** → [07. Computer Vision](../../07.%20Computer%20Vision/concepts/README.md)
-- **Feature stores & serving-time feature pipelines** → [12. Deployment & MLOps](../../12.%20Deployment_and_MLOps/concepts/README.md)
+- **Feature stores & serving-time feature pipelines** → [12. Deployment & MLOps](../../14.%20Deployment_and_MLOps/concepts/README.md)
 - **Bias–variance & generalization** → [03. Supervised Learning](../../03.%20Supervised_Learning/concepts/README.md)

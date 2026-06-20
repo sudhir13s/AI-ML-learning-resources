@@ -55,4 +55,4 @@ data-science interviews — and getting shapes right is half of debugging real M
 ## 🔗 In this platform
 - Prev/next: [06 Python for ML](06-Python-for-ML.md) · [08 Pandas Essentials](08-Pandas-Essentials.md)
 - Go deeper — the linear algebra NumPy implements: [01. Foundations](../../01.%20Foundations/concepts/README.md)
-- Go deeper — tensors & frameworks: [11. Tools & Frameworks](../../11.%20Tools_and_Frameworks/concepts/README.md)
+- Go deeper — tensors & frameworks: [11. Tools & Frameworks](../../13.%20Tools_and_Frameworks/concepts/README.md)

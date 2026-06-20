@@ -55,4 +55,4 @@ sequence length.
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 1.15 Tokenization & BPE](../../../AI-ML-intuition/Module_1_Representation/1.15_Tokenization_and_BPE.md)
 - Next concepts: [05 Word Embeddings](05-Word-Embeddings-Word2Vec-GloVe-FastText.md) · [06 Contextual Embeddings](06-Contextual-Embeddings-ELMo-BERT.md)
-- Related domain: [08. LLMs](../../08.%20LLMs/concepts/README.md)
+- Related domain: [09. LLMs](../../09.%20LLMs/concepts/README.md)
