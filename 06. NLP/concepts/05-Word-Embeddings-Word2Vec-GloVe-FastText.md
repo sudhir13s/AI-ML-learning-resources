@@ -55,4 +55,4 @@ OOV/morphology via subwords, and the limits (static, context-free) that motivate
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 1.02 Dense Embeddings](../../../AI-ML-intuition/Module_1_Representation/1.02_Dense_Embeddings.md) · [1.02a Word2Vec / Skip-Gram](../../../AI-ML-intuition/Module_1_Representation/1.02a_Word_Embeddings_Word2Vec_Skip-Gram.md)
 - Next concepts: [06 Contextual Embeddings (ELMo/BERT)](06-Contextual-Embeddings-ELMo-BERT.md) · [02 Tokenization & Subword](02-Tokenization-and-Subword-Algorithms.md)
-- Related domain: [08. LLMs](../../08.%20LLMs/concepts/README.md)
+- Related domain: [09. LLMs](../../09.%20LLMs/concepts/README.md)

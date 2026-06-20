@@ -56,4 +56,4 @@ learns useful features (and how it relates to PCA), what denoising/sparse varian
 - Concept depth (the *why*): [AI-ML-intuition 5.02 Latent-Variable Models / ELBO / VAEs](../../../AI-ML-intuition/Module_5_Generation/5.02_Latent_Variable_Models_ELBO_VAEs.md) · [1.05 Spectral Methods (PCA/SVD)](../../../AI-ML-intuition/Module_1_Representation/1.05_Spectral_Methods_PCA_SVD.md)
 - Prerequisites: [02 Backpropagation & Computational Graphs](02-Backpropagation-and-Computational-Graphs.md) · [04 Loss Functions](04-Loss-Functions.md)
 - Field overview: [Deep Learning](../README.md)
-- Related domain: [09. GenAI](../../09.%20GenAI/concepts/README.md) (VAEs, diffusion, GANs in depth)
+- Related domain: [10. GenAI](../../10.%20GenAI/concepts/README.md) (VAEs, diffusion, GANs in depth)

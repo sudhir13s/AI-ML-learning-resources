@@ -53,4 +53,4 @@ Pipeline on training folds only.
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 3.07 Bias–Variance & Generalization](../../../AI-ML-intuition/Module_3_Evaluation/3.07_Bias_Variance_and_Generalization.md)
 - Next concepts: [10 Train/Validation/Test Splits](10-Train-Validation-Test-Splits.md) · [13 Data Pipelines](13-Data-Pipelines.md)
-- Related domain: [12. Deployment & MLOps](../../12.%20Deployment_and_MLOps/concepts/README.md)
+- Related domain: [12. Deployment & MLOps](../../14.%20Deployment_and_MLOps/concepts/README.md)

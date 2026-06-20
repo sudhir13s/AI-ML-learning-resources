@@ -55,4 +55,4 @@ cherry-picked examples — is what makes you a trustworthy reader of the frontie
 ## 🔗 In this platform
 - Per-concept index: [Frontier & Staying Current — concepts](README.md)
 - Pair with: [01 How to Read ML Papers](01-How-to-Read-ML-Papers.md) · [03 Key Conferences & Venues](03-Key-Conferences-and-Venues.md) · [06 Benchmarks & Leaderboards](06-Benchmarks-and-Leaderboards-to-Watch.md) · [07 Reproducing Papers](07-Reproducing-Papers-Code.md)
-- Evaluation rigor lives in: [08. LLMs](../../08.%20LLMs/concepts/README.md) · [12. Deployment & MLOps](../../12.%20Deployment_and_MLOps/concepts/README.md)
+- Evaluation rigor lives in: [09. LLMs](../../09.%20LLMs/concepts/README.md) · [12. Deployment & MLOps](../../14.%20Deployment_and_MLOps/concepts/README.md)

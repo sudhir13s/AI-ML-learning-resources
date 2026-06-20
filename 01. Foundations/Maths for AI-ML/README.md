@@ -16,7 +16,7 @@
 | **4** | Statistics & Statistical Learning | [Module 3 — Evaluation](../../../AI-ML-intuition/Module_3_Evaluation/) | ✅ below |
 | **5** | Optimization for ML/DL | [Module 2 — Optimization](../../../AI-ML-intuition/Module_2_Optimization/) (2B) | ✅ below |
 | **6** | Applied Math for Modern DL | [Modules 4](../../../AI-ML-intuition/Module_4_Stabilization/) & [6](../../../AI-ML-intuition/Module_6_Reinforcement_Learning/) | ✅ below |
-| — | **Specializations** | [Computer Vision](../../07.%20Computer%20Vision/README.md) · [Neuroscience & Brain-Inspired AI](../../13.%20Neuroscience_and_Brain_Inspired_AI/README.md) · [Advanced Research Math](../../14.%20Advanced_Research_Mathematics/README.md) | ✅ separate pages |
+| — | **Specializations** | [Computer Vision](../../07.%20Computer%20Vision/README.md) · [Neuroscience & Brain-Inspired AI](../../16.%20Neuroscience_and_Brain_Inspired_AI/README.md) · [Advanced Research Math](../../15.%20Advanced_Research_Mathematics/README.md) | ✅ separate pages |
 
 > **Mapping note:** discipline → module is *primary, not exclusive* — one discipline feeds
 > several modules (probability underlies both Evaluation and Generation). The two indexes cut

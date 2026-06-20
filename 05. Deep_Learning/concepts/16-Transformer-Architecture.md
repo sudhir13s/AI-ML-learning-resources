@@ -58,4 +58,4 @@ sequence length is the key advantage over RNNs.
 - Concept depth (the *why*): [AI-ML-intuition 4.15 The Transformer Block](../../../AI-ML-intuition/Module_4_Stabilization/4D_Nonlinearities/4.15_The_Transformer_Block.md) · [4.08 Multi-Head Attention](../../../AI-ML-intuition/Module_4_Stabilization/4B_Architectural_Motifs/4.08_Multi-Head_Attention_Routing.md) · [1.03 Positional Encoding](../../../AI-ML-intuition/Module_1_Representation/1.03_Positional_Encoding.md)
 - Prerequisite: [14 RNN / LSTM / GRU](14-RNN-LSTM-GRU.md) (what the transformer replaced)
 - Field overview: [Deep Learning](../README.md)
-- Related domains: [06. NLP](../../06.%20NLP/concepts/README.md) · [08. LLMs](../../08.%20LLMs/concepts/README.md) (where transformers are scaled and pretrained)
+- Related domains: [06. NLP](../../06.%20NLP/concepts/README.md) · [09. LLMs](../../09.%20LLMs/concepts/README.md) (where transformers are scaled and pretrained)

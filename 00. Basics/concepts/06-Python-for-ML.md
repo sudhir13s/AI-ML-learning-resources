@@ -55,4 +55,4 @@ because every take-home and live-coding ML exercise is written in it.
 
 ## 🔗 In this platform
 - Next concepts: [07 NumPy Essentials](07-NumPy-Essentials.md) · [08 Pandas Essentials](08-Pandas-Essentials.md) · [09 Data Visualization Basics](09-Data-Visualization-Basics.md)
-- Go deeper — frameworks & tooling: [11. Tools & Frameworks](../../11.%20Tools_and_Frameworks/concepts/README.md)
+- Go deeper — frameworks & tooling: [11. Tools & Frameworks](../../13.%20Tools_and_Frameworks/concepts/README.md)

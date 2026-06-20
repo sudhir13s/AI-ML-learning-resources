@@ -56,4 +56,4 @@ extrapolate to longer sequences better than learned absolute embeddings.
 - Concept depth (the *why*): [AI-ML-intuition 1.03 Positional Encoding](../../../AI-ML-intuition/Module_1_Representation/1.03_Positional_Encoding.md)
 - Prerequisites: [15 Attention Mechanism](15-Attention-Mechanism.md) · [16 Transformer Architecture](16-Transformer-Architecture.md)
 - Field overview: [Deep Learning](../README.md)
-- Related domain: [08. LLMs](../../08.%20LLMs/concepts/README.md) (RoPE/ALiBi for long-context models)
+- Related domain: [09. LLMs](../../09.%20LLMs/concepts/README.md) (RoPE/ALiBi for long-context models)
