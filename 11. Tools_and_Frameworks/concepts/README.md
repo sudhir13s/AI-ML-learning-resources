@@ -26,9 +26,9 @@ updated: 2026-06-20
 
 ## Models, data & ecosystem
 
-8. ⬜ [Hugging Face (Transformers · Datasets · Hub)](08-Hugging-Face.md)
-9. ⬜ [ONNX & Model Interchange (export, runtime, portability)](09-ONNX-and-Model-Interchange.md)
-10. ⬜ [Ray (distributed training, tuning, serving)](10-Ray.md)
+8. ✅ [Hugging Face (Transformers · Datasets · Hub)](08-Hugging-Face.md)
+9. ✅ [ONNX & Model Interchange (export, runtime, portability)](09-ONNX-and-Model-Interchange.md)
+10. ✅ [Ray (distributed training, tuning, serving)](10-Ray.md)
 
 ## Workflow, tracking & demos
 
