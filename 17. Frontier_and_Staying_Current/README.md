@@ -3,12 +3,19 @@ id: "17-frontier-staying-current"
 topic: "Frontier & Staying Current"
 level: advanced
 prereqs: []
-updated: 2026-06-11
+updated: 2026-06-20
 ---
 
 # Frontier & Staying Current
 > How to keep up as the field moves weekly — the highest-signal sources, newsletters, and
-> reading habits. (Curated *channels*, not a fixed reading list.)
+> reading habits. (Curated *channels and skills*, not a fixed reading list.)
+
+## 📑 Per-concept resources
+For a guided, per-skill breakdown — each with a learning path and the best **free, open** courses,
+videos, papers, articles, and tools — see the **[concept index](concepts/README.md)**. It covers how
+to read papers, find/track research (arXiv & Papers with Code), the key venues, who to follow,
+benchmarks to watch, reproducing papers, using surveys, building a routine, model hubs, and telling
+hype from substance.
 
 ## 📰 High-signal newsletters / blogs (free)
 - [Import AI](https://importai.net/) — **Jack Clark** — weekly, policy + research, low hype.
@@ -23,7 +30,7 @@ updated: 2026-06-11
 ## 📄 Where the research lives
 - [arXiv cs.LG / cs.CL](https://arxiv.org/list/cs.LG/recent) + [Papers with Code](https://paperswithcode.com/) — track new methods + leaderboards.
 - [Hugging Face Daily Papers](https://huggingface.co/papers) — community-surfaced top papers.
-- [AlphaSignal](https://alphasignal.ai/) / [Hugging Face blog](https://huggingface.co/blog) — release-tracking.
+- [Hugging Face blog](https://huggingface.co/blog) — release-tracking.
 
 ## 🧭 How to read
 - Don't chase everything. Pick 1–2 newsletters, skim weekly; deep-read a paper only when it
