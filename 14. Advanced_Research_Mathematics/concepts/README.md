@@ -25,9 +25,9 @@ kernels, optimal transport, geometry, causality. Treat each card like a semester
 
 ## Statistical learning theory
 
-5. ⬜ [Statistical Learning Theory (PAC learning)](05-Statistical-Learning-Theory-PAC.md)
-6. ⬜ [VC Dimension](06-VC-Dimension.md)
-7. ⬜ [Rademacher Complexity & Generalization Bounds](07-Rademacher-Complexity-and-Generalization-Bounds.md)
+5. ✅ [Statistical Learning Theory (PAC learning)](05-Statistical-Learning-Theory-PAC.md)
+6. ✅ [VC Dimension](06-VC-Dimension.md)
+7. ✅ [Rademacher Complexity & Generalization Bounds](07-Rademacher-Complexity-and-Generalization-Bounds.md)
 
 ## Geometry, transport & spectra
 
