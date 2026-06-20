@@ -22,10 +22,10 @@ updated: 2026-06-20
 
 ## Tools — the practical stack you'll build on
 
-6. ⬜ [Python for ML](06-Python-for-ML.md)
-7. ⬜ [NumPy Essentials](07-NumPy-Essentials.md)
-8. ⬜ [Pandas Essentials](08-Pandas-Essentials.md)
-9. ⬜ [Data Visualization Basics (Matplotlib · Seaborn)](09-Data-Visualization-Basics.md)
+6. ✅ [Python for ML](06-Python-for-ML.md)
+7. ✅ [NumPy Essentials](07-NumPy-Essentials.md)
+8. ✅ [Pandas Essentials](08-Pandas-Essentials.md)
+9. ✅ [Data Visualization Basics (Matplotlib · Seaborn)](09-Data-Visualization-Basics.md)
 10. ⬜ [Jupyter & Google Colab](10-Jupyter-and-Google-Colab.md)
 11. ⬜ [Environments & Package Management (uv · conda · pip)](11-Environments-and-Package-Management.md)
 
