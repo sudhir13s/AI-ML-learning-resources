@@ -8,6 +8,12 @@
 coding — and the two-way street between neuroscience and modern AI (what the brain inspired,
 and where the analogies break).
 
+## 📑 Per-concept resources
+
+This page is the **field-level overview** (study order, backbone resources). For a guided
+learning path plus the best **free, open** courses, videos, papers, articles, and books on
+each individual topic, open the **[concept index → `concepts/README.md`](concepts/README.md)**.
+
 ### Core resource backbone
 - **Neuronal Dynamics** (Gerstner et al., EPFL) — [free book + course](https://neuronaldynamics.epfl.ch/) (the anchor)
 - **Theoretical Neuroscience** (Dayan & Abbott) — the classic text
