@@ -52,4 +52,4 @@ file-level tools (DVC) and data-lake/branching tools (lakeFS). Pairs with experi
 ## 🔗 In this platform
 - Builds on: [02 Reproducibility](02-Reproducibility.md) · [03 Experiment Tracking](03-Experiment-Tracking.md)
 - Next concepts: [05 Feature Stores](05-Feature-Stores.md) · [13 Model Registry & Governance](13-Model-Registry-and-Governance.md)
-- Related concept (covered elsewhere): data preprocessing & feature engineering → [02. Data_Preprocessing](../../02.%20Data_Preprocessing/README.md)
+- Related concept (covered elsewhere): data preprocessing & feature engineering → [02. Data_Preprocessing](../../02.%20Data_Preprocessing/concepts/README.md)

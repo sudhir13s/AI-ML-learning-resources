@@ -55,4 +55,4 @@ trick** (RBF, polynomial) that gives non-linear boundaries without ever computin
 - Concept depth (the *why*): [AI-ML-intuition 1.16 The Kernel Trick](../../../AI-ML-intuition/Module_1_Representation/1.16_The_Kernel_Trick.md) · [3.07 Bias–Variance & Generalization](../../../AI-ML-intuition/Module_3_Evaluation/3.07_Bias_Variance_and_Generalization.md)
 - Math prerequisites (the *why*): [01. Foundations](../../01.%20Foundations/concepts/README.md) — linear algebra, convex optimization, Lagrangian duality.
 - Prior / related concepts: [02 Logistic Regression](02-Logistic-Regression.md) — another linear classifier; SVM maximizes margin, not likelihood · [03 Regularization](03-Regularization-Linear-Models.md) — `C` is an inverse-regularization knob.
-- Related domain: [2. Data Preprocessing](../../02.%20Data_Preprocessing/README.md) — SVMs need feature scaling for distance-based kernels to behave.
+- Related domain: [2. Data Preprocessing](../../02.%20Data_Preprocessing/concepts/README.md) — SVMs need feature scaling for distance-based kernels to behave.

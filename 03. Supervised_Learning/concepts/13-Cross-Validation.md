@@ -56,4 +56,4 @@ preprocessing/feature-selection *outside* the CV loop (leakage that inflates you
 - Concept depth (the *why*): [AI-ML-intuition 3.07 Bias–Variance & Generalization](../../../AI-ML-intuition/Module_3_Evaluation/3.07_Bias_Variance_and_Generalization.md) · [3.05 Classification Metrics](../../../AI-ML-intuition/Module_3_Evaluation/3.05_Classification_Metrics_Precision_Recall_F1.md)
 - Math prerequisites (the *why*): [01. Foundations](../../01.%20Foundations/concepts/README.md) — sampling, variance of an estimator, generalization.
 - Related concepts: [12 Bias–Variance Tradeoff](12-Bias-Variance-Tradeoff.md) — CV measures where you sit on the curve · [11 Stacking & Blending](11-Stacking-and-Blending.md) — out-of-fold CV predictions power stacking.
-- Related domain: [2. Data Preprocessing](../../02.%20Data_Preprocessing/README.md) — leakage is the #1 way CV lies to you; fit transforms inside each fold.
+- Related domain: [2. Data Preprocessing](../../02.%20Data_Preprocessing/concepts/README.md) — leakage is the #1 way CV lies to you; fit transforms inside each fold.
