@@ -31,10 +31,10 @@ kernels, optimal transport, geometry, causality. Treat each card like a semester
 
 ## Geometry, transport & spectra
 
-8. ⬜ [Information Geometry (Fisher–Rao, natural gradient)](08-Information-Geometry.md)
-9. ⬜ [Optimal Transport (Wasserstein distances)](09-Optimal-Transport-Wasserstein.md)
-10. ⬜ [Differential Geometry & Manifolds](10-Differential-Geometry-and-Manifolds.md)
-11. ⬜ [Spectral Graph Theory](11-Spectral-Graph-Theory.md)
+8. ✅ [Information Geometry (Fisher–Rao, natural gradient)](08-Information-Geometry.md)
+9. ✅ [Optimal Transport (Wasserstein distances)](09-Optimal-Transport-Wasserstein.md)
+10. ✅ [Differential Geometry & Manifolds](10-Differential-Geometry-and-Manifolds.md)
+11. ✅ [Spectral Graph Theory](11-Spectral-Graph-Theory.md)
 
 ## Signals, matrices & decisions
 
