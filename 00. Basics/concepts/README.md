@@ -26,19 +26,19 @@ updated: 2026-06-20
 7. ✅ [NumPy Essentials](07-NumPy-Essentials.md)
 8. ✅ [Pandas Essentials](08-Pandas-Essentials.md)
 9. ✅ [Data Visualization Basics (Matplotlib · Seaborn)](09-Data-Visualization-Basics.md)
-10. ⬜ [Jupyter & Google Colab](10-Jupyter-and-Google-Colab.md)
-11. ⬜ [Environments & Package Management (uv · conda · pip)](11-Environments-and-Package-Management.md)
+10. ✅ [Jupyter & Google Colab](10-Jupyter-and-Google-Colab.md)
+11. ✅ [Environments & Package Management (uv · conda · pip)](11-Environments-and-Package-Management.md)
 
 ## Put it together
 
-12. ⬜ [Your First ML Project (end-to-end with scikit-learn)](12-Your-First-ML-Project.md)
+12. ✅ [Your First ML Project (end-to-end with scikit-learn)](12-Your-First-ML-Project.md)
 
 ## Related concepts (covered in another section)
 > These topics start here but live in depth elsewhere — follow the link when you're ready to go deeper.
 
-- **The math behind it all** — linear algebra · calculus · probability · statistics → [01. Foundations](../01.%20Foundations/concepts/README.md)
-- **Cleaning & preparing data** — missing values · encoding · scaling · feature engineering · splitting → [02. Data Preprocessing](../02.%20Data_Preprocessing/README.md)
-- **The supervised algorithms** — linear/logistic regression · trees · SVMs · ensembles → [03. Supervised Learning](../03.%20Supervised_Learning/concepts/README.md)
-- **The unsupervised algorithms** — clustering · PCA · dimensionality reduction → [04. Unsupervised Learning](../04.%20Unsupervised_Learning/concepts/README.md)
-- **Neural networks & deep learning** — MLPs · backprop · CNNs · transformers → [05. Deep Learning](../05.%20Deep_Learning/concepts/README.md)
-- **Frameworks in depth** — PyTorch · TensorFlow · scikit-learn pipelines → [11. Tools & Frameworks](../11.%20Tools_and_Frameworks/README.md)
+- **The math behind it all** — linear algebra · calculus · probability · statistics → [01. Foundations](../../01.%20Foundations/concepts/README.md)
+- **Cleaning & preparing data** — missing values · encoding · scaling · feature engineering · splitting → [02. Data Preprocessing](../../02.%20Data_Preprocessing/README.md)
+- **The supervised algorithms** — linear/logistic regression · trees · SVMs · ensembles → [03. Supervised Learning](../../03.%20Supervised_Learning/concepts/README.md)
+- **The unsupervised algorithms** — clustering · PCA · dimensionality reduction → [04. Unsupervised Learning](../../04.%20Unsupervised_Learning/concepts/README.md)
+- **Neural networks & deep learning** — MLPs · backprop · CNNs · transformers → [05. Deep Learning](../../05.%20Deep_Learning/concepts/README.md)
+- **Frameworks in depth** — PyTorch · TensorFlow · scikit-learn pipelines → [11. Tools & Frameworks](../../11.%20Tools_and_Frameworks/README.md)
