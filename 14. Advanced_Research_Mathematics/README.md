@@ -5,6 +5,15 @@
 > [main curriculum's](../01.%20Foundations/Maths%20for%20AI-ML/README.md) phases and the corresponding
 > [AI-ML-intuition](../../AI-ML-intuition/) modules. Each row names the payoff that justifies it.
 
+## 📑 Per-concept resources
+
+Want curated **free, open** resources for a *single* topic — measure theory, RKHS, optimal transport,
+VC dimension, causal inference, and more? See the **[concept index → `concepts/README.md`](concepts/README.md)**.
+Each concept has its own gold-standard card: a short guided learning path plus the best free courses,
+lectures, key papers, articles, and book chapters for that topic. This domain owns the
+*graduate / research-level* treatment; the *basics* (linear algebra, calculus, core probability,
+entropy/KL) live in [Foundations](../01.%20Foundations/concepts/README.md).
+
 ### Core resource backbone
 - **Convex Optimization** (Boyd & Vandenberghe) — [free book + lectures](https://web.stanford.edu/~boyd/cvxbook/)
 - **All of Statistics** (Wasserman) — the compact rigorous bridge
