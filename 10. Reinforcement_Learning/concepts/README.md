@@ -51,5 +51,5 @@ updated: 2026-06-20
 ## Related concepts (covered in another section)
 > These topics are used across many areas, so they're kept in one place to avoid repetition.
 
-- **RLHF / alignment for LLMs** — reward models, PPO-on-language, DPO → [08. LLMs](../../08.%20LLMs/README.md). *RL owns the policy-gradient / PPO **mechanics** ([12](12-Proximal-Policy-Optimization-PPO.md)); the LLM-alignment RLHF card lives in the LLMs section and links back here.*
-- **Deep learning prerequisites** — backprop, optimizers, function approximation → [05. Deep Learning](../../05.%20Deep_Learning/README.md)
+- **RLHF / alignment for LLMs** — reward models, PPO-on-language, DPO → [08. LLMs](../../08.%20LLMs/concepts/README.md). *RL owns the policy-gradient / PPO **mechanics** ([12](12-Proximal-Policy-Optimization-PPO.md)); the LLM-alignment RLHF card lives in the LLMs section and links back here.*
+- **Deep learning prerequisites** — backprop, optimizers, function approximation → [05. Deep Learning](../../05.%20Deep_Learning/concepts/README.md)

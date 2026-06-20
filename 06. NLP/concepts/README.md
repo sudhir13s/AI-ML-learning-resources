@@ -41,6 +41,6 @@ updated: 2026-06-19
 ## Related concepts (covered in another section)
 > These topics are used across many areas, so they're kept in one place to avoid repetition.
 
-- **Architectures & mechanisms** — Attention · Transformers · Positional Encodings · RNN / LSTM / GRU → [Deep Learning](../../05.%20Deep_Learning/README.md)
-- **Large language models** — BERT · GPT · T5 / BART · Fine-tuning · Prompting · RLHF → [LLMs](../../08.%20LLMs/README.md)
-- **Retrieval-augmented generation** → [RAG & LLM Applications](../../16.%20RAG_and_LLM_Applications/README.md)
+- **Architectures & mechanisms** — Attention · Transformers · Positional Encodings · RNN / LSTM / GRU → [Deep Learning](../../05.%20Deep_Learning/concepts/README.md)
+- **Large language models** — BERT · GPT · T5 / BART · Fine-tuning · Prompting · RLHF → [LLMs](../../08.%20LLMs/concepts/README.md)
+- **Retrieval-augmented generation** → [RAG & LLM Applications](../../16.%20RAG_and_LLM_Applications/concepts/README.md)

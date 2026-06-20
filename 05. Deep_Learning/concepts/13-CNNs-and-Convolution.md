@@ -56,4 +56,4 @@ landmark architectures (LeNet → AlexNet → VGG → ResNet) progressively went
 - Concept depth (the *why*): [AI-ML-intuition 4.13 Convolution](../../../AI-ML-intuition/Module_4_Stabilization/4B_Architectural_Motifs/4.13_Convolution.md)
 - Prerequisite: [02 Backpropagation & Computational Graphs](02-Backpropagation-and-Computational-Graphs.md)
 - Field overview: [Deep Learning](../README.md)
-- Related domain: [07. Computer Vision](../../07.%20Computer%20Vision/README.md) (vision architectures, detection, segmentation in depth)
+- Related domain: [07. Computer Vision](../../07.%20Computer%20Vision/concepts/README.md) (vision architectures, detection, segmentation in depth)

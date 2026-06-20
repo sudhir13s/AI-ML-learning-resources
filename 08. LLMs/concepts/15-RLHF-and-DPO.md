@@ -22,7 +22,7 @@ updated: 2026-06-20
 
 1. **Build intuition** — watch [StatQuest: RLHF Clearly Explained](https://www.youtube.com/watch?v=qPN_XZcJf_s). *The 3-stage pipeline without the heavy math.*
 2. **Read the illustrated guide** — [HF: Illustrating RLHF](https://huggingface.co/blog/rlhf). *Reward model + PPO + KL penalty, visually.*
-3. **Get the RL mechanics** — review [PPO & policy gradients](../../10.%20Reinforcement_Learning/README.md) (the RL engine under RLHF). *PPO is the optimizer doing the work.*
+3. **Get the RL mechanics** — review [PPO & policy gradients](../../10.%20Reinforcement_Learning/concepts/README.md) (the RL engine under RLHF). *PPO is the optimizer doing the work.*
 4. **Read the sources** — [InstructGPT/RLHF](https://arxiv.org/abs/2203.02155) then [DPO](https://arxiv.org/abs/2305.18290). *The full RLHF recipe, then the reward-model-free alternative.*
 5. **See DPO's derivation** — [DPO: math insight explained](https://www.youtube.com/watch?v=PZ6k5T5s5lY). *Why DPO and RLHF optimize the same objective.*
 
@@ -52,5 +52,5 @@ updated: 2026-06-20
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [Module 6.03 PPO and RLHF](../../../AI-ML-intuition/Module_6_Reinforcement_Learning/6.03_PPO_and_RLHF.md) · [Module 6.02 Policy Gradients / REINFORCE](../../../AI-ML-intuition/Module_6_Reinforcement_Learning/6.02_Policy_Gradients_REINFORCE.md)
-- Foundations (covered elsewhere): [PPO & policy-gradient mechanics → Reinforcement Learning](../../10.%20Reinforcement_Learning/README.md)
+- Foundations (covered elsewhere): [PPO & policy-gradient mechanics → Reinforcement Learning](../../10.%20Reinforcement_Learning/concepts/README.md)
 - Related concepts: [Supervised Fine-Tuning](13-Supervised-Fine-Tuning.md) · [Instruction Tuning](14-Instruction-Tuning.md) · [Hallucination & Alignment Basics](20-Hallucination-and-Alignment-Basics.md)

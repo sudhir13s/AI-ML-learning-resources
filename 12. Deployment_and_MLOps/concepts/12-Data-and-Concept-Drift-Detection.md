@@ -53,4 +53,4 @@ drift as proxies), and the response (alert → root-cause → retrain). The trig
 ## 🔗 In this platform
 - Builds on: [11 Model Monitoring & Observability](11-Model-Monitoring-and-Observability.md)
 - Next concepts: [07 CI/CD for ML & CT](07-CICD-for-ML-and-Continuous-Training.md) · [14 A/B Testing · Shadow & Canary](14-AB-Testing-Shadow-and-Canary-Deployment.md)
-- Related concept (covered elsewhere): distribution-shift theory & generalization → [01. Foundations](../../01.%20Foundations/README.md)
+- Related concept (covered elsewhere): distribution-shift theory & generalization → [01. Foundations](../../01.%20Foundations/concepts/README.md)

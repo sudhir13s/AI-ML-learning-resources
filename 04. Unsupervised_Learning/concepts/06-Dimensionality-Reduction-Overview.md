@@ -56,6 +56,6 @@ math lives in Foundations, and each non-linear method has its own card.
 ## 🔗 In this platform
 - The PCA/SVD math (eigendecomposition, variance maximization, the SVD view): [Foundations — Maths for AI-ML](../../01.%20Foundations/Maths%20for%20AI-ML/README.md) · concept depth [AI-ML-intuition 1.05 Spectral Methods (PCA / SVD)](../../../AI-ML-intuition/Module_1_Representation/1.05_Spectral_Methods_PCA_SVD.md)
 - Non-linear methods: [07 t-SNE](07-t-SNE.md) · [08 UMAP](08-UMAP.md)
-- Learned (non-linear) compression: [Autoencoders → Deep Learning](../../05.%20Deep_Learning/README.md)
+- Learned (non-linear) compression: [Autoencoders → Deep Learning](../../05.%20Deep_Learning/concepts/README.md)
 - Prereq math: [Foundations — Linear Algebra (vectors & matrices)](../../01.%20Foundations/Maths%20for%20AI-ML/1.%20Linear%20Algebra/VectorsAndMatrices.md)
 - Field overview: [4. Unsupervised Learning](../README.md)

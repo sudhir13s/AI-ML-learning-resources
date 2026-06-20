@@ -53,5 +53,5 @@ of the covariance) and minimize reconstruction error — and explain the SVD rou
 - Concept depth (the *why*): [AI-ML-intuition 1.05 Spectral Methods (PCA/SVD)](../../../AI-ML-intuition/Module_1_Representation/1.05_Spectral_Methods_PCA_SVD.md) · [1.11–1.12 t-SNE/UMAP](../../../AI-ML-intuition/Module_1_Representation/1.11-1.12_Dimensionality_Reduction_for_Representation_t-SNE_UMAP.md)
 - Curriculum context: [Maths for AI-ML — Phase 1 (Linear Algebra, row 1.6)](../Maths%20for%20AI-ML/README.md)
 - Prereqs: [04 Eigenvalues](04-Eigenvalues-and-Eigenvectors.md) · [06 SVD](06-Singular-Value-Decomposition.md)
-- Applied: nonlinear dimensionality reduction (t-SNE/UMAP) → [Unsupervised Learning](../../04.%20Unsupervised_Learning/README.md)
+- Applied: nonlinear dimensionality reduction (t-SNE/UMAP) → [Unsupervised Learning](../../04.%20Unsupervised_Learning/concepts/README.md)
 </content>

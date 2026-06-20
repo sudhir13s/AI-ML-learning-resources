@@ -53,6 +53,6 @@ Interpreting coefficients as **log-odds** is a classic follow-up.
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 3.03 Categorical Cross-Entropy / NLL](../../../AI-ML-intuition/Module_3_Evaluation/3.03_Categorical_Cross-Entropy_NLL.md) · [3.05 Classification Metrics](../../../AI-ML-intuition/Module_3_Evaluation/3.05_Classification_Metrics_Precision_Recall_F1.md)
-- Math prerequisites (the *why*): [01. Foundations](../../01.%20Foundations/README.md) — sigmoid, maximum likelihood, cross-entropy, gradient descent.
+- Math prerequisites (the *why*): [01. Foundations](../../01.%20Foundations/concepts/README.md) — sigmoid, maximum likelihood, cross-entropy, gradient descent.
 - Prior / next concepts: [01 Linear Regression](01-Linear-Regression.md) · Classification Metrics *(coming soon)* · Regularization for Linear Models *(coming soon)*
-- Related domain: [5. Deep Learning](../../05.%20Deep_Learning/README.md) — softmax/cross-entropy is multiclass logistic regression as a net's output layer.
+- Related domain: [5. Deep Learning](../../05.%20Deep_Learning/concepts/README.md) — softmax/cross-entropy is multiclass logistic regression as a net's output layer.

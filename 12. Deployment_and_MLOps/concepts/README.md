@@ -45,6 +45,6 @@ updated: 2026-06-20
 ## Related concepts (covered in another section)
 > These topics have a canonical home elsewhere in the platform — linked here, not duplicated.
 
-- **Online experimentation & A/B statistics theory** (hypothesis tests, power, CUPED) → [01. Foundations](../../01.%20Foundations/README.md)
-- **LLM inference internals** (KV-cache, quantization, paged attention, serving stacks) → [08. LLMs](../../08.%20LLMs/README.md)
+- **Online experimentation & A/B statistics theory** (hypothesis tests, power, CUPED) → [01. Foundations](../../01.%20Foundations/concepts/README.md)
+- **LLM inference internals** (KV-cache, quantization, paged attention, serving stacks) → [08. LLMs](../../08.%20LLMs/concepts/README.md)
 - **Data preprocessing & feature engineering** (cleaning, encoding, scaling, splits) → [02. Data_Preprocessing](../../02.%20Data_Preprocessing/README.md)

@@ -55,5 +55,5 @@ updated: 2026-06-20
 
 - **Transformer architecture · Attention · Positional encoding** → [Deep Learning](../../05.%20Deep_Learning/concepts/README.md) ([Transformer](../../05.%20Deep_Learning/concepts/16-Transformer-Architecture.md) · [Attention](../../05.%20Deep_Learning/concepts/15-Attention-Mechanism.md) · [Positional Encoding](../../05.%20Deep_Learning/concepts/17-Positional-Encoding.md))
 - **Tokenization & subword (BPE/WordPiece) · Word & contextual embeddings (BERT)** → [NLP](../../06.%20NLP/concepts/README.md) ([Tokenization](../../06.%20NLP/concepts/02-Tokenization-and-Subword-Algorithms.md) · [Contextual Embeddings](../../06.%20NLP/concepts/06-Contextual-Embeddings-ELMo-BERT.md))
-- **Retrieval-Augmented Generation (RAG)** → [RAG & LLM Applications](../../16.%20RAG_and_LLM_Applications/README.md)
-- **PPO & policy-gradient mechanics** (the RL engine under RLHF) → [Reinforcement Learning](../../10.%20Reinforcement_Learning/README.md)
+- **Retrieval-Augmented Generation (RAG)** → [RAG & LLM Applications](../../16.%20RAG_and_LLM_Applications/concepts/README.md)
+- **PPO & policy-gradient mechanics** (the RL engine under RLHF) → [Reinforcement Learning](../../10.%20Reinforcement_Learning/concepts/README.md)

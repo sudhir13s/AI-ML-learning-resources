@@ -59,4 +59,4 @@ XGBoost adds (2nd-order Taylor objective, regularization, sparsity-aware splits)
 - Concept depth (the *why*): [AI-ML-intuition 3.08 Ensembles (Bagging/Boosting)](../../../AI-ML-intuition/Module_3_Evaluation/3.08_Ensembles_Bagging_Boosting.md) · [2.05 Gradient Descent & SGD](../../../AI-ML-intuition/Module_2_Optimization/2.05_Gradient_Descent_and_SGD.md)
 - Prerequisite concept: [07 Decision Trees](07-Decision-Trees.md) — boosting is an ensemble of these.
 - Related concepts: Random Forests *(coming soon)* · Bagging *(coming soon)* · Bias–Variance Tradeoff *(coming soon)* — boosting reduces **bias**, bagging reduces **variance**.
-- Math prerequisites (the *why*): [01. Foundations](../../01.%20Foundations/README.md) — gradient descent, Taylor expansion, loss functions.
+- Math prerequisites (the *why*): [01. Foundations](../../01.%20Foundations/concepts/README.md) — gradient descent, Taylor expansion, loss functions.

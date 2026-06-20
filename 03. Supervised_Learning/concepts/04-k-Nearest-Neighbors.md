@@ -54,6 +54,6 @@ KD-trees / ball-trees and approximate nearest-neighbor search.
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 1.07–1.08 Euclidean vs Cosine Distance](../../../AI-ML-intuition/Module_1_Representation/1.07-1.08_Similarities_Distances_Euclidean_vs_Cosine.md) · [1.09 Manhattan (L1) Distance](../../../AI-ML-intuition/Module_1_Representation/1.09_Manhattan_L1_Distance.md) · [1.10 Mahalanobis Distance](../../../AI-ML-intuition/Module_1_Representation/1.10_Mahalanobis_Distance.md)
-- Math prerequisites (the *why*): [01. Foundations](../../01.%20Foundations/README.md) — distance metrics, norms, the curse of dimensionality.
+- Math prerequisites (the *why*): [01. Foundations](../../01.%20Foundations/concepts/README.md) — distance metrics, norms, the curse of dimensionality.
 - Related concepts: Bias–Variance Tradeoff *(coming soon)* · Cross-Validation *(coming soon)* — how you pick `k`.
 - Related domain: [2. Data Preprocessing](../../02.%20Data_Preprocessing/README.md) — k-NN is acutely sensitive to feature scaling and encoding.

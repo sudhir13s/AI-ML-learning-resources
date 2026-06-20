@@ -56,4 +56,4 @@ evaluation to cut overestimation), **Dueling** (split value/advantage streams), 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 6.01 Bellman Optimality & Q-Learning](../../../AI-ML-intuition/Module_6_Reinforcement_Learning/6.01_Bellman_Optimality_Q-Learning.md)
 - Prereq: [06 Q-Learning](06-Q-Learning.md) · Alternative family: [09 Policy Gradients (REINFORCE)](09-Policy-Gradients-REINFORCE.md)
-- Related domain: [05. Deep Learning](../../05.%20Deep_Learning/README.md)
+- Related domain: [05. Deep Learning](../../05.%20Deep_Learning/concepts/README.md)

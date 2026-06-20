@@ -54,5 +54,5 @@ cross-attention.
 
 ## 🔗 In this platform
 - Prior step: [04 N-gram Language Models](04-N-gram-Language-Models-and-Smoothing.md) — the statistical predecessor this replaces.
-- Canonical homes: attention & transformers live in [5. Deep Learning](../../05.%20Deep_Learning/README.md); applied translation in [12 Machine Translation](12-Machine-Translation.md).
+- Canonical homes: attention & transformers live in [5. Deep Learning](../../05.%20Deep_Learning/concepts/README.md); applied translation in [12 Machine Translation](12-Machine-Translation.md).
 - Concept depth (the *why*): [AI-ML-intuition 1.06 Scaled Dot-Product (attention scores)](../../../AI-ML-intuition/Module_1_Representation/1.06_Vector_Similarities_The_Scaled_Dot-Product.md)

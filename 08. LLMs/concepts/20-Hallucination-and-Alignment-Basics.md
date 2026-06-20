@@ -24,7 +24,7 @@ self-consistency, abstention), and define alignment (HHH), RLHF vs Constitutiona
 2. **Read the deep dive** — [Lilian Weng: Extrinsic Hallucinations in LLMs](https://lilianweng.github.io/posts/2024-07-07-hallucination/). *A rigorous taxonomy + detection/mitigation survey.*
 3. **Understand the incentive** — [Why Language Models Hallucinate](https://arxiv.org/abs/2509.04664). *Training/eval reward guessing over saying "I don't know."*
 4. **Connect to alignment** — [Anthropic: Core Views on AI Safety](https://www.anthropic.com/research/core-views-on-ai-safety). *What "alignment" means and why it's hard.*
-5. **See the mechanism of fixes** — [RLHF & DPO](15-RLHF-and-DPO.md) + ground with [RAG](../../16.%20RAG_and_LLM_Applications/README.md). *Preference tuning + retrieval are the main levers.*
+5. **See the mechanism of fixes** — [RLHF & DPO](15-RLHF-and-DPO.md) + ground with [RAG](../../16.%20RAG_and_LLM_Applications/concepts/README.md). *Preference tuning + retrieval are the main levers.*
 
 ## 🎓 Courses (free)
 - [Stanford CS324 — Harms, safety & alignment](https://stanford-cs324.github.io/winter2022/) — **Stanford** — capabilities vs harms, alignment, and evaluation.
@@ -52,5 +52,5 @@ self-consistency, abstention), and define alignment (HHH), RLHF vs Constitutiona
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [Module 6.03 PPO and RLHF](../../../AI-ML-intuition/Module_6_Reinforcement_Learning/6.03_PPO_and_RLHF.md)
-- Applications (covered elsewhere): [Retrieval-Augmented Generation → RAG & LLM Applications](../../16.%20RAG_and_LLM_Applications/README.md)
+- Applications (covered elsewhere): [Retrieval-Augmented Generation → RAG & LLM Applications](../../16.%20RAG_and_LLM_Applications/concepts/README.md)
 - Related concepts: [RLHF & DPO](15-RLHF-and-DPO.md) · [LLM Evaluation & Benchmarks](19-LLM-Evaluation-and-Benchmarks.md) · [Chain-of-Thought Reasoning](17-Chain-of-Thought-Reasoning.md)

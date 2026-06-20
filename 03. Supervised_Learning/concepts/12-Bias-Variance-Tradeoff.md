@@ -55,6 +55,6 @@ boosting cuts bias), and discuss the modern **double-descent** wrinkle.
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 3.07 Bias–Variance & Generalization](../../../AI-ML-intuition/Module_3_Evaluation/3.07_Bias_Variance_and_Generalization.md) · [3.08 Ensembles (Bagging/Boosting)](../../../AI-ML-intuition/Module_3_Evaluation/3.08_Ensembles_Bagging_Boosting.md)
-- Math prerequisites (the *why*): [01. Foundations](../../01.%20Foundations/README.md) — expectation, variance, generalization error.
+- Math prerequisites (the *why*): [01. Foundations](../../01.%20Foundations/concepts/README.md) — expectation, variance, generalization error.
 - Related concepts: [03 Regularization](03-Regularization-Linear-Models.md) — trades bias for variance · [08 Bagging](08-Bagging.md) / [09 Random Forests](09-Random-Forests.md) — cut variance · [10 Gradient Boosting](10-Gradient-Boosting-XGBoost.md) — cuts bias.
 - Related concept: Cross-Validation *(coming soon)* — how you *measure* where you sit on the curve.

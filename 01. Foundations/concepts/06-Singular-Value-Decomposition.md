@@ -53,5 +53,5 @@ collaborative filtering.
 - Concept depth (the *why*): [AI-ML-intuition 1.05 Spectral Methods (PCA/SVD)](../../../AI-ML-intuition/Module_1_Representation/1.05_Spectral_Methods_PCA_SVD.md)
 - Curriculum context: [Maths for AI-ML — Phase 1 (Linear Algebra, row 1.5)](../Maths%20for%20AI-ML/README.md)
 - Prereq: [04 Eigenvalues & Eigenvectors](04-Eigenvalues-and-Eigenvectors.md) · Next: [07 PCA — the math](07-Principal-Component-Analysis-Math.md)
-- Applied: dimensionality reduction for visualization (t-SNE/UMAP) → [Unsupervised Learning](../../04.%20Unsupervised_Learning/README.md)
+- Applied: dimensionality reduction for visualization (t-SNE/UMAP) → [Unsupervised Learning](../../04.%20Unsupervised_Learning/concepts/README.md)
 </content>

@@ -55,6 +55,6 @@ R²**), and how the metric you optimize (squared vs absolute loss) changes the m
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 3.01 Mean Squared Error (MSE / L2)](../../../AI-ML-intuition/Module_3_Evaluation/3.01_Mean_Squared_Error_MSE_L2_Loss.md) · [3.02 Mean Absolute Error (MAE / L1)](../../../AI-ML-intuition/Module_3_Evaluation/3.02_Mean_Absolute_Error_MAE_L1_Loss.md)
-- Math prerequisites (the *why*): [01. Foundations](../../01.%20Foundations/README.md) — variance, residuals, L1 vs L2 norms.
+- Math prerequisites (the *why*): [01. Foundations](../../01.%20Foundations/concepts/README.md) — variance, residuals, L1 vs L2 norms.
 - Related concepts: [01 Linear Regression](01-Linear-Regression.md) — the model these score · [14 Classification Metrics](14-Classification-Metrics.md) — the discrete-target counterpart · [13 Cross-Validation](13-Cross-Validation.md) — how you estimate them reliably.
-- Related domain: [5. Deep Learning](../../05.%20Deep_Learning/README.md) — MSE/MAE are the standard regression losses for neural nets too.
+- Related domain: [5. Deep Learning](../../05.%20Deep_Learning/concepts/README.md) — MSE/MAE are the standard regression losses for neural nets too.

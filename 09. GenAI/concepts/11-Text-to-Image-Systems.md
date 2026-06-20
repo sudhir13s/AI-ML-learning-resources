@@ -60,6 +60,6 @@ rendering).
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 5.03 Diffusion Models](../../../AI-ML-intuition/Module_5_Generation/5.03_Diffusion_Models.md)
 - Prereq: [07 Latent Diffusion & Stable Diffusion](07-Latent-Diffusion-Stable-Diffusion.md) · [04 Conditional Generation & CFG](04-Conditional-Generation-and-Classifier-Free-Guidance.md) · [05 Diffusion Models (DDPM)](05-Diffusion-Models-DDPM.md)
-- Related: [Deep Learning — Transformer Architecture](../../05.%20Deep_Learning/concepts/16-Transformer-Architecture.md) (the text encoders) · [LLMs](../../08.%20LLMs/README.md)
+- Related: [Deep Learning — Transformer Architecture](../../05.%20Deep_Learning/concepts/16-Transformer-Architecture.md) (the text encoders) · [LLMs](../../08.%20LLMs/concepts/README.md)
 - Next concepts: [12 Evaluation of Generative Models](12-Evaluation-of-Generative-Models.md) · [13 Sampling & Guidance Techniques](13-Sampling-and-Guidance-Techniques.md)
 - Field overview: [9. Generative AI](../README.md)
