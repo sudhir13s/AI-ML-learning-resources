@@ -38,10 +38,10 @@ kernels, optimal transport, geometry, causality. Treat each card like a semester
 
 ## Signals, matrices & decisions
 
-12. ⬜ [Fourier Analysis & Signal Processing](12-Fourier-Analysis-and-Signal-Processing.md)
-13. ⬜ [Random Matrix Theory](13-Random-Matrix-Theory.md)
-14. ⬜ [Causal Inference](14-Causal-Inference.md)
-15. ⬜ [Game Theory & Multi-Agent Math](15-Game-Theory-and-Multi-Agent-Math.md)
+12. ✅ [Fourier Analysis & Signal Processing](12-Fourier-Analysis-and-Signal-Processing.md)
+13. ✅ [Random Matrix Theory](13-Random-Matrix-Theory.md)
+14. ✅ [Causal Inference](14-Causal-Inference.md)
+15. ✅ [Game Theory & Multi-Agent Math](15-Game-Theory-and-Multi-Agent-Math.md)
 
 ## Related concepts (covered in another section)
 > These are the *basics* this domain builds on, or applications of it. They live where they're first
