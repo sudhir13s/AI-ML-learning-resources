@@ -23,17 +23,17 @@ updated: 2026-06-20
 
 5. ✅ [Newsletters & Blogs to Follow](04-Newsletters-and-Blogs-to-Follow.md)
 6. ✅ [Following Researchers & Communities](05-Following-Researchers-and-Communities.md)
-7. ⬜ [Building a "Stay-Current" Routine](09-Building-a-Stay-Current-Routine.md)
+7. ✅ [Building a "Stay-Current" Routine](09-Building-a-Stay-Current-Routine.md)
 
 ## Tracking results & frontier tools
 
 8. ✅ [Benchmarks & Leaderboards to Watch](06-Benchmarks-and-Leaderboards-to-Watch.md)
 9. ✅ [Reproducing Papers (code)](07-Reproducing-Papers-Code.md)
-10. ⬜ [Open Model Hubs & Demos (Hugging Face / Spaces)](10-Open-Model-Hubs-and-Demos.md)
+10. ✅ [Open Model Hubs & Demos (Hugging Face / Spaces)](10-Open-Model-Hubs-and-Demos.md)
 
 ## Judgment
 
-11. ⬜ [Evaluating Hype vs Substance](11-Evaluating-Hype-vs-Substance.md)
+11. ✅ [Evaluating Hype vs Substance](11-Evaluating-Hype-vs-Substance.md)
 
 ## Related concepts (covered in another section)
 > The actual frontier *topics* live in their domains — this section teaches the *skill* of keeping
