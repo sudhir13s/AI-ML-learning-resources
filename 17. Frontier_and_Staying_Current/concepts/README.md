@@ -17,18 +17,18 @@ updated: 2026-06-20
 1. ✅ [How to Read ML Papers](01-How-to-Read-ML-Papers.md)
 2. ✅ [arXiv & Papers with Code (finding & tracking)](02-arXiv-and-Papers-with-Code.md)
 3. ✅ [Key Conferences & Venues](03-Key-Conferences-and-Venues.md)
-4. ⬜ [Survey Papers (how to use them)](08-Survey-Papers-How-to-Use-Them.md)
+4. ✅ [Survey Papers (how to use them)](08-Survey-Papers-How-to-Use-Them.md)
 
 ## Following the field
 
 5. ✅ [Newsletters & Blogs to Follow](04-Newsletters-and-Blogs-to-Follow.md)
-6. ⬜ [Following Researchers & Communities](05-Following-Researchers-and-Communities.md)
+6. ✅ [Following Researchers & Communities](05-Following-Researchers-and-Communities.md)
 7. ⬜ [Building a "Stay-Current" Routine](09-Building-a-Stay-Current-Routine.md)
 
 ## Tracking results & frontier tools
 
-8. ⬜ [Benchmarks & Leaderboards to Watch](06-Benchmarks-and-Leaderboards-to-Watch.md)
-9. ⬜ [Reproducing Papers (code)](07-Reproducing-Papers-Code.md)
+8. ✅ [Benchmarks & Leaderboards to Watch](06-Benchmarks-and-Leaderboards-to-Watch.md)
+9. ✅ [Reproducing Papers (code)](07-Reproducing-Papers-Code.md)
 10. ⬜ [Open Model Hubs & Demos (Hugging Face / Spaces)](10-Open-Model-Hubs-and-Demos.md)
 
 ## Judgment
