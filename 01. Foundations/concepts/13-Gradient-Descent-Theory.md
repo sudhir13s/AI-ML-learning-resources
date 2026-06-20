@@ -53,5 +53,5 @@ gradients still converge (in expectation) and even help escape saddles.
 - Concept depth (the *why*): [AI-ML-intuition 2.05 Gradient Descent & SGD](../../../AI-ML-intuition/Module_2_Optimization/2.05_Gradient_Descent_and_SGD.md)
 - Curriculum context: [Maths for AI-ML — Phase 5 (Optimization for ML/DL)](../Maths%20for%20AI-ML/README.md)
 - Prereqs: [08 Derivatives & Gradients](08-Derivatives-and-Gradients.md) · [12 Convexity](12-Convexity.md)
-- Applied optimizers (momentum, Adam, AdamW, LR schedules) → [Deep Learning](../../05.%20Deep_Learning/README.md)
+- Applied optimizers (momentum, Adam, AdamW, LR schedules) → [Deep Learning](../../05.%20Deep_Learning/concepts/README.md)
 </content>

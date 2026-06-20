@@ -55,4 +55,4 @@ and articulate why depth and nonlinearity together are what make a network expre
 - Concept depth (the *why*): [AI-ML-intuition 2.01 Partial Derivatives & the Gradient](../../../AI-ML-intuition/Module_2_Optimization/2.01_Partial_Derivatives_and_the_Gradient.md) · [4.14 Activation Functions & Softmax](../../../AI-ML-intuition/Module_4_Stabilization/4D_Nonlinearities/4.14_Activation_Functions_and_Softmax.md)
 - Next concept: [02 Backpropagation & Computational Graphs](02-Backpropagation-and-Computational-Graphs.md) (how an MLP actually learns)
 - Field overview: [Deep Learning](../README.md)
-- Related domain: [01. Foundations · Maths for AI-ML](../../01.%20Foundations/README.md) (linear algebra & calculus behind the layers)
+- Related domain: [01. Foundations · Maths for AI-ML](../../01.%20Foundations/concepts/README.md) (linear algebra & calculus behind the layers)

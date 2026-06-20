@@ -54,6 +54,6 @@ document classification.
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 3.04 Maximum Likelihood Estimation](../../../AI-ML-intuition/Module_3_Evaluation/3.04_Maximum_Likelihood_Estimation.md) · [3.05 Classification Metrics](../../../AI-ML-intuition/Module_3_Evaluation/3.05_Classification_Metrics_Precision_Recall_F1.md)
-- Math prerequisites (the *why*): [01. Foundations](../../01.%20Foundations/README.md) — probability, Bayes' theorem, conditional independence.
+- Math prerequisites (the *why*): [01. Foundations](../../01.%20Foundations/concepts/README.md) — probability, Bayes' theorem, conditional independence.
 - Prior / next concepts: [02 Logistic Regression](02-Logistic-Regression.md) — its discriminative counterpart · Classification Metrics *(coming soon)*
 - Related domain: [2. Data Preprocessing](../../02.%20Data_Preprocessing/README.md) — text vectorization (bag-of-words, TF-IDF) feeds Naive Bayes.

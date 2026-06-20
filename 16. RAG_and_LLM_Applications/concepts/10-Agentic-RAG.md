@@ -54,4 +54,4 @@ query-rewrite loops, when to route to vector store vs web vs SQL, and the cost/l
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 8.03 Agents & Tool Use](../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.03_Agents_and_Tool_Use.md) · [8.02 Retrieval-Augmented Generation](../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.02_Retrieval_Augmented_Generation.md)
 - Prereqs: [08 Advanced RAG](08-Advanced-RAG-Parent-Doc-Fusion-Self-RAG.md) · [07 Query Transformation](07-Query-Transformation-HyDE-Multi-Query.md) · Next: [11 RAG Evaluation](11-RAG-Evaluation.md)
-- Related domain: [15. Agentic AI](../../15.%20Agentic_AI/README.md) (the general agent loop this specializes)
+- Related domain: [15. Agentic AI](../../15.%20Agentic_AI/concepts/README.md) (the general agent loop this specializes)

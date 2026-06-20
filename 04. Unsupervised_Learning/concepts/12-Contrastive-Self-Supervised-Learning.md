@@ -57,5 +57,5 @@ lower bound) and *why representation collapse is the central risk* is the bar.
 - Concept depth (the *why*): [AI-ML-intuition 1.13 Contrastive Learning (SimCLR / InfoNCE)](../../../AI-ML-intuition/Module_1_Representation/1.13_Representation_Contrastive_Learning_SimCLR_InfoNCE.md)
 - Related representation pages: [1.14 Triplet Loss](../../../AI-ML-intuition/Module_1_Representation/1.14_Triplet_Loss.md) · [1.02 Dense Embeddings](../../../AI-ML-intuition/Module_1_Representation/1.02_Dense_Embeddings.md)
 - Loss foundations: [AI-ML-intuition 5.01 Entropy & KL Divergence](../../../AI-ML-intuition/Module_5_Generation/5.01_Information_Theory_Entropy_KL_Divergence.md) — InfoNCE is a cross-entropy / MI-bound loss
-- Where it leads: [Autoencoders & deep representation learning → Deep Learning](../../05.%20Deep_Learning/README.md)
+- Where it leads: [Autoencoders & deep representation learning → Deep Learning](../../05.%20Deep_Learning/concepts/README.md)
 - Field overview: [4. Unsupervised Learning](../README.md)

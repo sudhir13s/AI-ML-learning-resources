@@ -56,6 +56,6 @@ cross-validation.
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 2.10 Regularization L1/L2](../../../AI-ML-intuition/Module_2_Optimization/2.10_Regularization_L1_L2.md) · [3.07 Bias–Variance & Generalization](../../../AI-ML-intuition/Module_3_Evaluation/3.07_Bias_Variance_and_Generalization.md)
-- Math prerequisites (the *why*): [01. Foundations](../../01.%20Foundations/README.md) — norms, convex optimization, MAP estimation.
+- Math prerequisites (the *why*): [01. Foundations](../../01.%20Foundations/concepts/README.md) — norms, convex optimization, MAP estimation.
 - Prior / next concepts: [01 Linear Regression](01-Linear-Regression.md) · [02 Logistic Regression](02-Logistic-Regression.md) · Bias–Variance Tradeoff *(coming soon)*
-- Related domain: [5. Deep Learning](../../05.%20Deep_Learning/README.md) — L2 regularization reappears as weight decay; dropout is its neural-net cousin.
+- Related domain: [5. Deep Learning](../../05.%20Deep_Learning/concepts/README.md) — L2 regularization reappears as weight decay; dropout is its neural-net cousin.

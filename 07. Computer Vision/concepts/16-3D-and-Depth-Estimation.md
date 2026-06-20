@@ -54,4 +54,4 @@ It tests whether you can reason geometrically, not just run a CNN.
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 1.05 Spectral Methods (PCA / SVD)](../../../AI-ML-intuition/Module_1_Representation/1.05_Spectral_Methods_PCA_SVD.md) (the linear-algebra under projective geometry)
 - Foundation: [Image Representation & Filtering](01-Image-Representation-and-Filtering.md) · [Deep Learning › CNNs & Convolution](../../05.%20Deep_Learning/concepts/13-CNNs-and-Convolution.md)
-- Related: [Optical Flow & Video Understanding](14-Optical-Flow-and-Video.md) (motion-based geometry) · image generation → [GenAI](../../09.%20GenAI/README.md)
+- Related: [Optical Flow & Video Understanding](14-Optical-Flow-and-Video.md) (motion-based geometry) · image generation → [GenAI](../../09.%20GenAI/concepts/README.md)

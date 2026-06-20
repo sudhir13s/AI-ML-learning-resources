@@ -54,4 +54,4 @@ Recall@k**.
 ## 🔗 In this platform
 - Prior steps: [03 Bag-of-Words & TF-IDF](03-Bag-of-Words-and-TF-IDF.md) (lexical) · [07 Sentence & Document Embeddings](07-Sentence-and-Document-Embeddings.md) (semantic).
 - Concept depth (the *why*): [AI-ML-intuition 8.02 Retrieval-Augmented Generation](../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.02_Retrieval_Augmented_Generation.md) · [1.06 Scaled Dot-Product (similarity)](../../../AI-ML-intuition/Module_1_Representation/1.06_Vector_Similarities_The_Scaled_Dot-Product.md)
-- Used by: [11 Question Answering](11-Question-Answering.md) — the retriever in open-domain QA. Canonical RAG home: [16. RAG & LLM Applications](../../16.%20RAG_and_LLM_Applications/README.md)
+- Used by: [11 Question Answering](11-Question-Answering.md) — the retriever in open-domain QA. Canonical RAG home: [16. RAG & LLM Applications](../../16.%20RAG_and_LLM_Applications/concepts/README.md)

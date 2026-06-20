@@ -55,6 +55,6 @@ why the base learners must be *unstable* for bagging to help, and how it contras
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 3.08 Ensembles (Bagging/Boosting)](../../../AI-ML-intuition/Module_3_Evaluation/3.08_Ensembles_Bagging_Boosting.md) · [3.07 Bias–Variance & Generalization](../../../AI-ML-intuition/Module_3_Evaluation/3.07_Bias_Variance_and_Generalization.md)
-- Math prerequisites (the *why*): [01. Foundations](../../01.%20Foundations/README.md) — the bootstrap, variance of an average, independence.
+- Math prerequisites (the *why*): [01. Foundations](../../01.%20Foundations/concepts/README.md) — the bootstrap, variance of an average, independence.
 - Prior / next concepts: [07 Decision Trees](07-Decision-Trees.md) — the high-variance learner you bag · [09 Random Forests](09-Random-Forests.md) — bagging + feature subsampling.
 - Contrast: [10 Gradient Boosting](10-Gradient-Boosting-XGBoost.md) — boosting reduces **bias** sequentially; bagging reduces **variance** in parallel.

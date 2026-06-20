@@ -53,6 +53,6 @@ noise. It's also the cleanest place to first see bias–variance and regularizat
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 3.01 MSE / L2 Loss](../../../AI-ML-intuition/Module_3_Evaluation/3.01_Mean_Squared_Error_MSE_L2_Loss.md) · [2.05 Gradient Descent & SGD](../../../AI-ML-intuition/Module_2_Optimization/2.05_Gradient_Descent_and_SGD.md)
-- Math prerequisites (the *why*): [01. Foundations](../../01.%20Foundations/README.md) — linear algebra, gradient descent, maximum likelihood.
+- Math prerequisites (the *why*): [01. Foundations](../../01.%20Foundations/concepts/README.md) — linear algebra, gradient descent, maximum likelihood.
 - Next concepts: [02 Logistic Regression](02-Logistic-Regression.md) · Regularization for Linear Models *(coming soon)* · Regression Metrics *(coming soon)*
-- Related domain: [5. Deep Learning](../../05.%20Deep_Learning/README.md) — linear regression is a single-neuron, no-activation network.
+- Related domain: [5. Deep Learning](../../05.%20Deep_Learning/concepts/README.md) — linear regression is a single-neuron, no-activation network.

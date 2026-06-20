@@ -43,6 +43,6 @@ updated: 2026-06-20
 > These topics are foundational or generative and live in their canonical home to avoid repetition.
 
 - **CNNs & Convolution** (the operation, kernels, stride/padding math) → [Deep Learning › CNNs & Convolution](../../05.%20Deep_Learning/concepts/13-CNNs-and-Convolution.md)
-- **Residual / skip connections · Batch & Group Norm** (the motifs deep vision backbones rely on) → [Deep Learning](../../05.%20Deep_Learning/README.md)
-- **Image generation** — GANs · Diffusion · text-to-image → [GenAI](../../09.%20GenAI/README.md)
-- **Contrastive / embedding math** (InfoNCE, triplet loss reused by self-supervised vision) → [NLP](../../06.%20NLP/README.md) · [Deep Learning](../../05.%20Deep_Learning/README.md)
+- **Residual / skip connections · Batch & Group Norm** (the motifs deep vision backbones rely on) → [Deep Learning](../../05.%20Deep_Learning/concepts/README.md)
+- **Image generation** — GANs · Diffusion · text-to-image → [GenAI](../../09.%20GenAI/concepts/README.md)
+- **Contrastive / embedding math** (InfoNCE, triplet loss reused by self-supervised vision) → [NLP](../../06.%20NLP/concepts/README.md) · [Deep Learning](../../05.%20Deep_Learning/concepts/README.md)

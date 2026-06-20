@@ -57,4 +57,4 @@ transformers (sequential compute, no parallel training, but cheap streaming infe
 - Concept depth (the *why*): [AI-ML-intuition 4.07 Gating Mechanisms (LSTM/GRU)](../../../AI-ML-intuition/Module_4_Stabilization/4B_Architectural_Motifs/4.07_Gating_Mechanisms_LSTM_GRU.md)
 - Prerequisite: [02 Backpropagation & Computational Graphs](02-Backpropagation-and-Computational-Graphs.md)
 - Next concept: [16 Transformer Architecture](16-Transformer-Architecture.md) (what replaced RNNs for most sequence tasks)
-- Related domain: [06. NLP](../../06.%20NLP/README.md) (sequence-to-sequence, machine translation)
+- Related domain: [06. NLP](../../06.%20NLP/concepts/README.md) (sequence-to-sequence, machine translation)

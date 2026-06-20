@@ -52,5 +52,5 @@ leading hypotheses (induction heads, implicit gradient descent), and contrast pr
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [Module 8.01 In-Context Learning & Prompting](../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.01_In-Context_Learning_and_Prompting.md)
-- Applications (covered elsewhere): [Retrieval-Augmented Generation → RAG & LLM Applications](../../16.%20RAG_and_LLM_Applications/README.md) · [Agents & Tool Use (intuition 8.03)](../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.03_Agents_and_Tool_Use.md)
+- Applications (covered elsewhere): [Retrieval-Augmented Generation → RAG & LLM Applications](../../16.%20RAG_and_LLM_Applications/concepts/README.md) · [Agents & Tool Use (intuition 8.03)](../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.03_Agents_and_Tool_Use.md)
 - Related concepts: [Chain-of-Thought Reasoning](17-Chain-of-Thought-Reasoning.md) · [Instruction Tuning](14-Instruction-Tuning.md) · [Decoding & Sampling](18-Decoding-and-Sampling.md)

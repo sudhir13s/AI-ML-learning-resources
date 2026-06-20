@@ -42,7 +42,7 @@ updated: 2026-06-19
 ## Related concepts (covered in another section)
 > These topics are used across many areas, so they're kept in one place to avoid repetition.
 
-- **Word / sentence embeddings** — Word2Vec · GloVe · contextual embeddings → [NLP](../../06.%20NLP/README.md)
-- **Vision architectures in depth** — ResNet/Inception, detection, segmentation → [Computer Vision](../../07.%20Computer%20Vision/README.md)
-- **Pretraining & LLM-scale models** — BERT · GPT · scaling laws · RLHF → [LLMs](../../08.%20LLMs/README.md)
-- **Pure math** — PCA/SVD · probability · optimization theory → [Foundations · Maths for AI-ML](../../01.%20Foundations/README.md)
+- **Word / sentence embeddings** — Word2Vec · GloVe · contextual embeddings → [NLP](../../06.%20NLP/concepts/README.md)
+- **Vision architectures in depth** — ResNet/Inception, detection, segmentation → [Computer Vision](../../07.%20Computer%20Vision/concepts/README.md)
+- **Pretraining & LLM-scale models** — BERT · GPT · scaling laws · RLHF → [LLMs](../../08.%20LLMs/concepts/README.md)
+- **Pure math** — PCA/SVD · probability · optimization theory → [Foundations · Maths for AI-ML](../../01.%20Foundations/concepts/README.md)
