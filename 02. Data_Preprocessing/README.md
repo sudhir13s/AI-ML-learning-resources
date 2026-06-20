@@ -26,5 +26,10 @@ updated: 2026-06-11
 - [Python Data Science Handbook](https://jakevdp.github.io/PythonDataScienceHandbook/) — **Jake VanderPlas** — free; NumPy/Pandas/sklearn bible.
 - [Feature Engineering and Selection](http://www.feat.engineering/) — **Kuhn & Johnson** — free online.
 
+## 📑 Per-concept resources
+For a guided, concept-by-concept learning path — EDA, scaling, encoding, imputation, outliers,
+feature engineering/selection, splits, leakage, imbalanced data, pipelines, and date/time
+features, each with its own curated free resources — see the **[Concept Index](concepts/README.md)**.
+
 ## 🔗 In this platform
 - Why scaling/encoding matters mathematically: [AI-ML-intuition Module 1](../../AI-ML-intuition/Module_1_Representation/)
