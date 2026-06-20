@@ -12,6 +12,11 @@ updated: 2026-06-11
 
 **⭐ Start here:** [3Blue1Brown — Neural Networks](https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi) for intuition, then [Andrew Ng's ML Specialization](https://www.coursera.org/specializations/machine-learning-introduction) for structure.
 
+## 📑 Per-concept resources
+Want a guided path through each beginner topic — what AI/ML/DL is, the ML workflow, how models learn,
+Python/NumPy/Pandas, your first project, and more? See the
+**[Basics concept index](concepts/README.md)** for a resource card per concept.
+
 ## 🎓 Courses (free)
 - [Machine Learning Specialization](https://www.coursera.org/specializations/machine-learning-introduction) — **Andrew Ng / DeepLearning.AI** — free to audit; the canonical first ML course on Earth.
 - [Practical Deep Learning for Coders](https://course.fast.ai/) — **fast.ai (Jeremy Howard)** — code-first, get real models running on day one.
