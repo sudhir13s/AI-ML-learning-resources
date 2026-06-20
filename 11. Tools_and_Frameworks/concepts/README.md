@@ -32,9 +32,9 @@ updated: 2026-06-20
 
 ## Workflow, tracking & demos
 
-11. ⬜ [Jupyter & Colab (notebooks, kernels, free GPUs)](11-Jupyter-and-Colab.md)
-12. ⬜ [Weights & Biases (experiment tracking & sweeps)](12-Weights-and-Biases.md)
-13. ⬜ [Gradio & Streamlit (interactive ML demos & apps)](13-Gradio-and-Streamlit.md)
+11. ✅ [Jupyter & Colab (notebooks, kernels, free GPUs)](11-Jupyter-and-Colab.md)
+12. ✅ [Weights & Biases (experiment tracking & sweeps)](12-Weights-and-Biases.md)
+13. ✅ [Gradio & Streamlit (interactive ML demos & apps)](13-Gradio-and-Streamlit.md)
 
 ## Related concepts (covered in another section)
 > These tools *implement* ideas that are taught in depth elsewhere — follow the links for the *why*.
