@@ -20,9 +20,9 @@ updated: 2026-06-20
 
 ## Deep learning frameworks
 
-5. ⬜ [PyTorch (tensors, autograd, nn, training loops)](05-PyTorch.md)
-6. ⬜ [TensorFlow & Keras (graphs, layers, fit/serve)](06-TensorFlow-and-Keras.md)
-7. ⬜ [JAX (+ Flax) (functional autodiff, jit, vmap, pmap)](07-JAX-and-Flax.md)
+5. ✅ [PyTorch (tensors, autograd, nn, training loops)](05-PyTorch.md)
+6. ✅ [TensorFlow & Keras (graphs, layers, fit/serve)](06-TensorFlow-and-Keras.md)
+7. ✅ [JAX (+ Flax) (functional autodiff, jit, vmap, pmap)](07-JAX-and-Flax.md)
 
 ## Models, data & ecosystem
 
