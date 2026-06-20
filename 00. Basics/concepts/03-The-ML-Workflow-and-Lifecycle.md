@@ -55,5 +55,5 @@ what separates someone who's shipped ML from someone who's only done tutorials.
 
 ## 🔗 In this platform
 - Next concepts: [04 How Models Learn](04-How-Models-Learn.md) · [12 Your First ML Project](12-Your-First-ML-Project.md)
-- Go deeper — data stages: [02. Data Preprocessing](../../02.%20Data_Preprocessing/README.md)
+- Go deeper — data stages: [02. Data Preprocessing](../../02.%20Data_Preprocessing/concepts/README.md)
 - Go deeper — deployment & monitoring: [12. Deployment & MLOps](../../12.%20Deployment_and_MLOps/concepts/README.md)

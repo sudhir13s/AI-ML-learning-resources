@@ -57,4 +57,4 @@ imbalance, what ROC-AUC means (probability a random positive ranks above a rando
 - Concept depth (the *why*): [AI-ML-intuition 3.05 Classification Metrics (Precision/Recall/F1)](../../../AI-ML-intuition/Module_3_Evaluation/3.05_Classification_Metrics_Precision_Recall_F1.md) · [3.06 ROC, AUC & PR Curves](../../../AI-ML-intuition/Module_3_Evaluation/3.06_ROC_AUC_PR_Curves.md)
 - Math prerequisites (the *why*): [01. Foundations](../../01.%20Foundations/concepts/README.md) — conditional probability, base rates, thresholds.
 - Related concepts: [02 Logistic Regression](02-Logistic-Regression.md) — produces the probabilities you threshold · [15 Regression Metrics](15-Regression-Metrics.md) — the continuous-target counterpart · [13 Cross-Validation](13-Cross-Validation.md) — how you estimate these reliably.
-- Related domain: [2. Data Preprocessing](../../02.%20Data_Preprocessing/README.md) — class imbalance and resampling shape which metric you trust.
+- Related domain: [2. Data Preprocessing](../../02.%20Data_Preprocessing/concepts/README.md) — class imbalance and resampling shape which metric you trust.

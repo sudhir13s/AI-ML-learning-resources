@@ -54,4 +54,4 @@ models the objective to spend trials wisely, and the coarse-to-fine / log-scale 
 - Concept depth (the *why*): [AI-ML-intuition 2.09 Learning Rate Schedules](../../../AI-ML-intuition/Module_2_Optimization/2.09_Learning_Rate_Schedules.md) · [3.07 Bias–Variance & Generalization](../../../AI-ML-intuition/Module_3_Evaluation/3.07_Bias_Variance_and_Generalization.md)
 - Prerequisites: [07 Optimizers](07-Optimizers.md) · [08 Learning-Rate Schedules & Warmup](08-Learning-Rate-Schedules-and-Warmup.md)
 - Field overview: [Deep Learning](../README.md)
-- Related domain: [11. Tools & Frameworks](../../11.%20Tools_and_Frameworks/README.md) (Optuna / Ray Tune in practice)
+- Related domain: [11. Tools & Frameworks](../../11.%20Tools_and_Frameworks/concepts/README.md) (Optuna / Ray Tune in practice)

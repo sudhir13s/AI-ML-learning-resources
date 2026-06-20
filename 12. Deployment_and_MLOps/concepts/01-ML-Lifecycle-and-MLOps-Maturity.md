@@ -52,4 +52,4 @@ levels — so you can place any tool or practice on the map.
 
 ## 🔗 In this platform
 - Next concepts: [02 Reproducibility](02-Reproducibility.md) · [03 Experiment Tracking](03-Experiment-Tracking.md) · [07 CI/CD for ML & CT](07-CICD-for-ML-and-Continuous-Training.md)
-- Related concept (covered elsewhere): data preprocessing & feature engineering → [02. Data_Preprocessing](../../02.%20Data_Preprocessing/README.md)
+- Related concept (covered elsewhere): data preprocessing & feature engineering → [02. Data_Preprocessing](../../02.%20Data_Preprocessing/concepts/README.md)
