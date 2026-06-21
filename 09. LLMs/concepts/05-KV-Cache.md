@@ -130,6 +130,8 @@ Concretely, the cache for one layer is a pair of tensors shaped `[batch, n_kv_he
 2. **Decode step.** Take the single newest token. In each layer: project its $q, k, v$; **append** $k, v$ to that layer's cache (now length $N{+}1$); compute attention of the one query against the full cached K/V; produce the next token.
 3. **Repeat** until an end-of-sequence token or the length limit. Each step grows every layer's cache by one position.
 
+The word "append" hides an important production detail: in a real engine it is an **in-place write into a pre-allocated buffer**, not a fresh allocation. The cache is allocated once (a contiguous slab, or paged blocks), and each step writes the new token's K/V into the next slot and bumps a length counter. Growing the tensor with a `torch.cat` *every step* — as the teaching code below does for clarity — would re-allocate and copy the entire cache on each token, turning an $O(n)$ win back into an $O(n^2)$ disaster. So the real lifecycle is **allocate once → write in place per step → free on completion**.
+
 > **Gotcha:** the cache grows on **every** step and is **never** freed mid-sequence — it only releases when the request finishes. A naive engine therefore reserves memory for the *worst-case* length a request might reach, which wastes most of it (a request that stops at 50 tokens still holds a 4,096-token reservation). That waste is exactly the problem **PagedAttention** solves — see Lever 2.
 
 ---
@@ -141,6 +143,8 @@ This is the formula worth memorizing, because interviewers ask you to derive it 
 $$\text{cache bytes} \;=\; 2 \times n_{\text{layers}} \times n_{\text{kv\_heads}} \times d_{\text{head}} \times \text{seq\_len} \times \text{batch} \times \text{bytes per element}$$
 
 The leading **2** is for storing both **K** and **V**. Everything else is just "how many numbers, at what precision."
+
+> *Where this comes from: the formula falls directly out of the per-layer attention shapes in **Attention Is All You Need** (Vaswani et al. 2017, §3.2), and is worked through explicitly in **Transformer Inference Arithmetic** (Kipply) and **Transformer Math 101** (EleutherAI) — all three in the references.*
 
 **Worked example 1 — cache per token (Llama-2-7B, FP16).** Its config: $n_{\text{layers}}=32$, $n_{\text{kv\_heads}}=32$, $d_{\text{head}}=128$, and FP16 = 2 bytes. Per token:
 
@@ -166,11 +170,21 @@ A single decode step (batch 1) pushes one token through the model: roughly $2 \t
 
 $$\text{arithmetic intensity} \approx \frac{14\times10^9 \text{ FLOP}}{14\times10^9 \text{ bytes}} \approx \mathbf{1\ \text{FLOP/byte}}.$$
 
+> *Where this comes from: the **roofline model** that pits arithmetic intensity against the compute-to-bandwidth ratio is Williams, Waterman & Patterson, "Roofline" (CACM 2009); its application to transformer decode — establishing that autoregressive generation is memory-bound — is laid out in **Efficiently Scaling Transformer Inference** (Pope et al. 2022, in the references).*
+
 An A100 does ~312 TFLOP/s of compute but only ~2 TB/s of memory bandwidth — a ratio of ~**156 FLOP/byte** before compute becomes the limit. At an intensity of ~1, decode is **deeply** memory-bound: the compute units sit ~99% idle, waiting on memory. The cure is **batching**: process $B$ sequences together and you read each weight **once** but do $B\times$ the math, multiplying arithmetic intensity by $B$ and walking toward the compute-bound regime. That's why throughput-oriented serving batches aggressively — and why, once weights are amortized across a big batch, the **KV cache** becomes the bytes you're actually moving, so shrinking it (GQA, FP8) translates almost directly into more tokens/second.
 
-> **Tip:** the kernel that *reads* the cache matters too. **FlashAttention** — and its decode-time variant **FlashDecoding** — computes attention over the cache in tiles without ever materializing the full score matrix, and parallelizes across the cache's sequence dimension so even a single decode step saturates memory bandwidth. The cache decides *how many bytes*; the kernel decides *how close to peak bandwidth* you move them.
-
 > **Tip:** when you hear "we doubled inference throughput by quantizing the KV cache to FP8," translate it: they **halved the bytes the GPU has to stream per token.** In a bandwidth-bound regime, halving the bytes ≈ doubling the speed. The cache size *is* the speed.
+
+---
+
+## Reading the cache: FlashAttention and FlashDecoding
+
+Shrinking the cache reduces the *bytes*; the attention **kernel** decides how efficiently you move them. Standard attention materializes the full $n \times n$ score matrix in slow HBM, costing $O(n^2)$ memory traffic — wasteful, and for long context impossible to fit. **FlashAttention** ([Dao et al. 2022](https://arxiv.org/abs/2205.14135)) computes the *same* result **without ever materializing that matrix**: it tiles K and V into blocks, streams them through fast on-chip SRAM, and keeps a **running softmax** (the *online-softmax* trick) so each output is accumulated block by block. The result is exact attention at $O(n)$ memory and far fewer HBM round-trips.
+
+Decode has a twist: the query is a *single* token, so the usual parallelism (over many query positions) vanishes — one query against a long cache leaves the GPU underused. **FlashDecoding** restores it by **parallelizing over the cache's key/value dimension**: split the cached sequence into chunks, attend the lone query to each chunk in parallel, then combine the partial softmaxes. For long contexts this keeps even a single decode step bandwidth-saturated.
+
+> **Note:** the cache and the kernel are complementary. The cache (plus GQA/MLA/quantization) sets *how many bytes* must be read; FlashAttention/FlashDecoding set *how close to peak bandwidth* you read them. A real long-context stack needs both — which is why "GQA + paging + FP8 + FlashAttention" is the recurring four-part recipe.
 
 ---
 
@@ -252,6 +266,18 @@ Tying the levers to models you've heard of makes them concrete:
 
 ---
 
+## Two systems-level wins: prefix caching and disaggregation
+
+The four levers shrink the cache; two serving-architecture ideas change *how it's used* across requests and machines.
+
+**Prefix caching.** Many requests share a long, identical **prefix** — a fixed system prompt, a few-shot preamble, a document everyone asks about. Naively, each request re-runs prefill over that whole prefix. **Prefix caching** computes it **once** and reuses the resulting KV blocks for every request that shares it (vLLM's *automatic prefix caching*; SGLang's **RadixAttention**, which organizes cached prefixes in a radix tree for fast longest-prefix matching). For agent and chat workloads with multi-thousand-token system prompts, this turns most of prefill into a cache hit — a large latency and cost win.
+
+**Disaggregated prefill/decode.** Recall the two phases have *opposite* bottlenecks: prefill is **compute-bound**, decode is **memory-bound**. Running both on the same GPU means a long prompt's prefill stalls everyone else's decode (chunked prefill only juggles the conflict). **Disaggregation** runs prefill on one pool of GPUs and decode on another, **transferring the KV cache** between them over a fast interconnect. Each pool is tuned for its own bottleneck, and a heavy prefill no longer hurts token latency for every other user. It's how several of the largest deployments hit their latency targets at scale.
+
+> **Note:** both ideas are practical only *because* the cache is **addressable in blocks** (Lever 2). Prefix caching **shares** blocks across requests; disaggregation **ships** blocks across machines. Paging isn't merely a memory optimization — it's the substrate the modern serving stack is built on.
+
+---
+
 ## Sizing a real deployment: putting it together
 
 Here's the reasoning I'd actually do, end to end, given "serve Llama-3-8B chat on one A100-80GB, 8K context, max throughput":
@@ -263,6 +289,18 @@ Here's the reasoning I'd actually do, end to end, given "serve Llama-3-8B chat o
 5. **Endless chat?** Add **sliding-window + sinks** so a never-ending conversation can't grow the cache without bound.
 
 Every step is just the formula plus one lever. That's the whole job.
+
+---
+
+## Production failure modes
+
+The cache is also where a surprising number of production incidents live — worth knowing before they page you at 2 a.m.:
+
+- **Context bleed.** If the cache isn't **reset between requests** (or a pooled buffer is reused without clearing), one user's tokens can leak into another's generation — a correctness *and* privacy bug. Key the cache strictly to the request.
+- **OOM under load spikes.** The cache grows with concurrency × length, so a burst of long requests can overflow VRAM *mid-generation*. Robust engines apply **admission control** and **preemption** — vLLM can evict a request's cache and **recompute** it later rather than crash — but if you planned capacity from the *weights*, a spike still takes you down.
+- **Silent quality loss from a quantized cache.** Turning on FP8/INT8 to fit more requests can quietly degrade outputs (keys are sensitive). **Measure** win-rate before and after; don't ship it on faith.
+- **Stale prefix cache.** If a shared prefix's content changes but its cache key doesn't, every request reuses the wrong KV. Invalidate on prefix change.
+- **Capacity sized from the wrong number.** The most common planning error: budgeting GPUs from parameter count and forgetting the cache. Size from **Worked example 2**, not from the weights.
 
 ---
 
