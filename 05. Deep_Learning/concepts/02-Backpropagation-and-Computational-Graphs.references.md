@@ -41,6 +41,8 @@ updated: 2026-06-21
 - [Learning representations by back-propagating errors](https://www.nature.com/articles/323533a0) — **Rumelhart, Hinton & Williams (1986)** — the paper that brought backprop to neural networks.
 - [Automatic Differentiation in Machine Learning: a Survey](https://arxiv.org/abs/1502.05767) — **Baydin et al. (2015)** — forward vs reverse mode and how autograd engines work, rigorously.
 - [Deep Learning (Nature review)](https://www.nature.com/articles/nature14539) — **LeCun, Bengio & Hinton (2015)** — situates backprop within the broader deep-learning story.
+- [Estimating or Propagating Gradients Through Stochastic Neurons](https://arxiv.org/abs/1308.3432) — **Bengio, Léonard & Courville (2013)** — the straight-through estimator for non-differentiable ops.
+- [Training Deep Nets with Sublinear Memory Cost](https://arxiv.org/abs/1604.06174) — **Chen et al. (2016)** — gradient checkpointing: trade compute for activation memory.
 
 **Books (free chapters):**
 
