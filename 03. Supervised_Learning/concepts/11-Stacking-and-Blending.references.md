@@ -40,6 +40,7 @@ updated: 2026-06-22
 - [Stacked Generalization](https://www.semanticscholar.org/paper/Stacked-generalization-Wolpert/82e34a7d1c7e58e6a9b32cf45fae67aca308e02a) — **Wolpert (1992)** — the original paper that introduced stacking and the level-0/level-1 framing (abstract + free PDF links).
 - [Stacked Regressions](https://link.springer.com/article/10.1007/BF00117832) — **Breiman (1996)** — the regression form of stacking and the value of non-negativity constraints on the meta-weights.
 - [Issues in Stacked Generalization](https://www.jair.org/index.php/jair/article/view/10228) — **Ting & Witten (1999)** — the empirical study of *why* and *when* stacking helps, and the role of probabilities as meta-features.
+- [Super Learner](https://biostats.bepress.com/ucbbiostat/paper222/) — **van der Laan, Polley & Hubbard (2007)** — the formal CV-selected stack and its **oracle inequality** (cross-validated risk is asymptotically within a $(1+\varepsilon)$ factor of the best candidate, penalty $O(\log M/n)$); open U.C. Berkeley working paper.
 
 **Books (free chapters)**:
 - [The Elements of Statistical Learning — Ch. 8.8 "Model Averaging and Stacking"](https://hastie.su.domains/ElemStatLearn/) — **Hastie, Tibshirani & Friedman** — the rigorous treatment of stacking and model combination.
