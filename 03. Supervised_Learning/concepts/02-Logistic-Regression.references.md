@@ -34,10 +34,12 @@ updated: 2026-06-22
 **Articles / blogs (free, no paywall)**:
 - [Logistic Regression](https://www.jeremyjordan.me/logistic-regression/) — **Jeremy Jordan** — a clear, free walkthrough of the model, loss, and gradient.
 - [Logistic regression (scikit-learn user guide)](https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression) — **scikit-learn** — the practical reference: solvers, regularization (L1/L2/elastic-net), multiclass.
+- [Probability calibration (scikit-learn user guide)](https://scikit-learn.org/stable/modules/calibration.html) — **scikit-learn** — why logistic regression is well-calibrated, reliability diagrams, and `CalibratedClassifierCV` (Platt/isotonic) when it isn't.
 
 **Key papers**:
 - [The Regression Analysis of Binary Sequences (Cox, 1958)](https://sci2s.ugr.es/keel/pdf/algorithm/articulo/1958-Cox.pdf) — **D. R. Cox** — the paper that introduced logistic regression; the foundational source.
-- [Maximum Likelihood Estimation of Logistic Regression Models (tutorial)](https://czep.net/stat/mlelr.pdf) — **Scott Czepiel** — a clean, self-contained derivation of the MLE + Newton-Raphson updates.
+- [On Discriminative vs. Generative Classifiers (Ng & Jordan, 2002)](https://ai.stanford.edu/~ang/papers/nips01-discriminativegenerative.pdf) — **Andrew Ng & Michael Jordan** — the logistic-regression vs Naive-Bayes pairing: NB converges faster with little data, logistic regression is asymptotically better.
+- [Maximum Likelihood Estimation of Logistic Regression Models (tutorial)](https://czep.net/stat/mlelr.pdf) — **Scott Czepiel** — a clean, self-contained derivation of the MLE + Newton-Raphson (IRLS) updates.
 
 **Books (free chapters)**:
 - [An Introduction to Statistical Learning (ISLR) — Ch. 4 "Classification"](https://www.statlearning.com/s/ISLR-Seventh-Printing.pdf) — **James, Witten, Hastie & Tibshirani** — logistic regression, odds, decision boundaries, with applied examples.
