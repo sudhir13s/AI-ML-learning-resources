@@ -116,7 +116,7 @@ $$\text{cache bytes} \;=\; 2 \times n_{\text{layers}} \times n_{\text{kv\_heads}
 
 The leading **2** is for storing both **K** and **V**. Everything else is just "how many numbers, at what precision."
 
-**Worked example — Llama-2-7B, FP16.** Its config: $n_{\text{layers}}=32$, $n_{\text{kv\_heads}}=32$, $d_{\text{head}}=128$, and FP16 = 2 bytes. Per token:
+**Worked example 1 — cache per token (Llama-2-7B, FP16).** Its config: $n_{\text{layers}}=32$, $n_{\text{kv\_heads}}=32$, $d_{\text{head}}=128$, and FP16 = 2 bytes. Per token:
 
 $$2 \times 32 \times 32 \times 128 \times 2 \;=\; 524{,}288 \text{ bytes} \;\approx\; \mathbf{0.5\ MiB\ per\ token.}$$
 
@@ -125,6 +125,8 @@ So a single sequence at a **4,096-token** context holds $4096 \times 0.5\,\text{
 ![KV cache size vs context length for 7B/13B/70B (MHA). It grows linearly with context, and at long contexts or large batches it rivals or exceeds the model weights.](images/kv_memory_growth.png)
 
 > **Note:** this is why the **batch size you can serve is usually capped by the KV cache, not by the weights**. Weights are a fixed one-time cost; the cache is paid *per sequence per token*. Run a batch of 32 sequences at 4K context on that 7B model and you're looking at ~64 GB of cache — more than the weights, and more than an 80 GB A100 has room for after weights and activations.
+
+**Worked example 2 — how many requests fit on one GPU?** Take an 80 GB A100 serving that 7B model. Weights take ~14 GB and activations/overhead another ~6 GB, leaving **~60 GB for the cache**. At 0.5 MiB/token a 4K-context request needs 2 GiB, so you fit $60 / 2 \approx \mathbf{30}$ concurrent requests — and *that*, not the weights, is your throughput ceiling. Now switch to **GQA with 8 KV heads** (down from 32): the cache shrinks 4× to 0.125 MiB/token, i.e. 0.5 GiB/request, so the same GPU now holds $60 / 0.5 \approx \mathbf{120}$ requests. **Same hardware, 4× the throughput — purely from shrinking the cache.** That single calculation is *why* GQA exists, and why it's the first lever you reach for.
 
 **Why bandwidth, not FLOPs.** A decode step moves a lot of memory but does very little math. At **batch 1** the bytes are dominated by the **weights**: streaming ~14 GB at an A100's ~2 TB/s ≈ **7 ms/token**, against which the 2 GiB cache (~1 ms) is secondary. So why obsess over the cache? Because **batching amortizes the weights but not the cache**: serve 32 sequences and you still read the 14 GB of weights *once*, but you now pay that per-token cache cost *per sequence*. As batch size and context grow, the KV cache becomes the bytes you're actually moving — which is why shrinking it (GQA, FP8) translates almost directly into throughput. (Note the 2 GiB is already summed across all layers — don't multiply by layer count again.) That's the memory-bound regime, stated in numbers.
 
