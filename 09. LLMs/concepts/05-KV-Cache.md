@@ -71,6 +71,8 @@ graph TD
     classDef amber fill:#7A6528,stroke:#6A5518,color:#fff
 ```
 
+> **See it in 3D:** Brendan Bycroft's [interactive LLM visualizer](https://bbycroft.net/llm) walks a single token through the *entire* forward pass of a small GPT — the clearest way to actually *see* where the K and V vectors are produced, per layer, that the cache then stores.
+
 ---
 
 ## Intuition: the running tab
@@ -131,6 +133,8 @@ Concretely, the cache for one layer is a pair of tensors shaped `[batch, n_kv_he
 3. **Repeat** until an end-of-sequence token or the length limit. Each step grows every layer's cache by one position.
 
 The word "append" hides an important production detail: in a real engine it is an **in-place write into a pre-allocated buffer**, not a fresh allocation. The cache is allocated once (a contiguous slab, or paged blocks), and each step writes the new token's K/V into the next slot and bumps a length counter. Growing the tensor with a `torch.cat` *every step* — as the teaching code below does for clarity — would re-allocate and copy the entire cache on each token, turning an $O(n)$ win back into an $O(n^2)$ disaster. So the real lifecycle is **allocate once → write in place per step → free on completion**.
+
+> **Watch it grow:** this [interactive KV-cache explainer](https://mbrenndoerfer.com/writing/kv-cache-transformer-attention-optimization) animates the cache filling during prefill and then growing by exactly one token per decode step — the lifecycle above, in motion.
 
 > **Gotcha:** the cache grows on **every** step and is **never** freed mid-sequence — it only releases when the request finishes. A naive engine therefore reserves memory for the *worst-case* length a request might reach, which wastes most of it (a request that stops at 50 tokens still holds a 4,096-token reservation). That waste is exactly the problem **PagedAttention** solves — see Lever 2.
 

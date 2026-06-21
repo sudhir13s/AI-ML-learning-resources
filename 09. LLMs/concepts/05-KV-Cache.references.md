@@ -25,6 +25,10 @@ updated: 2026-06-21
 - [Let's reproduce GPT-2 (124M)](https://www.youtube.com/watch?v=l8pRSuU81PU) — **Andrej Karpathy** — the generation loop a KV cache plugs into.
 - [Inference, Serving, PagedAttention and vLLM](https://www.youtube.com/watch?v=3TBT4WPkDaw) — **AI Makerspace** — how serving systems manage the cache at scale.
 
+**Interactive & visual**:
+- [LLM Visualizer (3D)](https://bbycroft.net/llm) — **Brendan Bycroft** — walk a token through a small GPT's full forward pass and *see* where K/V are produced per layer.
+- [KV Cache, interactive explainer](https://mbrenndoerfer.com/writing/kv-cache-transformer-attention-optimization) — **Michael Brenndoerfer** — animates the cache filling during prefill and growing one token per decode step.
+
 **Courses (free)**:
 - [Stanford CS336 — Language Modeling from Scratch (inference & systems)](https://stanford-cs336.github.io/spring2025/) — **Stanford** — the KV cache within the full LLM inference stack.
 - [Hugging Face — LLM inference optimization](https://huggingface.co/docs/transformers/en/llm_optims) — **Hugging Face** — KV caching, static cache, and how to use it in practice.
