@@ -13,7 +13,14 @@ updated: 2026-06-21
 
 Imagine writing an essay where, before you add each new word, you re-read the entire essay from the very first word — out loud, start to finish — just to decide what comes next. Write word 500 and you've re-read 499 words; write word 1,000 and you've re-read 999. That is *exactly* what a transformer does when it generates text without a **KV cache**: every new token reruns attention over every token that came before, recomputing the same numbers it already computed a step ago. The KV cache is the sticky note that says *"you already worked this out — here it is"*, and it is the single most important optimization in LLM inference.
 
-By the end of this page you'll be able to explain **what** is cached and **why only K and V** (never Q), **compute** the cache's memory footprint for a real model, reason about why decoding is **memory-bandwidth bound rather than compute bound**, and connect the cache to the techniques that exist *because* of it — **GQA/MQA, PagedAttention, and quantized caches**. I'll write it the way I'd explain it to a teammate debugging an out-of-memory error in production: the intuition first, then the math, then the code you can run today, then the step-by-step playbook. Read it top-to-bottom once for the story; the formulas, numbers, and runnable snippets are inline when you sit down to use them.
+I'm going to walk this the way I'd actually explain it to a teammate staring at an out-of-memory error in production. We'll start with *why* the cache has to exist (feel the waste), then *what* it is and *why it's K and V and not Q*, then the two phases of inference it creates, then the memory math that decides what you can serve — and finally the four levers (GQA, paging, quantization, windowing) that the entire LLM-serving industry uses to keep that memory in check. By the end you'll be able to:
+
+- explain **what** is cached and **why only K and V** (never Q);
+- **compute** the cache footprint for a real model and **size a deployment** from it;
+- explain why generation has **two phases** (prefill vs decode) with totally different bottlenecks;
+- reason from first principles about why decode is **memory-bandwidth bound**, using arithmetic intensity;
+- explain the four levers — **MQA/GQA, PagedAttention, quantized caches, sliding-window** — and *when* to reach for each;
+- prove in runnable code that the cache changes **nothing** about the output, only the speed.
 
 > **Note:** the cache is a *speed and memory* mechanism, not a *modeling* one. It changes **nothing** about the output — with or without it, the model produces the identical tokens (we prove this in code below). It only changes how fast, and how much VRAM, that takes.
 
@@ -33,7 +40,7 @@ How much waste? At decode step $t$ the naive approach re-projects K and V for al
 
 ![Per-step K/V projection work: without a cache it grows linearly with position (quadratic in total); with a cache it is constant — one new token per step. The shaded region is pure redundant work.](images/kv_recompute_waste.png)
 
-**Gotcha:** people often say the cache makes attention "$O(n)$ instead of $O(n^2)$." Be precise in an interview: the cache removes the redundant *recomputation of K/V projections (and the rest of the forward pass) for past tokens*. The attention **scores** for the current token still touch all $n$ past keys, so a single step's attention is still $O(n)$ — what you save is never redoing the past tokens' work again.
+> **Gotcha:** people often say the cache makes attention "$O(n)$ instead of $O(n^2)$." Be precise in an interview: the cache removes the redundant *recomputation of K/V projections (and the rest of the forward pass) for past tokens*. The attention **scores** for the current token still touch all $n$ past keys, so a single step's attention is still $O(n)$ — what you save is never redoing the past tokens' work again.
 
 ---
 
@@ -64,39 +71,58 @@ graph TD
     classDef amber fill:#7A6528,stroke:#6A5518,color:#fff
 ```
 
-> **Tip:** the prefill/decode split is why you see **two different latency numbers** in serving dashboards — *time-to-first-token* (dominated by prefill, a big parallel matmul) and *time-per-output-token* (dominated by decode, which is memory-bound). They have completely different performance characteristics; optimizing one rarely helps the other.
-
 ---
 
 ## Intuition: the running tab
 
 Think of a bartender keeping a **running tab**. Without a tab, every time you order a drink they re-add every drink you've had all night from the receipts to know your total — slower with every round. With a tab, they keep the current total written down and just **add the new drink**. The KV cache is that tab: the model keeps the "running context" (everyone's keys and values) written down, and each new token only adds its own line.
 
-The reason this works — and the reason it's K and V specifically — is about **who needs to talk to whom**. When the model generates a new token, that token's *query* needs to ask a question of *all the past tokens' keys*, and gather *all the past tokens' values*. But the past tokens have already had their turn speaking; **their queries did their job and will never be asked again.** So you keep what future tokens will need (the keys and values) and discard what's already spent (the past queries).
-
 ![One decode step as an attention matrix: only the current query row (q5) is computed now; it reads the keys and values of all past tokens straight from the cache. Past query rows are greyed — they are never needed again, which is why Q is not cached.](images/kv_attention_cache.png)
 
-> **Note:** this is the cleanest way to answer the classic interview question *"why cache K and V but not Q?"* — **Q is per-step and disposable; K and V are per-token and reused.** Each decode step has exactly one new query; it never revisits old queries, but it does revisit every old key and value.
+---
+
+## Why cache K and V, but never Q
+
+The reason it's K and V specifically — and the single most-asked KV-cache interview question — is about **who needs to talk to whom**. When the model generates a new token, that token's *query* needs to ask a question of *all the past tokens' keys*, and gather *all the past tokens' values*. But the past tokens have already had their turn speaking; **their queries did their job and will never be asked again.** So you keep what future tokens will need (the keys and values) and discard what's already spent (the past queries).
+
+> **Note:** the clean answer: **Q is per-step and disposable; K and V are per-token and reused.** Each decode step has exactly one new query; it never revisits old queries, but it *does* revisit every old key and value.
 
 > **Note:** notice there's **no attention mask** in a decode step — the single new query attends to *every* entry in the cache, and that's automatically causal because the cache only ever holds past tokens. The triangular causal mask you learned about only matters during **prefill** (and training), where many query positions are processed in one pass.
 
 ---
 
-## Why it matters
+## The two phases: prefill vs decode
 
-Two payoffs, one cost.
+The cache cleanly splits inference into two phases with **opposite performance characteristics** — and confusing them is the root of most serving mistakes.
 
-**Payoff 1 — compute.** You stop redoing the past tokens' forward work on every step. For long generations this is the difference between a chatbot that streams and one that crawls, because the redundant work grows with how much you've already written.
+```mermaid
+graph LR
+    subgraph PRE["PREFILL — digest the prompt"]
+    P1["all N prompt tokens<br/>in ONE parallel pass"]:::process --> P2["COMPUTE-bound<br/>(one big matmul)"]:::amber
+    P2 --> TTFT(["time-to-first-token"]):::out
+    end
+    subgraph DEC["DECODE — generate token by token"]
+    D1["1 new token/step,<br/>read the whole cache"]:::process --> D2["MEMORY-bound<br/>(stream the cache)"]:::danger
+    D2 --> TPOT(["time-per-output-token"]):::out
+    end
+    TTFT --> DEC
 
-**Payoff 2 — it changes the bottleneck.** Once you're not recomputing, each decode step does very little *math* (one token's worth) but must *read the entire cache from memory* to attend over it. Decoding becomes ***memory-bandwidth bound*** — limited by how fast the GPU can move the cache out of HBM, not by how fast it can multiply. This single fact explains most of modern inference engineering.
+    classDef process fill:#5D4A8A,stroke:#4D3A7A,color:#fff
+    classDef amber fill:#7A6528,stroke:#6A5518,color:#fff
+    classDef danger fill:#8B3B4A,stroke:#7B2B3A,color:#fff
+    classDef out fill:#2E7A5A,stroke:#1E6A4A,color:#fff
+```
 
-**The cost — memory.** The cache has to live in GPU memory and it **grows with every token**. That growth is the central tension of LLM serving, and the whole back half of this page is about managing it.
+- **Prefill** processes *all N prompt tokens at once* — a big, dense matmul that keeps the GPU's compute units busy. It's **compute-bound**, and it sets your **time-to-first-token (TTFT)**.
+- **Decode** processes *one token at a time*, and the dominant cost is *reading the weights and the cache out of memory* to do very little math. It's **memory-bound**, and it sets your **time-per-output-token (TPOT)**.
 
-> **Tip:** "decode is memory-bound" is the load-bearing insight for an LLM-serving interview. It's *why* batching many requests together is so valuable (you read the weights once and amortize them over many sequences), and *why* shrinking the cache — GQA, quantization — directly buys throughput.
+> **Tip:** this split is why serving dashboards report **two latency numbers** (TTFT and TPOT) — they have different bottlenecks, so optimizing one rarely helps the other. It's also why modern engines do **chunked prefill** (interleave prefill chunks with decode steps so a long prompt doesn't stall everyone else's token stream) and **continuous batching** (swap finished requests out and new ones in every step, instead of waiting for the whole batch to finish).
+
+> **Tip:** **speculative decoding** is a clever exploit of the memory-bound decode. Since the GPU is idle waiting on memory anyway, a small *draft* model proposes several tokens, and the big model **verifies them all in one forward pass** (a mini-prefill) for roughly the cost of generating one — accepting the longest correct prefix. It needs the cache to tentatively hold the speculated tokens and **roll back** the rejected ones, which is one more reason a paged, block-addressable cache is so convenient.
 
 ---
 
-## How it works: prefill, decode, append
+## How it works: the cache tensor and the append
 
 Concretely, the cache for one layer is a pair of tensors shaped `[batch, n_kv_heads, seq_len, head_dim]` — one for K, one for V — and the model holds one such pair **per layer**. The lifecycle:
 
@@ -104,7 +130,7 @@ Concretely, the cache for one layer is a pair of tensors shaped `[batch, n_kv_he
 2. **Decode step.** Take the single newest token. In each layer: project its $q, k, v$; **append** $k, v$ to that layer's cache (now length $N{+}1$); compute attention of the one query against the full cached K/V; produce the next token.
 3. **Repeat** until an end-of-sequence token or the length limit. Each step grows every layer's cache by one position.
 
-> **Gotcha:** the cache grows on **every** step and is **never** freed mid-sequence — it only releases when the request finishes. A serving system therefore has to reserve memory for the *worst-case* length a request might reach, which is exactly the fragmentation problem PagedAttention was built to solve (more below).
+> **Gotcha:** the cache grows on **every** step and is **never** freed mid-sequence — it only releases when the request finishes. A naive engine therefore reserves memory for the *worst-case* length a request might reach, which wastes most of it (a request that stops at 50 tokens still holds a 4,096-token reservation). That waste is exactly the problem **PagedAttention** solves — see Lever 2.
 
 ---
 
@@ -128,7 +154,21 @@ So a single sequence at a **4,096-token** context holds $4096 \times 0.5\,\text{
 
 **Worked example 2 — how many requests fit on one GPU?** Take an 80 GB A100 serving that 7B model. Weights take ~14 GB and activations/overhead another ~6 GB, leaving **~60 GB for the cache**. At 0.5 MiB/token a 4K-context request needs 2 GiB, so you fit $60 / 2 \approx \mathbf{30}$ concurrent requests — and *that*, not the weights, is your throughput ceiling. Now switch to **GQA with 8 KV heads** (down from 32): the cache shrinks 4× to 0.125 MiB/token, i.e. 0.5 GiB/request, so the same GPU now holds $60 / 0.5 \approx \mathbf{120}$ requests. **Same hardware, 4× the throughput — purely from shrinking the cache.** That single calculation is *why* GQA exists, and why it's the first lever you reach for.
 
-**Why bandwidth, not FLOPs.** A decode step moves a lot of memory but does very little math. At **batch 1** the bytes are dominated by the **weights**: streaming ~14 GB at an A100's ~2 TB/s ≈ **7 ms/token**, against which the 2 GiB cache (~1 ms) is secondary. So why obsess over the cache? Because **batching amortizes the weights but not the cache**: serve 32 sequences and you still read the 14 GB of weights *once*, but you now pay that per-token cache cost *per sequence*. As batch size and context grow, the KV cache becomes the bytes you're actually moving — which is why shrinking it (GQA, FP8) translates almost directly into throughput. (Note the 2 GiB is already summed across all layers — don't multiply by layer count again.) That's the memory-bound regime, stated in numbers.
+**Worked example 3 — the long-context wall (128K).** Now push context to 128K tokens. At 0.5 MiB/token (7B MHA) that's $131072 \times 0.5\,\text{MiB} = \mathbf{64\ GiB}$ for **one** sequence — it alone overflows an 80 GB GPU once you add the 14 GB of weights. GQA-8 cuts it to 16 GiB; add an FP8 cache and it's 8 GiB; page it so you only allocate what's used, and now a handful of 128K requests coexist. This is *exactly* how "128K-context" models are served in practice — **not** by one trick but by the whole stack (GQA + quantized cache + paging) applied at once. Without them, long context is simply impossible.
+
+---
+
+## Why decode is memory-bound (from first principles)
+
+It's worth deriving this, because it's the insight the rest of the field is built on. The relevant quantity is **arithmetic intensity** — FLOPs done per byte moved from memory.
+
+A single decode step (batch 1) pushes one token through the model: roughly $2 \times \text{params}$ FLOPs ≈ **14 GFLOP** for a 7B model. To do it, the GPU must **read every weight** (14 GB in FP16) plus the cache. So:
+
+$$\text{arithmetic intensity} \approx \frac{14\times10^9 \text{ FLOP}}{14\times10^9 \text{ bytes}} \approx \mathbf{1\ \text{FLOP/byte}}.$$
+
+An A100 does ~312 TFLOP/s of compute but only ~2 TB/s of memory bandwidth — a ratio of ~**156 FLOP/byte** before compute becomes the limit. At an intensity of ~1, decode is **deeply** memory-bound: the compute units sit ~99% idle, waiting on memory. The cure is **batching**: process $B$ sequences together and you read each weight **once** but do $B\times$ the math, multiplying arithmetic intensity by $B$ and walking toward the compute-bound regime. That's why throughput-oriented serving batches aggressively — and why, once weights are amortized across a big batch, the **KV cache** becomes the bytes you're actually moving, so shrinking it (GQA, FP8) translates almost directly into more tokens/second.
+
+> **Tip:** the kernel that *reads* the cache matters too. **FlashAttention** — and its decode-time variant **FlashDecoding** — computes attention over the cache in tiles without ever materializing the full score matrix, and parallelizes across the cache's sequence dimension so even a single decode step saturates memory bandwidth. The cache decides *how many bytes*; the kernel decides *how close to peak bandwidth* you move them.
 
 > **Tip:** when you hear "we doubled inference throughput by quantizing the KV cache to FP8," translate it: they **halved the bytes the GPU has to stream per token.** In a bandwidth-bound regime, halving the bytes ≈ doubling the speed. The cache size *is* the speed.
 
@@ -136,7 +176,7 @@ So a single sequence at a **4,096-token** context holds $4096 \times 0.5\,\text{
 
 ## Where it is used, and when it isn't
 
-**Used:** in essentially every autoregressive LLM at **inference** time. Every serving stack — [vLLM](https://github.com/vllm-project/vllm), TGI, TensorRT-LLM, llama.cpp — is built around a KV cache, and most of their cleverness is in *managing* it. If a model generates text token-by-token, it uses one.
+**Used:** in essentially every autoregressive LLM at **inference** time. Every serving stack — [vLLM](https://github.com/vllm-project/vllm), TGI, TensorRT-LLM, llama.cpp — is built around a KV cache, and most of their cleverness is in *managing* it.
 
 **Not used / not needed:**
 
@@ -144,55 +184,85 @@ So a single sequence at a **4,096-token** context holds $4096 \times 0.5\,\text{
 - **Prefill itself.** The prompt is processed in parallel, so prefill doesn't benefit from the cache — it *creates* it.
 - **Encoder-only models** (BERT-style) that don't generate autoregressively.
 
-> **Note:** encoder–decoder models (T5, Whisper) *do* use a KV cache — two, in fact. The decoder caches its own **self-attention** K/V each step, *and* it caches the **cross-attention** K/V, which are computed once from the encoder output and reused for every generated token. The cache is about *autoregressive decoding*, and encoder–decoders decode autoregressively too.
+> **Note:** encoder–decoder models (T5, Whisper) *do* use a KV cache — two, in fact. The decoder caches its own **self-attention** K/V each step, *and* it caches the **cross-attention** K/V, which are computed once from the encoder output and reused for every generated token.
 
 > **Gotcha:** because the cache is an inference-only concept, it's easy to forget it when estimating deployment memory from a training recipe. A model that trained comfortably can still OOM in production purely from KV-cache growth at long context or high batch — the weights fit, the *cache* doesn't.
 
 ---
 
-## Application: a step-by-step playbook
+## Lever 1: fewer KV heads — MQA and GQA
 
-In code you rarely build a cache by hand — frameworks do it for you. In Hugging Face `transformers`, `model.generate(...)` keeps a cache by default (`use_cache=True`), threading a `past_key_values` object through each step. The skill that matters in practice isn't *enabling* the cache — it's **managing its memory**. Here's how I think about it on a real deployment.
-
-**Step 1 — estimate the cache.** Before choosing hardware or batch size, plug your model's config into the formula above for your target `(context length × batch size)`. This number, not the weights, usually decides what fits.
-
-**Step 2 — shrink bytes per token with fewer KV heads.** The biggest lever is architectural: **share K and V across query heads.**
+The biggest lever is architectural: **share K and V across query heads** so there are simply fewer of them to store.
 
 - ***MHA*** (multi-head attention) — every query head has its own K/V head. Biggest cache.
-- ***MQA*** (multi-query attention) — *all* query heads share **one** K/V head. ~tens× smaller cache, slight quality cost.
-- ***GQA*** (grouped-query attention) — query heads share K/V in **groups** (e.g. 8 KV heads). The sweet spot, used by Llama-2/3, Mistral, and most modern models.
+- ***MQA*** (multi-query attention) — *all* query heads share **one** K/V head. Tens× smaller cache, but a noticeable quality cost.
+- ***GQA*** (grouped-query attention) — query heads share K/V in **groups** (e.g. 8 KV heads serving 64 query heads). The sweet spot, used by Llama-2/3, Mistral, and most modern models.
 
 ![Cache size for a 70B-class model under MHA vs GQA-8 vs MQA. Fewer KV heads shrink the cache proportionally — GQA-8 is ~8x smaller, MQA ~64x.](images/kv_mha_mqa_gqa.png)
 
-> **Note:** GQA is *the* reason a modern 70B model is servable at long context. It's not a minor tweak — it's an 8× cut to the dominant memory cost, which is why it became the default. If you're choosing a base model for long-context serving, **check its KV-head count**, not just its parameter count.
+It works because the formula has $n_{\text{kv\_heads}}$ as a direct multiplier: cut KV heads from 64 to 8 and the cache shrinks **8×**, with the query heads (and thus most of the model's expressiveness) untouched. GQA keeps almost all of MHA's quality while paying MQA-like memory.
 
-**Step 3 — if it still doesn't fit, reach for the runtime tricks.** These are the mitigations, and which one you pick depends on *where* the pressure is:
+> **Note:** GQA is *the* reason a modern 70B model is servable at long context — an 8× cut to the dominant memory cost. If you're choosing a base model for long-context serving, **check its KV-head count**, not just its parameter count.
 
-```mermaid
-graph TD
-    PROB(["KV cache too big<br/>(limits batch size & context)"]):::danger --> Q{"Where's the pressure?"}:::process
-    Q -->|"too many KV heads"| GQA["GQA / MQA<br/>share K,V across heads<br/>4–8× smaller"]:::out
-    Q -->|"bytes per value"| QNT["Quantize the cache<br/>FP8 / INT8 K,V<br/>2–4× smaller"]:::out
-    Q -->|"memory fragmentation"| PAGE["PagedAttention<br/>page the cache like OS VM<br/>near-zero waste"]:::out
-    Q -->|"context too long"| WIN["Sliding-window /<br/>attention sinks<br/>cap cache length"]:::out
-    GQA --> FIT(["Fits the GPU →<br/>bigger batch, longer context"]):::data
-    QNT --> FIT
-    PAGE --> FIT
-    WIN --> FIT
+The frontier of this lever is **Multi-head Latent Attention (MLA)** (DeepSeek-V2/V3). Instead of storing K and V per head, MLA caches a single **low-rank latent vector** per token and reconstructs the per-head K and V on the fly with a learned up-projection. The cached object is far smaller than even GQA's — often a *several-fold* further reduction — while keeping close to full-MHA quality. It's the same idea taken to its limit: don't just share the numbers, **compress** them.
 
-    classDef danger fill:#8B3B4A,stroke:#7B2B3A,color:#fff
-    classDef process fill:#5D4A8A,stroke:#4D3A7A,color:#fff
-    classDef out fill:#2E7A5A,stroke:#1E6A4A,color:#fff
-    classDef data fill:#3A6B96,stroke:#2A5B86,color:#fff
-```
+> **Gotcha:** MQA/GQA/MLA are **architectural** — they're baked in at pretraining and you can't bolt them onto an existing MHA model without retraining (or a conversion + light fine-tune). The runtime levers below (paging, quantization, windowing) are the ones you *can* apply to a model you've already got.
 
-- **PagedAttention** ([vLLM](https://arxiv.org/abs/2309.06180)) — store the cache in fixed-size **blocks** like OS virtual-memory pages instead of one contiguous slab, so you don't have to pre-reserve the worst-case length per request. This is what enables high-throughput batched serving with near-zero memory waste.
-- **Quantized cache** — store K and V in **FP8 or INT8** instead of FP16, directly halving or quartering the bytes (and, since decode is bandwidth-bound, the latency).
-- **Sliding-window / attention sinks** ([StreamingLLM](https://arxiv.org/abs/2309.17453)) — cap the cache by only keeping the most recent $w$ tokens (plus a few "sink" tokens), trading unbounded context for bounded memory.
+---
 
-> **Tip:** these compose. A production stack often runs **GQA + PagedAttention + FP8 cache** together — architectural, systems, and precision levers stacked. When someone says "we serve 128K context efficiently," this trio (plus FlashAttention for the compute side) is usually how.
+## Lever 2: PagedAttention — page the cache like virtual memory
 
-> **Gotcha:** quantizing the KV cache is *not* free quality-wise — keys are more sensitive to quantization error than values, which is why some schemes quantize them asymmetrically. If you turn on FP8 cache, **measure quality**, don't assume it's lossless.
+Even with a small per-token cache, the *allocation* is wasteful. A naive engine gives each request one **contiguous** block sized for the worst-case length. Two pathologies follow: **internal fragmentation** (a request that stops at 50 tokens still holds its 4,096-token reservation) and **external fragmentation** (free gaps too small to fit a new request). Real systems waste 60–80% of cache memory this way.
+
+**PagedAttention** ([vLLM](https://arxiv.org/abs/2309.06180)) borrows the operating-system trick of **virtual memory**: store the cache in small fixed-size **blocks** (e.g. 16 tokens each), with a per-request **block table** mapping logical positions to physical blocks — exactly like an OS page table maps virtual to physical pages. Memory is allocated **on demand**, one block at a time, so a request only ever holds blocks for the tokens it actually generated; there's near-zero waste, and the attention kernel just gathers the scattered blocks via the block table. By reclaiming the 60–80% that fragmentation used to waste, vLLM packs far more concurrent requests onto a GPU and reports **2–4× the throughput** of the contiguous-allocation systems that came before it.
+
+> **Tip:** paging unlocks a second win — **sharing**. Because blocks are addressable, two requests with the same **prefix** (e.g. a shared system prompt, or beam-search branches) can *point at the same physical blocks*, copying-on-write only when they diverge. **Automatic prefix caching** built on this can make agent and chat workloads with long fixed system prompts dramatically cheaper.
+
+---
+
+## Lever 3: quantize the cache
+
+The cache is just numbers, and you rarely need 16 bits of precision for them. Storing K and V in **FP8 or INT8** instead of FP16 **halves or quarters** the bytes — and because decode is bandwidth-bound, fewer bytes streamed per token is *directly* faster, on top of fitting more requests. **FP8** is hardware-native on recent GPUs (Hopper) and often essentially lossless; **INT8** needs **per-token or per-channel scales** to handle outliers; research schemes like **KIVI** push K to ~2 bits by quantizing it per-channel and V per-token — exploiting exactly the asymmetry below.
+
+> **Gotcha:** it's not free quality-wise. **Keys are more sensitive** to quantization than values (a few outlier channels dominate the attention scores), which is why good schemes use **per-channel or per-token scales** and sometimes quantize K and V asymmetrically. FP8 is often near-lossless; INT4 needs care. If you turn on a quantized cache, **measure quality**, don't assume it's free.
+
+---
+
+## Lever 4: bound the context — sliding window and attention sinks
+
+The other levers shrink bytes-per-token; this one caps the **number of tokens**. If you don't truly need unbounded history, keep only the most recent $w$ tokens:
+
+- **Sliding-window attention** (Mistral) — each token attends only to the last $w$ tokens, so the cache never exceeds $w$ entries regardless of how long the conversation runs.
+- **Attention sinks** ([StreamingLLM](https://arxiv.org/abs/2309.17453)) — keep the first few tokens *plus* the recent window. The surprising finding is that those first "sink" tokens are load-bearing: the softmax needs somewhere to dump attention mass, and dropping them collapses quality. Keep ~4 sink tokens + the window and you get stable, **infinite-length** streaming at bounded memory.
+
+> **Tip:** these four levers **compose**. A production stack serving "128K context efficiently" is usually **GQA + PagedAttention + FP8 cache** (and FlashAttention for the compute side), with windowing layered on for truly endless streams. Each lever attacks a different term of the cache-bytes formula.
+
+---
+
+## The cache in real models
+
+Tying the levers to models you've heard of makes them concrete:
+
+- **Llama-3** — GQA with 8 KV heads (serving up to 64 query heads), so the cache is ~8× smaller than MHA — which is what makes its 8K–128K context servable on commodity GPUs.
+- **Mistral 7B** — GQA **plus** a **sliding window** of 4,096 tokens, so the cache is capped no matter how long the conversation runs.
+- **DeepSeek-V2/V3** — **MLA**, caching a compact low-rank latent per token: the most aggressive architectural cache compression shipped in a frontier model.
+- **Every serving engine** (vLLM, TGI, TensorRT-LLM) — **PagedAttention**-style block management underneath, increasingly with an **FP8 cache** option and **automatic prefix caching** for shared system prompts.
+
+> **Note:** **beam search** multiplies the cache by the beam width — each beam is a distinct continuation needing its own K/V. A paged, block-addressable cache makes this cheap: the beams **share** the blocks of their common prefix and only fork (copy-on-write) where they diverge. Same trick, again: address the cache in blocks and sharing falls out for free.
+
+---
+
+## Sizing a real deployment: putting it together
+
+Here's the reasoning I'd actually do, end to end, given "serve Llama-3-8B chat on one A100-80GB, 8K context, max throughput":
+
+1. **Per-token cache.** Llama-3-8B uses **GQA with 8 KV heads** ($n_{\text{layers}}=32$, $d_{\text{head}}=128$): $2\times32\times8\times128\times2 \approx 0.125$ MiB/token.
+2. **Per-request cache.** 8K context → $8192 \times 0.125 \approx 1$ GiB/request.
+3. **Budget.** 80 GB − ~16 GB weights − ~6 GB overhead ≈ **58 GB for cache** → ~**58 concurrent requests**.
+4. **Need more?** Turn on an **FP8 cache** (→ 0.5 GiB/request → ~116 requests) and **PagedAttention** (so short requests don't hold 8K reservations). 
+5. **Endless chat?** Add **sliding-window + sinks** so a never-ending conversation can't grow the cache without bound.
+
+Every step is just the formula plus one lever. That's the whole job.
 
 ---
 
@@ -274,15 +344,18 @@ speedup  :   1.8x  (grows with sequence length)
 
 ## Recap and rapid-fire
 
-**If you remember nothing else:** during autoregressive decoding a token's K and V never change once computed — so cache them and recompute only the *new* token's. This turns per-step work from O(n) recompute into O(1), makes decoding **memory-bandwidth bound**, and costs VRAM that **grows linearly with tokens × batch** — the real cap on how much you can serve. GQA/MQA, quantized caches, and PagedAttention all exist to shrink or manage that memory.
+**If you remember nothing else:** during autoregressive decoding a token's K and V never change once computed — so cache them and recompute only the *new* token's. This turns per-step work from O(n) recompute into O(1), splits inference into a compute-bound **prefill** and a memory-bound **decode**, and costs VRAM that **grows linearly with tokens × batch** — the real cap on how much you can serve. The four levers — **GQA/MQA, PagedAttention, quantized caches, sliding-window** — each attack a different term of the cache-size formula.
 
 **Quick-fire — say these out loud:**
 
 - *Why cache K and V but not Q?* Each step has one new, disposable query; K and V are per-token and reused by every future query.
 - *Cache for Llama-2-7B at 8K context, batch 1?* 0.5 MiB/token × 8192 ≈ **4 GiB**.
-- *Why is decode memory-bound?* It moves a lot of bytes (weights + cache) but does little math per token.
+- *Prefill vs decode?* Prefill = one parallel, compute-bound pass (sets TTFT); decode = one-token-at-a-time, memory-bound loop (sets TPOT).
+- *Why is decode memory-bound?* Arithmetic intensity ≈ 1 FLOP/byte vs the GPU's ~156 — it moves bytes, barely computes; batching fixes it.
 - *What does GQA change in the formula?* It shrinks `n_kv_heads` (e.g. 64 → 8), cutting the cache proportionally.
-- *Prefill vs decode?* Prefill is one parallel, compute-bound pass that *fills* the cache; decode is the one-token-at-a-time, memory-bound loop that *grows* it.
+- *What does PagedAttention fix?* Memory fragmentation — page the cache into blocks (OS-style) for near-zero waste + prefix sharing.
+- *How is 128K context actually served?* The full stack at once: GQA + quantized cache + paging (+ windowing for endless streams).
+- *Does the cache change the output?* No — bit-for-bit identical; it only changes speed and memory.
 
 ---
 
