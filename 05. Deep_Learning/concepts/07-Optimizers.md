@@ -244,7 +244,7 @@ From-scratch SGD/Momentum/Adam, with the from-scratch Adam verified against `tor
 
 ```python
 """From-scratch SGD / Momentum / Adam; Adam checked against torch.optim.Adam.
-Verified on ml-py312 (torch 2.12), CPU."""
+Verified on Python 3.12 (torch 2.12), CPU."""
 import torch
 torch.manual_seed(0)
 

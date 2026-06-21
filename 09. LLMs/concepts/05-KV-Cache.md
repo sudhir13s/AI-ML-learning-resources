@@ -314,7 +314,7 @@ Here's a from-scratch single-layer attention that runs the decode loop **both wa
 
 ```python
 """From-scratch KV cache: prove identical outputs, then time the speedup.
-Verified on ml-py312 (torch 2.12), CPU."""
+Verified on Python 3.12 (torch 2.12), CPU."""
 import time, torch, torch.nn.functional as F
 
 torch.manual_seed(0)

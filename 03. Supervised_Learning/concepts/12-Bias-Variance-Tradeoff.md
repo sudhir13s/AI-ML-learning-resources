@@ -136,7 +136,7 @@ Two things to read off. First, the decomposition **holds exactly**: bias² + var
 
 ```python
 """Bias-variance decomposition: total test error = bias^2 + variance + noise.
-Verified on ml-py312, CPU (numpy)."""
+Verified on Python 3.12, CPU (numpy)."""
 import numpy as np
 rng = np.random.default_rng(0)
 f = lambda x: np.sin(1.5 * x); noise = 0.25            # sigma^2 = 0.0625

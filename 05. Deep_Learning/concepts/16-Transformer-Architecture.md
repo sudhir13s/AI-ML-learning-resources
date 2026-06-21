@@ -271,7 +271,7 @@ graph LR
 A pre-LN encoder/decoder block built from the [attention](15-Attention-Mechanism.md) you already saw, with a parameter count that matches the diagram. The single `causal=` flag is the only difference between a GPT block and a BERT block.
 
 ```python
-"""A transformer block from scratch (pre-LN). Verified on ml-py312 (torch 2.12), CPU."""
+"""A transformer block from scratch (pre-LN). Verified on Python 3.12 (torch 2.12), CPU."""
 import torch, torch.nn as nn, torch.nn.functional as F
 torch.manual_seed(0)
 

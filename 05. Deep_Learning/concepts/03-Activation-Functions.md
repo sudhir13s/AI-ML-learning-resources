@@ -137,7 +137,7 @@ Take the vector $z = [2.0,\, 1.0,\, 0.1,\, -0.5]$ (the figure's logits).
 
 ```python
 """Activations from scratch vs torch, and why sigmoid saturates but ReLU doesn't.
-Verified on ml-py312 (torch 2.12), CPU."""
+Verified on Python 3.12 (torch 2.12), CPU."""
 import torch, torch.nn.functional as F
 torch.manual_seed(0)
 x = torch.randn(6)

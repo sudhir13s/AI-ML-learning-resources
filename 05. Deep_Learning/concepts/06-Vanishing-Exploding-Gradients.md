@@ -124,7 +124,7 @@ The lesson: even a *small* deviation of the per-layer factor from 1 becomes enor
 
 ```python
 """Vanishing/exploding gradients through a deep net, and gradient clipping.
-Verified on ml-py312 (torch 2.12), CPU."""
+Verified on Python 3.12 (torch 2.12), CPU."""
 import torch, numpy as np
 
 def grad_norm_at_input(mode, L=25, W=64):

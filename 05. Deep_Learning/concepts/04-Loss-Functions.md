@@ -144,7 +144,7 @@ The headline check: the softmax+cross-entropy gradient really is $(\hat y - y)$,
 
 ```python
 """Cross-entropy + MSE from scratch, and the softmax+CE gradient = (p - y).
-Verified against torch autograd on ml-py312 (torch 2.12), CPU."""
+Verified against torch autograd on Python 3.12 (torch 2.12), CPU."""
 import torch, torch.nn.functional as F
 torch.manual_seed(0)
 N, C = 4, 3                                  # 4 examples, 3 classes

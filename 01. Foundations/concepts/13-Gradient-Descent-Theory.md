@@ -149,7 +149,7 @@ Each step multiplies $x$ by $(1 - 2\eta) = 0.2$, so it converges geometrically t
 
 ```python
 """Gradient descent: step-size stability, conditioning sets the rate, SGD converges.
-Verified on ml-py312, CPU (numpy)."""
+Verified on Python 3.12, CPU (numpy)."""
 import numpy as np
 rng = np.random.default_rng(0)
 

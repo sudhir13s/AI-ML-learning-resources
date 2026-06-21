@@ -255,7 +255,7 @@ The two losses that power both routes, with the DPO gradient checked to confirm 
 
 ```python
 """Bradley-Terry reward loss and the DPO loss + gradient direction.
-Verified on ml-py312 (torch 2.12), CPU."""
+Verified on Python 3.12 (torch 2.12), CPU."""
 import torch, torch.nn.functional as F
 
 # --- reward-model loss: -log sigma(r_chosen - r_rejected) -------------------

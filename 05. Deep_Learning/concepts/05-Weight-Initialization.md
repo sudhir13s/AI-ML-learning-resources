@@ -115,7 +115,7 @@ A hidden layer has fan-in $n = 256$ and ReLU activation, with input activations 
 
 ```python
 """Weight init: variance preservation through depth, and why constant init fails.
-Verified on ml-py312 (torch 2.12), CPU."""
+Verified on Python 3.12 (torch 2.12), CPU."""
 import torch, numpy as np
 torch.manual_seed(0)
 
