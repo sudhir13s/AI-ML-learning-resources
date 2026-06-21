@@ -46,6 +46,9 @@ updated: 2026-06-21
 - [FlashAttention: Fast and Memory-Efficient Exact Attention](https://arxiv.org/abs/2205.14135) — **Dao et al. (2022)** — IO-aware exact attention that never materializes the n×n matrix.
 - [Longformer: The Long-Document Transformer](https://arxiv.org/abs/2004.05150) — **Beltagy et al. (2020)** — sliding-window + global sparse attention for long sequences.
 - [Rethinking Attention with Performers](https://arxiv.org/abs/2009.14794) — **Choromanski et al. (2020)** — linear-time attention via kernel feature maps.
+- [Big Bird: Transformers for Longer Sequences](https://arxiv.org/abs/2007.14062) — **Zaheer et al. (2020)** — sparse attention (global + window + random) with linear cost.
+- [Attention is not Explanation](https://arxiv.org/abs/1902.10186) — **Jain & Wallace (2019)** — why attention weights are a diagnostic, not a faithful explanation.
+- [In-context Learning and Induction Heads](https://transformer-circuits.pub/2022/in-context-learning-and-induction-heads/index.html) — **Olsson et al., Anthropic (2022)** — the attention heads behind in-context learning.
 
 **Books (free chapters)**:
 - [Dive into Deep Learning — Ch. 11 "Attention Mechanisms and Transformers"](https://d2l.ai/chapter_attention-mechanisms-and-transformers/index.html) — **Zhang et al.** — scoring functions, Q/K/V, and multi-head attention with code.
@@ -55,6 +58,7 @@ updated: 2026-06-21
 - Concept page (full explanation): [Attention Mechanism](15-Attention-Mechanism.md)
 - Concept depth (the *why*): [AI-ML-intuition 4.08 Multi-Head Attention Routing](../../../AI-ML-intuition/Module_4_Stabilization/4B_Architectural_Motifs/4.08_Multi-Head_Attention_Routing.md) · [1.06 Scaled Dot-Product Similarity](../../../AI-ML-intuition/Module_1_Representation/1.06_Vector_Similarities_The_Scaled_Dot-Product.md)
 - Prerequisite: [14 RNN / LSTM / GRU](14-RNN-LSTM-GRU.md) (the bottleneck attention fixed)
-- Builds into: [16 Transformer Architecture](16-Transformer-Architecture.md) — attention stacked into a full model
+- Needed because attention is order-blind: [17 Positional Encoding](17-Positional-Encoding.md) (sinusoidal, learned, RoPE, ALiBi)
+- Builds into: [16 Transformer Architecture](16-Transformer-Architecture.md) — attention wrapped in residual + norm + FFN into a full model
 - At inference / efficiency: [KV Cache](../../09.%20LLMs/concepts/05-KV-Cache.md) · [Efficient Attention (FlashAttention)](../../09.%20LLMs/concepts/06-Efficient-Attention-FlashAttention.md)
 - Field overview: [Deep Learning](../README.md)
