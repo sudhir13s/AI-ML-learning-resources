@@ -35,6 +35,7 @@ updated: 2026-06-21
 **Key papers**:
 - [Training LMs to Follow Instructions with Human Feedback (InstructGPT)](https://arxiv.org/abs/2203.02155) — **Ouyang et al. (2022)** — the canonical 3-stage RLHF pipeline.
 - [Direct Preference Optimization (DPO)](https://arxiv.org/abs/2305.18290) — **Rafailov et al. (2023)** — preference alignment without a reward model or RL loop; the derivation in full.
+- [Proximal Policy Optimization (PPO)](https://arxiv.org/abs/1707.06347) — **Schulman et al. (2017)** — the clipped-surrogate RL algorithm RLHF uses to optimize the policy.
 - [Scaling Laws for Reward Model Overoptimization](https://arxiv.org/abs/2210.10760) — **Gao, Schulman & Hilton (2022)** — the Goodhart/over-optimization curve, measured.
 - [Constitutional AI: Harmlessness from AI Feedback](https://arxiv.org/abs/2212.08073) — **Bai et al. (2022)** — RLAIF: replace human labels with AI feedback against written principles.
 - [A General Theoretical Paradigm to Understand Learning from Preferences (IPO)](https://arxiv.org/abs/2310.12036) — **Azar et al. (2023)** — fixes DPO's tendency to overfit the preference margin.
