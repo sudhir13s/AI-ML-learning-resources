@@ -75,6 +75,8 @@ Here is the picture that makes the whole thing click. SFT is teaching a cooking 
 
 RLHF builds a literal "taste model" (the reward model) and then lets the apprentice cook thousands of plates, scoring each, nudging them toward higher scores — but on a leash, so they don't start plating in ways that *game the scorer* without actually tasting better. DPO skips building the separate taste model: it shows the apprentice the pairs and says "make the better one more likely and the worse one less likely," and — remarkably — that turns out to be mathematically the *same* thing.
 
+> **See it illustrated:** Hugging Face's [Illustrating RLHF](https://huggingface.co/blog/rlhf) walks the 3-stage pipeline with clear diagrams of the reward model and the PPO loop, and our own hands-on [RLHF & Alignment workflow](../../../Practitioner-Workflows/RLHF-and-Alignment/RLHF-and-Alignment.md) animates each stage end-to-end with runnable code.
+
 ---
 
 ## Preference data: the fuel for both routes
@@ -102,6 +104,8 @@ We fit $r_\phi$ by maximum likelihood — make the observed preferences as proba
 $$\mathcal{L}_{\text{RM}} = -\,\mathbb{E}_{(x, y_w, y_l)}\Big[\log \sigma\big(r_\phi(x, y_w) - r_\phi(x, y_l)\big)\Big]$$
 
 That's it — the reward model is a **binary classifier on pairs**, trained with what is essentially a logistic loss on the reward *gap*. (Architecturally, $r_\phi$ is usually the SFT model with its token head replaced by a single scalar output.)
+
+> *Where this comes from: the **Bradley-Terry** model of pairwise preference is Bradley & Terry, "Rank Analysis of Incomplete Block Designs" (1952); its use as the RLHF reward-model loss is **Training LMs to Follow Instructions with Human Feedback** (InstructGPT, Ouyang et al. 2022), §3 — in the references.*
 
 > **Note:** a trained reward model earns its keep even *without* PPO. **Best-of-n (rejection) sampling** generates $n$ candidate answers from the policy and just keeps the one the reward model scores highest — no training, pure inference-time selection. Llama-2 used it alongside PPO. The reusable reward model is an asset RLHF produces and DPO does not.
 
@@ -164,6 +168,8 @@ This is the punchline: the **reward is just $\beta$ times the log-ratio of the p
 $$\mathcal{L}_{\text{DPO}} = -\,\mathbb{E}\Big[\log \sigma\Big(\beta\log\tfrac{\pi_\theta(y_w\mid x)}{\pi_{\text{ref}}(y_w\mid x)} - \beta\log\tfrac{\pi_\theta(y_l\mid x)}{\pi_{\text{ref}}(y_l\mid x)}\Big)\Big]$$
 
 And that's DPO — the **exact same Bradley-Terry loss** as the reward model, but with the reward replaced by the implicit $\beta\log(\pi_\theta/\pi_{\text{ref}})$. No reward model to train, no rollouts, no RL. You compute four log-probabilities (chosen and rejected, under the policy and the frozen reference) and minimize one classification-style loss.
+
+> *Where this comes from: the closed-form optimal policy and the entire DPO derivation are **Direct Preference Optimization** (Rafailov et al. 2023), §4; the KL-regularized RLHF objective it inverts, and **PPO**, are Schulman et al., **Proximal Policy Optimization** (2017). The full RLHF pipeline is InstructGPT (Ouyang et al. 2022). All in the references.*
 
 ![As the implicit-reward margin grows, the DPO loss −log σ(margin) falls and the model's probability of preferring the chosen response, σ(margin), rises from 0.5 toward 1.](images/dpo_margin.png)
 
