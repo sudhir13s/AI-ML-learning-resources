@@ -24,6 +24,10 @@ updated: 2026-06-21
 - [Attention is all you need — model explanation (incl. math)](https://www.youtube.com/watch?v=bCz4OMemCcA) — **Umar Jamil** — full architecture with the math, training, and inference walk-through.
 - [Transformer Neural Networks, Clearly Explained](https://www.youtube.com/watch?v=zxQyTK8quyY) — **StatQuest (Josh Starmer)** — gentle, gated intro to attention and the encoder–decoder.
 
+**Interactive & visual**:
+- [bbycroft.net/llm — LLM Visualizer (3D)](https://bbycroft.net/llm) — **Brendan Bycroft** — an animated 3D walk through an entire small GPT, block by block.
+- [Transformer Explainer](https://poloclub.github.io/transformer-explainer/) — **Georgia Tech (Polo Club)** — a live GPT-2 in the browser; see embeddings → attention → FFN → logits as you type.
+
 **Courses (free)**:
 - [Stanford CS224N — Self-Attention & Transformers](https://web.stanford.edu/class/cs224n/) — **Stanford (Manning)** — the definitive university lecture deriving attention and the transformer block.
 - [Neural Networks: Zero to Hero](https://karpathy.ai/zero-to-hero.html) — **Andrej Karpathy** — culminates in building a GPT-style transformer from scratch; the best hands-on path.
@@ -44,6 +48,8 @@ updated: 2026-06-21
 - [RoFormer: Rotary Position Embedding (RoPE)](https://arxiv.org/abs/2104.09864) — **Su et al. (2021)** — relative positions via rotation; the modern default.
 - [Training Compute-Optimal LLMs (Chinchilla)](https://arxiv.org/abs/2203.15556) — **Hoffmann et al. (2022)** — the scaling law correcting parameters-vs-data balance.
 - [Llama: Open and Efficient Foundation Models](https://arxiv.org/abs/2302.13971) — **Touvron et al. (2023)** — the modern component stack (RoPE, RMSNorm, SwiGLU) in one model.
+- [On Layer Normalization in the Transformer Architecture](https://arxiv.org/abs/2002.04745) — **Xiong et al. (2020)** — why **pre-LN** trains deep transformers stably (no warmup), the modern default.
+- [Transformer Math 101](https://blog.eleuther.ai/transformer-math/) — **EleutherAI** — the parameter/memory accounting, incl. the ~12·d² per layer.
 
 **Books (free chapters)**:
 - [Dive into Deep Learning — Ch. 11 "Attention Mechanisms and Transformers"](https://d2l.ai/chapter_attention-mechanisms-and-transformers/index.html) — **Zhang et al.** — attention, multi-head, positional encoding, and the full transformer with runnable code.
