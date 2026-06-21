@@ -34,12 +34,14 @@ updated: 2026-06-22
 
 **Articles / blogs (free, no paywall)**:
 - [Naive Bayes (scikit-learn user guide)](https://scikit-learn.org/stable/modules/naive_bayes.html) — **scikit-learn** — the practical reference: Gaussian / Multinomial / Bernoulli / Complement variants and smoothing.
+- [A Plan for Spam](https://www.paulgraham.com/spam.html) — **Paul Graham (2002)** — the essay that popularized the Bayesian per-word spam filter — essentially the model on this page, in production.
 - [Speech and Language Processing — full textbook hub](https://web.stanford.edu/~jurafsky/slp3/) — **Jurafsky & Martin** — the free textbook home; Ch. 4 is the Naive Bayes deep-dive.
 
 **Key papers**:
 - [On the Optimality of the Simple Bayesian Classifier under Zero-One Loss](https://gwern.net/doc/ai/1997-domingos.pdf) — **Domingos & Pazzani (1997)** — *why* Naive Bayes is accurate despite violated independence.
 - [On Discriminative vs. Generative Classifiers (naive Bayes vs logistic regression)](https://ai.stanford.edu/~ang/papers/nips01-discriminativegenerative.pdf) — **Ng & Jordan (2002)** — the generative–discriminative pairing: NB converges faster, logistic regression is asymptotically better.
 - [A Comparison of Event Models for Naive Bayes Text Classification](https://cdn.aaai.org/Workshops/1998/WS-98-05/WS98-05-007.pdf) — **McCallum & Nigam (1998)** — multinomial vs Bernoulli models for text.
+- [Tackling the Poor Assumptions of Naive Bayes Text Classifiers](https://people.csail.mit.edu/jrennie/papers/icml03-nb.pdf) — **Rennie et al. (2003)** — introduces **Complement NB** and the fixes that close much of the gap to discriminative models on imbalanced text.
 
 **Books (free chapters)**:
 - [Speech and Language Processing, 3rd ed. — Ch. 4 "Naive Bayes and Sentiment Classification"](https://web.stanford.edu/~jurafsky/slp3/4.pdf) — **Jurafsky & Martin** — the clearest derivation, from a text-classification angle.
