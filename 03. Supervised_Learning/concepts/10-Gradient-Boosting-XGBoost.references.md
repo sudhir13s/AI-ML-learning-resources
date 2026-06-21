@@ -36,10 +36,14 @@ updated: 2026-06-22
 - [CatBoost — Documentation](https://catboost.ai/docs/en/) — **Yandex / CatBoost** — ordered boosting and categorical-feature handling, by the authors.
 
 **Key papers**:
+- [A Decision-Theoretic Generalization of On-Line Learning (AdaBoost)](https://cseweb.ucsd.edu/~yfreund/papers/adaboost.pdf) — **Freund & Schapire (1997)** — the original boosting algorithm; the ancestor gradient boosting generalizes.
+- [Additive Logistic Regression: A Statistical View of Boosting](https://projecteuclid.org/journals/annals-of-statistics/volume-28/issue-2/Additive-logistic-regression-a-statistical-view-of-boosting/10.1214/aos/1016218223.full) — **Friedman, Hastie & Tibshirani (2000)** — shows AdaBoost = forward stagewise additive modeling under exponential loss (the bridge to gradient boosting).
 - [Greedy Function Approximation: A Gradient Boosting Machine](https://projecteuclid.org/journals/annals-of-statistics/volume-29/issue-5/Greedy-function-approximation-A-gradient-boosting-machine/10.1214/aos/1013203451.full) — **Friedman (2001)** — the original algorithm; "gradient descent in function space."
 - [XGBoost: A Scalable Tree Boosting System](https://arxiv.org/abs/1603.02754) — **Chen & Guestrin (2016)** — 2nd-order objective, regularization, sparsity-aware splits, system design.
 - [LightGBM: A Highly Efficient Gradient Boosting Decision Tree](https://papers.nips.cc/paper/6907-lightgbm-a-highly-efficient-gradient-boosting-decision-tree.pdf) — **Ke et al. (2017)** — histogram binning + leaf-wise growth for speed at scale.
 - [CatBoost: Unbiased Boosting with Categorical Features](https://arxiv.org/abs/1706.09516) — **Prokhorenkova et al. (2018)** — ordered boosting + native categorical handling.
+- [A Unified Approach to Interpreting Model Predictions (SHAP)](https://arxiv.org/abs/1705.07874) — **Lundberg & Lee (2017)** — Shapley-value attributions; TreeSHAP is the standard way to explain boosted trees.
+- [Why do tree-based models still outperform deep learning on tabular data?](https://arxiv.org/abs/2207.08815) — **Grinsztajn, Oyallon & Varoquaux (2022)** — the careful benchmark explaining why boosted trees still win on tabular data.
 
 **Books (free chapters)**:
 - [The Elements of Statistical Learning — Ch. 10 "Boosting and Additive Trees"](https://hastie.su.domains/ElemStatLearn/) — **Hastie, Tibshirani & Friedman** — the definitive treatment (AdaBoost → gradient boosting → regularization).
