@@ -23,6 +23,9 @@ updated: 2026-06-21
 - [The spelled-out intro to backpropagation: building micrograd](https://www.youtube.com/watch?v=VMj-3S1tku0) — **Andrej Karpathy** — builds a working autograd engine from scratch, node by node.
 - [Neural Networks Pt. 2: Backpropagation Main Ideas](https://www.youtube.com/watch?v=IN2XmBhILt4) — **StatQuest (Josh Starmer)** — gentle, gated walk through the backprop computation.
 
+**Interactive & visual**:
+- [TensorFlow Playground](https://playground.tensorflow.org/) — **Google** — build a small net in the browser and watch backprop train it (weights + boundary updating live).
+
 **Courses (free)**:
 - [Neural Networks: Zero to Hero](https://karpathy.ai/zero-to-hero.html) — **Andrej Karpathy** — opens by building a full autograd engine (micrograd) by hand; the best way to *internalize* backprop.
 - [Stanford CS231n — Backpropagation, Neural Networks](https://cs231n.github.io/) — **Stanford (Karpathy / Li / Johnson)** — the definitive lecture notes with worked gradient examples and circuit intuition.

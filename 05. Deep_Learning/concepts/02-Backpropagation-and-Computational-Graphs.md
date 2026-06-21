@@ -55,6 +55,8 @@ The whole algorithm is two sweeps over the computational graph:
 
 Think of the loss as a number you want to reduce, and every node as a worker who contributed to it. Backprop is **blame assignment** (its formal name is the *credit-assignment problem*): the loss says "you're 1.0 responsible for yourself," and each node passes its share of the blame back to whoever fed it — scaled by *how much that input actually moved this node's output*. A node whose output barely depends on an input passes back almost no blame; a node whose output is highly sensitive passes back a lot.
 
+> **See it learn:** [TensorFlow Playground](https://playground.tensorflow.org/) lets you build a small net in the browser and watch it train — the weights and decision boundary updating each step *are* backprop's gradients at work. For the mechanics node-by-node, Karpathy's [micrograd build](https://www.youtube.com/watch?v=VMj-3S1tku0) (in the references) constructs this exact backward pass from scratch.
+
 That "scaling" is the **local gradient**, and the rule at every node is just the chain rule:
 
 ```mermaid
@@ -204,6 +206,8 @@ $$\delta^l = \big((W^{l+1})^\top \delta^{l+1}\big) \odot \sigma'(z^l) \quad\text
 $$\frac{\partial L}{\partial W^l} = \delta^l (a^{l-1})^\top, \qquad \frac{\partial L}{\partial b^l} = \delta^l$$
 
 The middle equation is the engine: $\delta^{l+1}$ becomes $\delta^l$ by a matmul with $(W^{l+1})^\top$ (the matmul VJP) and an elementwise multiply by $\sigma'(z^l)$ (the activation's local gradient). The last two read the weight/bias gradients off that error using the outer-product rule. **That is the entire algorithm** — repeat the middle equation from the output layer down to the input.
+
+> *Where these come from: backprop for neural nets is **Learning representations by back-propagating errors** (Rumelhart, Hinton & Williams 1986); these **four equations** in exactly this $\delta$-form are derived in Michael Nielsen's **Neural Networks and Deep Learning**, Ch. 2; the general reverse-mode-autodiff view is **Automatic Differentiation in Machine Learning: a Survey** (Baydin et al. 2015). All in the references.*
 
 ---
 
