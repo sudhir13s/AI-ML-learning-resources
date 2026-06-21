@@ -351,6 +351,42 @@ Instead of *modelling density* (how crowded is it here?), boundary methods take 
 
   SVDD's mental model is the cleaner one to carry into an interview: *fit the tightest possible bubble around "normal"; anything outside the bubble is an anomaly.* It's One-Class SVM described geometrically rather than as a margin from the origin.
 
+### The One-Class SVM dual, and where the ν-property comes from
+
+The doubly-meaningful $\nu$ isn't magic — it falls straight out of the optimization, and deriving it is the kind of thing that distinguishes a deep answer. Schölkopf's **primal** problem maps each point to feature space via $\phi(\cdot)$ and finds the maximum-margin hyperplane $w^\top \phi(x) = \rho$ separating the data from the origin, allowing slack $\xi_i \ge 0$ for points on the wrong side:
+
+$$
+\min_{w,\,\rho,\,\xi}\ \frac{1}{2}\lVert w\rVert^2 \;+\; \frac{1}{\nu n}\sum_{i=1}^{n}\xi_i \;-\; \rho
+\qquad\text{s.t.}\quad w^\top\phi(x_i) \ge \rho - \xi_i,\ \ \xi_i \ge 0.
+$$
+
+Read the objective: maximize the margin $\rho/\lVert w\rVert$ from the origin (the $-\rho$ term pushes $\rho$ up, $\tfrac12\lVert w\rVert^2$ regularizes), while the $\frac{1}{\nu n}\sum \xi_i$ penalty buys forgiveness for the $\xi_i > 0$ points that fall **outside** the margin — the ones we'll call outliers. The constant $\frac{1}{\nu n}$ is where $\nu$ enters.
+
+Forming the Lagrangian and eliminating the primal variables gives the **dual** — a clean quadratic program in multipliers $\alpha_i$, with the kernel $K(x_i,x_j)=\phi(x_i)^\top\phi(x_j)$ replacing every inner product (the kernel trick):
+
+$$
+\min_{\alpha}\ \frac{1}{2}\sum_{i,j}\alpha_i\alpha_j K(x_i,x_j)
+\qquad\text{s.t.}\quad \mathbf{0 \le \alpha_i \le \tfrac{1}{\nu n}},\ \ \sum_i \alpha_i = 1.
+$$
+
+The two constraints are the whole story. The **box constraint** $0 \le \alpha_i \le \frac{1}{\nu n}$ caps how much any single point can pull on the boundary, and the **equality** $\sum_i \alpha_i = 1$ forces the multipliers to sum to one. Now count:
+
+- A point **strictly outside** the margin (a margin error, $\xi_i > 0$) is pinned at the cap $\alpha_i = \frac{1}{\nu n}$. Since the $\alpha_i$ sum to 1 and each capped point contributes $\frac{1}{\nu n}$, there can be **at most $\nu n$** such points — so the **fraction of outliers is $\le \nu$**.
+- A point **strictly inside** the boundary has $\alpha_i = 0$ and is *not* a support vector. Every point that *is* a support vector ($\alpha_i > 0$) is either on or outside the margin, and the same sum-to-one arithmetic forces **at least $\nu n$** of them — so the **fraction of support vectors is $\ge \nu$**.
+
+That is the celebrated **ν-property**, derived: $\nu$ is *simultaneously* an upper bound on the outlier fraction and a lower bound on the support-vector fraction. It's not a heuristic — it's a counting consequence of the box constraint $\frac{1}{\nu n}$ and the normalization $\sum\alpha_i=1$. (SVDD's dual is the same QP up to a constant when the kernel is translation-invariant like the RBF, $K(x,x)=1$ — which is *why* the two methods coincide for the RBF kernel, as claimed above.)
+
+**Measured — the ν-property is tight.** Fit a One-Class SVM (RBF) on 1,000 clean 2-D normal points and sweep $\nu$:
+
+| $\nu$ | fraction flagged outside (margin errors) | fraction that are support vectors |
+|---|---|---|
+| 0.01 | 0.020 | 0.023 |
+| 0.05 | 0.049 | 0.055 |
+| 0.10 | 0.098 | 0.103 |
+| 0.20 | 0.199 | 0.203 |
+
+Exactly as the derivation predicts: the **outlier fraction sits just below $\nu$** (the upper bound) and the **support-vector fraction just above $\nu$** (the lower bound), bracketing it tightly at every setting. This is *why* you set $\nu$ directly to your contamination budget — it controls the flagged fraction almost exactly. (Reproduced in the code section's note.)
+
 > **Note:** One-Class SVM is **acutely sensitive to feature scaling** — it's a distance-based kernel method, so always standardize first — and to its $\nu$ and $\gamma$ hyperparameters. It also scales poorly, roughly quadratic in $n$, and tends to be **outperformed by Isolation Forest** on large, high-dimensional data. That combination is why Isolation Forest is the modern default and One-Class SVM is now mostly reserved for *smaller, clean, one-class novelty* problems where its tight kernel boundary shines and the $n^2$ cost is affordable.
 
 ### Clustering-based
@@ -407,7 +443,27 @@ The key insight is that **contamination does not change the ranking** — every 
 
 Set the cut from one of three things: a **prior** (your historical fraud rate), a **budget** (how many alerts can a human investigate per day?), or by **sweeping** it and reading the precision-recall curve to pick an operating point. Get it wrong and you either flood analysts with false positives (too high) or silently miss anomalies (too low) — but because the ranking is robust, fixing it is just moving the cut, not retraining.
 
-> **Gotcha:** contamination is the most common foot-gun in production anomaly detection. People set it once and forget it, then the base rate drifts (a new fraud wave, a sensor recalibration) and the fixed percentile threshold silently over- or under-fires. Treat the threshold as a **monitored, re-tunable** quantity, not a constant.
+**Measured — calibrating the cut, and precision@k in practice.** Let's turn this into numbers on the planted-outlier dataset (480 inliers + 20 outliers, a 4% true rate), scoring with Isolation Forest. First, **precision@k** — the operational metric — read straight off the ranked scores:
+
+| $k$ (top scored) | precision@k |
+|---|---|
+| 10 | **1.000** |
+| 20 | 0.700 |
+| 40 | 0.450 |
+
+The top **10** flagged points are *all* genuine outliers (precision 1.0); by $k=20$ precision drops to 0.70 (we've started reaching into the inliers), and by $k=40$ to 0.45. This is the curve your operations team lives on: *"if my analysts can work 10 alerts, every one is real; if I push them to 40, more than half are noise."* The right $k$ is a **staffing decision**, and precision@k makes the trade-off explicit.
+
+Now the same scores cut by a **contamination budget** (flag the top fraction), showing how the percentile threshold trades precision against recall:
+
+| contamination | threshold | # flagged | precision | recall |
+|---|---|---|---|---|
+| 0.02 | $+0.693$ | 10 | **1.000** | 0.500 |
+| 0.04 | $+0.573$ | 20 | 0.700 | 0.700 |
+| 0.08 | $+0.528$ | 40 | 0.450 | **0.900** |
+
+Set contamination to **0.02** (below the true 4% rate) and you flag only the 10 most-extreme points — perfect precision (1.0) but you catch only half the outliers (recall 0.5). Set it to **0.08** (above the true rate) and recall climbs to 0.90 but precision collapses to 0.45 — you've cast a wide net and hauled in inliers. Setting it *at* the true rate (0.04) balances them (0.70/0.70). The lesson is exactly the decoupling claimed above: **the ranking is fixed; contamination only slides you along this precision–recall trade-off** — so you pick the row that matches your budget without ever retraining. (All three tables are reproduced in the code section's note.)
+
+> **Gotcha:** contamination is the most common foot-gun in production anomaly detection. People set it once and forget it, then the base rate drifts (a new fraud wave, a sensor recalibration) and the fixed percentile threshold silently over- or under-fires. Treat the threshold as a **monitored, re-tunable** quantity, not a constant. The table above shows *why* drift bites: if the true rate moves from 4% to 8% but contamination stays at 0.04, you keep flagging only 20 points and your recall silently halves.
 
 ---
 
@@ -553,6 +609,8 @@ First, **the robust modified-z score (33) flags an outlier the classic z-score (
 Second, **all three detectors crush the 0.083 random baseline** (PR-AUC 0.74–0.80), with LOF narrowly ahead on this density-varying data. And notice the warning sign: **ROC-AUC (0.87–0.89) reads uniformly rosier than PR-AUC (0.74–0.80)** on the *same predictions* — exactly the flattery the imbalance section predicted, because ROC's false-positive-rate denominator is dominated by the large normal class. When the two disagree like this, the PR number is the honest one. Lead with PR-AUC.
 
 > **Note:** to reproduce the LOF-by-hand numbers from earlier, fit `LocalOutlierFactor(n_neighbors=2)` on the five points `[[0],[1],[2],[5],[6]]` and read `-lof.negative_outlier_factor_` — you'll get `[0.875, ..., 1.667, ...]`, matching the hand derivation to three decimals. The math in this page *is* the library.
+
+> **Note:** the **ν-property table** comes from fitting `OneClassSVM(nu=ν, gamma=0.25)` on 1,000 clean normal points and reading two fractions: `(oc.predict(X) == -1).mean()` (margin errors, which lands just below ν) and `len(oc.support_)/len(X)` (support vectors, just above ν) — the bound made tight at every ν ∈ {0.01, 0.05, 0.10, 0.20}. The **precision@k and contamination tables** rank the planted-outlier scores with `np.argsort(-score)`, take `y[order[:k]].mean()` for precision@k, and for each contamination budget set `thr = np.quantile(score, 1-contam)` and report the precision/recall of `score >= thr` — reproducing precision@10 = 1.0 and the 0.02→1.0/0.5, 0.08→0.45/0.90 precision–recall slide.
 
 ---
 

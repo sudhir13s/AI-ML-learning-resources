@@ -209,9 +209,20 @@ Too small an $h$ and the held-out point falls in a gap between the spikes (low l
 
 **Least-squares (unbiased) cross-validation.** Instead of likelihood, directly estimate the MISE's data-dependent part $\int \hat f_h^2 - 2\int \hat f_h f$ from the sample and minimize it. It targets squared error rather than likelihood and is less sensitive to outliers in the tails, but can be noisy.
 
-**Plug-in / Sheather–Jones.** Rather than cross-validate, *estimate the unknown $R(f'')$ itself* (with a pilot KDE) and plug it into the optimal-$h$ formula. The **Sheather–Jones** method is the gold-standard plug-in selector — generally more reliable and less variable than cross-validation, and the recommended default in much of the statistics literature.
+**Plug-in / Sheather–Jones.** Rather than cross-validate, *estimate the unknown $R(f'')$ itself* (with a pilot KDE) and plug it into the optimal-$h$ formula. The **Sheather–Jones** method is the gold-standard plug-in selector — generally more reliable and less variable than cross-validation, and the recommended default in much of the statistics literature. Concretely: build a pilot KDE, differentiate it twice to estimate $R(f'') = \int f''(x)^2\,dx$ (the one functional $h^*$ needs), and substitute into $h^* = [R(K)/(\sigma_K^4 R(f'') n)]^{1/5}$. SJ refines this with a clever self-consistent pilot-bandwidth choice, but the core move is "estimate $R(f'')$, then plug in."
 
-> **Note:** all of these resolve the circularity of $h^*$ (which needed the unknown $f$) in different ways: cross-validation sidesteps $f$ by predicting held-out data; plug-in estimates the one functional of $f$ ($R(f'')$) that $h^*$ actually needs. In practice: **Silverman to get started, Sheather–Jones or CV to finish, eyeball to confirm.**
+**Measured — the selectors on a hard (bimodal) density.** This is where the difference between "normal-reference" rules and data-driven selectors becomes concrete. Take $n=400$ points from a clearly **bimodal** truth (two well-separated Gaussians) and run all four selectors, scoring each bandwidth by the total log-likelihood it assigns the data (higher = the data is better explained):
+
+| selector | chosen $h$ | total log-likelihood |
+|---|---|---|
+| Silverman (normal-reference) | 0.693 | $-714.0$ |
+| Scott (normal-reference) | 0.770 | $-727.5$ |
+| **plug-in (Sheather–Jones-style)** | **0.341** | $\mathbf{-667.3}$ |
+| likelihood cross-validation | 0.208 | $-656.0$ |
+
+The two **normal-reference rules over-smooth badly** — by assuming a single Gaussian they pick $h \approx 0.7$–$0.8$, wide enough to start merging the two modes, and score the worst log-likelihoods ($-714$, $-727$). The **plug-in selector**, having *estimated* the true roughness $R(f'') = 0.152$ from a pilot fit instead of assuming Gaussianity, correctly pulls the bandwidth down to $0.341$ and fits far better ($-667$). Likelihood-CV goes a touch further still ($0.208$, $-656$) — it directly optimizes held-out fit, so it resolves the valley most aggressively, at the cost of being noisier run-to-run. The ordering is exactly SJ's reputation: **it lands between the over-smoothing normal rules and the (lower-bias but higher-variance) cross-validation**, usually closer to the right answer than either extreme on its own. (All four numbers are reproduced by the selector snippet in the code section's note.)
+
+> **Note:** all of these resolve the circularity of $h^*$ (which needed the unknown $f$) in different ways: cross-validation sidesteps $f$ by predicting held-out data; plug-in estimates the one functional of $f$ ($R(f'')$) that $h^*$ actually needs. In practice: **Silverman to get started, Sheather–Jones or CV to finish, eyeball to confirm.** The table above is *why* that order exists — the normal-reference start is fast but biased on non-Gaussian data, and the data-driven finish corrects it.
 
 ```mermaid
 graph TD
@@ -274,6 +285,22 @@ By $d=10$ you need ~400,000 points to match what 100 bought you in 1-D — and r
 $$\hat f_H(\mathbf x) = \frac{1}{n} \sum_{i=1}^{n} K_H(\mathbf x - \mathbf x_i),\qquad K_H(\mathbf u) = \lvert H\rvert^{-1/2}\, K\!\big(H^{-1/2}\mathbf u\big).$$
 
 A *diagonal* $H$ gives a different bandwidth per axis (good when features have different scales — and you should **standardize** features first regardless, since a single scalar $h$ treats all axes equally). A *full* $H$ lets the bumps be tilted ellipses aligned with the data's correlations, at the cost of $O(d^2)$ parameters to choose. The same bias–variance and curse-of-dimensionality story applies, only harder.
+
+**Worked example — a 2-D bandwidth-matrix KDE by hand.** The formula above is opaque until you push numbers through it once. Take **three points** $\{(0,0), (2,0), (1,2)\}$, a **full** (correlated) bandwidth matrix $H = \left[\begin{smallmatrix}1 & 0.5\\ 0.5 & 1\end{smallmatrix}\right]$, and evaluate the density at $x = (1, 0.5)$.
+
+First the normalizer. With $d=2$, $\det H = 1 - 0.25 = 0.75$, so each Gaussian bump carries the constant $\frac{1}{(2\pi)^{d/2}\sqrt{\det H}} = \frac{1}{2\pi\sqrt{0.75}} = 0.18378$. The exponent for each point is the **squared Mahalanobis distance in the $H$-metric**, $(x-x_i)^\top H^{-1}(x-x_i)$, with $H^{-1} = \frac{1}{0.75}\left[\begin{smallmatrix}1 & -0.5\\ -0.5 & 1\end{smallmatrix}\right]$:
+
+| point $x_i$ | $(x-x_i)^\top H^{-1}(x-x_i)$ | $K_H(x-x_i) = 0.18378\,e^{-\frac12(\cdot)}$ |
+|---|---|---|
+| $(0,0)$ | $1.0000$ | $0.111466$ |
+| $(2,0)$ | $2.3333$ | $0.057229$ |
+| $(1,2)$ | $3.0000$ | $0.041006$ |
+
+Average the three kernel values: $\hat f_H(x) = \tfrac{1}{3}(0.111466 + 0.057229 + 0.041006) = \mathbf{0.069900}$. (Verified against an independent vectorized computation below — exact match.) The nearest point $(0,0)$ dominates the estimate, exactly as in 1-D; the only new machinery is that "distance" is now measured through $H^{-1}$, which *tilts and stretches* each bump along the bandwidth matrix's axes.
+
+The off-diagonal of $H$ is doing real work. Re-run with a **diagonal** $H = I$ (axis-aligned, uncorrelated bumps) and the same query gives $\hat f_I(x) = 0.074016$ — a different density, because the correlated $H$ orients each bump along the $(1,1)$ diagonal, changing how much mass reaches $x$. That difference *is* the value of a full bandwidth matrix: it lets the bumps follow the data's correlation structure instead of assuming the axes are independent. (The price, again, is the $O(d^2)$ entries of $H$ to choose, which is why a diagonal $H$ on standardized features is the usual practical compromise.)
+
+> **Gotcha:** in $d$ dimensions the per-bump normalizer is $\lvert H\rvert^{-1/2}$, *not* $h^{-d}$ unless $H = h^2 I$. Forgetting the $\sqrt{\det H}$ (or using a scalar $h$ when features are correlated) silently mis-normalizes the density — it still looks like a plausible surface but no longer integrates to 1, and the relative heights are wrong wherever the correlation matters. Always whiten or standardize first, and let $H$ (or at least a diagonal $H$) carry the per-axis scale.
 
 ---
 
@@ -568,6 +595,8 @@ Output:
 > **Note:** the headline is line (1): **`match=True`** — our three-line `kde()` reproduces scikit-learn's optimized estimator exactly, because there is no hidden machinery; KDE really is "average a kernel per point." Line (4) is the practical lesson: **Silverman over-smoothed the bimodal data (0.61) and cross-validation correctly pulled the bandwidth down (0.29)** to resolve the two modes — the [bias–variance](../../03.%20Supervised_Learning/concepts/12-Bias-Variance-Tradeoff.md) story playing out on real data.
 
 > **Tip:** for production density estimation, prefer `scipy.stats.gaussian_kde` (quick, auto-bandwidth) or `sklearn.neighbors.KernelDensity` (multiple kernels, tree-accelerated, integrates with `GridSearchCV`). The from-scratch version above is for understanding; the libraries handle large $n$, multiple dimensions, and bandwidth selection for you.
+
+> **Note:** two further results in the page come from short, self-contained snippets. The **2-D bandwidth-matrix** value ($\hat f_H(1,0.5) = 0.069900$) is just $\frac{1}{n}\sum_i \frac{1}{2\pi\sqrt{\det H}}\exp(-\tfrac12 (x-x_i)^\top H^{-1}(x-x_i))$ evaluated over the three points — one `np.einsum('ij,jk,ik->i', diff, inv(H), diff)` for the squared $H$-metric distances, then average. The **selector-comparison table** fits a pilot Gaussian KDE, estimates $R(f'') = \int f''^2$ on a fine grid (using $f'' = \frac{1}{nh^3}\sum_i(u_i^2-1)\phi(u_i)$, the second derivative of the Gaussian kernel), and plugs it into $h^* = [R(K)/(\sigma_K^4 R(f'') n)]^{1/5}$ for the SJ-style value, alongside `GridSearchCV` for the CV value — reproducing $h = 0.341$ (plug-in) vs $0.208$ (CV) vs $0.693$ (Silverman) on the bimodal data.
 
 ---
 
