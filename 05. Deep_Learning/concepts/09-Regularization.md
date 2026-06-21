@@ -140,7 +140,7 @@ Without regularization the update would be $2.0 - 0.04 = 1.96$. The extra pull o
 
 ```python
 """Regularization: (1) L2's gradient IS weight decay; (2) L1 gives sparsity, L2 doesn't.
-Verified on ml-py312 (torch 2.12), CPU."""
+Verified on Python 3.12 (torch 2.12), CPU."""
 import torch
 torch.manual_seed(0)
 

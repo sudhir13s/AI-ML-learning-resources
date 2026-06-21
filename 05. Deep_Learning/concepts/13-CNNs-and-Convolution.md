@@ -160,7 +160,7 @@ Element-wise multiply and sum: $(2{\cdot}1 + 0 + 0{\cdot}{-}1) + (2{\cdot}1 + 0 
 
 ```python
 """2D convolution from scratch vs torch + the output-size & parameter-sharing math.
-Verified on ml-py312 (torch 2.12), CPU."""
+Verified on Python 3.12 (torch 2.12), CPU."""
 import torch, torch.nn.functional as F
 torch.manual_seed(0)
 x = torch.randn(1, 3, 7, 7)            # (batch, in_channels, H, W)

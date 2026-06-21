@@ -143,7 +143,7 @@ An LSTM with forget gate $f \approx 1$ instead keeps $\partial C_t/\partial C_{t
 
 ```python
 """LSTM cell from scratch (matches torch), and gradient-across-time.
-Verified on ml-py312 (torch 2.12), CPU."""
+Verified on Python 3.12 (torch 2.12), CPU."""
 import torch, torch.nn as nn
 torch.manual_seed(0)
 H, D = 16, 4

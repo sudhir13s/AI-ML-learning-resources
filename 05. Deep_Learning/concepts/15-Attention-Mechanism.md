@@ -325,7 +325,7 @@ From-scratch scaled dot-product and multi-head attention, plus the causal mask a
 
 ```python
 """From-scratch scaled dot-product + multi-head attention, checked against PyTorch.
-Verified on ml-py312 (torch 2.12), CPU."""
+Verified on Python 3.12 (torch 2.12), CPU."""
 import torch, torch.nn.functional as F
 torch.manual_seed(0)
 

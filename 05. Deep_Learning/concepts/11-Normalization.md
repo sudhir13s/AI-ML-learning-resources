@@ -186,7 +186,7 @@ The whole family in a dozen lines, each verified against `torch.nn`. Watch the *
 
 ```python
 """BatchNorm / LayerNorm / RMSNorm from scratch, checked against torch.
-Verified on ml-py312 (torch 2.12), CPU."""
+Verified on Python 3.12 (torch 2.12), CPU."""
 import torch, torch.nn as nn
 torch.manual_seed(0)
 N, D = 8, 5                              # batch of 8, feature dim 5

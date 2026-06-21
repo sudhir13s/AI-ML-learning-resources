@@ -118,7 +118,7 @@ Same tiny per-block transformation, wildly different outcome — entirely becaus
 
 ```python
 """Residual connections: the F(x)+x block and the gradient highway it creates.
-Verified on ml-py312 (torch 2.12), CPU."""
+Verified on Python 3.12 (torch 2.12), CPU."""
 import torch, torch.nn as nn
 torch.manual_seed(0)
 

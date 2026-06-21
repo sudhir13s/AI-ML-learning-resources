@@ -142,7 +142,7 @@ A spam classifier on 1,000 emails (100 spam) flags 110 as spam, of which 80 are 
 
 ```python
 """Classification metrics on imbalanced data: the accuracy trap and AUC as ranking.
-Verified on ml-py312, CPU (numpy)."""
+Verified on Python 3.12, CPU (numpy)."""
 import numpy as np
 rng = np.random.default_rng(0)
 Npos, Nneg = 50, 950                                       # 5% positive

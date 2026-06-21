@@ -176,7 +176,7 @@ That single limitation is what motivated **contextual embeddings** — [ELMo and
 From-scratch skip-gram with negative sampling on a tiny structured corpus. It won't rival pretrained vectors, but it *proves the mechanism*: words that share contexts end up with higher cosine similarity. Runs on CPU in seconds.
 
 ```python
-"""Skip-gram with negative sampling, from scratch. Verified on ml-py312 (torch 2.12), CPU."""
+"""Skip-gram with negative sampling, from scratch. Verified on Python 3.12 (torch 2.12), CPU."""
 import torch, torch.nn as nn, torch.nn.functional as F
 torch.manual_seed(0)
 
