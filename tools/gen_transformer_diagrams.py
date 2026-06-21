@@ -1,0 +1,85 @@
+"""Transformer-architecture concept-page diagrams (muted palette, parallel matplotlib scale).
+
+Two visuals for 05. Deep_Learning/concepts/16-Transformer-Architecture.md:
+  1. tf_positional_encoding.png -- sinusoidal positional encoding: heatmap over
+     (position x dimension) + a few dimensions as waves of different frequency.
+  2. tf_params.png             -- where a transformer block's parameters live:
+     attention vs FFN per block, and how the total scales with depth.
+"""
+import os, matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+import numpy as np
+
+OUT = os.path.join(os.path.dirname(__file__), "..", "05. Deep_Learning", "concepts", "images")
+OUT = os.path.abspath(OUT)
+os.makedirs(OUT, exist_ok=True)
+
+BLUE, PURPLE, GREEN, RED, SLATE, AMBER, NAVY = (
+    "#3A6B96", "#5D4A8A", "#2E7A5A", "#8B3B4A", "#4A5B6E", "#7A6528", "#2A5B80")
+plt.rcParams.update({"font.size": 11, "font.family": "DejaVu Sans"})
+
+
+def _despine(ax):
+    for s in ("top", "right"):
+        ax.spines[s].set_visible(False)
+
+
+def positional_encoding():
+    pos_n, d = 60, 64
+    pos = np.arange(pos_n)[:, None]
+    i = np.arange(d)[None, :]
+    angle = pos / np.power(10000, (2 * (i // 2)) / d)
+    PE = np.where(i % 2 == 0, np.sin(angle), np.cos(angle))
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11.4, 4.6))
+    im = ax1.imshow(PE, aspect="auto", cmap="RdBu", vmin=-1, vmax=1)
+    ax1.set_xlabel("embedding dimension"); ax1.set_ylabel("token position")
+    ax1.set_title("Sinusoidal positional encoding $PE[pos, i]$", fontsize=13, fontweight="bold")
+    fig.colorbar(im, ax=ax1, fraction=0.046, pad=0.04)
+
+    for dim, c, lab in [(0, BLUE, "dim 0 (fast)"), (4, PURPLE, "dim 4"), (20, GREEN, "dim 20 (slow)")]:
+        ax2.plot(np.arange(pos_n), PE[:, dim], color=c, lw=2.2, label=lab)
+    ax2.set_xlabel("token position"); ax2.set_ylabel("value")
+    ax2.set_title("Each dimension is a wave of a different frequency", fontsize=13, fontweight="bold")
+    ax2.legend(frameon=False, fontsize=9.5, loc="lower center", ncol=3,
+               bbox_to_anchor=(0.5, -0.04)); _despine(ax2)
+    ax2.set_ylim(-1.15, 1.35)
+    fig.tight_layout(); fig.savefig(f"{OUT}/tf_positional_encoding.png", dpi=150, bbox_inches="tight")
+    plt.close(fig); print("wrote tf_positional_encoding.png")
+
+
+def params():
+    d_model, d_ff, n_heads = 768, 3072, 12          # BERT-base-ish block
+    attn = 4 * d_model * d_model                      # Wq,Wk,Wv,Wo
+    ffn = 2 * d_model * d_ff                           # two linear layers (4x expansion)
+    ln = 2 * 2 * d_model                               # two LayerNorms (gamma,beta)
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11.4, 4.6))
+
+    comps = ["Attention\n(Wq,Wk,Wv,Wo)", "Feed-forward\n(2 layers, 4× wide)", "LayerNorm"]
+    vals = [attn / 1e6, ffn / 1e6, ln / 1e6]
+    bars = ax1.bar(comps, vals, 0.6, color=[PURPLE, GREEN, SLATE], edgecolor="white")
+    for i, v in enumerate(vals):
+        ax1.text(i, v + 0.1, f"{v:.2f}M", ha="center", fontweight="bold", color="#222", fontsize=10)
+    ax1.set_ylabel("parameters (millions)")
+    ax1.set_title("One block's parameters: FFN dominates", fontsize=13, fontweight="bold")
+    ax1.text(1, ffn/1e6 * 0.5, "≈ 2× attention", ha="center", color="white", fontweight="bold", fontsize=10)
+    _despine(ax1)
+
+    layers = np.arange(1, 25)
+    per_block = (attn + ffn + ln) / 1e6
+    ax2.plot(layers, layers * per_block, color=NAVY, lw=2.6, marker="o", ms=3)
+    ax2.set_xlabel("number of layers (depth)"); ax2.set_ylabel("transformer-block params (M)")
+    ax2.set_title("Params scale linearly with depth", fontsize=13, fontweight="bold")
+    ax2.annotate(f"12 layers ≈ {12*per_block:.0f}M\n(BERT-base block stack)", (12, 12*per_block),
+                 textcoords="offset points", xytext=(-95, 18), fontsize=9, fontweight="bold", color="#222",
+                 arrowprops=dict(arrowstyle="->", color=SLATE))
+    _despine(ax2)
+    fig.tight_layout(); fig.savefig(f"{OUT}/tf_params.png", dpi=150, bbox_inches="tight")
+    plt.close(fig); print("wrote tf_params.png")
+
+
+if __name__ == "__main__":
+    positional_encoding()
+    params()
+    print("OUT:", OUT)
