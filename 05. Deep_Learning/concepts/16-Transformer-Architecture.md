@@ -68,6 +68,8 @@ Because there's no recurrence to encode order, the input is **token embedding + 
 
 ## Intuition: the residual stream, communicate then compute
 
+> **See it live:** **[bbycroft.net/llm](https://bbycroft.net/llm)** is an animated 3D walk through an entire small GPT — embeddings, the residual stream, each block's attention and FFN, layer by layer; the **[Transformer Explainer](https://poloclub.github.io/transformer-explainer/)** runs a real GPT-2 in the browser. Spending two minutes in either makes the rest of this page concrete.
+
 The clearest mental model is the **residual stream**. Picture a wide highway of token vectors running straight through the network from input to output. Each block doesn't *replace* what's on the highway — it **reads** from it, computes something, and **adds** the result back (the residual `+`). Information accumulates; nothing is destroyed.
 
 Every block does two things, in a fixed rhythm:
@@ -159,6 +161,8 @@ $$\text{FFN}(x) = W_2\,\phi(W_1 x + b_1) + b_2, \qquad \phi \in \{\text{ReLU}, \
 $$PE_{(pos,\,2i)} = \sin\!\left(\frac{pos}{10000^{2i/d}}\right), \qquad PE_{(pos,\,2i+1)} = \cos\!\left(\frac{pos}{10000^{2i/d}}\right)$$
 
 **Parameter budget per block.** Attention $= 4 d^2$ ($W_q, W_k, W_v, W_o$); FFN $= 2 \cdot d \cdot 4d = 8 d^2$. Total $\approx 12\,d_{\text{model}}^2$ per layer.
+
+> *Where these come from: the **block**, **FFN** ($\S$3.3), and **sinusoidal positional encoding** ($\S$3.5) are all from **Attention Is All You Need** (Vaswani et al. 2017). The **pre-LN** placement used here (Norm *before* each sub-layer) is from **On Layer Normalization in the Transformer Architecture** (Xiong et al. 2020). The $\approx 12d^2$/layer accounting is worked through in **Transformer Math 101** (EleutherAI). All in the references.*
 
 ---
 
