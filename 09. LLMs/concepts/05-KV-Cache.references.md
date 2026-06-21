@@ -46,6 +46,10 @@ updated: 2026-06-21
 - [Efficient Memory Management for LLM Serving (PagedAttention)](https://arxiv.org/abs/2309.06180) — **Kwon et al. (2023)** — paging the KV cache like OS virtual memory.
 - [Efficiently Scaling Transformer Inference](https://arxiv.org/abs/2211.05102) — **Pope et al. (2022, Google)** — the canonical analysis of inference cost, including the cache.
 - [Efficient Streaming LLMs with Attention Sinks (StreamingLLM)](https://arxiv.org/abs/2309.17453) — **Xiao et al. (2023)** — bounding the cache with a sliding window + sink tokens.
+- [FlashAttention: Fast and Memory-Efficient Exact Attention](https://arxiv.org/abs/2205.14135) — **Dao et al. (2022)** — IO-aware tiled attention (the online-softmax trick); FlashDecoding follows for decode.
+- [SGLang: Efficient Execution with RadixAttention](https://arxiv.org/abs/2312.07104) — **Zheng et al. (2023)** — prefix-sharing the KV cache via a radix tree.
+- [Mooncake: A KVCache-centric Disaggregated Architecture](https://arxiv.org/abs/2407.00079) — **Qin et al. (2024)** — disaggregated prefill/decode with a shared KV-cache pool.
+- [Roofline: An Insightful Visual Performance Model](https://www2.eecs.berkeley.edu/Pubs/TechRpts/2008/EECS-2008-134.html) — **Williams, Waterman & Patterson (2009)** — the compute-vs-bandwidth model behind "decode is memory-bound."
 
 **Books (free chapters)**:
 - [Speech and Language Processing, 3rd ed. — Ch. 10 "Large Language Models"](https://web.stanford.edu/~jurafsky/slp3/10.pdf) — **Jurafsky & Martin** — autoregressive decoding, the loop the cache accelerates.
