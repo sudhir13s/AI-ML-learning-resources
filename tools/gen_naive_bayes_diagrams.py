@@ -1,10 +1,14 @@
 """Naive-Bayes concept-page diagrams (muted palette, parallel scale).
 
-Two figures for 03. Supervised_Learning/concepts/05-Naive-Bayes.md:
+Figures for 03. Supervised_Learning/concepts/05-Naive-Bayes.md:
   1. nb_gaussian.png -- Gaussian Naive Bayes on 2D data: each class is modelled as
      a Gaussian per feature (independent axes); the resulting decision boundary. REAL sklearn.
   2. nb_spam.png -- the multinomial/text mechanic: reading a message word by word,
      the running log-odds (sum of per-word log P(w|spam)/P(w|ham)) crosses into spam.
+  3. nb_calibration.png -- reliability diagram: NB over-confident vs logistic regression. REAL sklearn.
+  4. nb_multinomial.png -- the full Multinomial-NB worked example as a figure: count table ->
+     smoothed P(w|c) -> per-class log-score -> decision, all numbers matching the page.
+  5. nb_alpha.png -- the measured effect of the Laplace alpha on 20-Newsgroups test accuracy. REAL sklearn.
 """
 import os, matplotlib
 matplotlib.use("Agg")
@@ -107,8 +111,102 @@ def nb_calibration():
     plt.close(fig); print("wrote nb_calibration.png")
 
 
+def nb_multinomial():
+    """The full Multinomial-NB document worked example as a figure: count table ->
+    smoothed P(w|c) -> per-class log-score -> decision. Numbers match the page exactly."""
+    vocab = ["goal", "team", "win", "vote", "law", "tax"]
+    sports = np.array([6, 5, 4, 0, 1, 0]); politics = np.array([0, 2, 3, 6, 5, 4])
+    V = len(vocab); alpha = 1.0
+    prior_s, prior_p = 0.6, 0.4
+    Ps = (sports + alpha) / (sports.sum() + alpha * V)
+    Pp = (politics + alpha) / (politics.sum() + alpha * V)
+    doc = np.array([0, 0, 2, 2, 0, 0])  # win x2, vote x2
+    log_s = np.log(prior_s) + np.sum(doc * np.log(Ps))
+    log_p = np.log(prior_p) + np.sum(doc * np.log(Pp))
+
+    fig, (axT, axP) = plt.subplots(1, 2, figsize=(11.6, 5.2), gridspec_kw={"width_ratios": [1.25, 1]})
+
+    # LEFT: count table -> smoothed probability bars (grouped by word)
+    x = np.arange(V); w = 0.38
+    axP.bar(x - w/2, Ps, w, color=GREEN, label="P(w | sports)")
+    axP.bar(x + w/2, Pp, w, color=NAVY, label="P(w | politics)")
+    for i in range(V):
+        axP.annotate(f"{Ps[i]:.3f}", (i - w/2, Ps[i]), textcoords="offset points",
+                     xytext=(0, 3), fontsize=7.5, ha="center", color=GREEN)
+        axP.annotate(f"{Pp[i]:.3f}", (i + w/2, Pp[i]), textcoords="offset points",
+                     xytext=(0, 3), fontsize=7.5, ha="center", color=NAVY)
+    axP.set_xticks(x); axP.set_xticklabels(vocab, fontsize=9.5)
+    axP.set_ylabel("smoothed  P(word | class)")
+    axP.set_title("Step 2: Laplace-smoothed likelihoods  (α=1)", fontsize=11.5, fontweight="bold")
+    axP.legend(frameon=False, fontsize=9, loc="upper center"); axP.set_ylim(0, 0.40); _despine(axP)
+
+    # RIGHT: the count table (text) + the per-class log-score decision
+    axT.axis("off")
+    tbl = (
+        "Step 1 — training counts\n"
+        f"  sports   : goal 6  team 5  win 4  vote 0  law 1  tax 0   (Σ=16)\n"
+        f"  politics : goal 0  team 2  win 3  vote 6  law 5  tax 4   (Σ=20)\n"
+        f"  priors   : P(sports)=0.6   P(politics)=0.4\n\n"
+        "Step 3 — score the doc  “win win vote vote”\n"
+        "  (only win & vote occur, each ×2; log-space)\n\n"
+        f"  sports   = log .6 + 2·log {Ps[2]:.3f} + 2·log {Ps[3]:.3f}\n"
+        f"           = {np.log(prior_s):+.2f} {2*np.log(Ps[2]):+.2f} {2*np.log(Ps[3]):+.2f}"
+        f"  = {log_s:.2f}\n"
+        f"  politics = log .4 + 2·log {Pp[2]:.3f} + 2·log {Pp[3]:.3f}\n"
+        f"           = {np.log(prior_p):+.2f} {2*np.log(Pp[2]):+.2f} {2*np.log(Pp[3]):+.2f}"
+        f"  = {log_p:.2f}\n\n"
+        f"Step 4 — decision:  politics ({log_p:.2f}) > sports ({log_s:.2f})\n"
+        f"  → classify POLITICS   (normalized P ≈ 0.91)"
+    )
+    # highlight band behind the decision line (drawn first, under the text)
+    axT.add_patch(plt.Rectangle((-0.02, 0.275), 1.02, 0.115, transform=axT.transAxes,
+                                facecolor=GREEN, alpha=0.13, edgecolor=GREEN, lw=1.1, zorder=0))
+    axT.text(0.0, 0.98, tbl, fontsize=9.8, family="DejaVu Sans Mono", va="top", ha="left",
+             linespacing=1.5, color="#222", zorder=2)
+    fig.suptitle("Multinomial Naive Bayes, end to end: count → smooth → log-score → decide",
+                 fontsize=13, fontweight="bold", y=1.0)
+    fig.tight_layout(rect=(0, 0, 1, 0.97))
+    fig.savefig(f"{OUT}/nb_multinomial.png", dpi=150, bbox_inches="tight")
+    plt.close(fig); print("wrote nb_multinomial.png")
+
+
+def nb_alpha():
+    """Measured effect of the Laplace smoothing alpha on Multinomial-NB test accuracy
+    (20 Newsgroups, 4 categories). REAL sklearn — the curve peaks then degrades."""
+    from sklearn.datasets import fetch_20newsgroups
+    from sklearn.feature_extraction.text import CountVectorizer
+    from sklearn.naive_bayes import MultinomialNB
+    cats = ["rec.sport.hockey", "sci.space", "talk.politics.mideast", "comp.graphics"]
+    strip = ("headers", "footers", "quotes")
+    tr = fetch_20newsgroups(subset="train", categories=cats, remove=strip, random_state=0)
+    te = fetch_20newsgroups(subset="test", categories=cats, remove=strip, random_state=0)
+    vec = CountVectorizer(stop_words="english", max_features=5000)
+    Xtr, Xte = vec.fit_transform(tr.data), vec.transform(te.data)
+    alphas = np.array([1e-3, 1e-2, 5e-2, 1e-1, 5e-1, 1.0, 2.0, 5.0, 10.0])
+    acc = np.array([MultinomialNB(alpha=a).fit(Xtr, tr.target).score(Xte, te.target) for a in alphas])
+
+    fig, ax = plt.subplots(figsize=(8.6, 5.2))
+    ax.semilogx(alphas, acc, "o-", color=PURPLE, lw=2.4, ms=7)
+    best = int(np.argmax(acc))
+    ax.scatter([alphas[best]], [acc[best]], s=180, facecolor="none", edgecolor=GREEN, lw=2.4, zorder=5)
+    ax.annotate(f"best α≈{alphas[best]:g}\nacc={acc[best]:.3f}", (alphas[best], acc[best]),
+                textcoords="offset points", xytext=(10, -28), fontsize=9.5, color=GREEN, fontweight="bold")
+    ax.annotate("tiny α: barely smooths,\nunseen words near-veto",
+                (alphas[0], acc[0]), textcoords="offset points", xytext=(20, -6), fontsize=8.5, color=SLATE)
+    ax.annotate("large α: over-smooths,\nlikelihoods → uniform, accuracy falls",
+                (alphas[-1], acc[-1]), textcoords="offset points", xytext=(-200, 10), fontsize=8.5, color=RED)
+    ax.set_xlabel("Laplace smoothing  α  (log scale)"); ax.set_ylabel("test accuracy")
+    ax.set_title("Tuning the smoothing α: too little or too much both hurt  (20 Newsgroups)",
+                 fontsize=12, fontweight="bold")
+    ax.grid(True, which="both", alpha=0.18); _despine(ax)
+    fig.tight_layout(); fig.savefig(f"{OUT}/nb_alpha.png", dpi=150, bbox_inches="tight")
+    plt.close(fig); print("wrote nb_alpha.png")
+
+
 if __name__ == "__main__":
     nb_gaussian()
     nb_spam()
     nb_calibration()
+    nb_multinomial()
+    nb_alpha()
     print("OUT:", OUT)
