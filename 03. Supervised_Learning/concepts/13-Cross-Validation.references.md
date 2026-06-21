@@ -34,15 +34,19 @@ updated: 2026-06-22
 **Articles / blogs (free, no paywall)**:
 - [Cross-validation: evaluating estimator performance (scikit-learn)](https://scikit-learn.org/stable/modules/cross_validation.html) — **scikit-learn** — the practical reference: k-fold, stratified, grouped, time-series, and pitfalls.
 - [Common pitfalls in the interpretation of model evaluation (scikit-learn)](https://scikit-learn.org/stable/common_pitfalls.html) — **scikit-learn** — data leakage and why preprocessing belongs inside the CV loop.
+- [Nested cross-validation for parameter selection (scikit-learn example)](https://scikit-learn.org/stable/auto_examples/model_selection/plot_nested_cross_validation_iris.html) — **scikit-learn** — the optimism of non-nested CV and the nested-CV fix, measured.
 
 **Key papers**:
 - [A Study of Cross-Validation and Bootstrap for Accuracy Estimation and Model Selection](https://ai.stanford.edu/~ronnyk/accEst.pdf) — **Kohavi (1995)** — the empirical study that established 10-fold CV as the default.
 - [A Survey of Cross-Validation Procedures for Model Selection](https://projecteuclid.org/journals/statistics-surveys/volume-4/issue-none/A-survey-of-cross-validation-procedures-for-model-selection/10.1214/09-SS054.full) — **Arlot & Celisse (2010)** — the definitive modern survey of CV variants and their bias/variance.
+- [Improvements on Cross-Validation: The .632+ Bootstrap Method](https://sci2s.ugr.es/keel/pdf/specific/articulo/efron_tibshirani_jasa_97.pdf) — **Efron & Tibshirani (1997)** — the bootstrap estimator of generalization error and the .632/.632+ bias correction.
+- [On Over-fitting in Model Selection and Subsequent Selection Bias](https://www.jmlr.org/papers/volume11/cawley10a/cawley10a.pdf) — **Cawley & Talbot (2010)** — why tuning on the same CV inflates the score, and why nested CV is needed.
 
 **Books (free chapters)**:
 - [An Introduction to Statistical Learning (ISLR) — Ch. 5 "Resampling Methods"](https://www.statlearning.com/s/ISLR-Seventh-Printing.pdf) — **James, Witten, Hastie & Tibshirani** — the best applied chapter on the validation set, LOOCV, k-fold, and the bootstrap.
 - [The Elements of Statistical Learning — Ch. 7.10 "Cross-Validation"](https://hastie.su.domains/ElemStatLearn/) — **Hastie, Tibshirani & Friedman** — the rigorous treatment, including the right vs wrong way to cross-validate.
 - [Understanding Machine Learning — Ch. 11 "Model Selection and Validation"](https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/understanding-machine-learning-theory-algorithms.pdf) — **Shalev-Shwartz & Ben-David** — the learning-theory view of validation.
+- [Advances in Financial Machine Learning — Ch. 7 "Cross-Validation in Finance"](https://github.com/BlackArbsCEO/Adv_Fin_ML_Exercises) — **Marcos López de Prado** — purged and embargoed k-fold for overlapping, look-forward labels (open exercises + code companion).
 
 **In this platform**:
 - Concept page (full explanation): [Cross-Validation](13-Cross-Validation.md)
