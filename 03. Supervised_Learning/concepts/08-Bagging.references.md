@@ -38,6 +38,10 @@ updated: 2026-06-22
 **Key papers**:
 - [Bagging Predictors](https://www.stat.berkeley.edu/~breiman/bagging.pdf) — **Breiman (1996)** — the original paper that introduced and analyzed bagging.
 - [Bagging Predictors (Springer)](https://link.springer.com/article/10.1007/BF00058655) — **Breiman (1996)** — the same landmark paper, publisher page.
+- [Bootstrap Methods: Another Look at the Jackknife](https://projecteuclid.org/journals/annals-of-statistics/volume-7/issue-1/Bootstrap-Methods-Another-Look-at-the-Jackknife/10.1214/aos/1176344552.full) — **Efron (1979)** — the paper that introduced the bootstrap (the resample-with-replacement that bagging is built on, and the source of the $1/e$ OOB fraction).
+- [Pasting Small Votes for Classification in Large Databases and On-Line](https://link.springer.com/article/10.1023/A:1007563306331) — **Breiman (1999)** — the *pasting* variant (sample rows without replacement).
+- [The Random Subspace Method for Constructing Decision Forests](https://doi.org/10.1109/34.709601) — **Ho (1998)** — the *random subspaces* variant (subsample features, not rows).
+- [Ensembles on Random Patches](https://orbi.uliege.be/handle/2268/130099) — **Louppe & Geurts (2012)** — the *random patches* variant (subsample both rows and features).
 
 **Books (free chapters)**:
 - [An Introduction to Statistical Learning (ISLR) — Ch. 8.2 "Bagging, Random Forests, Boosting"](https://www.statlearning.com/s/ISLR-Seventh-Printing.pdf) — **James, Witten, Hastie & Tibshirani** — the applied, intuitive treatment with labs.
