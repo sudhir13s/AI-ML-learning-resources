@@ -34,14 +34,18 @@ Doubles as a **dataset** for the interview-prep app, so formats must stay consis
 > two-file split correct. Mark done only after that verification passes. A subagent's prompt MUST
 > include this read-first + verify-before-done instruction.
 >
-> **Comprehensive coverage.** A page must cover **everything related to the topic** — every
-> sub-concept an expert would expect, each genuinely explained. **Completeness beats brevity:
-> length may and often should exceed the KV-Cache exemplar.** Enumerate the sub-concepts first,
-> then make sure each is explained with examples/diagrams.
+> **Reference-grade depth (raised).** Pages are **exhaustive deep-dives, not summaries** — the
+> definitive page on the topic. The repeated rework failure is "comprehensive but not exhaustive."
+> Build to this from the start: cover every sub-concept; **multiple worked numeric examples at
+> increasing complexity** (minimal scalar → realistic vector/matrix → full end-to-end trace), not
+> one token example; **derive key results step by step** (show the algebra), don't just state them;
+> **over-explain** so a learner has no gaps; **several diagrams per major concept**. Length is a
+> feature — these typically run **~500–800+ lines**; never cap it. Enumerate the sub-concepts first.
 >
 > **Specialist-judge review (mandatory).** After building and self-verifying, review the page as an
 > **AI/ML specialist-teacher judge** (score /100 + concrete comments on gaps and weak spots), then
-> **address every comment** before the PR. (Inline by default; subagent only if asked.)
+> **address every comment** before the PR — **target 95–98**; if below, the fix is almost always to
+> *expand* (add an example, a derivation, a diagram) and re-judge. (Inline by default; subagent only if asked.)
 
 Each topic's `concepts/` folder holds the **deep, blog-quality teaching pages**. As of 2026-06-21
 each concept is **two files** (canonical example: [09. LLMs/concepts/05-KV-Cache.md](09.%20LLMs/concepts/05-KV-Cache.md)

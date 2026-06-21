@@ -109,7 +109,38 @@ def gradcheck():
     plt.close(fig); print("wrote bp_gradcheck.png")
 
 
+def gates():
+    """The four local-gradient 'gates': how add / multiply / max / copy route gradient."""
+    fig, axes = plt.subplots(1, 4, figsize=(13.2, 3.5))
+    up = 2.0  # incoming upstream gradient, shown on every gate
+
+    def draw(ax, title, fwd, back, color):
+        ax.add_patch(plt.Circle((0.5, 0.55), 0.16, color=color, zorder=3))
+        ax.text(0.5, 0.55, title[0], ha="center", va="center", color="white",
+                fontsize=18, fontweight="bold", zorder=4)
+        ax.annotate("", (0.34, 0.62), (0.05, 0.78), arrowprops=dict(arrowstyle="-", color=SLATE, lw=1.4))
+        ax.annotate("", (0.34, 0.48), (0.05, 0.30), arrowprops=dict(arrowstyle="-", color=SLATE, lw=1.4))
+        ax.annotate("", (0.95, 0.55), (0.66, 0.55), arrowprops=dict(arrowstyle="->", color=AMBER, lw=2.2))
+        ax.text(0.80, 0.62, f"↑{up:g}", color=AMBER, fontsize=11, fontweight="bold")  # upstream
+        ax.text(0.02, 0.83, fwd[0], color=BLUE, fontsize=9.5)
+        ax.text(0.02, 0.20, fwd[1], color=BLUE, fontsize=9.5)
+        ax.text(0.13, 0.70, back[0], color=GREEN, fontsize=10, fontweight="bold")   # back to in1
+        ax.text(0.13, 0.36, back[1], color=GREEN, fontsize=10, fontweight="bold")   # back to in2
+        ax.set_title(title, fontsize=12, fontweight="bold"); ax.axis("off")
+        ax.set_xlim(0, 1); ax.set_ylim(0, 1)
+
+    draw(axes[0], "add: distributor", ["x=3", "y=4"], ["←2", "←2"], PURPLE)
+    draw(axes[1], "multiply: swapper", ["x=3", "y=4"], ["←8", "←6"], GREEN)
+    draw(axes[2], "max/ReLU: router", ["x=3", "y=4 (max ✓)"], ["←0", "←2"], NAVY)
+    draw(axes[3], "copy: adder", ["used twice", " "], ["←2+2", "=4"], AMBER)
+    fig.suptitle("Local-gradient gates: how each op routes the upstream gradient (↑2)",
+                 fontsize=13.5, fontweight="bold", y=1.02)
+    fig.tight_layout(); fig.savefig(f"{OUT}/bp_gates.png", dpi=150, bbox_inches="tight")
+    plt.close(fig); print("wrote bp_gates.png")
+
+
 if __name__ == "__main__":
     vanishing()
     gradcheck()
+    gates()
     print("OUT:", OUT)
