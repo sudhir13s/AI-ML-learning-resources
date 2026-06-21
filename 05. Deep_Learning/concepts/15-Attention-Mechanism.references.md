@@ -44,6 +44,9 @@ updated: 2026-06-21
 - [Neural Machine Translation by Jointly Learning to Align and Translate](https://arxiv.org/abs/1409.0473) — **Bahdanau et al. (2014)** — introduces (additive) attention, fixing the seq2seq bottleneck.
 - [Effective Approaches to Attention-based NMT](https://arxiv.org/abs/1508.04025) — **Luong, Pham & Manning (2015)** — dot-product (multiplicative) attention variants.
 - [Attention Is All You Need](https://arxiv.org/abs/1706.03762) — **Vaswani et al. (2017)** — scaled dot-product + multi-head attention; the transformer.
+- [FlashAttention: Fast and Memory-Efficient Exact Attention](https://arxiv.org/abs/2205.14135) — **Dao et al. (2022)** — IO-aware exact attention that never materializes the n×n matrix.
+- [Longformer: The Long-Document Transformer](https://arxiv.org/abs/2004.05150) — **Beltagy et al. (2020)** — sliding-window + global sparse attention for long sequences.
+- [Rethinking Attention with Performers](https://arxiv.org/abs/2009.14794) — **Choromanski et al. (2020)** — linear-time attention via kernel feature maps.
 
 **Books (free chapters):**
 

@@ -33,6 +33,15 @@ Doubles as a **dataset** for the interview-prep app, so formats must stay consis
 > `~/.uv/envs/ml-py312`, every reference link verified, bold-not-highlight, no emoji in headings,
 > two-file split correct. Mark done only after that verification passes. A subagent's prompt MUST
 > include this read-first + verify-before-done instruction.
+>
+> **Comprehensive coverage.** A page must cover **everything related to the topic** — every
+> sub-concept an expert would expect, each genuinely explained. **Completeness beats brevity:
+> length may and often should exceed the KV-Cache exemplar.** Enumerate the sub-concepts first,
+> then make sure each is explained with examples/diagrams.
+>
+> **Specialist-judge review (mandatory).** After building and self-verifying, review the page as an
+> **AI/ML specialist-teacher judge** (score /100 + concrete comments on gaps and weak spots), then
+> **address every comment** before the PR. (Inline by default; subagent only if asked.)
 
 Each topic's `concepts/` folder holds the **deep, blog-quality teaching pages**. As of 2026-06-21
 each concept is **two files** (canonical example: [09. LLMs/concepts/05-KV-Cache.md](09.%20LLMs/concepts/05-KV-Cache.md)
