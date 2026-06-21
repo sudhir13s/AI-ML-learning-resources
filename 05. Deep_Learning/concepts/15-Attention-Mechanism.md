@@ -81,6 +81,8 @@ A query is compared against **every** key to get a relevance score; the scores a
 
 $$\text{Attention}(Q,K,V) = \text{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}}\right)V$$
 
+> *Where this comes from: scaled dot-product attention is **Attention Is All You Need** (Vaswani et al. 2017, §3.2.1); its additive precursor is **Neural Machine Translation by Jointly Learning to Align and Translate** (Bahdanau et al. 2014). Both are in the references, with a runnable build in d2l.ai Ch. 11.*
+
 With $Q \in \mathbb{R}^{n \times d_k}$, $K \in \mathbb{R}^{m \times d_k}$, $V \in \mathbb{R}^{m \times d_v}$: $QK^\top$ is $n\times m$ (every query against every key), the softmax normalizes each row, and multiplying by $V$ gives an $n \times d_v$ output — one blended vector per query. Everything else — multi-head, masks, the KV cache — is machinery around this core.
 
 > **Note:** keys and values are *separate* projections on purpose. The **key** decides *how well a token matches* a query; the **value** is *what that token contributes* if it matches. Decoupling them lets a token be retrieved on one basis (its key) while handing back different content (its value) — strictly more expressive than matching and returning the same vector, the way a search engine matches on a title but returns the article.
@@ -143,6 +145,8 @@ Attention changed what neural sequence models *can* do, on three axes:
 
 ## How it works: Q, K, V, and the four steps
 
+> **See it live:** the **[Transformer Explainer](https://poloclub.github.io/transformer-explainer/)** (Georgia Tech / Polo Club) runs a real GPT-2 in your browser and lets you watch the attention weights light up token by token as you type; **[bbycroft.net/llm](https://bbycroft.net/llm)** shows the same Q·Kᵀ→softmax→·V flow in an animated 3D model. Either makes the four steps below click instantly.
+
 Self-attention projects the input $X$ (one row per token) into three matrices, then runs four steps:
 
 $$Q = XW_q,\qquad K = XW_k,\qquad V = XW_v$$
@@ -185,6 +189,8 @@ $$\mathbb{E}[q\cdot k] = 0, \qquad \text{Var}(q\cdot k) = d_k.$$
 
 So raw scores have standard deviation $\sqrt{d_k}$ — they grow with head size. For $d_k = 64$ that's a spread of ±8 or more. Feed scores that large into a softmax and it **saturates**: one weight → ~1, the rest → ~0, and the gradient through softmax → **0**. Dividing by $\sqrt{d_k}$ rescales the variance back to 1, keeping the softmax responsive.
 
+> *Where this comes from: the $1/\sqrt{d_k}$ scaling and this variance argument are stated in **Attention Is All You Need** (Vaswani et al. 2017, §3.2.1, footnote 4).*
+
 ![Left: empirical variance of q·k grows linearly with d_k, matching the theory Var = d_k. Right: softmax over the same scores — unscaled collapses to one dominant key (saturated, tiny gradients), while dividing by √dₖ keeps a smooth, trainable distribution.](images/attn_softmax_scaling.png)
 
 > **Tip:** an interviewer may push: *"what if you forget the scaling?"* For small $d_k$ it barely matters; for large $d_k$ early training stalls because every softmax is one-hot and no gradient flows — the model can't learn which tokens to attend to.
@@ -209,6 +215,8 @@ There are two classic ways to compute the score between a query and a key:
 One attention is one "view" of the relationships. **Multi-head attention** runs $h$ attentions in parallel on *different learned projections*, so different heads can specialize — one tracks syntactic agreement, another coreference, another positional patterns — then concatenates and projects the results:
 
 $$\text{head}_i = \text{Attention}(XW_q^i, XW_k^i, XW_v^i), \qquad \text{MultiHead}(X) = \text{Concat}(\text{head}_1,\dots,\text{head}_h)\,W_o$$
+
+> *Source: multi-head attention is **Attention Is All You Need** (Vaswani et al. 2017, §3.2.2).*
 
 Each head works in a smaller dimension $d_k = d_{\text{model}}/h$, so $h$ heads cost about the same as one full-width head but buy $h$ independent relationship patterns. In practice $h$ is 8–128.
 
