@@ -1,19 +1,26 @@
 """Random-forest concept-page diagrams (muted palette, parallel scale).
 
-Two figures for 03. Supervised_Learning/concepts/09-Random-Forests.md:
+Three figures for 03. Supervised_Learning/concepts/09-Random-Forests.md:
   1. rf_boundary.png -- single deep tree (jagged, high-variance boundary) vs a
      random forest (smooth boundary): averaging many trees cuts variance. REAL sklearn.
   2. rf_decorrelation.png -- the variance-of-an-average formula: Var = rho*sigma^2 +
      (1-rho)sigma^2/n. Independent trees (rho=0) -> variance -> 0; correlated trees
      hit a floor of rho*sigma^2. This is WHY feature-randomness (lower rho) matters.
+  3. rf_importance.png -- two MEASURED panels: (left) impurity vs permutation feature
+     importance, exposing the high-cardinality bias (a pure-noise continuous feature
+     looks important to impurity but ~0 to permutation); (right) test accuracy vs
+     n_estimators rising then plateauing while train acc pins at 1.0 -- more trees
+     never overfit, they only reduce variance toward the floor. REAL sklearn.
 """
 import os, matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
-from sklearn.datasets import make_moons
+from sklearn.datasets import make_moons, make_classification
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.inspection import permutation_importance
+from sklearn.model_selection import train_test_split
 from matplotlib.colors import ListedColormap
 
 OUT = os.path.join(os.path.dirname(__file__), "..", "03. Supervised_Learning", "concepts", "images")
@@ -72,7 +79,63 @@ def rf_decorrelation():
     plt.close(fig); print("wrote rf_decorrelation.png")
 
 
+def rf_importance():
+    """Two MEASURED panels: the high-cardinality importance bias, and n_estimators
+    never overfitting. Both are real sklearn runs."""
+    fig, (axL, axR) = plt.subplots(1, 2, figsize=(12.4, 5.2))
+
+    # --- LEFT: impurity vs permutation importance -> high-cardinality bias ---
+    rng = np.random.default_rng(0)
+    n = 2000
+    x_pred = rng.integers(0, 2, n)                       # binary, genuinely predictive
+    y = (x_pred ^ (rng.random(n) < 0.1)).astype(int)     # ~90% determined by x_pred
+    x_noise = rng.random(n)                              # continuous noise, many split points
+    X = np.c_[x_pred, x_noise]
+    Xtr, Xte, ytr, yte = train_test_split(X, y, test_size=0.3, random_state=0)
+    rf = RandomForestClassifier(n_estimators=300, random_state=0).fit(Xtr, ytr)
+    imp = rf.feature_importances_
+    perm = permutation_importance(rf, Xte, yte, n_repeats=30, random_state=0).importances_mean
+    labels = ["predictive\n(binary)", "PURE NOISE\n(continuous)"]
+    xpos = np.arange(2); w = 0.36
+    axL.bar(xpos - w/2, imp, w, color=RED, label="impurity (sklearn default)")
+    axL.bar(xpos + w/2, perm, w, color=GREEN, label="permutation (held-out)")
+    axL.axhline(0, color=SLATE, lw=0.8)
+    axL.set_xticks(xpos); axL.set_xticklabels(labels, fontsize=10)
+    axL.set_ylabel("feature importance")
+    axL.set_title("Impurity importance is fooled by a high-cardinality\nnoise feature; permutation is not",
+                  fontsize=11.5, fontweight="bold")
+    axL.legend(frameon=False, fontsize=9.5, loc="upper right")
+    axL.annotate("impurity scores pure\nnoise as 'important'", xy=(1 - w/2, imp[1]),
+                 xytext=(0.05, 0.52), fontsize=9, color=RED, fontweight="bold",
+                 arrowprops=dict(arrowstyle="->", color=RED, lw=1.2))
+    _despine(axL)
+
+    # --- RIGHT: test acc vs n_estimators (rises, plateaus; train pinned ~1.0) ---
+    X2, y2 = make_classification(n_samples=1500, n_features=8, n_informative=4,
+                                 n_redundant=0, random_state=0)
+    Xtr2, Xte2, ytr2, yte2 = train_test_split(X2, y2, test_size=0.3, random_state=0)
+    ns = [1, 2, 3, 5, 8, 12, 20, 35, 60, 100, 200, 400]
+    tr_acc, te_acc = [], []
+    for k in ns:
+        m = RandomForestClassifier(n_estimators=k, random_state=0).fit(Xtr2, ytr2)
+        tr_acc.append(m.score(Xtr2, ytr2)); te_acc.append(m.score(Xte2, yte2))
+    axR.plot(ns, tr_acc, "o-", color=SLATE, lw=2.0, ms=4, label="train accuracy")
+    axR.plot(ns, te_acc, "o-", color=BLUE, lw=2.4, ms=4, label="test accuracy")
+    axR.set_xscale("log")
+    axR.set_xlabel("number of trees  (n_estimators, log scale)")
+    axR.set_ylabel("accuracy")
+    axR.set_title("More trees never overfit: test accuracy rises\nthen plateaus (no down-turn)",
+                  fontsize=11.5, fontweight="bold")
+    axR.legend(frameon=False, fontsize=9.5, loc="lower right")
+    axR.set_ylim(0.82, 1.02); _despine(axR)
+    axR.grid(axis="y", ls=":", alpha=0.4)
+
+    fig.tight_layout(); fig.savefig(f"{OUT}/rf_importance.png", dpi=150, bbox_inches="tight")
+    plt.close(fig); print("wrote rf_importance.png")
+
+
 if __name__ == "__main__":
     rf_boundary()
     rf_decorrelation()
+    rf_importance()
     print("OUT:", OUT)

@@ -33,11 +33,13 @@ updated: 2026-06-22
 
 **Articles / blogs (free, no paywall)**:
 - [Ensemble methods — Forests of randomized trees (scikit-learn)](https://scikit-learn.org/stable/modules/ensemble.html#random-forests) — **scikit-learn** — the practical reference: parameters, OOB, importances, extra-trees.
+- [Permutation feature importance (scikit-learn)](https://scikit-learn.org/stable/modules/permutation_importance.html) — **scikit-learn** — the fix for impurity importance's high-cardinality bias, with the worked caveats.
 - [The Bias–Variance Tradeoff](https://scott.fortmann-roe.com/docs/BiasVariance.html) — **Scott Fortmann-Roe** — *why* decorrelated averaging reduces variance, clearly.
 
 **Key papers**:
-- [Random Forests](https://www.stat.berkeley.edu/~breiman/randomforest2001.pdf) — **Breiman (2001)** — the original paper: the algorithm, OOB error, importances, and a generalization bound.
-- [Bagging Predictors](https://www.stat.berkeley.edu/~breiman/bagging.pdf) — **Breiman (1996)** — the variance-reduction foundation forests build on.
+- [Random Forests](https://www.stat.berkeley.edu/~breiman/randomforest2001.pdf) — **Breiman (2001)** — the original paper: the algorithm (bootstrap + random feature subset per split), OOB error, importances, and a generalization bound.
+- [Bagging Predictors](https://www.stat.berkeley.edu/~breiman/bagging.pdf) — **Breiman (1996)** — the variance-reduction foundation forests build on (bootstrap aggregating).
+- [Extremely Randomized Trees](https://link.springer.com/article/10.1007/s10994-006-6226-1) — **Geurts, Ernst & Wehenkel (2006)** — push the decorrelation idea further by randomizing the split *thresholds* too (the `ExtraTrees` variant).
 
 **Books (free chapters)**:
 - [An Introduction to Statistical Learning (ISLR) — Ch. 8.2 "Bagging, Random Forests, Boosting"](https://www.statlearning.com/s/ISLR-Seventh-Printing.pdf) — **James, Witten, Hastie & Tibshirani** — the applied chapter with labs.
