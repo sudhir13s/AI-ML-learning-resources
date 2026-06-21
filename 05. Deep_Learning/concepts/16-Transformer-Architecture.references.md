@@ -43,6 +43,12 @@ updated: 2026-06-21
 - [Attention Is All You Need](https://arxiv.org/abs/1706.03762) — **Vaswani et al. (2017)** — the transformer; non-negotiable reading.
 - [Neural Machine Translation by Jointly Learning to Align and Translate](https://arxiv.org/abs/1409.0473) — **Bahdanau et al. (2014)** — the attention mechanism the transformer generalized.
 - [Deep Residual Learning (ResNet)](https://arxiv.org/abs/1512.03385) — **He et al. (2015)** — the residual connections that make deep transformer stacks trainable.
+- [BERT: Pre-training of Deep Bidirectional Transformers](https://arxiv.org/abs/1810.04805) — **Devlin et al. (2018)** — the encoder-only / masked-LM family.
+- [Language Models are Few-Shot Learners (GPT-3)](https://arxiv.org/abs/2005.14165) — **Brown et al. (2020)** — the decoder-only / causal-LM family at scale.
+- [Exploring the Limits of Transfer Learning (T5)](https://arxiv.org/abs/1910.10683) — **Raffel et al. (2019)** — the encoder–decoder / text-to-text family.
+- [RoFormer: Rotary Position Embedding (RoPE)](https://arxiv.org/abs/2104.09864) — **Su et al. (2021)** — relative positions via rotation; the modern default.
+- [Training Compute-Optimal LLMs (Chinchilla)](https://arxiv.org/abs/2203.15556) — **Hoffmann et al. (2022)** — the scaling law correcting parameters-vs-data balance.
+- [Llama: Open and Efficient Foundation Models](https://arxiv.org/abs/2302.13971) — **Touvron et al. (2023)** — the modern component stack (RoPE, RMSNorm, SwiGLU) in one model.
 
 **Books (free chapters):**
 
