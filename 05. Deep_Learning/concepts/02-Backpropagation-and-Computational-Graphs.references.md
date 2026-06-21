@@ -3,7 +3,7 @@ id: "05-deep-learning/backpropagation/references"
 topic: "Backpropagation & Computational Graphs — References"
 parent: "05-deep-learning/backpropagation"
 type: references
-updated: 2026-06-21
+updated: 2026-06-22
 ---
 
 # Backpropagation & Computational Graphs — references and further reading
@@ -34,10 +34,12 @@ updated: 2026-06-21
 - [Calculus on Computational Graphs: Backpropagation](https://colah.github.io/posts/2015-08-Backprop/) — **Chris Olah** — the gold-standard explanation of forward- vs reverse-mode differentiation on a graph.
 - [CS231n — Backpropagation, Intuitions](https://cs231n.github.io/optimization-2/) — **Stanford CS231n** — staged worked examples (the "circuit" view of local gradients).
 - [A Gentle Introduction to torch.autograd](https://pytorch.org/tutorials/beginner/blitz/autograd_tutorial.html) — **PyTorch** — how a real framework records the graph and runs the backward pass.
+- [Autodiff Cookbook (JAX)](https://docs.jax.dev/en/latest/notebooks/autodiff_cookbook.html) — **JAX team (Google)** — VJPs (`vjp`), JVPs (`jvp`), and forward- vs reverse-mode composition, with code; the cleanest modern treatment of the VJP view.
 
 **Key papers**:
-- [Learning representations by back-propagating errors](https://www.nature.com/articles/323533a0) — **Rumelhart, Hinton & Williams (1986)** — the paper that brought backprop to neural networks.
-- [Automatic Differentiation in Machine Learning: a Survey](https://arxiv.org/abs/1502.05767) — **Baydin et al. (2015)** — forward vs reverse mode and how autograd engines work, rigorously.
+- [Learning representations by back-propagating errors](https://www.nature.com/articles/323533a0) — **Rumelhart, Hinton & Williams (1986)** — the paper that brought backprop to neural networks (hidden layers learn representations; backprop is how).
+- [Automatic Differentiation in Machine Learning: a Survey](https://arxiv.org/abs/1502.05767) — **Baydin et al. (2015)** — forward vs reverse mode and how autograd engines work, rigorously (the VJP/JVP formalism).
+- [Applications of advances in nonlinear sensitivity analysis (backprop's origin)](https://link.springer.com/chapter/10.1007/BFb0006203) — **Paul Werbos (1982; thesis 1974)** — the early derivation of reverse-mode gradients for ordered systems, predating the 1986 NN paper.
 - [Deep Learning (Nature review)](https://www.nature.com/articles/nature14539) — **LeCun, Bengio & Hinton (2015)** — situates backprop within the broader deep-learning story.
 - [Estimating or Propagating Gradients Through Stochastic Neurons](https://arxiv.org/abs/1308.3432) — **Bengio, Léonard & Courville (2013)** — the straight-through estimator for non-differentiable ops.
 - [Training Deep Nets with Sublinear Memory Cost](https://arxiv.org/abs/1604.06174) — **Chen et al. (2016)** — gradient checkpointing: trade compute for activation memory.
@@ -50,6 +52,9 @@ updated: 2026-06-21
 **In this platform**:
 - Concept page (full explanation): [Backpropagation & Computational Graphs](02-Backpropagation-and-Computational-Graphs.md)
 - Concept depth (the *why*): [AI-ML-intuition 2.02 Backpropagation / Chain Rule](../../../AI-ML-intuition/Module_2_Optimization/2.02_Backpropagation_The_Chain_Rule.md) · [2.04 Computational Graphs & Autograd](../../../AI-ML-intuition/Module_2_Optimization/2.04_Computational_Graphs_Autograd.md)
+- The network being differentiated: [01 Perceptron & MLP](01-Perceptron-and-MLP.md)
+- The activations whose derivatives gate the flow: [03 Activation Functions](03-Activation-Functions.md)
+- The consequence of the backward product: [06 Vanishing & Exploding Gradients](06-Vanishing-Exploding-Gradients.md)
 - What uses the gradient: [07 Optimizers](07-Optimizers.md) (turns the gradient into a weight update)
 - Where it's applied: [13 CNNs & Convolution](13-CNNs-and-Convolution.md) · [14 RNN / LSTM / GRU](14-RNN-LSTM-GRU.md) (backprop through time)
 - Field overview: [Deep Learning](../README.md)
