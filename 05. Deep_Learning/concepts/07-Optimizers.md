@@ -38,6 +38,8 @@ Plain gradient descent uses a single global learning rate $\eta$ for every param
 
 ![Three optimizers on the same ill-conditioned 'ravine' quadratic: SGD (red) zig-zags across the steep direction while crawling toward the minimum; Momentum (amber) carries inertia; Adam (green) rescales each direction and moves almost straight to the minimum.](images/opt_trajectories.png)
 
+> **See it move:** our plot is a snapshot — [Emilien Dupont's interactive optimizer visualization](https://emiliendupont.github.io/2018/01/24/optimization-visualization/) *animates* SGD, Momentum, RMSprop, and Adam descending real loss surfaces (and shows how they reach different minima), and [Distill's "Why Momentum Really Works"](https://distill.pub/2017/momentum/) lets you drag the momentum coefficient and watch convergence change live.
+
 > **Tip:** "why not just lower the learning rate?" is a trap. Lowering $\eta$ fixes the steep-direction zig-zag but makes the already-slow shallow direction hopeless. Better optimizers stop using *one* rate for *every* direction.
 
 ---
@@ -116,6 +118,8 @@ $$m_t = \beta_1 m_{t-1} + (1-\beta_1) g_t, \qquad v_t = \beta_2 v_{t-1} + (1-\be
 $$\hat{m}_t = \frac{m_t}{1 - \beta_1^t}, \qquad \hat{v}_t = \frac{v_t}{1 - \beta_2^t}, \qquad \theta_t \leftarrow \theta_{t-1} - \eta\,\frac{\hat{m}_t}{\sqrt{\hat{v}_t} + \epsilon}$$
 
 The update is roughly *direction ÷ volatility*: steady parameters take full steps, jittery ones get throttled. Defaults: $\beta_1 = 0.9$, $\beta_2 = 0.999$, $\epsilon = 10^{-8}$.
+
+> *Where these come from: **Adam** (moments + bias correction) is Kingma & Ba, **Adam: A Method for Stochastic Optimization** (2014), Alg. 1; **AdamW**'s decoupled decay (below) is Loshchilov & Hutter, **Decoupled Weight Decay Regularization** (2017). The earlier rules: **AdaGrad** = Duchi et al. (2011), **RMSprop** = Tieleman & Hinton (Coursera, 2012), **Nesterov momentum** popularized for deep nets by Sutskever et al. (2013). The survey **An overview of gradient descent optimization algorithms** (Ruder) collects them all — references.*
 
 ```mermaid
 graph LR
