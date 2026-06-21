@@ -1,17 +1,21 @@
 """SVM concept-page diagrams (muted palette, parallel scale). REAL sklearn fits.
 
-Two figures for 03. Supervised_Learning/concepts/06-Support-Vector-Machines.md:
+Figures for 03. Supervised_Learning/concepts/06-Support-Vector-Machines.md:
   1. svm_margin.png -- a linear SVM's maximum-margin 'street': the decision
      boundary, the two margin lines, and the circled support vectors that define it.
   2. svm_kernel.png -- an RBF-kernel SVM carving a non-linear boundary around
      concentric circles that no straight line could separate.
+  3. svm_C_gamma.png -- a 2x2 grid sweeping C and gamma on the same RBF data, measured:
+     the boundary goes from underfit (smooth, near-linear) to overfit (wiggly islands),
+     with each panel's train accuracy and support-vector count printed so the
+     bias-variance trade-off is read off real numbers, not asserted.
 """
 import os, matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.svm import SVC
-from sklearn.datasets import make_blobs, make_circles
+from sklearn.datasets import make_blobs, make_circles, make_moons
 from matplotlib.colors import ListedColormap
 
 OUT = os.path.join(os.path.dirname(__file__), "..", "03. Supervised_Learning", "concepts", "images")
@@ -70,7 +74,42 @@ def svm_kernel():
     plt.close(fig); print("wrote svm_kernel.png")
 
 
+def svm_C_gamma():
+    """Sweep C and gamma on the SAME RBF problem; print each panel's measured
+    train accuracy and #support vectors so the under/overfit story is read off
+    real numbers. Low C / low gamma -> smooth, many SVs; high C / high gamma ->
+    wiggly islands, fewer-but-tighter SVs and a memorized boundary."""
+    X, y = make_moons(n_samples=220, noise=0.28, random_state=3)
+    xx, yy = np.meshgrid(np.linspace(X[:, 0].min() - 0.4, X[:, 0].max() + 0.4, 350),
+                         np.linspace(X[:, 1].min() - 0.4, X[:, 1].max() + 0.4, 350))
+    grid = np.c_[xx.ravel(), yy.ravel()]
+    combos = [(0.1, 0.5, "low C, low gamma\n(underfit: too smooth)"),
+              (1.0, 1.0, "moderate C & gamma\n(balanced)"),
+              (1000, 1.0, "high C\n(harder margin, tighter fit)"),
+              (1000, 30, "high C, high gamma\n(overfit: wiggly islands)")]
+    fig, axes = plt.subplots(2, 2, figsize=(10.6, 8.8))
+    for ax, (C, g, title) in zip(axes.ravel(), combos):
+        clf = SVC(kernel="rbf", C=C, gamma=g).fit(X, y)
+        Z = clf.predict(grid).reshape(xx.shape)
+        ax.contourf(xx, yy, Z, alpha=0.20, cmap=ListedColormap([BLUE, RED]))
+        ax.contour(xx, yy, Z, levels=[0.5], colors=[NAVY], linewidths=2.0)
+        ax.scatter(X[y == 0, 0], X[y == 0, 1], color=BLUE, s=18, edgecolor="white", lw=0.3)
+        ax.scatter(X[y == 1, 0], X[y == 1, 1], color=RED, s=18, edgecolor="white", lw=0.3)
+        acc = clf.score(X, y)
+        ax.set_title(f"C={C:g}, gamma={g:g}  —  {title}", fontsize=10.5, fontweight="bold")
+        ax.text(0.02, 0.02, f"train acc = {acc:.2f}   #SVs = {len(clf.support_)}/{len(X)}",
+                transform=ax.transAxes, fontsize=9, color=NAVY, fontweight="bold",
+                bbox=dict(boxstyle="round,pad=0.25", fc="white", ec=SLATE, alpha=0.85))
+        ax.set_xticks([]); ax.set_yticks([])
+    fig.suptitle("C and gamma control the bias–variance trade-off (RBF SVM, measured)",
+                 fontsize=13.5, fontweight="bold")
+    fig.tight_layout(rect=(0, 0, 1, 0.97))
+    fig.savefig(f"{OUT}/svm_C_gamma.png", dpi=150, bbox_inches="tight")
+    plt.close(fig); print("wrote svm_C_gamma.png")
+
+
 if __name__ == "__main__":
     svm_margin()
     svm_kernel()
+    svm_C_gamma()
     print("OUT:", OUT)

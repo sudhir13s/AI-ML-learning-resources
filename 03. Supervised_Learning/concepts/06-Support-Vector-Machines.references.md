@@ -28,20 +28,24 @@ updated: 2026-06-22
 
 **Courses (free)**:
 - [CS229: Machine Learning — Lecture notes (SVMs)](https://cs229.stanford.edu/main_notes.pdf) — **Stanford (Ng)** — the rigorous derivation: margins, the dual, KKT conditions, and kernels.
+- [Learning From Data — caltech (online course)](https://home.work.caltech.edu/telecourse.html) — **Yaser Abu-Mostafa (Caltech)** — the VC-dimension / generalization theory behind *why* a large margin works; the formal backbone of the "wide margin generalizes" claim.
 - [Machine Learning Specialization](https://www.coursera.org/specializations/machine-learning-introduction) — **Andrew Ng (DeepLearning.AI)** — classification context and the kernel idea; free to audit.
 - [A Tutorial on Support Vector Machines (course PDF)](https://www.cs.columbia.edu/~kathy/cs4701/documents/jason_svm_tutorial.pdf) — **Jason Weston (Columbia)** — a compact, self-contained derivation used in teaching.
 
 **Articles / blogs (free, no paywall)**:
-- [Support Vector Machines (scikit-learn user guide)](https://scikit-learn.org/stable/modules/svm.html) — **scikit-learn** — the practical reference: kernels, `C`, `gamma`, and multiclass strategies.
+- [A Tutorial on Support Vector Machines for Pattern Recognition](https://web.mit.edu/6.034/wwwbob/svm.pdf) — **Christopher Burges (1998)** — the classic, much-cited tutorial deriving margins, the dual, KKT, and kernels in full; the standard reference write-up.
+- [Support Vector Machines (scikit-learn user guide)](https://scikit-learn.org/stable/modules/svm.html) — **scikit-learn** — the practical reference: kernels, `C`, `gamma`, multiclass (one-vs-one / one-vs-rest), and `probability=True`.
 - [A Tutorial on Support Vector Machines (Weston)](https://www.cs.columbia.edu/~kathy/cs4701/documents/jason_svm_tutorial.pdf) — **Jason Weston** — a clear derivation of the margin objective and the kernel trick.
 
 **Key papers**:
 - [Support-Vector Networks](https://link.springer.com/article/10.1007/BF00994018) — **Cortes & Vapnik (1995)** — the paper that introduced the soft-margin SVM; publisher page.
 - [Support-Vector Networks (PDF)](https://link.springer.com/content/pdf/10.1007/BF00994018.pdf) — **Cortes & Vapnik (1995)** — the same landmark paper as a free PDF.
+- [Probabilistic Outputs for SVMs and Comparisons to Regularized Likelihood Methods](https://www.cs.colorado.edu/~mozer/Teaching/syllabi/6622/papers/Platt1999.pdf) — **John Platt (1999)** — the original **Platt scaling** method for turning SVM scores into calibrated probabilities.
 
 **Books (free chapters)**:
 - [An Introduction to Statistical Learning (ISLR) — Ch. 9 "Support Vector Machines"](https://www.statlearning.com/s/ISLR-Seventh-Printing.pdf) — **James, Witten, Hastie & Tibshirani** — the best applied chapter: maximal-margin → support-vector classifier → kernels, with labs.
 - [The Elements of Statistical Learning — Ch. 12 "Support Vector Machines and Flexible Discriminants"](https://hastie.su.domains/ElemStatLearn/) — **Hastie, Tibshirani & Friedman** — the rigorous treatment (the dual, the loss + penalty view).
+- [The Nature of Statistical Learning Theory](https://link.springer.com/book/10.1007/978-1-4757-3264-1) — **Vladimir Vapnik (1995)** — the source of the margin / VC-dimension bounds that justify maximizing the margin (publisher page).
 - [Information Theory, Inference, and Learning Algorithms — Ch. 40 (kernel methods)](https://www.inference.org.uk/itprnn/book.pdf) — **David MacKay** — kernels and large-margin classifiers in a probabilistic frame.
 
 **In this platform**:
