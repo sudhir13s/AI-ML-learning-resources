@@ -22,6 +22,7 @@ updated: 2026-06-22
 - [The Main Ideas of Fitting a Line to Data (Least Squares)](https://www.youtube.com/watch?v=PaFPbb66DxQ) — **StatQuest (Josh Starmer)** — why we minimize *squared* residuals, step by step.
 - [Gradient Descent, Step-by-Step](https://www.youtube.com/watch?v=sDv4f4s2SB8) — **StatQuest (Josh Starmer)** — how you fit the line when you can't (or won't) invert XᵀX.
 - [Gradient descent, how neural networks learn](https://www.youtube.com/watch?v=IHZwWFHWa-w) — **3Blue1Brown** — the same loss-surface intuition, and the link to neural nets.
+- [Linear regression (full lecture)](https://www.youtube.com/watch?v=4b4MUYve_U8) — **Andrew Ng / Stanford CS229** — the canonical lecture: model, cost, normal equations, and the probabilistic view derived on the board.
 
 **Interactive & visual**:
 - [MLU-Explain: Linear Regression](https://mlu-explain.github.io/linear-regression/) — **Amazon (Jared Wilber)** — fully interactive: drag points, watch the fit, residuals, and R² update live.
@@ -34,14 +35,17 @@ updated: 2026-06-22
 
 **Articles / blogs (free, no paywall)**:
 - [Linear models (scikit-learn user guide)](https://scikit-learn.org/stable/modules/linear_model.html) — **scikit-learn** — the practical reference: OLS, Ridge, Lasso, and when each applies.
+- [Ordinary least squares (Wikipedia)](https://en.wikipedia.org/wiki/Ordinary_least_squares) — concise, well-sourced reference for the normal equations, the hat matrix/projection geometry, and the Gauss–Markov theorem.
 
 **Key papers**:
-- [Gauss and the Invention of Least Squares](https://projecteuclid.org/journals/annals-of-statistics/volume-9/issue-3/Gauss-and-the-Invention-of-Least-Squares/10.1214/aos/1176345451.full) — **Stigler (1981)** — the method's surprisingly contested history.
+- [Gauss and the Invention of Least Squares](https://projecteuclid.org/journals/annals-of-statistics/volume-9/issue-3/Gauss-and-the-Invention-of-Least-Squares/10.1214/aos/1176345451.full) — **Stigler (1981)** — the method's surprisingly contested history (the Gauss–Legendre priority dispute).
+- [Ridge regression](https://en.wikipedia.org/wiki/Ridge_regression) — overview citing **Hoerl & Kennard (1970)**, the original "Biased Estimation for Nonorthogonal Problems" that introduced Ridge and the $+\lambda I$ fix for multicollinearity.
 - [Regression Shrinkage and Selection via the Lasso: a Retrospective](https://tibshirani.su.domains/ftp/lasso-retro.pdf) — **Tibshirani (2011)** — the author revisits where regularized linear regression came from.
 
 **Books (free chapters)**:
 - [An Introduction to Statistical Learning (ISLR) — Ch. 3 "Linear Regression"](https://www.statlearning.com/s/ISLR-Seventh-Printing.pdf) — **James, Witten, Hastie & Tibshirani** — the best applied chapter: simple → multiple regression, assumptions, diagnostics.
 - [The Elements of Statistical Learning — Ch. 3 "Linear Methods for Regression"](https://hastie.su.domains/ElemStatLearn/) — **Hastie, Tibshirani & Friedman** — the rigorous reference (subset selection, shrinkage, the geometry of least squares).
+- [Pattern Recognition and Machine Learning — §3.1 "Linear Basis Function Models"](https://www.bishopbook.com/) — **Christopher Bishop** — the Bayesian / maximum-likelihood treatment (MSE = Gaussian MLE, Ridge = Gaussian prior); the author's official site links the free PDF.
 - [Dive into Deep Learning — Ch. 3 "Linear Neural Networks for Regression"](https://d2l.ai/chapter_linear-regression/index.html) — **Zhang et al.** — frames linear regression as a one-layer net, with runnable code.
 
 **In this platform**:
