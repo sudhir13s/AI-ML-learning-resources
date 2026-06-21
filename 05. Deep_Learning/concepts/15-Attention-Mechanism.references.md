@@ -24,6 +24,10 @@ updated: 2026-06-21
 - [Attention is all you need (Transformer) — model, math, inference & training](https://www.youtube.com/watch?v=bCz4OMemCcA) — **Umar Jamil** — a deep, math-complete walk through the mechanism.
 - [Attention Is All You Need](https://www.youtube.com/watch?v=iDulhoQ2pro) — **Yannic Kilcher** — the original paper explained section by section.
 
+**Interactive & visual**:
+- [Transformer Explainer](https://poloclub.github.io/transformer-explainer/) — **Georgia Tech (Polo Club)** — a live GPT-2 in the browser; watch attention weights light up as you type.
+- [LLM Visualizer (3D)](https://bbycroft.net/llm) — **Brendan Bycroft** — the Q·Kᵀ→softmax→·V flow animated in a 3D model of a working transformer.
+
 **Courses (free)**:
 - [Stanford CS224N — Attention & Transformers](https://web.stanford.edu/class/cs224n/) — **Stanford (Manning)** — derives attention from the seq2seq bottleneck up to self-attention.
 - [Dive into Deep Learning — Attention Mechanisms](https://d2l.ai/chapter_attention-mechanisms-and-transformers/index.html) — **Zhang et al.** — attention scoring functions and Q/K/V with runnable code.
