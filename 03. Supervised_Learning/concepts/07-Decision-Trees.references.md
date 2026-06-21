@@ -37,8 +37,11 @@ updated: 2026-06-22
 - [Decision Trees (scikit-learn user guide)](https://scikit-learn.org/stable/modules/tree.html) — **scikit-learn** — the practical reference: criteria, pruning, and the math of the splits.
 
 **Key papers**:
-- [Induction of Decision Trees (ID3)](https://hunch.net/~coms-4771/quinlan.pdf) — **Quinlan (1986)** — the original information-gain tree-induction algorithm.
-- [Induction of Decision Trees (Springer)](https://link.springer.com/article/10.1007/BF00116251) — **Quinlan (1986)** — the same landmark paper; CART (Breiman et al., 1984) is the Gini-based sibling used by scikit-learn.
+- [Induction of Decision Trees (ID3)](https://hunch.net/~coms-4771/quinlan.pdf) — **Quinlan (1986)** — the original information-gain (entropy) tree-induction algorithm.
+- [Induction of Decision Trees (Springer)](https://link.springer.com/article/10.1007/BF00116251) — **Quinlan (1986)** — the same landmark paper, journal version; CART (Breiman et al., 1984) is the Gini-based sibling used by scikit-learn.
+- [C4.5: Programs for Machine Learning (review)](https://link.springer.com/article/10.1007/BF00993309) — **Quinlan (1993)** — ID3's successor: gain ratio (fixes the high-cardinality bias), continuous features, missing values, and post-pruning.
+- [Constructing Optimal Binary Decision Trees is NP-complete](https://people.csail.mit.edu/rivest/pubs/HR76.pdf) — **Hyafil & Rivest (1976)** — the hardness result (author-hosted PDF) that forces trees to be grown greedily rather than globally optimized.
+- [Permutation importance vs impurity-based (MDI) bias](https://scikit-learn.org/stable/auto_examples/inspection/plot_permutation_importance.html) — **scikit-learn** — shows impurity importance inflating a high-cardinality feature, and how permutation importance corrects it.
 
 **Books (free chapters)**:
 - [An Introduction to Statistical Learning (ISLR) — Ch. 8 "Tree-Based Methods"](https://www.statlearning.com/s/ISLR-Seventh-Printing.pdf) — **James, Witten, Hastie & Tibshirani** — trees → bagging → forests → boosting, applied with labs.
