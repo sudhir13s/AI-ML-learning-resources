@@ -239,6 +239,19 @@ The other levers shrink bytes-per-token; this one caps the **number of tokens**.
 
 ---
 
+## The cache in real models
+
+Tying the levers to models you've heard of makes them concrete:
+
+- **Llama-3** — GQA with 8 KV heads (serving up to 64 query heads), so the cache is ~8× smaller than MHA — which is what makes its 8K–128K context servable on commodity GPUs.
+- **Mistral 7B** — GQA **plus** a **sliding window** of 4,096 tokens, so the cache is capped no matter how long the conversation runs.
+- **DeepSeek-V2/V3** — **MLA**, caching a compact low-rank latent per token: the most aggressive architectural cache compression shipped in a frontier model.
+- **Every serving engine** (vLLM, TGI, TensorRT-LLM) — **PagedAttention**-style block management underneath, increasingly with an **FP8 cache** option and **automatic prefix caching** for shared system prompts.
+
+> **Note:** **beam search** multiplies the cache by the beam width — each beam is a distinct continuation needing its own K/V. A paged, block-addressable cache makes this cheap: the beams **share** the blocks of their common prefix and only fork (copy-on-write) where they diverge. Same trick, again: address the cache in blocks and sharing falls out for free.
+
+---
+
 ## Sizing a real deployment: putting it together
 
 Here's the reasoning I'd actually do, end to end, given "serve Llama-3-8B chat on one A100-80GB, 8K context, max throughput":
