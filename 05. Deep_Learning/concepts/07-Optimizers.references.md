@@ -25,6 +25,10 @@ updated: 2026-06-21
 - [Gradient Descent, Step-by-Step](https://www.youtube.com/watch?v=sDv4f4s2SB8) — **StatQuest (Josh Starmer)** — the mechanics of a gradient step, worked by hand.
 - [All Optimizers In One Video — SGD, Momentum, Adagrad, RMSprop, Adam](https://www.youtube.com/watch?v=TudQZtgpoHk) — **Krish Naik** — every update rule contrasted end to end.
 
+**Interactive & visual**:
+- [Interactive Visualization of Optimization Algorithms](https://emiliendupont.github.io/2018/01/24/optimization-visualization/) — **Emilien Dupont** — animate SGD/Momentum/RMSprop/Adam descending real loss surfaces; see how they reach different minima.
+- [Why Momentum Really Works](https://distill.pub/2017/momentum/) — **Distill (Gabriel Goh)** — drag the momentum coefficient and watch convergence change, with the geometry behind it.
+
 **Courses (free)**:
 - [Dive into Deep Learning — Optimization Algorithms](https://d2l.ai/chapter_optimization/index.html) — **Zhang et al.** — SGD through Adam with runnable code and convergence intuition.
 - [Neural Networks: Zero to Hero](https://karpathy.ai/zero-to-hero.html) — **Andrej Karpathy** — builds the training loop (loss → backprop → optimizer step) from scratch.
