@@ -43,6 +43,10 @@ updated: 2026-06-21
 - [Adam: A Method for Stochastic Optimization](https://arxiv.org/abs/1412.6980) — **Kingma & Ba (2014)** — first + second moment estimates with bias correction; the default optimizer.
 - [Decoupled Weight Decay Regularization (AdamW)](https://arxiv.org/abs/1711.05101) — **Loshchilov & Hutter (2017)** — why weight decay must be decoupled from the adaptive step.
 - [On the Convergence of Adam and Beyond (AMSGrad)](https://arxiv.org/abs/1904.09237) — **Reddi, Kale & Kumar (2018)** — a known failure case of Adam and a fix.
+- [On the difficulty of training RNNs](https://arxiv.org/abs/1211.5063) — **Pascanu, Mikolov & Bengio (2012)** — exploding gradients and the gradient-clipping fix.
+- [Accurate, Large Minibatch SGD (linear scaling rule)](https://arxiv.org/abs/1706.02677) — **Goyal et al. (2017)** — scaling the learning rate with batch size, plus warmup.
+- [Adafactor: Adaptive Learning Rates with Sublinear Memory](https://arxiv.org/abs/1804.04235) — **Shazeer & Stern (2018)** — factored second moments for memory-efficient training.
+- [Symbolic Discovery of Optimization Algorithms (Lion)](https://arxiv.org/abs/2302.06675) — **Chen et al. (2023)** — a one-state, sign-based optimizer found by search.
 
 **Books (free chapters):**
 
