@@ -3,7 +3,7 @@ id: "05-deep-learning/optimizers/references"
 topic: "Optimizers — References"
 parent: "05-deep-learning/optimizers"
 type: references
-updated: 2026-06-21
+updated: 2026-06-22
 ---
 
 # Optimizers — references and further reading
@@ -39,13 +39,19 @@ updated: 2026-06-21
 - [CS231n — Parameter Updates](https://cs231n.github.io/neural-networks-3/) — **Stanford CS231n** — a practical comparison of update rules and when each helps.
 
 **Key papers**:
-- [Adam: A Method for Stochastic Optimization](https://arxiv.org/abs/1412.6980) — **Kingma & Ba (2014)** — first + second moment estimates with bias correction; the default optimizer.
-- [Decoupled Weight Decay Regularization (AdamW)](https://arxiv.org/abs/1711.05101) — **Loshchilov & Hutter (2017)** — why weight decay must be decoupled from the adaptive step.
+- [A Stochastic Approximation Method](https://www.jstor.org/stable/2236626) — **Robbins & Monro (1951)** — the founding theory of stochastic approximation, the root of SGD.
+- [The Importance of Initialization and Momentum in Deep Learning](https://proceedings.mlr.press/v28/sutskever13.html) — **Sutskever, Martens, Dahl & Hinton (2013)** — brings Nesterov momentum (Nesterov 1983) and Polyak's heavy-ball (1964) to deep nets; the modern momentum reference.
+- [Adaptive Subgradient Methods (AdaGrad)](https://jmlr.org/papers/v12/duchi11a.html) — **Duchi, Hazan & Singer (2011)** — per-parameter rates from the running sum of squared gradients.
+- [Adam: A Method for Stochastic Optimization](https://arxiv.org/abs/1412.6980) — **Kingma & Ba (2014/15)** — first + second moment estimates with bias correction; the default optimizer.
+- [Decoupled Weight Decay Regularization (AdamW)](https://arxiv.org/abs/1711.05101) — **Loshchilov & Hutter (2017/19)** — why weight decay must be decoupled from the adaptive step.
 - [On the Convergence of Adam and Beyond (AMSGrad)](https://arxiv.org/abs/1904.09237) — **Reddi, Kale & Kumar (2018)** — a known failure case of Adam and a fix.
 - [On the difficulty of training RNNs](https://arxiv.org/abs/1211.5063) — **Pascanu, Mikolov & Bengio (2012)** — exploding gradients and the gradient-clipping fix.
 - [Accurate, Large Minibatch SGD (linear scaling rule)](https://arxiv.org/abs/1706.02677) — **Goyal et al. (2017)** — scaling the learning rate with batch size, plus warmup.
 - [Adafactor: Adaptive Learning Rates with Sublinear Memory](https://arxiv.org/abs/1804.04235) — **Shazeer & Stern (2018)** — factored second moments for memory-efficient training.
+- [Shampoo: Preconditioned Stochastic Tensor Optimization](https://arxiv.org/abs/1802.09568) — **Gupta, Koren & Singer (2018)** — structured full-matrix preconditioning, a tractable second-order-ish method.
 - [Symbolic Discovery of Optimization Algorithms (Lion)](https://arxiv.org/abs/2302.06675) — **Chen et al. (2023)** — a one-state, sign-based optimizer found by search.
+- [Sophia: A Scalable Stochastic Second-order Optimizer](https://arxiv.org/abs/2305.14342) — **Liu et al. (2023)** — a cheap diagonal-Hessian optimizer aimed at faster LLM pre-training.
+- [An overview of gradient descent optimization algorithms (paper)](https://arxiv.org/abs/1609.04747) — **Ruder (2016)** — the arXiv version of the canonical survey collecting every rule above.
 
 **Books (free chapters)**:
 - [Deep Learning — §8.3 "Basic Algorithms" + §8.5 "Adaptive Learning Rates"](https://www.deeplearningbook.org/contents/optimization.html) — **Goodfellow, Bengio & Courville** — the rigorous treatment of momentum and adaptive methods.
