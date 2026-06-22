@@ -3,7 +3,7 @@ id: "09-llms/rlhf-and-dpo/references"
 topic: "RLHF & DPO — References"
 parent: "09-llms/rlhf-and-dpo"
 type: references
-updated: 2026-06-21
+updated: 2026-06-22
 ---
 
 # RLHF & DPO — references and further reading
@@ -33,6 +33,8 @@ updated: 2026-06-21
 - [LLM Training: RLHF and Its Alternatives](https://magazine.sebastianraschka.com/p/llm-training-rlhf-and-its-alternatives) — **Sebastian Raschka** — RLHF, DPO, and the preference-tuning landscape.
 
 **Key papers**:
+- [Deep Reinforcement Learning from Human Preferences](https://arxiv.org/abs/1706.03741) — **Christiano et al. (2017)** — the origin of learning a reward from *pairwise comparisons* of trajectories; the seed RLHF grew from.
+- [Learning to Summarize from Human Feedback](https://arxiv.org/abs/2009.01325) — **Stiennon et al. (2020)** — the reward-model + PPO recipe applied to summarization; the bridge from Christiano to InstructGPT.
 - [Training LMs to Follow Instructions with Human Feedback (InstructGPT)](https://arxiv.org/abs/2203.02155) — **Ouyang et al. (2022)** — the canonical 3-stage RLHF pipeline.
 - [Direct Preference Optimization (DPO)](https://arxiv.org/abs/2305.18290) — **Rafailov et al. (2023)** — preference alignment without a reward model or RL loop; the derivation in full.
 - [Proximal Policy Optimization (PPO)](https://arxiv.org/abs/1707.06347) — **Schulman et al. (2017)** — the clipped-surrogate RL algorithm RLHF uses to optimize the policy.
