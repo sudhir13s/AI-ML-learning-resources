@@ -1,10 +1,13 @@
 """Transformer-architecture concept-page diagrams (muted palette, parallel matplotlib scale).
 
-Two visuals for 05. Deep_Learning/concepts/16-Transformer-Architecture.md:
+Visuals for 05. Deep_Learning/concepts/16-Transformer-Architecture.md:
   1. tf_positional_encoding.png -- sinusoidal positional encoding: heatmap over
      (position x dimension) + a few dimensions as waves of different frequency.
   2. tf_params.png             -- where a transformer block's parameters live:
      attention vs FFN per block, and how the total scales with depth.
+  3. tf_flop_crossover.png      -- attention (O(n^2 d)) vs FFN (O(n d^2)) FLOPs per
+     block as sequence length grows, with the n = 2*d_ff crossover marked; plus the
+     FLOP split as a function of model width at a fixed sequence length.
 """
 import os, matplotlib
 matplotlib.use("Agg")
@@ -79,7 +82,59 @@ def params():
     plt.close(fig); print("wrote tf_params.png")
 
 
+def flop_crossover():
+    """Per-block forward FLOPs: attention vs FFN. Counting matmul FLOPs as 2*M*N*K.
+
+    Attention (the two n x n matmuls, batch=1, summed over heads):
+        scores  QK^T : 2 * n * n * d
+        weighted sum : 2 * n * n * d        ->  total 4 * n^2 * d
+    The four projections (Wq,Wk,Wv,Wo) add 8 * n * d^2 but are O(n d^2) like the FFN;
+    we attribute them to the per-token "projection+FFN" side and isolate the genuinely
+    quadratic core attention here so the crossover with the FFN is the n^2-vs-d^2 story.
+
+    FFN (two linear layers, d -> 4d -> d):
+        2 * n * d * 4d  +  2 * n * 4d * d   =  16 * n * d^2
+    Crossover (4 n^2 d == 16 n d^2)  ->  n = 4d.  i.e. attention's quadratic core only
+    overtakes the FFN once the sequence is several times the model width.
+    """
+    d = 768
+    n = np.linspace(1, 16384, 400)
+    attn_flops = 4 * n**2 * d                 # core (n x n) attention
+    ffn_flops = 16 * n * d**2                 # two FFN matmuls (4x expansion)
+    crossover_n = 4 * d                        # 4 n^2 d = 16 n d^2  ->  n = 4d
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11.6, 4.7))
+
+    ax1.plot(n, ffn_flops / 1e9, color=GREEN, lw=2.6, label="FFN  (16·n·d²)")
+    ax1.plot(n, attn_flops / 1e9, color=PURPLE, lw=2.6, label="core attention  (4·n²·d)")
+    ax1.axvline(crossover_n, color=RED, ls="--", lw=1.8)
+    ax1.annotate(f"crossover\nn = 4d = {crossover_n}", (crossover_n, ffn_flops.max()/1e9*0.62),
+                 color=RED, fontsize=9.5, fontweight="bold", ha="left",
+                 xytext=(crossover_n + 700, ffn_flops.max()/1e9*0.62), va="center")
+    ax1.fill_between(n, 0, ffn_flops/1e9, where=(n < crossover_n), color=GREEN, alpha=0.07)
+    ax1.set_xlabel("sequence length  n  (d = 768 fixed)")
+    ax1.set_ylabel("forward GFLOPs per block")
+    ax1.set_title("FFN dominates until n ≈ 4d, then attention wins", fontsize=13, fontweight="bold")
+    ax1.legend(frameon=False, fontsize=9.5, loc="upper left"); _despine(ax1)
+
+    # right: at a fixed, realistic n, how the per-block FLOP budget splits vs model width
+    n_fixed = 2048
+    widths = np.array([256, 512, 768, 1024, 2048, 4096])
+    attn_w = 4 * n_fixed**2 * widths
+    ffn_w = 16 * n_fixed * widths**2
+    frac_attn = attn_w / (attn_w + ffn_w) * 100
+    ax2.plot(widths, frac_attn, color=PURPLE, lw=2.6, marker="o", ms=5, label="attention share")
+    ax2.plot(widths, 100 - frac_attn, color=GREEN, lw=2.6, marker="s", ms=5, label="FFN share")
+    ax2.set_xlabel(f"model width  d   (n = {n_fixed} fixed)")
+    ax2.set_ylabel("share of per-block FLOPs (%)")
+    ax2.set_title("Wider models push the budget toward the FFN", fontsize=13, fontweight="bold")
+    ax2.set_ylim(0, 100); ax2.legend(frameon=False, fontsize=9.5, loc="center right"); _despine(ax2)
+    fig.tight_layout(); fig.savefig(f"{OUT}/tf_flop_crossover.png", dpi=150, bbox_inches="tight")
+    plt.close(fig); print("wrote tf_flop_crossover.png")
+
+
 if __name__ == "__main__":
     positional_encoding()
     params()
+    flop_crossover()
     print("OUT:", OUT)
