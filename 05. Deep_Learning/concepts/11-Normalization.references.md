@@ -3,7 +3,7 @@ id: "05-deep-learning/normalization/references"
 topic: "Normalization — References"
 parent: "05-deep-learning/normalization"
 type: references
-updated: 2026-06-21
+updated: 2026-06-22
 ---
 
 # Normalization — references and further reading
@@ -40,8 +40,13 @@ updated: 2026-06-21
 - [Layer Normalization](https://arxiv.org/abs/1607.06450) — **Ba, Kiros & Hinton (2016)** — per-example normalization; the transformer/RNN choice.
 - [Group Normalization](https://arxiv.org/abs/1803.08494) — **Wu & He (2018)** — batch-size-independent normalization for small batches.
 - [Root Mean Square Layer Normalization (RMSNorm)](https://arxiv.org/abs/1910.07467) — **Zhang & Sennrich (2019)** — drop the mean-centering; the modern-LLM default.
+- [Instance Normalization: The Missing Ingredient for Fast Stylization](https://arxiv.org/abs/1607.08022) — **Ulyanov, Vedaldi & Lempitsky (2016)** — per-image, per-channel normalization; the style-transfer norm (and AdaIN's basis).
 - [How Does Batch Normalization Help Optimization?](https://arxiv.org/abs/1805.11604) — **Santurkar et al. (2018)** — BN works by smoothing the loss landscape, not "covariate shift."
 - [On Layer Normalization in the Transformer Architecture](https://arxiv.org/abs/2002.04745) — **Xiong et al. (2020)** — the pre-norm vs post-norm analysis; why pre-LN trains stably.
+- [DeepNet: Scaling Transformers to 1,000 Layers](https://arxiv.org/abs/2203.00555) — **Wang et al. (2022)** — DeepNorm, a post-norm variant with residual up-weighting for extreme depth.
+- [Fixup Initialization: Residual Learning Without Normalization](https://arxiv.org/abs/1901.09321) — **Zhang, Dauphin & Ma (2019)** — train very deep ResNets with scaled init and no norm layers.
+- [ReZero is All You Need: Fast Convergence at Large Depth](https://arxiv.org/abs/2003.04887) — **Bachlechner et al. (2020)** — a single zero-initialized residual gate per branch; deep training without normalization.
+- [High-Performance Large-Scale Image Recognition Without Normalization (NFNets)](https://arxiv.org/abs/2102.06171) — **Brock et al. (2021)** — match BatchNorm on ImageNet via weight standardization + adaptive gradient clipping.
 
 **Books (free chapters)**:
 - [Dive into Deep Learning — §8.5 "Batch Normalization"](https://d2l.ai/chapter_convolutional-modern/batch-norm.html) — **Zhang et al.** — BN forward/backward and its effect, with code.
