@@ -3,7 +3,7 @@ id: "05-deep-learning/vanishing-exploding-gradients/references"
 topic: "Vanishing / Exploding Gradients — References"
 parent: "05-deep-learning/vanishing-exploding-gradients"
 type: references
-updated: 2026-06-21
+updated: 2026-06-22
 ---
 
 # Vanishing / Exploding Gradients — references and further reading
@@ -19,6 +19,7 @@ updated: 2026-06-21
 
 **Videos**:
 - [Vanishing/Exploding Gradients (C2W1L10)](https://www.youtube.com/watch?v=qhXZsFVxGKo) — **DeepLearningAI (Andrew Ng)** — the clearest short explanation of why depth causes both failure modes.
+- [But what is backpropagation really doing?](https://www.youtube.com/watch?v=Ilg3gGewQ5U) — **3Blue1Brown** — the most visual account of how the gradient is built layer by layer (the product this page analyzes).
 - [Vanishing Gradient Problem, Quickly Explained](https://www.youtube.com/watch?v=8z3DFk4VxRo) — **Developers Hutt** — concise intuition for why gradients shrink through layers.
 - [Vanishing Gradient Problem in RNNs Explained](https://www.youtube.com/watch?v=KFUSJBPFsYs) — **Super Data Science** — why recurrence makes the problem acute, and what gating does.
 
@@ -26,17 +27,23 @@ updated: 2026-06-21
 - [Building makemore Part 3: Activations & Gradients, BatchNorm](https://www.youtube.com/watch?v=P6sfmUTpUmc) — **Andrej Karpathy** — diagnoses and fixes gradient pathologies *live in code*, plotting activation/gradient histograms layer by layer.
 
 **Courses (free)**:
-- [Stanford CS231n — Neural Networks Part 2](https://cs231n.github.io/neural-networks-2/) — **Stanford (Karpathy / Li / Johnson)** — how init and activations control gradient magnitude.
+- [Stanford CS231n — Neural Networks Part 2 (init & activations)](https://cs231n.github.io/neural-networks-2/) — **Stanford (Karpathy / Li / Johnson)** — how init and activations control gradient magnitude.
 - [Dive into Deep Learning — Numerical Stability & Initialization](https://d2l.ai/chapter_multilayer-perceptrons/numerical-stability-and-init.html) — **Zhang et al.** — vanishing/exploding gradients derived, with code.
 
 **Articles / blogs (free, no paywall)**:
 - [CS231n — Gradient checks, sanity checks, babysitting learning](https://cs231n.github.io/neural-networks-3/) — **Stanford CS231n** — diagnosing dead/blown-up gradients in practice.
 - [Why ResNets work: residual connections and gradient flow](https://d2l.ai/chapter_convolutional-modern/resnet.html) — **Zhang et al.** — how skip connections create a gradient highway.
+- [Understanding LSTM Networks](https://colah.github.io/posts/2015-08-Understanding-LSTMs/) — **Christopher Olah** — the clearest explanation of the additive cell-state path that defeats through-time vanishing.
 
 **Key papers**:
-- [On the difficulty of training Recurrent Neural Networks](https://arxiv.org/abs/1211.5063) — **Pascanu, Mikolov & Bengio (2013)** — analyzes exploding gradients and introduces norm clipping.
+- [On the difficulty of training Recurrent Neural Networks](https://arxiv.org/abs/1211.5063) — **Pascanu, Mikolov & Bengio (2013)** — analyzes exploding gradients (spectral radius) and introduces gradient-norm clipping.
 - [Learning long-term dependencies with gradient descent is difficult](http://www.iro.umontreal.ca/~lisa/pointeurs/ieeetrnn94.pdf) — **Bengio, Simard & Frasconi (1994)** — the original vanishing-gradient analysis.
-- [Delving Deep into Rectifiers](https://arxiv.org/abs/1502.01852) — **He et al. (2015)** — ReLU + He init as a gradient-flow fix.
+- [Untersuchungen zu dynamischen neuronalen Netzen (diploma thesis)](https://people.idsia.ch/~juergen/SeppHochreiter1991ThesisAdvisorSchmidhuber.pdf) — **Hochreiter (1991)** — the first identification of the vanishing-gradient problem in deep/recurrent nets.
+- [Long Short-Term Memory](https://deeplearning.cs.cmu.edu/F23/document/readings/LSTM.pdf) — **Hochreiter & Schmidhuber (1997)** — the LSTM cell state / constant error carousel, the additive-path cure for through-time vanishing.
+- [Understanding the difficulty of training deep feedforward networks (Xavier/Glorot init)](https://proceedings.mlr.press/v9/glorot10a/glorot10a.pdf) — **Glorot & Bengio (2010)** — the variance-preservation argument behind Xavier initialization.
+- [Delving Deep into Rectifiers (He init)](https://arxiv.org/abs/1502.01852) — **He et al. (2015)** — ReLU + He init ($\sqrt{2/n}$) as a gradient-flow fix, enabling very deep nets.
+- [Deep Residual Learning for Image Recognition (ResNet)](https://arxiv.org/abs/1512.03385) — **He et al. (2015)** — the identity-shortcut "gradient highway" that made 152-layer training work.
+- [Batch Normalization: Accelerating Deep Network Training](https://arxiv.org/abs/1502.03167) — **Ioffe & Szegedy (2015)** — re-standardizing activations to stabilize the forward/backward signal.
 
 **Books (free chapters)**:
 - [Dive into Deep Learning — §5.4 "Numerical Stability and Initialization"](https://d2l.ai/chapter_multilayer-perceptrons/numerical-stability-and-init.html) — **Zhang et al.** — both failure modes derived, with the init/activation fixes.
@@ -47,5 +54,5 @@ updated: 2026-06-21
 - Concept page (full explanation): [Vanishing / Exploding Gradients](06-Vanishing-Exploding-Gradients.md)
 - Concept depth (the *why*): [AI-ML-intuition 4.10 Gradient Clipping](../../../AI-ML-intuition/Module_4_Stabilization/4C_Training_Stability/4.10_Gradient_Clipping.md) · [4.12 Weight Initialization](../../../AI-ML-intuition/Module_4_Stabilization/4C_Training_Stability/4.12_Weight_Initialization_Xavier_He.md)
 - Prerequisite: [Backpropagation & Computational Graphs](02-Backpropagation-and-Computational-Graphs.md)
-- Related: [Activation Functions](03-Activation-Functions.md) (saturation) · [Weight Initialization](05-Weight-Initialization.md) · [Normalization](11-Normalization.md) · [Residual / Skip Connections](18-Residual-Skip-Connections.md)
+- Related: [Activation Functions](03-Activation-Functions.md) (saturation) · [Weight Initialization](05-Weight-Initialization.md) · [Normalization](11-Normalization.md) · [Residual / Skip Connections](18-Residual-Skip-Connections.md) · [RNN / LSTM / GRU](14-RNN-LSTM-GRU.md) (through-time fix) · [Transformer Architecture](16-Transformer-Architecture.md)
 - Field overview: [Deep Learning](../README.md)
