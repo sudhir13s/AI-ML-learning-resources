@@ -186,7 +186,7 @@ An A100 does ~312 TFLOP/s of compute but only ~2 TB/s of memory bandwidth — a 
 
 Here's a from-scratch single-layer attention that runs the decode loop **both ways** — recomputing everything vs. keeping a cache — checks that the outputs match to floating-point tolerance, then times them **across growing sequence lengths** so you can *watch the speedup widen*. It runs on CPU in a few seconds; no GPU needed.
 
-> **Runnable project and a step-by-step notebook:** the same verified code lives as a clean script and an executed teaching notebook next to this page — see [`05-KV-Cache.ipynb`](05-KV-Cache.ipynb) and [`code/`](code/) (`python code/kv_cache.py`).
+> **Runnable project and a step-by-step notebook:** the same verified code lives as a clean script and an executed teaching notebook next to this page — see [`code/05-KV-Cache.ipynb`](code/05-KV-Cache.ipynb) and [`code/`](code/) (`python code/kv_cache.py`).
 
 ```python
 """From-scratch KV cache: prove identical outputs, then time how the speedup GROWS with length.
