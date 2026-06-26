@@ -3,7 +3,7 @@ id: "06-nlp/bow-tfidf/references"
 topic: "Bag-of-Words & TF-IDF — References"
 parent: "06-nlp/bow-tfidf"
 type: references
-updated: 2026-06-22
+updated: 2026-06-27
 ---
 
 # Bag-of-Words & TF-IDF — references and further reading
@@ -42,8 +42,11 @@ updated: 2026-06-22
 - [Okapi BM25 (Wikipedia)](https://en.wikipedia.org/wiki/Okapi_BM25) — the BM25 formula, its variants (BM25F, BM25+), and the parameter ranges, with primary citations.
 
 **Papers**:
-- [A Statistical Interpretation of Term Specificity (IDF)](https://www.staff.city.ac.uk/~sbrp622/idfpapers/ksj_orig.pdf) — **Karen Spärck Jones (1972)** — the original paper that introduced inverse document frequency and the term-specificity argument.
-- [The Probabilistic Relevance Framework: BM25 and Beyond](https://www.staff.city.ac.uk/~sbrp622/papers/foundations_bm25_review.pdf) — **Robertson & Zaragoza (2009)** — the definitive derivation of BM25 from probabilistic retrieval theory, by its authors.
+- [A Statistical Interpretation of Term Specificity (IDF)](https://www.staff.city.ac.uk/~sbrp622/idfpapers/ksj_orig.pdf) — **Karen Spärck Jones (1972)** — the original paper that introduced inverse document frequency and the term-specificity argument; the source for the IDF formula on the page.
+- [A Vector Space Model for Automatic Indexing](https://dl.acm.org/doi/10.1145/361219.361220) — **Salton, Wong & Yang (1975)** — the vector space model: documents and queries as points in term space, relevance as the cosine of the angle; the source for the cosine-similarity formula.
+- [Term-weighting approaches in automatic text retrieval](https://www.cs.odu.edu/~jbollen/IR04/readings/article1-29-03.pdf) — **Salton & Buckley (1988)** — systematizes the TF-IDF family (the SMART term-weighting variants); the source for the TF variants and the TF×IDF combination.
+- [Okapi at TREC-3 (the original BM25)](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/okapi_trec3.pdf) — **Robertson, Walker, Jones, Hancock-Beaulieu & Gatford (1994)** — the experiments that introduced the BM25 ranking function and its $k_1$/$b$ knobs.
+- [The Probabilistic Relevance Framework: BM25 and Beyond](https://www.staff.city.ac.uk/~sbrp622/papers/foundations_bm25_review.pdf) — **Robertson & Zaragoza (2009)** — the definitive derivation of BM25 from probabilistic retrieval theory, by its authors; the source for the BM25 formula on the page.
 
 **Books (free chapters)**:
 - [Introduction to Information Retrieval — Ch. 6 "Scoring, term weighting & the vector space model"](https://informationretrieval.org/) — **Manning, Raghavan & Schütze** — the IR-grade treatment of tf-idf, cosine, and BM25, free online in full.
