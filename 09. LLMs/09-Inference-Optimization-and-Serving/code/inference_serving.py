@@ -170,7 +170,7 @@ def speculative_speedup(alpha: float, draft_k: int, draft_cost_ratio: float) -> 
     """
     if not 0.0 <= alpha < 1.0:
         raise ValueError("alpha (acceptance rate) must be in [0, 1)")
-    expected_accepted = (1.0 - alpha ** (draft_k + 1)) / (1.0 - alpha)  # mean accepted prefix length + 1
+    expected_accepted = (1.0 - alpha ** (draft_k + 1)) / (1.0 - alpha)  # mean accepted draft prefix + 1 (the target's always-accepted bonus token after the last accepted draft)
     target_passes_cost = 1.0 + draft_k * draft_cost_ratio  # one target pass + k draft steps
     return expected_accepted / target_passes_cost
 
