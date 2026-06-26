@@ -3,7 +3,7 @@ id: "09-llms/decoder-only-architecture/references"
 topic: "Decoder-only Architecture — References"
 parent: "09-llms/decoder-only-architecture"
 type: references
-updated: 2026-06-22
+updated: 2026-06-26
 ---
 
 # Decoder-only Architecture — references and further reading
@@ -44,11 +44,15 @@ updated: 2026-06-22
 - [Improving Language Understanding by Generative Pre-Training (GPT-1)](https://cdn.openai.com/research-covers/language-unsupervised/language_understanding_paper.pdf) — **Radford et al. (2018)** — the first decoder-only generative-pretraining recipe.
 - [Language Models are Unsupervised Multitask Learners (GPT-2)](https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf) — **Radford et al. (2019)** — zero-shot from a scaled decoder-only LM.
 - [Language Models are Few-Shot Learners (GPT-3)](https://arxiv.org/abs/2005.14165) — **Brown et al. (2020)** — the canonical decoder-only LM at scale; in-context learning emerges.
+- [Scaling Laws for Neural Language Models](https://arxiv.org/abs/2001.08361) — **Kaplan et al. (2020)** — §2.1 gives the $N \approx 12 d^2 L$ parameter count used in this page's hand-count.
+- [On Layer Normalization in the Transformer Architecture](https://arxiv.org/abs/2002.04745) — **Xiong et al. (2020)** — proves **pre-norm** ($x + \text{Sublayer}(\text{Norm}(x))$) keeps a clean gradient highway, so deep stacks train without warmup; the modern default.
+- [Root Mean Square Layer Normalization (RMSNorm)](https://arxiv.org/abs/1910.07467) — **Zhang & Sennrich (2019)** — drops LayerNorm's mean-centering and bias; the cheaper norm used by LLaMA-class models.
 - [LLaMA: Open and Efficient Foundation Language Models](https://arxiv.org/abs/2302.13971) — **Touvron et al. (2023)** — RMSNorm + RoPE + SwiGLU: the modern decoder recipe, spelled out.
 - [Exploring the Limits of Transfer Learning with T5](https://arxiv.org/abs/1910.10683) — **Raffel et al. (2020)** — the encoder-decoder "text-to-text" framing that decoder-only was weighed against.
 - [BERT: Pre-training of Deep Bidirectional Transformers](https://arxiv.org/abs/1810.04805) — **Devlin et al. (2018)** — the encoder-only / bidirectional alternative and what it's best at.
 - [What Language Model Architecture and Pretraining Objective Work Best for Zero-Shot Generalization?](https://arxiv.org/abs/2204.05832) — **Wang et al. (2022)** — the controlled study showing causal decoder-only wins zero-shot.
 - [Using the Output Embedding to Improve Language Models (weight tying)](https://arxiv.org/abs/1608.05859) — **Press & Wolf (2017)** — why the LM head is tied to the input embedding.
+- [Tying Word Vectors and Word Classifiers](https://arxiv.org/abs/1611.01462) — **Inan et al. (2017)** — the concurrent derivation of weight tying, framing the output projection as a reused embedding.
 - [RoFormer: Rotary Position Embedding (RoPE)](https://arxiv.org/abs/2104.09864) — **Su et al. (2021)** — the relative-position scheme used by most modern decoder-only LLMs.
 - [GLU Variants Improve Transformer (SwiGLU)](https://arxiv.org/abs/2002.05202) — **Shazeer (2020)** — the gated FFN that replaced the plain GELU MLP.
 - [GQA: Training Generalized Multi-Query Transformer Models](https://arxiv.org/abs/2305.13245) — **Ainslie et al. (2023)** — grouped-query attention, the KV-cache-shrinking choice in the modern recipe.
@@ -59,6 +63,7 @@ updated: 2026-06-22
 
 **In this platform**:
 - Concept page (full explanation): [Decoder-only Architecture](04-Decoder-only-Architecture.md)
+- Runnable code (from scratch): [step-by-step teaching notebook](code/04-Decoder-only-Architecture.ipynb) · [decoder-only stack demo script](code/decoder_only_architecture.py) — builds the block + stack, traces every shape, and runs the no-leakage proof.
 - Foundations (covered elsewhere): [Transformer Architecture](../../05.%20Deep_Learning/concepts/16-Transformer-Architecture.md) · [Attention Mechanism](../../05.%20Deep_Learning/concepts/15-Attention-Mechanism.md) · [Positional Encoding](../../05.%20Deep_Learning/concepts/17-Positional-Encoding.md) · [Normalization](../../05.%20Deep_Learning/concepts/11-Normalization.md) · [Activation Functions (SwiGLU)](../../05.%20Deep_Learning/concepts/03-Activation-Functions.md)
 - The objective it's trained on: [Language Modeling Objectives](../01-Language-Modeling-Objectives/01-Language-Modeling-Objectives.md) · [Pretraining at Scale](../02-Pretraining-at-Scale/02-Pretraining-at-Scale.md) · [Scaling Laws](../03-Scaling-Laws/03-Scaling-Laws.md)
 - The inference it enables: [KV Cache](../05-KV-Cache/05-KV-Cache.md) · [Long-Context Methods](../08-Long-Context-Methods/08-Long-Context-Methods.md) · [Mixture of Experts](../07-Mixture-of-Experts/07-Mixture-of-Experts.md) · [Inference Optimization & Serving](../09-Inference-Optimization-and-Serving/09-Inference-Optimization-and-Serving.md)
