@@ -54,4 +54,4 @@ headline" from "I understand the method and its limits."
 ## 🔗 In this platform
 - Per-concept index: [Frontier & Staying Current — concepts](README.md)
 - Where to find papers to read: [02 arXiv & Papers with Code](02-arXiv-and-Papers-with-Code.md) · [04 Newsletters & Blogs to Follow](04-Newsletters-and-Blogs-to-Follow.md)
-- Apply it to a frontier area: [09. LLMs](../../09.%20LLMs/concepts/README.md) · [10. GenAI](../../10.%20GenAI/concepts/README.md)
+- Apply it to a frontier area: [09. LLMs](../../09.%20LLMs/README.md) · [10. GenAI](../../10.%20GenAI/concepts/README.md)

@@ -56,5 +56,5 @@ updated: 2026-06-22
 - The static limitation it fixes: [Word Embeddings (word2vec · GloVe · fastText)](05-Word-Embeddings-Word2Vec-GloVe-FastText.md)
 - Builds on this: [Sentence & Document Embeddings (Sentence-BERT · USE)](07-Sentence-and-Document-Embeddings.md) — the naive-`[CLS]` trap and its fix.
 - Foundations: [Tokenization & Subword Algorithms](02-Tokenization-and-Subword-Algorithms.md) · [Transformer Architecture](../../05.%20Deep_Learning/concepts/16-Transformer-Architecture.md) · [Attention Mechanism](../../05.%20Deep_Learning/concepts/15-Attention-Mechanism.md)
-- The decoder lineage: [KV Cache](../../09.%20LLMs/concepts/05-KV-Cache.md) (why encoders don't need one) · the [LLMs concept index](../../09.%20LLMs/concepts/README.md)
+- The decoder lineage: [KV Cache](../../09.%20LLMs/05-KV-Cache/05-KV-Cache.md) (why encoders don't need one) · the [LLMs concept index](../../09.%20LLMs/README.md)
 - Concept depth (the *why* behind dense vectors): [AI-ML-intuition 1.02 Dense Embeddings](../../../AI-ML-intuition/Module_1_Representation/1.02_Dense_Embeddings.md)

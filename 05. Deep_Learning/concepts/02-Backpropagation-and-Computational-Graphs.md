@@ -553,7 +553,7 @@ You rarely hand-derive gradients in practice; **autograd** does it for you, usin
 - **Memory.** The backward pass needs the **cached activations** ($a^{l-1}$, $z^l$) from the forward pass to evaluate the local gradients. So activation memory scales with depth × batch × width and is often the **dominant** training-memory cost — frequently *more* than the weights themselves. This is why you can run inference at a large batch but OOM in training at the same batch: training holds the whole forward tape.
 - **Gradient checkpointing** trades compute for memory: discard most activations during the forward pass and **recompute** them on the fly during backward. This cuts activation memory from $O(\text{depth})$ toward $O(\sqrt{\text{depth}})$ at the cost of roughly one extra forward pass. It's essential for very deep models and long sequences, and it's why you can fine-tune large models on modest GPUs.
 
-> **Note:** this activation-memory cost is why batch size is capped in training, and why checkpointing, mixed precision, and [LoRA/PEFT](../../09.%20LLMs/concepts/12-LoRA-and-PEFT.md) all matter — they each attack the memory the backward pass demands (recompute instead of store; fewer bits per activation; far fewer trainable parameters whose gradients and optimizer state you keep).
+> **Note:** this activation-memory cost is why batch size is capped in training, and why checkpointing, mixed precision, and [LoRA/PEFT](../../09.%20LLMs/12-LoRA-and-PEFT/12-LoRA-and-PEFT.md) all matter — they each attack the memory the backward pass demands (recompute instead of store; fewer bits per activation; far fewer trainable parameters whose gradients and optimizer state you keep).
 
 ---
 

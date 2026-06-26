@@ -58,5 +58,5 @@ updated: 2026-06-22
 - Foundations (the mechanisms this builds on): [RNN / LSTM / GRU](../../05.%20Deep_Learning/concepts/14-RNN-LSTM-GRU.md) · [Attention Mechanism](../../05.%20Deep_Learning/concepts/15-Attention-Mechanism.md) · [Transformer Architecture](../../05.%20Deep_Learning/concepts/16-Transformer-Architecture.md)
 - Prior NLP step: [N-gram Language Models and Smoothing](04-N-gram-Language-Models-and-Smoothing.md) — the statistical predecessor neural seq2seq replaced.
 - Puts it to work: [Machine Translation](12-Machine-Translation.md) · [Text Summarization](13-Text-Summarization.md) · [Decoding Strategies](17-Decoding-Strategies.md) · [NLP Evaluation Metrics](18-NLP-Evaluation-Metrics.md)
-- Connects forward: [KV Cache](../../09.%20LLMs/concepts/05-KV-Cache.md) — how encoder–decoder (and decoder-only) inference caches K/V, including the cross-attention cache.
+- Connects forward: [KV Cache](../../09.%20LLMs/05-KV-Cache/05-KV-Cache.md) — how encoder–decoder (and decoder-only) inference caches K/V, including the cross-attention cache.
 - Concept depth (the *why* behind attention scores): [AI-ML-intuition 1.06 Scaled Dot-Product (attention scores)](../../../AI-ML-intuition/Module_1_Representation/1.06_Vector_Similarities_The_Scaled_Dot-Product.md)

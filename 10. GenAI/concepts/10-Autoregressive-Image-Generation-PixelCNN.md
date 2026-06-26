@@ -58,6 +58,6 @@ over *discrete latent codes* instead of raw pixels.
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 5.05 Autoregressive Generation & Sampling](../../../AI-ML-intuition/Module_5_Generation/5.05_Autoregressive_Generation_Sampling.md)
 - Prereq: [Deep Learning — CNNs & Convolution](../../05.%20Deep_Learning/concepts/13-CNNs-and-Convolution.md) (masked convolutions are the core trick)
-- Related (text analogue): [LLMs](../../09.%20LLMs/concepts/README.md) · [NLP — Decoding Strategies](../../06.%20NLP/concepts/17-Decoding-Strategies.md) (sampling from autoregressive conditionals)
+- Related (text analogue): [LLMs](../../09.%20LLMs/README.md) · [NLP — Decoding Strategies](../../06.%20NLP/concepts/17-Decoding-Strategies.md) (sampling from autoregressive conditionals)
 - Compare with: [08 Normalizing Flows](08-Normalizing-Flows.md) (another exact-likelihood model) · [05 Diffusion Models (DDPM)](05-Diffusion-Models-DDPM.md)
 - Field overview: [9. Generative AI](../README.md)

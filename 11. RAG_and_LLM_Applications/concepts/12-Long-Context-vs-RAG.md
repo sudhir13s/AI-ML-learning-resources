@@ -54,4 +54,4 @@ not vibes.
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 8.02 Retrieval-Augmented Generation](../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.02_Retrieval_Augmented_Generation.md)
 - Prereqs: [01 RAG Fundamentals](01-RAG-Fundamentals.md) · Next: [13 Citations & Attribution](13-Citations-and-Attribution.md)
-- Related domain: [09. LLMs — Long-Context Methods (RoPE scaling, ALiBi)](../../09.%20LLMs/concepts/08-Long-Context-Methods.md) · [09. LLMs — KV Cache](../../09.%20LLMs/concepts/05-KV-Cache.md)
+- Related domain: [09. LLMs — Long-Context Methods (RoPE scaling, ALiBi)](../../09.%20LLMs/08-Long-Context-Methods/08-Long-Context-Methods.md) · [09. LLMs — KV Cache](../../09.%20LLMs/05-KV-Cache/05-KV-Cache.md)

@@ -55,4 +55,4 @@ overfitting to the leaderboard — so you don't mistake a high score for real ca
 ## 🔗 In this platform
 - Per-concept index: [Frontier & Staying Current — concepts](README.md)
 - Pair with: [02 arXiv & Papers with Code](02-arXiv-and-Papers-with-Code.md) · [11 Evaluating Hype vs Substance](11-Evaluating-Hype-vs-Substance.md)
-- Evaluation depth lives in: [09. LLMs](../../09.%20LLMs/concepts/README.md) · [12. Deployment & MLOps](../../14.%20Deployment_and_MLOps/concepts/README.md)
+- Evaluation depth lives in: [09. LLMs](../../09.%20LLMs/README.md) · [12. Deployment & MLOps](../../14.%20Deployment_and_MLOps/concepts/README.md)

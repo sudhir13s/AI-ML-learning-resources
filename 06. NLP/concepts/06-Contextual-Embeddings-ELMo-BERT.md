@@ -179,7 +179,7 @@ BERT is a stack of **transformer encoder** blocks — the *left half* of the ori
 
 The defining property is **no causal masking**: every token's self-attention sees the entire sequence, both directions. That's the architectural reason BERT is an *understanding* model — it builds representations with full context — and the reason it **cannot generate** text autoregressively (it has no notion of "next token"; it was never trained to extend a sequence). Encoder-only models are for **classification, tagging, span extraction, retrieval, and embeddings** — not free-form generation.
 
-> **Note:** this is also why a [KV cache](../../09.%20LLMs/concepts/05-KV-Cache.md) — the workhorse of decoder inference — is **irrelevant** to BERT: there's no autoregressive loop to cache across. BERT processes the whole sequence in one parallel pass and you're done.
+> **Note:** this is also why a [KV cache](../../09.%20LLMs/05-KV-Cache/05-KV-Cache.md) — the workhorse of decoder inference — is **irrelevant** to BERT: there's no autoregressive loop to cache across. BERT processes the whole sequence in one parallel pass and you're done.
 
 ---
 

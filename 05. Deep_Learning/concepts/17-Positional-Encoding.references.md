@@ -53,7 +53,7 @@ updated: 2026-06-22
 **In this platform**:
 - Concept page (full explanation): [Positional Encoding](17-Positional-Encoding.md)
 - Prerequisites (the *why* behind Q, K, V and the block): [Attention Mechanism](15-Attention-Mechanism.md) · [Transformer Architecture](16-Transformer-Architecture.md)
-- Builds on this (RoPE caching, long context): [KV Cache](../../09.%20LLMs/concepts/05-KV-Cache.md)
+- Builds on this (RoPE caching, long context): [KV Cache](../../09.%20LLMs/05-KV-Cache/05-KV-Cache.md)
 - Concept depth (the *why*): [AI-ML-intuition 1.03 Positional Encoding](../../../AI-ML-intuition/Module_1_Representation/1.03_Positional_Encoding.md)
 - Field overview: [Deep Learning](../README.md)
-- Related domain: [09. LLMs](../../09.%20LLMs/concepts/README.md) (RoPE/ALiBi for long-context models)
+- Related domain: [09. LLMs](../../09.%20LLMs/README.md) (RoPE/ALiBi for long-context models)

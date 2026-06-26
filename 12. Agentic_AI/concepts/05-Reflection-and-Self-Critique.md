@@ -52,4 +52,4 @@ reflection far more reliable than pure self-grading, and the cost/latency trade-
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 8.03 Agents & Tool Use](../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.03_Agents_and_Tool_Use.md)
 - Prev / next: [02 ReAct](02-ReAct-Reason-and-Act.md) · [06 Memory for Agents](06-Memory-for-Agents.md) · [12 Agent Evaluation & Benchmarks](12-Agent-Evaluation-and-Benchmarks.md)
-- Related (canonical home): [Chain-of-Thought Reasoning](../../09.%20LLMs/concepts/17-Chain-of-Thought-Reasoning.md)
+- Related (canonical home): [Chain-of-Thought Reasoning](../../09.%20LLMs/17-Chain-of-Thought-Reasoning/17-Chain-of-Thought-Reasoning.md)

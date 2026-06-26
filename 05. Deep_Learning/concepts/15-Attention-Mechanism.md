@@ -22,7 +22,7 @@ I'm going to teach this the way I'd actually walk a strong teammate through it a
 - explain **multi-head** attention, why it helps, and walk its **shapes** end to end;
 - implement **causal and padding masks** and know which silent bug each prevents;
 - analyze the **$O(n^2)$ cost** and name the variants — **KV cache**, **FlashAttention**, **MQA/GQA**, **sparse**, **linear** — that exist because of it;
-- connect attention forward to the [KV cache](../../09.%20LLMs/concepts/05-KV-Cache.md), [FlashAttention](../../09.%20LLMs/concepts/06-Efficient-Attention-FlashAttention.md), the full [Transformer](16-Transformer-Architecture.md), and [positional encoding](17-Positional-Encoding.md).
+- connect attention forward to the [KV cache](../../09.%20LLMs/05-KV-Cache/05-KV-Cache.md), [FlashAttention](../../09.%20LLMs/06-Efficient-Attention-FlashAttention/06-Efficient-Attention-FlashAttention.md), the full [Transformer](16-Transformer-Architecture.md), and [positional encoding](17-Positional-Encoding.md).
 
 Intuition first, then the math, then code you can run.
 
@@ -176,7 +176,7 @@ The mechanism is identical; only the *source* of Q, K, V changes — and that on
 Cutting across self vs cross is a second axis that decides what a model is *for*: whether a token may look **forward** as well as back.
 
 - **Bidirectional** self-attention (BERT-style encoders) — *no mask*. Every token attends to every other token, past **and** future. Great for *understanding* a fixed input (classification, NER, retrieval embeddings) where the whole sequence is available at once. You cannot generate left-to-right with it, because token $i$ has already seen the answer.
-- **Causal** self-attention (GPT-style decoders) — *triangular mask*. Token $i$ attends only to $\le i$, never to the future. This is what lets the model **generate**: at each step it predicts the next token from the past alone, exactly as it will at inference. It's also what makes the [KV cache](../../09.%20LLMs/concepts/05-KV-Cache.md) valid (past K/V never change).
+- **Causal** self-attention (GPT-style decoders) — *triangular mask*. Token $i$ attends only to $\le i$, never to the future. This is what lets the model **generate**: at each step it predicts the next token from the past alone, exactly as it will at inference. It's also what makes the [KV cache](../../09.%20LLMs/05-KV-Cache/05-KV-Cache.md) valid (past K/V never change).
 
 | | Bidirectional (encoder) | Causal (decoder) |
 |---|---|---|
@@ -400,7 +400,7 @@ The lesson: the *capacity to attend differently per head* is what the model spen
 
 Two masks turn the same attention into different behaviors, by setting forbidden scores to $-\infty$ **before** the softmax (so their normalized weights become exactly 0):
 
-- **Causal (look-ahead) mask** — for autoregressive generation, token $i$ must not see tokens $>i$ (it would be cheating: peeking at the answer it's trying to predict). Mask the **upper triangle** of the $n\times n$ score matrix. This single change is the *only* structural difference between an **encoder** (bidirectional, no mask) and a **decoder** (causal) — and it is exactly what makes the [KV cache](../../09.%20LLMs/concepts/05-KV-Cache.md) valid at inference: because token $i$'s representation never depends on future tokens, a token's K and V are frozen forever once computed.
+- **Causal (look-ahead) mask** — for autoregressive generation, token $i$ must not see tokens $>i$ (it would be cheating: peeking at the answer it's trying to predict). Mask the **upper triangle** of the $n\times n$ score matrix. This single change is the *only* structural difference between an **encoder** (bidirectional, no mask) and a **decoder** (causal) — and it is exactly what makes the [KV cache](../../09.%20LLMs/05-KV-Cache/05-KV-Cache.md) valid at inference: because token $i$'s representation never depends on future tokens, a token's K and V are frozen forever once computed.
 - **Padding mask** — batches pad shorter sequences up to a common length so they fit in one tensor; real tokens must not attend to those pad positions (they carry no information). Mask the padded **key** columns. Both masks can be applied at once (logical OR of the two forbidden sets).
 
 ```mermaid
@@ -427,7 +427,7 @@ The 63% that the pad was stealing is **redistributed** across the three real tok
 
 > **Gotcha:** masking with $-\infty$ must happen **before** softmax so renormalization redistributes weight only among the *allowed* positions. Masking *after* softmax (zeroing the forbidden weights) leaves each row no longer summing to 1 — exactly the Example-5 failure — a subtle bug that quietly degrades quality without ever crashing. The principled order is: scores → scale → mask (add $-\infty$) → softmax → ·V.
 
-> **Note:** the causal mask is why a decoder can be **trained in parallel** (teacher forcing) yet behave autoregressively: all $n$ positions are scored at once, but the triangular mask makes position $i$'s output depend only on $\le i$, identical to having generated them one at a time. At *inference* the [KV cache](../../09.%20LLMs/concepts/05-KV-Cache.md) drops the mask entirely — the cache only ever holds past tokens, so causality is automatic and there's nothing to mask.
+> **Note:** the causal mask is why a decoder can be **trained in parallel** (teacher forcing) yet behave autoregressively: all $n$ positions are scored at once, but the triangular mask makes position $i$'s output depend only on $\le i$, identical to having generated them one at a time. At *inference* the [KV cache](../../09.%20LLMs/05-KV-Cache/05-KV-Cache.md) drops the mask entirely — the cache only ever holds past tokens, so causality is automatic and there's nothing to mask.
 
 ---
 
@@ -462,15 +462,15 @@ o_{\text{new}} = e^{m-m_{\text{new}}}\, o + \textstyle\sum_{j\in\text{block}} e^
 
 After the last block, $o/\ell$ is *exactly* the softmax-weighted sum you'd have gotten from the full row — no approximation, and the $n\times n$ matrix never existed in slow memory. This is the same numerically-stable subtract-the-max softmax from earlier, just computed incrementally.
 
-> **Note:** this is checkable in a few lines: run the block recurrence above over a 20-key example and compare to a plain `softmax(scores) @ V` — they agree to `~6e-08` (float rounding), confirming FlashAttention is *exact*. The dedicated [FlashAttention](../../09.%20LLMs/concepts/06-Efficient-Attention-FlashAttention.md) page builds the full tiled kernel; the takeaway here is simply that the global softmax can be computed block-by-block, which is what frees attention from the $O(n^2)$-memory materialization.
+> **Note:** this is checkable in a few lines: run the block recurrence above over a 20-key example and compare to a plain `softmax(scores) @ V` — they agree to `~6e-08` (float rounding), confirming FlashAttention is *exact*. The dedicated [FlashAttention](../../09.%20LLMs/06-Efficient-Attention-FlashAttention/06-Efficient-Attention-FlashAttention.md) page builds the full tiled kernel; the takeaway here is simply that the global softmax can be computed block-by-block, which is what frees attention from the $O(n^2)$-memory materialization.
 
-> **Note:** the online-softmax trick FlashAttention is built on is the *same* numerically-stable, subtract-the-max softmax from earlier — just computed incrementally as blocks stream by, with a correction factor that fixes up the partial sums when a new block's max exceeds the old running max. FlashAttention attacks the **compute/IO** side of the cost; the [KV cache](../../09.%20LLMs/concepts/05-KV-Cache.md) attacks the **inference-memory** side. A real long-context stack uses both. The dedicated [FlashAttention](../../09.%20LLMs/concepts/06-Efficient-Attention-FlashAttention.md) page derives the tiling and online softmax in full.
+> **Note:** the online-softmax trick FlashAttention is built on is the *same* numerically-stable, subtract-the-max softmax from earlier — just computed incrementally as blocks stream by, with a correction factor that fixes up the partial sums when a new block's max exceeds the old running max. FlashAttention attacks the **compute/IO** side of the cost; the [KV cache](../../09.%20LLMs/05-KV-Cache/05-KV-Cache.md) attacks the **inference-memory** side. A real long-context stack uses both. The dedicated [FlashAttention](../../09.%20LLMs/06-Efficient-Attention-FlashAttention/06-Efficient-Attention-FlashAttention.md) page derives the tiling and online softmax in full.
 
 ---
 
 ## Efficient attention variants: which lever for which bottleneck
 
-Most modern attention research is about beating the $O(n^2)$ cost or shrinking the inference-time [KV cache](../../09.%20LLMs/concepts/05-KV-Cache.md). Which lever you pull depends entirely on *which* bottleneck is hurting you:
+Most modern attention research is about beating the $O(n^2)$ cost or shrinking the inference-time [KV cache](../../09.%20LLMs/05-KV-Cache/05-KV-Cache.md). Which lever you pull depends entirely on *which* bottleneck is hurting you:
 
 ```mermaid
 graph TD
@@ -490,9 +490,9 @@ graph TD
     classDef data fill:#3A6B96,stroke:#2A5B86,color:#fff
 ```
 
-- **KV cache** (inference) — don't recompute past tokens' K and V each decode step; store and reuse them. Turns per-step generation cost from $O(n)$ recompute into $O(1)$. The single most important inference optimization; covered in depth on the [KV Cache](../../09.%20LLMs/concepts/05-KV-Cache.md) page.
+- **KV cache** (inference) — don't recompute past tokens' K and V each decode step; store and reuse them. Turns per-step generation cost from $O(n)$ recompute into $O(1)$. The single most important inference optimization; covered in depth on the [KV Cache](../../09.%20LLMs/05-KV-Cache/05-KV-Cache.md) page.
 - **MQA / GQA / MLA** — share K/V across query heads (or compress them to a latent) to shrink the KV cache. An *inference-memory* win, not an asymptotic one — GQA cuts the cache ~8×, the lever that makes long-context 70B models servable.
-- **[FlashAttention](../../09.%20LLMs/concepts/06-Efficient-Attention-FlashAttention.md)** — computes *exact* attention but tiles the work to avoid ever materializing the $n\times n$ matrix in slow memory; a large constant-factor speedup and an $O(n)$-memory win.
+- **[FlashAttention](../../09.%20LLMs/06-Efficient-Attention-FlashAttention/06-Efficient-Attention-FlashAttention.md)** — computes *exact* attention but tiles the work to avoid ever materializing the $n\times n$ matrix in slow memory; a large constant-factor speedup and an $O(n)$-memory win.
 - **Sparse / local attention** (sliding-window, strided, [BigBird](https://arxiv.org/abs/2007.14062), [Longformer](https://arxiv.org/abs/2004.05150)) — each token attends to a *subset* of positions, dropping cost toward $O(n\sqrt n)$ or $O(n)$ at some quality cost on truly global dependencies.
 - **Linear attention** ([Performer](https://arxiv.org/abs/2009.14794), kernel methods) — reorder the computation $(QK^\top)V \to Q(K^\top V)$ via a feature map to avoid the $n\times n$ matrix entirely, reaching $O(n)$ — approximate, with accuracy trade-offs.
 

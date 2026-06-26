@@ -427,7 +427,7 @@ A point worth its own section because it dominates LLM-training cost. Adam/AdamW
 
 That's **~16–18 bytes per parameter** before activations — and the **optimizer states alone are 8 of those bytes, twice the size of the FP16 weights.** For a 7B model the Adam states are $\sim 7\text{B}\times 8 \approx 56$ GB on their own. This is *the* reason full fine-tuning is so expensive, and the direct motivation for **8-bit Adam, Adafactor, ZeRO state-sharding**, and parameter-efficient methods.
 
-> **Tip:** this is exactly why [LoRA/PEFT](../../09.%20LLMs/concepts/12-LoRA-and-PEFT.md) saves so much memory: by training only a few million low-rank adapter parameters instead of all 7B, you only pay Adam's $2\times$ state overhead on the *adapters*, shrinking optimizer memory from tens of GB to a fraction of a GB. The optimizer-state cost is the bridge between "optimizers" and "why PEFT exists."
+> **Tip:** this is exactly why [LoRA/PEFT](../../09.%20LLMs/12-LoRA-and-PEFT/12-LoRA-and-PEFT.md) saves so much memory: by training only a few million low-rank adapter parameters instead of all 7B, you only pay Adam's $2\times$ state overhead on the *adapters*, shrinking optimizer memory from tens of GB to a fraction of a GB. The optimizer-state cost is the bridge between "optimizers" and "why PEFT exists."
 
 ---
 

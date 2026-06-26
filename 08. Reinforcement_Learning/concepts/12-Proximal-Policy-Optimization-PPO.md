@@ -56,4 +56,4 @@ KL penalty to the reference model).
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 6.03 PPO & RLHF](../../../AI-ML-intuition/Module_6_Reinforcement_Learning/6.03_PPO_and_RLHF.md)
 - Prereq: [11 TRPO](11-Trust-Region-Policy-Optimization-TRPO.md) · [10 Actor-Critic](10-Actor-Critic-A2C-A3C.md)
-- **RLHF for LLMs** (PPO applied to language-model alignment, with reward models + DPO) lives in [09. LLMs](../../09.%20LLMs/concepts/README.md) — this card owns the PPO *mechanics* it relies on.
+- **RLHF for LLMs** (PPO applied to language-model alignment, with reward models + DPO) lives in [09. LLMs](../../09.%20LLMs/README.md) — this card owns the PPO *mechanics* it relies on.

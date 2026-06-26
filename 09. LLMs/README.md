@@ -12,10 +12,50 @@ updated: 2026-06-20
 
 **⭐ Start here:** [Intro to Large Language Models](https://www.youtube.com/watch?v=zjkBMFhNj_g) — **Andrej Karpathy** — the best 1-hour mental model of how LLMs work.
 
-## 📑 Per-concept resources
-Looking for the best **free, open** resources on a *specific* LLM topic — scaling laws, KV cache,
-LoRA, RLHF, decoding, serving? See the **[Concept Index →](concepts/README.md)**, where every owned
-concept has its own guided resource card (courses, videos, papers, articles, books, cross-links).
+## 📑 Concept Index
+Every chapter is a self-contained folder (`NN-Concept/NN-Concept.md`) with its page, a curated
+`.references.md` resource card (free, open courses · videos · papers · articles · books · cross-links),
+and — for the gold demo chapter — a runnable notebook and `code/`.
+> **✅ ready.** New here? Start with the field overview above, then work top to bottom.
+
+### Pretraining & architecture
+1. ✅ [Language Modeling Objectives (causal vs masked)](01-Language-Modeling-Objectives/01-Language-Modeling-Objectives.md)
+2. ✅ [Pretraining at Scale (data, compute, training dynamics)](02-Pretraining-at-Scale/02-Pretraining-at-Scale.md)
+3. ✅ [Scaling Laws (Kaplan → Chinchilla)](03-Scaling-Laws/03-Scaling-Laws.md)
+4. ✅ [Decoder-only Architecture (the GPT family)](04-Decoder-only-Architecture/04-Decoder-only-Architecture.md)
+
+### Efficient attention & inference
+5. ✅ [KV Cache](05-KV-Cache/05-KV-Cache.md) — *gold demo chapter: page · [notebook](05-KV-Cache/05-KV-Cache.ipynb) · [code/](05-KV-Cache/code/)*
+6. ✅ [Efficient Attention (FlashAttention)](06-Efficient-Attention-FlashAttention/06-Efficient-Attention-FlashAttention.md)
+7. ✅ [Mixture-of-Experts (MoE)](07-Mixture-of-Experts/07-Mixture-of-Experts.md)
+8. ✅ [Long-Context Methods (RoPE scaling, ALiBi, sparse/sliding)](08-Long-Context-Methods/08-Long-Context-Methods.md)
+9. ✅ [Inference Optimization & Serving (vLLM · paged attention)](09-Inference-Optimization-and-Serving/09-Inference-Optimization-and-Serving.md)
+
+### Compression
+10. ✅ [Quantization (GPTQ · AWQ · GGUF)](10-Quantization/10-Quantization.md)
+11. ✅ [Knowledge Distillation](11-Knowledge-Distillation/11-Knowledge-Distillation.md)
+
+### Adaptation & alignment
+12. ✅ [LoRA / PEFT (parameter-efficient fine-tuning)](12-LoRA-and-PEFT/12-LoRA-and-PEFT.md)
+13. ✅ [Supervised Fine-Tuning (SFT)](13-Supervised-Fine-Tuning/13-Supervised-Fine-Tuning.md)
+14. ✅ [Instruction Tuning](14-Instruction-Tuning/14-Instruction-Tuning.md)
+15. ✅ [RLHF & DPO (preference alignment)](15-RLHF-and-DPO/15-RLHF-and-DPO.md)
+
+### Prompting, reasoning & decoding
+16. ✅ [Prompting & In-Context Learning](16-Prompting-and-In-Context-Learning/16-Prompting-and-In-Context-Learning.md)
+17. ✅ [Chain-of-Thought Reasoning](17-Chain-of-Thought-Reasoning/17-Chain-of-Thought-Reasoning.md)
+18. ✅ [Decoding & Sampling for LLMs (temperature · top-k · top-p)](18-Decoding-and-Sampling/18-Decoding-and-Sampling.md)
+
+### Evaluation & safety
+19. ✅ [LLM Evaluation & Benchmarks](19-LLM-Evaluation-and-Benchmarks/19-LLM-Evaluation-and-Benchmarks.md)
+20. ✅ [Hallucination & Alignment basics](20-Hallucination-and-Alignment-Basics/20-Hallucination-and-Alignment-Basics.md)
+
+### Related concepts (canonical home is another section)
+> Foundations or applications of LLMs, linked here to avoid repetition.
+- **Transformer · Attention · Positional encoding** → [Deep Learning](../05.%20Deep_Learning/concepts/README.md) ([Transformer](../05.%20Deep_Learning/concepts/16-Transformer-Architecture.md) · [Attention](../05.%20Deep_Learning/concepts/15-Attention-Mechanism.md) · [Positional Encoding](../05.%20Deep_Learning/concepts/17-Positional-Encoding.md))
+- **Tokenization & subword (BPE/WordPiece) · Contextual embeddings (BERT)** → [NLP](../06.%20NLP/concepts/README.md) ([Tokenization](../06.%20NLP/concepts/02-Tokenization-and-Subword-Algorithms.md) · [Contextual Embeddings](../06.%20NLP/concepts/06-Contextual-Embeddings-ELMo-BERT.md))
+- **Retrieval-Augmented Generation (RAG)** → [RAG & LLM Applications](../11.%20RAG_and_LLM_Applications/concepts/README.md)
+- **PPO & policy-gradient mechanics** (the RL engine under RLHF) → [Reinforcement Learning](../08.%20Reinforcement_Learning/concepts/README.md)
 
 ## 🎓 Courses (free)
 - [Neural Networks: Zero to Hero](https://karpathy.ai/zero-to-hero.html) — **Andrej Karpathy** — culminates in building & training a GPT from scratch.

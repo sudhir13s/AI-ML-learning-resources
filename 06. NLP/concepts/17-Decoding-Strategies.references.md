@@ -56,5 +56,5 @@ updated: 2026-06-22
 - Prior step (the models being decoded): [08 Sequence-to-Sequence & Encoder–Decoder](08-Sequence-to-Sequence-and-Encoder-Decoder.md)
 - Puts decoding to work: [12 Machine Translation](12-Machine-Translation.md) (beam search) · [13 Text Summarization](13-Text-Summarization.md) (beam + no-repeat n-gram)
 - How decoded text is scored: [18 NLP Evaluation Metrics](18-NLP-Evaluation-Metrics.md)
-- The speedup decode relies on: [09 LLMs · KV Cache](../../09.%20LLMs/concepts/05-KV-Cache.md) (why decode is memory-bound; speculative decoding)
+- The speedup decode relies on: [09 LLMs · KV Cache](../../09.%20LLMs/05-KV-Cache/05-KV-Cache.md) (why decode is memory-bound; speculative decoding)
 - The *why* behind the math: [AI-ML-intuition 5.05 Autoregressive Generation & Sampling](../../../AI-ML-intuition/Module_5_Generation/5.05_Autoregressive_Generation_Sampling.md) · [5.01 Entropy & KL (temperature)](../../../AI-ML-intuition/Module_5_Generation/5.01_Information_Theory_Entropy_KL_Divergence.md)
