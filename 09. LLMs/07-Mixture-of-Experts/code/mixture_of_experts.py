@@ -14,9 +14,11 @@ The file does three things, in order:
      and the aux loss fix it.
 
 This is the same verified demo embedded in the concept page and the teaching notebook.
-Verified on Python 3.12 / torch 2.x. Device-agnostic (CUDA / MPS / CPU); the absolute
-numbers are seed- and device-dependent, but the routing logic, the aux-loss ordering
-(collapsed > balanced), and the "aux loss prevents dead experts" trend hold on any device.
+Verified on Python 3.12 / torch 2.12.0. The detected accelerator is reported, but the
+demo is deliberately PINNED TO CPU for reproducibility: with manual_seed(0) the exact
+routing table, aux-loss values (1.000 / 1.947), and utilisation (dead 2/8 -> 0/8) are
+bit-reproducible on CPU. The routing logic, the aux-loss ordering (collapsed > balanced),
+and the "aux loss prevents dead experts" trend hold on any device.
 
 Run:
     python mixture_of_experts.py
@@ -44,14 +46,18 @@ AUX_COEFF = 4.0       # alpha: weight on the aux loss when it is enabled
 EVAL_TOKENS = 4096    # tokens used to measure final utilisation
 DEAD_THRESHOLD_PCT = 0.5  # an expert under this share of tokens is counted "dead"
 
-# Run on the best available accelerator; CPU is the universal fallback.
-DEVICE = (
+# The accelerator we detect (reported for context only).
+DETECTED_DEVICE = (
     "cuda"
     if torch.cuda.is_available()
     else "mps"
     if torch.backends.mps.is_available()
     else "cpu"
 )
+# The device the demo actually runs on. Deliberately pinned to CPU so the seeded
+# numbers (routing table, aux-loss, utilisation) are bit-reproducible across machines;
+# the printed line is honest about this (we never print one device and compute on another).
+DEVICE = "cpu"
 
 
 class MoELayer(nn.Module):
@@ -119,8 +125,8 @@ def show_routing() -> None:
     """Run a tiny batch through one MoE layer, printing shapes and per-token routing."""
     torch.manual_seed(0)
     n_tokens = 6
-    moe = MoELayer()
-    x = torch.randn(n_tokens, D_MODEL)               # a small, readable batch of token vectors
+    moe = MoELayer().to(DEVICE)                       # place the router + experts on the run device
+    x = torch.randn(n_tokens, D_MODEL, device=DEVICE)  # a small, readable batch of token vectors
 
     logits = moe.router(x)                           # (T, N) router scores
     probs = F.softmax(logits, dim=-1)                # (T, N) g(x)
@@ -153,11 +159,13 @@ def show_aux_loss_balanced_vs_collapsed() -> None:
     """Compute the aux loss on a balanced vs a collapsed routing and assert the ordering."""
     n = 4  # 4 experts, by hand, matching the worked example on the concept page
     # Balanced: every expert gets a quarter of the tokens and a quarter of the probability.
-    f_bal = torch.tensor([0.25, 0.25, 0.25, 0.25])
-    p_bal = torch.tensor([0.25, 0.25, 0.25, 0.25])
-    # Collapsed: one expert hogs the tokens; the router's mean prob is skewed to match.
-    f_col = torch.tensor([0.70, 0.20, 0.07, 0.03])
-    p_col = torch.tensor([0.62, 0.22, 0.10, 0.06])
+    f_bal = torch.tensor([0.25, 0.25, 0.25, 0.25], device=DEVICE)
+    p_bal = torch.tensor([0.25, 0.25, 0.25, 0.25], device=DEVICE)
+    # Collapsed: one expert hogs the tokens (f). The matching P here is an ILLUSTRATIVE
+    # mean-router-probability vector skewed the same way -- chosen to mirror the f skew,
+    # not measured from a run; it shows how the penalty rises when usage concentrates.
+    f_col = torch.tensor([0.70, 0.20, 0.07, 0.03], device=DEVICE)
+    p_col = torch.tensor([0.62, 0.22, 0.10, 0.06], device=DEVICE)
 
     l_bal = aux_loss(f_bal, p_bal, n)
     l_col = aux_loss(f_col, p_col, n)
@@ -179,12 +187,12 @@ def train_moe(use_aux: bool, steps: int = TRAIN_STEPS, seed: int = 0) -> torch.T
     counter-pressure. Toggling use_aux isolates exactly what the aux loss buys.
     """
     torch.manual_seed(seed)
-    moe = MoELayer(k=1)                               # top-1 routing: collapse is sharpest here
+    moe = MoELayer(k=1).to(DEVICE)                    # top-1 routing: collapse is sharpest here
     opt = torch.optim.Adam(moe.parameters(), lr=LEARNING_RATE)
-    target_map = torch.randn(D_MODEL, D_MODEL)        # a fixed nonlinear target the experts learn
+    target_map = torch.randn(D_MODEL, D_MODEL, device=DEVICE)  # a fixed nonlinear target the experts learn
 
     for _ in range(steps):
-        x = torch.randn(BATCH_TOKENS, D_MODEL)
+        x = torch.randn(BATCH_TOKENS, D_MODEL, device=DEVICE)
         target = torch.tanh(x @ target_map)
         y, aux, _ = moe(x)
         # Rich-get-richer driver: pick each token's currently-best expert (lowest error)
@@ -203,7 +211,7 @@ def train_moe(use_aux: bool, steps: int = TRAIN_STEPS, seed: int = 0) -> torch.T
         opt.step()
 
     with torch.no_grad():                              # measure final utilisation on fresh tokens
-        x = torch.randn(EVAL_TOKENS, D_MODEL)
+        x = torch.randn(EVAL_TOKENS, D_MODEL, device=DEVICE)
         _, _, top1 = moe(x)
         counts = torch.bincount(top1, minlength=moe.n_experts).float()
         return counts / counts.sum() * 100.0           # percent of tokens per expert
@@ -212,30 +220,36 @@ def train_moe(use_aux: bool, steps: int = TRAIN_STEPS, seed: int = 0) -> torch.T
 def show_collapse_vs_balanced() -> None:
     """Train without and with the aux loss; print utilisation and the dead-expert count."""
     print(f"expert utilisation after training (ideal = {IDEAL_UTIL_PCT:.1f}% each, 0 dead):")
-    util_no_aux = None
+    dead = {}
+    max_util = {}
     for use_aux in (False, True):
         util = train_moe(use_aux=use_aux)
-        dead = int((util < DEAD_THRESHOLD_PCT).sum())
+        dead[use_aux] = int((util < DEAD_THRESHOLD_PCT).sum())
+        max_util[use_aux] = float(util.max())
         tag = "WITH aux " if use_aux else "NO aux   "
         bars = ", ".join(f"{v:4.1f}" for v in util)
-        print(f"  {tag}| util% = [{bars}] | max {util.max():.1f}%  dead {dead}/{len(util)}")
-        if not use_aux:
-            util_no_aux = util
-            dead_no_aux = dead
-        else:
-            dead_with_aux = dead
-    # The headline result: the aux loss revives the dead experts.
-    assert dead_with_aux < dead_no_aux or dead_no_aux == 0, (
-        "the aux loss should not increase the number of dead experts"
-    )
+        print(f"  {tag}| util% = [{bars}] | max {max_util[use_aux]:.1f}%  dead {dead[use_aux]}/{len(util)}")
+
+    # 1. Precondition: the no-aux run must ACTUALLY collapse, or the demo proves nothing.
+    assert dead[False] >= 1, "no-aux run must show collapse (>=1 dead expert) for the demo to be meaningful"
+    # 2. The aux loss must revive the dead experts -- strictly fewer dead, down to zero.
+    assert dead[True] < dead[False], "the aux loss must reduce the number of dead experts"
+    # 3. ...and flatten the peak: the busiest expert must hog less of the load with the aux loss.
+    assert max_util[True] < max_util[False], "the aux loss must lower the busiest expert's share"
     print(
-        f"\nassert passed: dead experts went {dead_no_aux} (no aux) -> "
-        f"{dead_with_aux} (with aux) -- the aux loss keeps every expert alive."
+        f"\nassert passed: collapse is real ({dead[False]} dead no-aux), the aux loss revives it "
+        f"({dead[False]} -> {dead[True]} dead), and the peak share drops "
+        f"({max_util[False]:.1f}% -> {max_util[True]:.1f}%)."
     )
 
 
 def main() -> None:
-    print("device:", DEVICE)
+    # Honest device line: report what we detected AND what we actually run on (they can differ
+    # on purpose -- CPU is pinned for reproducibility). Never print one and compute on another.
+    if DETECTED_DEVICE == DEVICE:
+        print(f"device: {DEVICE}")
+    else:
+        print(f"device: {DEVICE} (detected {DETECTED_DEVICE}; pinned to CPU for reproducibility)")
     print("torch:", torch.__version__)
     print("\n=== 1. one MoE layer: shapes and per-token routing ===\n")
     show_routing()
