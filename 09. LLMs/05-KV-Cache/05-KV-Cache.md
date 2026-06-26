@@ -156,6 +156,8 @@ The leading **2** is for storing both **K** and **V**. Everything else is just "
 
 $$2 \times 32 \times 32 \times 128 \times 2 \;=\; 524{,}288 \text{ bytes} \;\approx\; \mathbf{0.5\ MiB\ per\ token.}$$
 
+> **Source / derivation:** [kipply, *Transformer Inference Arithmetic*](https://kipp.ly/transformer-inference-arithmetic/) and [EleutherAI, *Transformer Math 101*](https://blog.eleuther.ai/transformer-math/) — the per-token KV-cache footprint worked through from a model's real config (here Llama-2-7B: 32 layers, 32 KV heads, $d_{\text{head}}=128$, FP16).
+
 So a single sequence at a **4,096-token** context holds $4096 \times 0.5\,\text{MiB} \approx \mathbf{2\ GiB}$ of cache. The model's weights are 7B × 2 bytes ≈ **14 GB** (≈ 13 GiB — at this precision we treat GB and GiB interchangeably). The cache for *one* sequence is already ~14% of the weights — and it scales with **batch size**.
 
 ![KV cache size vs context length for 7B/13B/70B (MHA). It grows linearly with context, and at long contexts or large batches it rivals or exceeds the model weights.](../images/kv_memory_growth.png)

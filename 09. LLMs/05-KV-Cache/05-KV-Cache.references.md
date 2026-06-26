@@ -46,6 +46,7 @@ updated: 2026-06-21
 - [Optimizing AI Inference at Character.AI](https://research.character.ai/optimizing-inference/) — **Character.AI** — aggressive KV-cache reduction (MQA, cross-layer sharing) in production.
 
 **Key papers**:
+- [Attention Is All You Need](https://arxiv.org/abs/1706.03762) — **Vaswani et al. (2017)** — the transformer; §3.2 gives the per-head attention shapes ($n_{\text{heads}}$, $d_{\text{head}}$) the KV-cache size formula is derived from.
 - [Fast Transformer Decoding: One Write-Head is All You Need (MQA)](https://arxiv.org/abs/1911.02150) — **Shazeer (2019)** — multi-query attention to shrink the KV cache.
 - [GQA: Training Generalized Multi-Query Transformer Models](https://arxiv.org/abs/2305.13245) — **Ainslie et al. (2023)** — grouped-query attention, the KV-cache sweet spot used by Llama-2/3.
 - [DeepSeek-V2: A Strong, Economical MoE Model (Multi-head Latent Attention)](https://arxiv.org/abs/2405.04434) — **DeepSeek-AI (2024)** — MLA: low-rank latent KV compression, the frontier of the MQA→GQA→MLA line (cache ~4% of MHA).
