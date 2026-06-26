@@ -53,4 +53,4 @@ parent-document) that fix the "chunk lost its context" problem.
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 8.02 Retrieval-Augmented Generation](../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.02_Retrieval_Augmented_Generation.md)
 - Prereqs: [01 RAG Fundamentals](01-RAG-Fundamentals.md) · Next: [03 Embedding Models for Retrieval](03-Embedding-Models-for-Retrieval.md)
-- Related domain: [06. NLP — Tokenization & Subword Algorithms](../../06.%20NLP/concepts/02-Tokenization-and-Subword-Algorithms.md) · [06. NLP — Sentence & Document Embeddings](../../06.%20NLP/concepts/07-Sentence-and-Document-Embeddings.md)
+- Related domain: [06. NLP — Tokenization & Subword Algorithms](../../06.%20NLP/02-Tokenization-and-Subword-Algorithms/02-Tokenization-and-Subword-Algorithms.md) · [06. NLP — Sentence & Document Embeddings](../../06.%20NLP/07-Sentence-and-Document-Embeddings/07-Sentence-and-Document-Embeddings.md)

@@ -57,5 +57,5 @@ that a single number hides; and **CLIP-score** for text-to-image prompt alignmen
 ## 🔗 In this platform
 - Prereq: [02 GANs & DCGAN](02-GANs-and-DCGAN.md) · [05 Diffusion Models (DDPM)](05-Diffusion-Models-DDPM.md) (the models you evaluate)
 - Related: [03 GAN Training & WGAN](03-GAN-Training-and-WGAN.md) (FID/precision-recall detect mode collapse)
-- Compare with: [NLP — Evaluation Metrics (BLEU · perplexity)](../../06.%20NLP/concepts/18-NLP-Evaluation-Metrics.md) (the text-generation analogue)
+- Compare with: [NLP — Evaluation Metrics (BLEU · perplexity)](../../06.%20NLP/18-NLP-Evaluation-Metrics/18-NLP-Evaluation-Metrics.md) (the text-generation analogue)
 - Field overview: [9. Generative AI](../README.md)

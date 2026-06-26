@@ -43,4 +43,4 @@ updated: 2026-06-19
 
 - **PCA / SVD (the math)** — eigendecomposition, variance maximization, the SVD view → [Foundations — Maths for AI-ML](../../01.%20Foundations/Maths%20for%20AI-ML/README.md)
 - **Autoencoders** — non-linear, learned dimensionality reduction → [Deep Learning](../../05.%20Deep_Learning/concepts/README.md)
-- **Word / sentence embeddings** — representation learning over text → [NLP](../../06.%20NLP/concepts/README.md)
+- **Word / sentence embeddings** — representation learning over text → [NLP](../../06.%20NLP/README.md)

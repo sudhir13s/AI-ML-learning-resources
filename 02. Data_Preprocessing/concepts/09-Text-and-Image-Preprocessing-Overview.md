@@ -52,7 +52,7 @@ and how tokenization choices (word vs subword/BPE) affect everything downstream.
 
 ## 🔗 In this platform
 - Full depth lives in the dedicated domains:
-  - **Text** — tokenization, normalization, subword algorithms → [06. NLP](../../06.%20NLP/concepts/README.md)
+  - **Text** — tokenization, normalization, subword algorithms → [06. NLP](../../06.%20NLP/README.md)
   - **Images** — augmentation and vision-specific preprocessing → [07. Computer Vision](../../07.%20Computer%20Vision/concepts/README.md)
 - Concept depth (the *why*): [AI-ML-intuition 1.15 Tokenization & BPE](../../../AI-ML-intuition/Module_1_Representation/1.15_Tokenization_and_BPE.md) · [1.17 BoW & TF-IDF](../../../AI-ML-intuition/Module_1_Representation/1.17_BoW_and_TF-IDF.md)
 - Next concepts: [06 Feature Engineering](06-Feature-Engineering.md) · [13 Data Pipelines](13-Data-Pipelines.md)

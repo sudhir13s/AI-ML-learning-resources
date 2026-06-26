@@ -52,7 +52,7 @@ updated: 2026-06-27
 
 **In this platform**:
 - Concept page (full explanation): [Decoding & Sampling](18-Decoding-and-Sampling.md)
-- Related (NLP card, seq2seq framing): [Decoding Strategies](../../06.%20NLP/concepts/17-Decoding-Strategies.md)
+- Related (NLP card, seq2seq framing): [Decoding Strategies](../../06.%20NLP/17-Decoding-Strategies/17-Decoding-Strategies.md)
 - Foundations: [Loss Functions (softmax & cross-entropy)](../../05.%20Deep_Learning/concepts/04-Loss-Functions.md) · [Language Modeling Objectives](../01-Language-Modeling-Objectives/01-Language-Modeling-Objectives.md) · [Decoder-only Architecture](../04-Decoder-only-Architecture/04-Decoder-only-Architecture.md)
 - Makes it fast (a *speed* technique, not a strategy): [Inference Optimization & Serving — speculative decoding](../09-Inference-Optimization-and-Serving/09-Inference-Optimization-and-Serving.md)
 - Uses it: [Chain-of-Thought Reasoning](../17-Chain-of-Thought-Reasoning/17-Chain-of-Thought-Reasoning.md) · [LLM Evaluation & Benchmarks](../19-LLM-Evaluation-and-Benchmarks/19-LLM-Evaluation-and-Benchmarks.md)
