@@ -51,6 +51,6 @@ for RAG, fine-tuning, and inference.
 - [Hugging Face documentation hub](https://huggingface.co/docs) — **Hugging Face** — the complete free reference across all libraries.
 
 ## 🔗 In this platform
-- Related domain: [09. LLMs](../../09.%20LLMs/concepts/README.md) · [06. NLP](../../06.%20NLP/concepts/README.md) · [10. GenAI](../../10.%20GenAI/concepts/README.md)
+- Related domain: [09. LLMs](../../09.%20LLMs/README.md) · [06. NLP](../../06.%20NLP/concepts/README.md) · [10. GenAI](../../10.%20GenAI/concepts/README.md)
 - Pairs with: [05 PyTorch](05-PyTorch.md) · [13 Gradio & Streamlit](13-Gradio-and-Streamlit.md)
 - Deeper concept (the *why*): transformers & LLM internals → [Deep Learning](../../05.%20Deep_Learning/concepts/README.md); RAG pipelines → [RAG & LLM Applications](../../11.%20RAG_and_LLM_Applications/concepts/README.md)

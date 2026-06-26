@@ -23,7 +23,7 @@ updated: 2026-06-22
 - Previous concept: [Bag-of-Words & TF-IDF](03-Bag-of-Words-and-TF-IDF.md) — the sparse, count-based representations embeddings replace
 - Related: [Tokenization & Subword Algorithms](02-Tokenization-and-Subword-Algorithms.md) — FastText's subword idea in modern LLMs
 - Next concept: [Contextual Embeddings (ELMo/BERT)](06-Contextual-Embeddings-ELMo-BERT.md) — a vector per word *per sentence*
-- Onward: [Sentence & Document Embeddings](07-Sentence-and-Document-Embeddings.md) · [09. LLMs](../../09.%20LLMs/concepts/README.md)
+- Onward: [Sentence & Document Embeddings](07-Sentence-and-Document-Embeddings.md) · [09. LLMs](../../09.%20LLMs/README.md)
 
 **Videos**:
 - [CS224N Lecture 2 — Word Vectors and word2vec](https://www.youtube.com/watch?v=ERibwqs9p38) — **Stanford (Christopher Manning)** — the rigorous derivation: objective, gradients, negative sampling.

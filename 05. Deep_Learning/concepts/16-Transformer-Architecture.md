@@ -22,7 +22,7 @@ This page is the complete tour of that machine. The [attention math](15-Attentio
 - distinguish the three families — **encoder–decoder (T5), encoder-only (BERT), decoder-only (GPT)** — and derive where the decoder's masked self-attention and cross-attention get their Q, K, V;
 - **compute the parameter budget** of a block and a full model by hand (≈$12d^2$/layer + $Vd$ embedding), and reproduce GPT-2-small's 124M;
 - derive the **attention-vs-FFN FLOP crossover** ($n = 4d$) and say which term dominates in any regime;
-- explain **why it parallelizes** in training and why inference is sequential (→ the [KV cache](../../09.%20LLMs/concepts/05-KV-Cache.md));
+- explain **why it parallelizes** in training and why inference is sequential (→ the [KV cache](../../09.%20LLMs/05-KV-Cache/05-KV-Cache.md));
 - name the **modern components** (RoPE, RMSNorm, SwiGLU, GQA, MoE) and *why* each replaced the 2017 original.
 
 Intuition first, then the anatomy, then code you can run.
@@ -64,7 +64,7 @@ graph LR
 
 > **Tip:** the cleanest one-sentence "why transformers beat RNNs": **RNNs serialize computation over the sequence; transformers parallelize it.** Same reason GPUs love them, same reason they scale, same reason a 2017 idea ate the entire field. Memorize that sentence and the rest of this page is its justification.
 
-> **Note:** "process the whole sequence in parallel" is a **training/prefill** statement, not an inference one. When a decoder-only model *generates*, it still emits one token at a time — the parallelism returns only because each generated token's keys and values can be cached. That training-vs-inference asymmetry is a recurring theme below and the entire reason the [KV cache](../../09.%20LLMs/concepts/05-KV-Cache.md) exists.
+> **Note:** "process the whole sequence in parallel" is a **training/prefill** statement, not an inference one. When a decoder-only model *generates*, it still emits one token at a time — the parallelism returns only because each generated token's keys and values can be cached. That training-vs-inference asymmetry is a recurring theme below and the entire reason the [KV cache](../../09.%20LLMs/05-KV-Cache/05-KV-Cache.md) exists.
 
 ---
 
@@ -290,7 +290,7 @@ Keep only the encoder stack: **bidirectional** self-attention everywhere, no cau
 
 ### Decoder-only (GPT, the dominant LLM design)
 
-Keep only a decoder-style stack but **drop the cross-attention** (there's no separate encoder to read from). What remains is a stack of blocks with **causal self-attention** — token $i$ attends only to tokens $\le i$. Trained with **causal (autoregressive) language modeling** — predict the next token from the left context only — this is the objective behind essentially every generative LLM: **GPT, Llama, Claude, Mistral, Gemini**. Its great virtue is uniformity and scale: one objective, one stack, trillions of tokens, and the inference loop is exactly what the [KV cache](../../09.%20LLMs/concepts/05-KV-Cache.md) accelerates.
+Keep only a decoder-style stack but **drop the cross-attention** (there's no separate encoder to read from). What remains is a stack of blocks with **causal self-attention** — token $i$ attends only to tokens $\le i$. Trained with **causal (autoregressive) language modeling** — predict the next token from the left context only — this is the objective behind essentially every generative LLM: **GPT, Llama, Claude, Mistral, Gemini**. Its great virtue is uniformity and scale: one objective, one stack, trillions of tokens, and the inference loop is exactly what the [KV cache](../../09.%20LLMs/05-KV-Cache/05-KV-Cache.md) accelerates.
 
 > **Note:** in the encoder–decoder, **cross-attention is the bridge** between the two stacks. The decoder's queries come from the **decoder** ($Q = X_{\text{dec}} W_q$), but the keys and values come from the **encoder's** output ($K = X_{\text{enc}} W_k$, $V = X_{\text{enc}} W_v$). So every generated token can read the entire source sequence. A decoder-only LLM simply omits this sub-layer and keeps only causal self-attention — that single deletion is the structural difference between T5's decoder and GPT.
 
@@ -327,7 +327,7 @@ graph TD
     classDef out fill:#2E7A5A,stroke:#1E6A4A,color:#fff
 ```
 
-> **Note:** the encoder runs **once**; only the decoder loops. This is why encoder–decoder inference caches *two* sets of K/V — the decoder's own self-attention (grows each step) and the cross-attention (computed once from the encoder, then frozen). The [KV cache](../../09.%20LLMs/concepts/05-KV-Cache.md) page covers both.
+> **Note:** the encoder runs **once**; only the decoder loops. This is why encoder–decoder inference caches *two* sets of K/V — the decoder's own self-attention (grows each step) and the cross-attention (computed once from the encoder, then frozen). The [KV cache](../../09.%20LLMs/05-KV-Cache/05-KV-Cache.md) page covers both.
 
 ---
 
@@ -399,7 +399,7 @@ graph LR
     classDef amber fill:#7A6528,stroke:#6A5518,color:#fff
 ```
 
-This asymmetry is precisely where the [**KV cache**](../../09.%20LLMs/concepts/05-KV-Cache.md) enters: in a causal model, a token's keys and values never change once computed, so the sequential decode loop caches them and recomputes only the new token's K/V — turning $O(n^2)$ redundant recompute into $O(n)$. The cache is the transformer's inference optimization; it doesn't change *what* the model outputs, only how fast. (We deliberately don't re-derive it here — that's the cache page's job.)
+This asymmetry is precisely where the [**KV cache**](../../09.%20LLMs/05-KV-Cache/05-KV-Cache.md) enters: in a causal model, a token's keys and values never change once computed, so the sequential decode loop caches them and recomputes only the new token's K/V — turning $O(n^2)$ redundant recompute into $O(n)$. The cache is the transformer's inference optimization; it doesn't change *what* the model outputs, only how fast. (We deliberately don't re-derive it here — that's the cache page's job.)
 
 > **Note:** this is also why a generative LLM has **two latency numbers**: a compute-bound, parallel **prefill** (sets time-to-first-token) and a memory-bound, sequential **decode** (sets time-per-output-token). The transformer's training-parallel / inference-sequential split is the root cause of that entire serving picture.
 
@@ -420,7 +420,7 @@ Two columns decide it. **Sequential ops** is why RNNs can't use a GPU's parallel
 
 Two costs dominate a block's forward pass, and which one wins decides what you optimize. Let $n$ be sequence length, $d$ model width, $d_{ff} = 4d$.
 
-- **Attention's quadratic core** — the two $n\times n$-touching matmuls (scores $QK^\top$ and the weighted sum) cost $4n^2 d$ FLOPs and need $O(n^2)$ memory for the score matrix. This is the long-context bottleneck that [FlashAttention](../../09.%20LLMs/concepts/06-Efficient-Attention-FlashAttention.md), sparse, and linear attention attack.
+- **Attention's quadratic core** — the two $n\times n$-touching matmuls (scores $QK^\top$ and the weighted sum) cost $4n^2 d$ FLOPs and need $O(n^2)$ memory for the score matrix. This is the long-context bottleneck that [FlashAttention](../../09.%20LLMs/06-Efficient-Attention-FlashAttention/06-Efficient-Attention-FlashAttention.md), sparse, and linear attention attack.
 - **The FFN (and projections)** — $O(n d^2)$: the two FFN matmuls alone are $16 n d^2$ FLOPs. Linear in $n$, quadratic in $d$.
 
 Set them equal to find the **crossover**:
@@ -564,7 +564,7 @@ graph LR
 - **Pre-LN over post-LN.** Normalize *before* each sub-layer (covered above). Keeps the residual stream clean and trains deep models stably without finicky warmup.
 - **RMSNorm over LayerNorm.** Normalize by the root-mean-square only — no mean subtraction, no bias. Cheaper, equally effective ([Normalization](11-Normalization.md)).
 - **SwiGLU over ReLU/GELU FFN.** A *gated* FFN, $\text{FFN}(x) = \big(\text{Swish}(xW_1) \odot xW_3\big)W_2$, consistently beats a plain MLP — at the cost of a third weight matrix, so $d_{ff}$ is shrunk to ~$\tfrac{8}{3}d$ to keep the parameter count near $8d^2$.
-- **GQA over MHA.** Share K/V across groups of query heads to shrink the [KV cache](../../09.%20LLMs/concepts/05-KV-Cache.md) — the reason long-context 70B models are servable. (Architectural; baked in at pretraining.)
+- **GQA over MHA.** Share K/V across groups of query heads to shrink the [KV cache](../../09.%20LLMs/05-KV-Cache/05-KV-Cache.md) — the reason long-context 70B models are servable. (Architectural; baked in at pretraining.)
 - **Mixture-of-Experts (MoE).** Replace the FFN with a **router + many expert FFNs**, activating only a few per token. This scales *parameters* (capacity) without scaling *compute* per token — used in the largest frontier models (Mixtral, DeepSeek-V3, GPT-4-class). Since the FFN is ⅔ of the parameters, it's the natural place to add sparse capacity.
 
 > **Tip:** a great senior-level answer to "describe a modern transformer" is exactly this list of swaps *with the reason*: RoPE (long-context), RMSNorm + pre-LN (stable deep training), SwiGLU (quality), GQA (smaller KV cache), MoE (capacity without per-token compute). Each maps to a specific paper and a specific failure it fixes.
@@ -573,7 +573,7 @@ graph LR
 
 ## Where it is used
 
-- **Decoder-only (GPT, Llama, Claude, Mistral, Gemini)** — autoregressive generation; the dominant LLM design. Its inference loop is exactly what the [KV cache](../../09.%20LLMs/concepts/05-KV-Cache.md) accelerates.
+- **Decoder-only (GPT, Llama, Claude, Mistral, Gemini)** — autoregressive generation; the dominant LLM design. Its inference loop is exactly what the [KV cache](../../09.%20LLMs/05-KV-Cache/05-KV-Cache.md) accelerates.
 - **Encoder-only (BERT, RoBERTa, DeBERTa)** — bidirectional understanding for classification, retrieval, embeddings, token tagging.
 - **Encoder–decoder (T5, BART, Whisper)** — translation, summarization, speech recognition — anywhere there's a fixed input to encode once and attend to many times.
 - **Beyond text** — Vision Transformers (image patches), diffusion backbones, AlphaFold (protein structure), multimodal models. The block barely changes; only the tokenizer and the head do.
@@ -588,7 +588,7 @@ The cleanest proof of universality is the **Vision Transformer (ViT)**. To apply
 
 **Step 2 — use the framework block, know its knobs.** `nn.TransformerEncoderLayer` / `nn.TransformerDecoderLayer` give a tuned block; the knobs are `d_model`, `nhead` ($d_h = d_{\text{model}}/\text{nhead}$), `dim_feedforward` (≈4× `d_model`), `num_layers`, and **`norm_first=True`** (pre-LN — prefer it). Set `activation="gelu"`.
 
-**Step 3 — wire in the modern essentials.** Swap in **RoPE**, **RMSNorm**, **SwiGLU**, **GQA**, and [FlashAttention](../../09.%20LLMs/concepts/06-Efficient-Attention-FlashAttention.md); **tie** the embedding and output weights. The skeleton is unchanged; these are bolt-on upgrades.
+**Step 3 — wire in the modern essentials.** Swap in **RoPE**, **RMSNorm**, **SwiGLU**, **GQA**, and [FlashAttention](../../09.%20LLMs/06-Efficient-Attention-FlashAttention/06-Efficient-Attention-FlashAttention.md); **tie** the embedding and output weights. The skeleton is unchanged; these are bolt-on upgrades.
 
 **Step 4 — size it with the formula.** $P \approx 12 L d^2 + V d$. Pick $d$, $L$, and $V$ to hit a target parameter count, then sanity-check against a known model (GPT-2-small = 124M, Llama-2-7B, etc.).
 
@@ -609,7 +609,7 @@ A transformer fails in characteristic ways, and each failure has a signature sym
 | Deep model diverges early; loss → NaN in the first hundreds of steps | **Post-norm without warmup**, or LR too high | Switch to pre-norm, add LR warmup, or lower the LR |
 | Output shape wrong, or subtly wrong numbers that "look fine" | **Multi-head reshape off-by-one** (`view`/`transpose`) | Assert the post-attention tensor is back to $(B,T,d)$ |
 | Model learns nothing; attention weights all ≈ uniform | **Softmax over the wrong axis** (over queries, not keys) | `softmax(scores, dim=-1)` — over the key dimension |
-| Training fine, inference OOMs at long context | **KV cache growth** — an inference-only cost forgotten at planning | Size from the [KV cache](../../09.%20LLMs/concepts/05-KV-Cache.md) formula, not from weights |
+| Training fine, inference OOMs at long context | **KV cache growth** — an inference-only cost forgotten at planning | Size from the [KV cache](../../09.%20LLMs/05-KV-Cache/05-KV-Cache.md) formula, not from weights |
 | Quality fine but throughput is poor at long context | **$O(n^2)$ attention** dominating past $n=4d$ | FlashAttention / sparse attention; check which regime you're in |
 
 > **Tip:** the fastest end-to-end smoke test for any transformer you write: **can it memorize a single tiny batch?** Turn off dropout, feed one fixed batch repeatedly, and watch the loss go to ~0. If it can't overfit 8 examples, a component is broken (usually the mask, the reshape, or the loss target alignment) — debug *that* before you ever touch a real dataset.

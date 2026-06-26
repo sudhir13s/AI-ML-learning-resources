@@ -53,4 +53,4 @@ research system (token cost, coordination overhead, evaluation difficulty).
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 8.03 Agents & Tool Use](../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.03_Agents_and_Tool_Use.md)
 - Prev / next: [04 Planning](04-Planning-Task-Decomposition.md) · [08 Model Context Protocol (MCP)](08-Model-Context-Protocol-MCP.md) · [09 Agent Frameworks](09-Agent-Frameworks.md)
-- Related (canonical home): [Prompting & In-Context Learning](../../09.%20LLMs/concepts/16-Prompting-and-In-Context-Learning.md)
+- Related (canonical home): [Prompting & In-Context Learning](../../09.%20LLMs/16-Prompting-and-In-Context-Learning/16-Prompting-and-In-Context-Learning.md)

@@ -54,4 +54,4 @@ how to evaluate citation quality (precision/recall of citations, citation faithf
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 8.02 Retrieval-Augmented Generation](../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.02_Retrieval_Augmented_Generation.md)
 - Prereqs: [01 RAG Fundamentals](01-RAG-Fundamentals.md) · [11 RAG Evaluation](11-RAG-Evaluation.md) · Next: [14 Guardrails & Hallucination Mitigation](14-Guardrails-and-Hallucination-Mitigation.md)
-- Related domain: [09. LLMs — Hallucination & Alignment Basics](../../09.%20LLMs/concepts/20-Hallucination-and-Alignment-Basics.md)
+- Related domain: [09. LLMs — Hallucination & Alignment Basics](../../09.%20LLMs/20-Hallucination-and-Alignment-Basics/20-Hallucination-and-Alignment-Basics.md)

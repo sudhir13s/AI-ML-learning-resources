@@ -54,4 +54,4 @@ ignoring the context).
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 8.02 Retrieval-Augmented Generation](../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.02_Retrieval_Augmented_Generation.md) · [8.01 In-Context Learning & Prompting](../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.01_In-Context_Learning_and_Prompting.md)
 - Next concepts: [02 Document Chunking Strategies](02-Document-Chunking-Strategies.md) · [03 Embedding Models for Retrieval](03-Embedding-Models-for-Retrieval.md)
-- Related domain: [06. NLP — Information Retrieval & Semantic Search](../../06.%20NLP/concepts/16-Information-Retrieval-and-Semantic-Search.md) · [09. LLMs — Prompting & In-Context Learning](../../09.%20LLMs/concepts/16-Prompting-and-In-Context-Learning.md)
+- Related domain: [06. NLP — Information Retrieval & Semantic Search](../../06.%20NLP/concepts/16-Information-Retrieval-and-Semantic-Search.md) · [09. LLMs — Prompting & In-Context Learning](../../09.%20LLMs/16-Prompting-and-In-Context-Learning/16-Prompting-and-In-Context-Learning.md)

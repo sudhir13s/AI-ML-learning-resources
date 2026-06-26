@@ -54,4 +54,4 @@ catches irrelevant retrievals and hallucinations.
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 8.02 Retrieval-Augmented Generation](../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.02_Retrieval_Augmented_Generation.md)
 - Prereqs: [07 Query Transformation](07-Query-Transformation-HyDE-Multi-Query.md) · [06 Re-ranking](06-Re-ranking-Cross-Encoders.md) · Next: [09 GraphRAG](09-GraphRAG.md)
-- Related concept: [10 Agentic RAG](10-Agentic-RAG.md) (self-corrective flows become full agent loops) · Related domain: [09. LLMs — Hallucination & Alignment](../../09.%20LLMs/concepts/20-Hallucination-and-Alignment-Basics.md)
+- Related concept: [10 Agentic RAG](10-Agentic-RAG.md) (self-corrective flows become full agent loops) · Related domain: [09. LLMs — Hallucination & Alignment](../../09.%20LLMs/20-Hallucination-and-Alignment-Basics/20-Hallucination-and-Alignment-Basics.md)

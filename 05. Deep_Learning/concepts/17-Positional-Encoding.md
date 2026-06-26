@@ -299,7 +299,7 @@ The score is **identical** for all three — it genuinely sees only the offset, 
 
 - **Relative for free, where it counts.** The relative offset is baked into the **score**, the exact quantity attention uses — no added input vector, no extra parameters, no separate bias table.
 - **Norm-preserving.** Rotations are orthogonal, so $\|R_m q\| = \|q\|$ — RoPE never inflates or shrinks the query/key magnitudes, keeping training stable (a problem additive schemes can have).
-- **Plays nicely with efficient kernels.** RoPE is applied to $q,k$ *before* the dot product, as a cheap elementwise rotation; it composes cleanly with FlashAttention and the [KV cache](../../09.%20LLMs/concepts/05-KV-Cache.md) (you cache the *rotated* keys).
+- **Plays nicely with efficient kernels.** RoPE is applied to $q,k$ *before* the dot product, as a cheap elementwise rotation; it composes cleanly with FlashAttention and the [KV cache](../../09.%20LLMs/05-KV-Cache/05-KV-Cache.md) (you cache the *rotated* keys).
 - **Extrapolates far better than absolute** — and, crucially, its frequencies can be **rescaled** at inference to *extend* the context (next section), a lever that absolute schemes don't offer.
 
 > **Gotcha:** two RoPE pitfalls bite people. (1) **Layout matters** — implementations differ on whether the rotated pairs are *interleaved* $(x_0,x_1),(x_2,x_3),\dots$ or *split-half* $(x_0,x_{d/2}),\dots$; mixing a model's checkpoint with the wrong convention silently corrupts every score. (2) RoPE is applied to **$q$ and $k$ only, never $v$** — values carry content, not position, so you rotate what's *compared*, not what's *returned*. Rotating $v$ is a classic bug.
@@ -408,7 +408,7 @@ The trajectory reads top-to-bottom: **absolute → relative**, **input-side → 
 - **Encoder–decoder** (T5) uses the **bucketed scalar bias**.
 - **Vision Transformers** add a (usually learned) positional embedding to image patches — same problem, since patch attention is just as permutation-equivariant; 2D-aware and RoPE variants exist for images.
 
-> **Note:** the position scheme is **architectural** — baked in at pretraining. You generally can't swap a learned-absolute model to RoPE without retraining, and even RoPE context-extension (PI/YaRN) usually wants a fine-tune. When choosing a base model for long context, **check its positional scheme** the way you'd check its KV-head count for serving (see [KV Cache](../../09.%20LLMs/concepts/05-KV-Cache.md)) — it's a first-class capability constraint, not a runtime knob.
+> **Note:** the position scheme is **architectural** — baked in at pretraining. You generally can't swap a learned-absolute model to RoPE without retraining, and even RoPE context-extension (PI/YaRN) usually wants a fine-tune. When choosing a base model for long context, **check its positional scheme** the way you'd check its KV-head count for serving (see [KV Cache](../../09.%20LLMs/05-KV-Cache/05-KV-Cache.md)) — it's a first-class capability constraint, not a runtime knob.
 
 ---
 
@@ -424,7 +424,7 @@ The trajectory reads top-to-bottom: **absolute → relative**, **input-side → 
 **Step 2 — get the wiring right for the scheme.**
 
 - *Absolute (sinusoidal/learned):* compute/look up $PE(pos)$ and **add** it to the token embedding *once*, at the input, before block 0.
-- *RoPE:* apply the rotation to **$q$ and $k$ inside every attention layer**, *after* the $W_q,W_k$ projection and *before* the dot product — and to **neither $v$ nor the residual stream**. Cache the *rotated* keys in the [KV cache](../../09.%20LLMs/concepts/05-KV-Cache.md).
+- *RoPE:* apply the rotation to **$q$ and $k$ inside every attention layer**, *after* the $W_q,W_k$ projection and *before* the dot product — and to **neither $v$ nor the residual stream**. Cache the *rotated* keys in the [KV cache](../../09.%20LLMs/05-KV-Cache/05-KV-Cache.md).
 - *ALiBi:* precompute the $-m(i-j)$ bias matrix per head and **add it to the scores** before softmax (it composes with the causal mask).
 
 **Step 3 — if extending context, rescale, then evaluate.** Apply PI / NTK-aware / YaRN to the RoPE frequencies for the target length, do a short long-context fine-tune if you can, and **measure long-context retrieval quality** (e.g. needle-in-a-haystack), not just that it runs.

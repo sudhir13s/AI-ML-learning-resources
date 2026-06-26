@@ -62,4 +62,4 @@ updated: 2026-06-22
 - Concept depth (the *why*): [AI-ML-intuition 1.15 Tokenization & BPE](../../../AI-ML-intuition/Module_1_Representation/1.15_Tokenization_and_BPE.md)
 - Comes before this: [01 Text Preprocessing & Normalization](01-Text-Preprocessing-and-Normalization.md)
 - Builds on this: [05 Word Embeddings (Word2Vec / GloVe / FastText)](05-Word-Embeddings-Word2Vec-GloVe-FastText.md) · [06 Contextual Embeddings (ELMo / BERT)](06-Contextual-Embeddings-ELMo-BERT.md)
-- Puts it to work: [09. LLMs](../../09.%20LLMs/concepts/README.md) · [KV Cache (tokens are what fills it)](../../09.%20LLMs/concepts/05-KV-Cache.md)
+- Puts it to work: [09. LLMs](../../09.%20LLMs/README.md) · [KV Cache (tokens are what fills it)](../../09.%20LLMs/05-KV-Cache/05-KV-Cache.md)

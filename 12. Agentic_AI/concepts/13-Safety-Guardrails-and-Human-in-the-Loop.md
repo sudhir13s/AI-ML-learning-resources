@@ -54,4 +54,4 @@ checkpoints, interrupts) and their failure mode (rubber-stamping when humans are
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 8.03 Agents & Tool Use](../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.03_Agents_and_Tool_Use.md)
 - Prev: [11 Computer-Use & GUI Agents](11-Computer-Use-and-GUI-Agents.md) · [12 Agent Evaluation & Benchmarks](12-Agent-Evaluation-and-Benchmarks.md)
-- Related (canonical home): [Hallucination & Alignment basics](../../09.%20LLMs/concepts/20-Hallucination-and-Alignment-Basics.md) · [RLHF & DPO](../../09.%20LLMs/concepts/15-RLHF-and-DPO.md)
+- Related (canonical home): [Hallucination & Alignment basics](../../09.%20LLMs/20-Hallucination-and-Alignment-Basics/20-Hallucination-and-Alignment-Basics.md) · [RLHF & DPO](../../09.%20LLMs/15-RLHF-and-DPO/15-RLHF-and-DPO.md)
