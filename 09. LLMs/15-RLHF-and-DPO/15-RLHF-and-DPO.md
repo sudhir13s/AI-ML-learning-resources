@@ -133,7 +133,7 @@ $$\mathcal{L}_{\text{RM}}(\phi) = -\,\mathbb{E}_{(x,\, y_w,\, y_l)\sim\mathcal{D
 
 That's the entire reward-model objective: *push the chosen answer's score above the rejected answer's, by as much as the data supports.* Mechanically it is **binary cross-entropy on the reward gap** — the reward model is a binary classifier of "is chosen better than rejected?", and the score it learns *is* the Bradley-Terry strength. Architecturally, $r_\phi$ is usually the SFT model with its vocabulary-sized token head replaced by a single scalar **value head**, so the body already "understands" language and only the head plus a light fine-tune are new.
 
-> *Where this comes from: the **Bradley-Terry** model is Bradley & Terry, "Rank Analysis of Incomplete Block Designs" (1952); the idea of learning a reward from *pairwise comparisons* of trajectories is **Deep RL from Human Preferences** (Christiano et al. 2017); and its use as the RLHF reward-model loss for language is **Training LMs to Follow Instructions with Human Feedback** (InstructGPT, Ouyang et al. 2022), §3. The summarization-from-feedback recipe that bridges them is **Learning to Summarize from Human Feedback** (Stiennon et al. 2020). All in the references.*
+> **Source / derivation:** the pairwise-comparison model is [Bradley & Terry, *Rank Analysis of Incomplete Block Designs* (1952)](https://www.jstor.org/stable/2334029); learning a reward from *pairwise comparisons* of trajectories is [Christiano et al., *Deep Reinforcement Learning from Human Preferences* (2017)](https://arxiv.org/abs/1706.03741); its use as the RLHF reward-model loss for language is [Ouyang et al., *Training language models to follow instructions with human feedback* (InstructGPT, 2022)](https://arxiv.org/abs/2203.02155), §3.4, and the summarization recipe that bridges them is [Stiennon et al., *Learning to Summarize from Human Feedback* (2020)](https://arxiv.org/abs/2009.01325). All in the references.
 
 > **Note:** a trained reward model earns its keep even *without* PPO. **Best-of-$n$ (rejection) sampling** generates $n$ candidate answers from the policy and simply keeps the one the reward model scores highest — no training, pure inference-time selection. Llama-2 used it alongside PPO. The reusable reward model is a concrete **asset RLHF produces and DPO does not** — one of the few real advantages of the heavier path.
 
@@ -160,6 +160,8 @@ Read it: the update pushes $r_w$ **up** and $r_l$ **down**, and the size of the 
 With a reward model in hand, RLHF treats text generation as a **reinforcement-learning problem**: the **policy** $\pi_\theta$ (a copy of the SFT model) is the thing we train; given a prompt (the "state") it generates a response (a sequence of token "actions"); the frozen reward model scores the finished response. We optimize the policy with **PPO** (proximal policy optimization), a stable [policy-gradient](../../08.%20Reinforcement_Learning/concepts/README.md) method. But the objective is emphatically **not** just "maximize reward":
 
 $$\max_{\pi_\theta}\; \mathbb{E}_{x\sim\mathcal{D},\; y \sim \pi_\theta(\cdot\mid x)}\Big[\,r_\phi(x, y)\,\Big] \;-\; \beta\,\mathrm{KL}\big(\pi_\theta(y\mid x)\,\Vert\,\pi_{\text{ref}}(y\mid x)\big)$$
+
+> **Source / derivation:** this KL-regularized reward objective is the RLHF objective of [Ouyang et al., *Training language models to follow instructions with human feedback* (InstructGPT, 2022)](https://arxiv.org/abs/2203.02155), §3.5, building on [Stiennon et al., *Learning to Summarize from Human Feedback* (2020)](https://arxiv.org/abs/2009.01325); it is optimized with the clipped-surrogate algorithm of [Schulman et al., *Proximal Policy Optimization Algorithms* (2017)](https://arxiv.org/abs/1707.06347). The over-optimization it guards against is measured in [Gao, Schulman & Hilton, *Scaling Laws for Reward Model Overoptimization* (2022)](https://arxiv.org/abs/2210.10760).
 
 ```mermaid
 graph LR
@@ -253,7 +255,7 @@ $$\boxed{\;\mathcal{L}_{\text{DPO}}(\theta) = -\,\mathbb{E}_{(x, y_w, y_l)\sim\m
 
 And that's **DPO** — the **exact same Bradley-Terry loss** as the reward model, but with the explicit reward replaced by the **implicit reward** $\beta\log(\pi_\theta/\pi_{\text{ref}})$. No reward model to train, no rollouts, no RL, no value network. To compute the loss you evaluate just **four log-probabilities** — the chosen and rejected responses, each under the policy *and* under the frozen reference — and minimize one classification-style loss. It runs exactly like SFT: offline, on a static dataset, with a standard supervised optimizer.
 
-> *Where this comes from: the closed-form optimal policy and the full DPO derivation are **Direct Preference Optimization: Your Language Model is Secretly a Reward Model** (Rafailov et al. 2023), §4; the KL-regularized objective it inverts is the InstructGPT/RLHF objective (Ouyang et al. 2022), optimized in the classic path with **PPO** (Schulman et al. 2017). All in the references.*
+> **Source / derivation:** the closed-form optimal policy and the full DPO derivation are [Rafailov et al., *Direct Preference Optimization: Your Language Model is Secretly a Reward Model* (2023)](https://arxiv.org/abs/2305.18290), §4 (Eqs. 4–7); the KL-regularized objective it inverts is the [InstructGPT/RLHF objective (Ouyang et al. 2022)](https://arxiv.org/abs/2203.02155), optimized in the classic path with [PPO (Schulman et al. 2017)](https://arxiv.org/abs/1707.06347). All in the references.
 
 ### The DPO gradient: read what it actually does
 
@@ -396,6 +398,8 @@ This is the concept page, so here's the *decision* playbook in brief; the full h
 ## Code: Bradley-Terry and DPO losses from scratch
 
 The two losses that power both routes, with the DPO gradient checked to confirm it pushes the chosen response up and the rejected one down, and the margin progression that matches the worked-example table above. Runs on CPU in a second; no downloads.
+
+> **Runnable project and a step-by-step notebook:** the same verified code lives as a clean script and an executed teaching notebook next to this page — see the [step-by-step teaching notebook](code/15-RLHF-and-DPO.ipynb) and the [runnable demo script](code/rlhf_dpo.py) (run it with `python rlhf_dpo.py`). They go one step further than the snippet below: they also **train a tiny reward model** with the Bradley-Terry loss on a few synthetic preference pairs and *assert* it ends up scoring the chosen answers above the rejected ones — stage 1 of RLHF, learned from comparisons alone — then run the **measured DPO optimization** that produces the `dpo_update.png` figure above. Every number on this page is computed by that one seeded source of truth.
 
 ```python
 """Bradley-Terry reward loss and the DPO loss + gradient direction.
