@@ -211,6 +211,8 @@ Read the two pieces. **Warmup** ($t<W$): a straight line from 0 up to $\eta_{\ma
 
 $$\text{batch}_{\text{eff}} = m \times K \times (\text{data-parallel GPUs})$$
 
+> **Source / derivation:** a definitional identity — the effective batch is the per-step example count summed across the $K$ accumulation steps and the data-parallel replicas; the gradient equivalence that makes it behave like one batch is the mean-of-means result proved just below.
+
 The key claim — and the second thing we prove in code — is **equivalence**: accumulating gradients over $K$ micro-batches of size $m$ produces (to floating-point tolerance) the **same parameter update** as one true batch of size $mK$. We prove this on a linear model with MSE — deliberately, so the only thing that can differ between the two paths is float rounding of the gradient sum; doing it inside the Adam+schedule loop would entangle the optimizer's per-parameter scaling and hide the clean identity. Why? The loss is a **mean over examples**, so the gradient is a mean of per-example gradients, and the mean of $K$ groups each averaged over $m$ examples equals the single average over all $mK$ examples — *as long as you average consistently*. The mechanism is pure linearity of the gradient operator:
 
 $$\nabla \left(\frac{1}{mK}\sum_{i=1}^{mK} \ell_i\right) = \frac{1}{mK}\sum_{i=1}^{mK} \nabla \ell_i = \frac{1}{K}\sum_{k=1}^{K}\underbrace{\left(\frac{1}{m}\sum_{i\in \text{chunk}_k} \nabla \ell_i\right)}_{\text{micro-batch }k\text{'s mean grad}}$$
