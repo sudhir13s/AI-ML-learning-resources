@@ -29,7 +29,7 @@ HEAD_DIM = 64
 SCALE = HEAD_DIM**-0.5  # 1/sqrt(head_dim) attention scaling, hoisted out of the hot loop
 SEQ_LENGTHS = (256, 512, 1024, 2048)
 TIMING_REPS = 3
-ALLCLOSE_ATOL = 1e-5  # both paths do identical float ops in a different order; they differ only by ~1e-7 re-association noise, so 1e-5 is a safe ceiling that still catches real bugs
+ALLCLOSE_ATOL = 1e-5  # the two paths feed identical values into identical attention math; they differ only by float rounding from batched- vs row-wise matmul (at most ~1e-7, often ~1e-8, sometimes bitwise-identical), so 1e-5 is a safe ceiling that still catches real bugs
 
 # Run on the best available accelerator; CPU is the universal fallback.
 DEVICE = (
@@ -140,7 +140,10 @@ def main() -> None:
     out_yes = decode_with_cache(emb_check, 64, w_q, w_k, w_v)
     max_diff = (out_no - out_yes).abs().max().item()
     assert torch.allclose(out_no, out_yes, atol=ALLCLOSE_ATOL)
-    print(f"identical outputs (no-cache vs cache): True   max abs diff: {max_diff:.2e}\n")
+    # 0 here means the batched (no-cache) and row-wise (cache) matmuls rounded identically;
+    # other shapes/hardware show up to ~1e-7 of float noise -- either way, far under atol.
+    note = "bitwise-identical" if max_diff == 0 else "within float-noise tolerance"
+    print(f"identical outputs (no-cache vs cache): True   max abs diff: {max_diff:.2e}  ({note})\n")
     # The `identical` column reports whether the cached output matches the no-cache output
     # to within ALLCLOSE_ATOL -- proof the cache is a speed trick, not a modeling change.
     print(f"{'N':>6} | {'no-cache':>10} | {'kv-cache':>10} | {'speedup':>8} | identical")
