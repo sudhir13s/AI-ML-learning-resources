@@ -8,7 +8,7 @@ widening speedup is visible.
 This is the same verified demo embedded in the concept page and the teaching notebook.
 Verified on Python 3.12 / torch 2.x. Device-agnostic (CUDA / MPS / CPU); the absolute
 milliseconds are device-dependent, but the identical-output check and the widening-speedup
-trend hold on any device.
+trend hold on any device. The timing sweep in main() deliberately runs on CPU so the per-step math dominates and the widening trend stays clean.
 
 Run:
     python kv_cache.py
