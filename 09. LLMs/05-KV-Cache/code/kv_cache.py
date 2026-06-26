@@ -29,7 +29,7 @@ HEAD_DIM = 64
 SCALE = HEAD_DIM**-0.5  # 1/sqrt(head_dim) attention scaling, hoisted out of the hot loop
 SEQ_LENGTHS = (256, 512, 1024, 2048)
 TIMING_REPS = 3
-ALLCLOSE_ATOL = 1e-5
+ALLCLOSE_ATOL = 1e-5  # the two paths feed identical values into identical attention math; they differ only by float rounding from batched- vs row-wise matmul (at most ~1e-7, often ~1e-8, sometimes bitwise-identical), so 1e-5 is a safe ceiling that still catches real bugs
 
 # Run on the best available accelerator; CPU is the universal fallback.
 DEVICE = (
@@ -65,7 +65,7 @@ def attn_step(q_t: torch.Tensor, keys: torch.Tensor, values: torch.Tensor) -> to
     q_t: (n_heads, 1, head_dim); keys, values: (n_heads, T, head_dim).
     """
     scores = (q_t @ keys.transpose(-1, -2)) * SCALE  # q·kᵀ over head_dim = one score per cached key; *SCALE stops large head_dim from saturating softmax
-    return (F.softmax(scores, dim=-1) @ values).transpose(0, 1).reshape(1, D_MODEL)  # softmax over keys -> weights; @values mixes them; transpose+reshape re-joins heads into one d_model vector
+    return (F.softmax(scores, dim=-1) @ values).transpose(0, 1).reshape(1, D_MODEL)  # softmax over keys -> weights; @values mixes them; transpose+reshape re-joins heads into one d_model vector (transpose first so heads sit next to head_dim before the flatten — reshape without it would interleave heads)
 
 
 def decode_no_cache(
@@ -101,6 +101,21 @@ def decode_with_cache(
     return torch.cat(outs, 0)
 
 
+def demo_cache_growth() -> None:
+    """Print the cache shape climbing one row per decode step — the core mechanic, made visible."""
+    torch.manual_seed(0)
+    n_tokens = 3
+    w_k = torch.randn(D_MODEL, D_MODEL) * 0.02
+    emb = torch.randn(n_tokens, D_MODEL) * 0.1
+    k_cache: torch.Tensor | None = None
+    for t in range(1, n_tokens + 1):
+        k_new = split_heads(emb[t - 1 : t] @ w_k)   # project K for just this token
+        # dim=1 is the seq_len axis: append this token's key as a new row
+        k_cache = k_new if k_cache is None else torch.cat([k_cache, k_new], dim=1)
+        print(f"step {t}: appended token {t-1} -> k_cache.shape = {tuple(k_cache.shape)}")
+    print()
+
+
 def timeit(fn: Callable[[], torch.Tensor], reps: int = TIMING_REPS) -> float:
     """Return mean wall-clock milliseconds over `reps` runs (one warmup run first)."""
     fn()  # warmup
@@ -111,12 +126,24 @@ def timeit(fn: Callable[[], torch.Tensor], reps: int = TIMING_REPS) -> float:
 
 
 def main() -> None:
+    demo_cache_growth()
     # sweep runs on CPU so the per-step math dominates and the trend is clean
     # (on MPS/CUDA, kernel-launch overhead dwarfs these tiny single-layer tensors and
     # flattens the speedup ratio, contradicting the "widening speedup" claim above).
     sweep_device = "cpu"
     w_q, w_k, w_v = build_projections(device=sweep_device)
     print(f"device: {DEVICE} (sweep on {sweep_device})")
+    print("torch:", torch.__version__)
+    # First, prove the cache changes nothing — on a short sequence, before any timing.
+    emb_check = torch.randn(64, D_MODEL, device=sweep_device) * 0.1
+    out_no = decode_no_cache(emb_check, 64, w_q, w_k, w_v)
+    out_yes = decode_with_cache(emb_check, 64, w_q, w_k, w_v)
+    max_diff = (out_no - out_yes).abs().max().item()
+    assert torch.allclose(out_no, out_yes, atol=ALLCLOSE_ATOL)
+    # 0 here means the batched (no-cache) and row-wise (cache) matmuls rounded identically;
+    # other shapes/hardware show up to ~1e-7 of float noise -- either way, far under atol.
+    note = "bitwise-identical" if max_diff == 0 else "within float-noise tolerance"
+    print(f"identical outputs (no-cache vs cache): True   max abs diff: {max_diff:.2e}  ({note})\n")
     # The `identical` column reports whether the cached output matches the no-cache output
     # to within ALLCLOSE_ATOL -- proof the cache is a speed trick, not a modeling change.
     print(f"{'N':>6} | {'no-cache':>10} | {'kv-cache':>10} | {'speedup':>8} | identical")
