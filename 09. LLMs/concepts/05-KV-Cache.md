@@ -136,7 +136,7 @@ The word "append" hides an important production detail: in a real engine it is a
 
 > **Watch it grow:** this [interactive KV-cache explainer](https://mbrenndoerfer.com/writing/kv-cache-transformer-attention-optimization) animates the cache filling during prefill and then growing by exactly one token per decode step — the lifecycle above, in motion.
 
-> **Gotcha:** the cache grows on **every** step and is **never** freed mid-sequence — it only releases when the request finishes. A naive engine therefore reserves memory for the *worst-case* length a request might reach, which wastes most of it (a request that stops at 50 tokens still holds a 4,096-token reservation). That waste is exactly the problem **PagedAttention** solves — see Lever 2.
+> **Gotcha:** the cache grows on **every** step and is **never** freed mid-sequence — it only releases when the request finishes. A naive engine therefore reserves memory for the *worst-case* length a request might reach, wasting most of it — exactly the problem **PagedAttention** solves (the concrete cost of that worst-case reservation is in Lever 2).
 
 ---
 
@@ -154,7 +154,7 @@ The leading **2** is for storing both **K** and **V**. Everything else is just "
 
 $$2 \times 32 \times 32 \times 128 \times 2 \;=\; 524{,}288 \text{ bytes} \;\approx\; \mathbf{0.5\ MiB\ per\ token.}$$
 
-So a single sequence at a **4,096-token** context holds $4096 \times 0.5\,\text{MiB} \approx \mathbf{2\ GiB}$ of cache. The model's weights are 7B × 2 bytes ≈ **14 GB**. The cache for *one* sequence is already ~14% of the weights — and it scales with **batch size**.
+So a single sequence at a **4,096-token** context holds $4096 \times 0.5\,\text{MiB} \approx \mathbf{2\ GiB}$ of cache. The model's weights are 7B × 2 bytes ≈ **14 GB** (≈ 13 GiB — at this precision we treat GB and GiB interchangeably). The cache for *one* sequence is already ~14% of the weights — and it scales with **batch size**.
 
 ![KV cache size vs context length for 7B/13B/70B (MHA). It grows linearly with context, and at long contexts or large batches it rivals or exceeds the model weights.](images/kv_memory_growth.png)
 
@@ -170,9 +170,9 @@ So a single sequence at a **4,096-token** context holds $4096 \times 0.5\,\text{
 
 It's worth deriving this, because it's the insight the rest of the field is built on. The relevant quantity is **arithmetic intensity** — FLOPs done per byte moved from memory.
 
-A single decode step (batch 1) pushes one token through the model: roughly $2 \times \text{params}$ FLOPs ≈ **14 GFLOP** for a 7B model. To do it, the GPU must **read every weight** (14 GB in FP16) plus the cache. So:
+A single decode step (batch 1) pushes one token through the model. The compute is tiny: each parameter is used in exactly one multiply-add per token, and a multiply-add is 2 FLOPs, so a forward pass costs roughly $2 \times \text{params}$ FLOPs — the standard inference-FLOP rule of thumb — which is ≈ **14 GFLOP** for a 7B model. To *do* that math, the GPU must **read every weight** out of memory (14 GB in FP16). At batch 1 and short context the KV cache adds only a few GB on top, so the weights dominate and we approximate the bytes moved as ≈ 14 GB. (At long context the cache term grows until *it* is the bytes you stream — which is exactly why shrinking the cache buys speed; we return to this below.) So:
 
-$$\text{arithmetic intensity} \approx \frac{14\times10^9 \text{ FLOP}}{14\times10^9 \text{ bytes}} \approx \mathbf{1\ \text{FLOP/byte}}.$$
+$$\text{arithmetic intensity} \approx \frac{2 \times \text{params}}{\text{bytes per param}} = \frac{14\times10^9 \text{ FLOP}}{14\times10^9 \text{ bytes}} \approx \mathbf{1\ \text{FLOP/byte}}.$$
 
 > *Where this comes from: the **roofline model** that pits arithmetic intensity against the compute-to-bandwidth ratio is Williams, Waterman & Patterson, "Roofline" (CACM 2009); its application to transformer decode — establishing that autoregressive generation is memory-bound — is laid out in **Efficiently Scaling Transformer Inference** (Pope et al. 2022, in the references).*
 
@@ -182,11 +182,108 @@ An A100 does ~312 TFLOP/s of compute but only ~2 TB/s of memory bandwidth — a 
 
 ---
 
+## Code: prove it, then watch the speedup grow
+
+Here's a from-scratch single-layer attention that runs the decode loop **both ways** — recomputing everything vs. keeping a cache — checks that the outputs match to floating-point tolerance, then times them **across growing sequence lengths** so you can *watch the speedup widen*. It runs on CPU in a few seconds; no GPU needed.
+
+```python
+"""From-scratch KV cache: prove identical outputs, then time how the speedup GROWS with length.
+Verified on Python 3.12.13 / torch 2.12.0, CPU."""
+import time, torch, torch.nn.functional as F
+
+torch.manual_seed(0)
+d_model, n_heads, head_dim = 512, 8, 64
+assert n_heads * head_dim == d_model
+Wq = torch.randn(d_model, d_model) * 0.02
+Wk = torch.randn(d_model, d_model) * 0.02
+Wv = torch.randn(d_model, d_model) * 0.02
+
+def split_heads(x):                 # (T, d_model) -> (n_heads, T, head_dim)
+    T = x.shape[0]
+    return x.view(T, n_heads, head_dim).transpose(0, 1)
+
+def attn_step(q_t, K, V):           # q_t:(n_heads,1,head_dim)  K,V:(n_heads,T,head_dim)
+    scores = (q_t @ K.transpose(-1, -2)) / head_dim ** 0.5   # query attends all cached keys
+    return (F.softmax(scores, dim=-1) @ V).transpose(0, 1).reshape(1, d_model)
+
+def decode_no_cache(emb, N):        # every step re-projects K,V for ALL tokens so far -> O(n^2)
+    outs = []
+    for t in range(1, N + 1):
+        ctx = emb[:t]
+        K, V = split_heads(ctx @ Wk), split_heads(ctx @ Wv)   # recomputed from scratch
+        outs.append(attn_step(split_heads(emb[t-1:t] @ Wq), K, V))
+    return torch.cat(outs, 0)
+
+def decode_with_cache(emb, N):      # project only the NEW token, append to the cache -> O(n)
+    outs, K_cache, V_cache = [], None, None
+    for t in range(1, N + 1):
+        new = emb[t-1:t]
+        k_new, v_new = split_heads(new @ Wk), split_heads(new @ Wv)
+        # NOTE: cat-per-step is the O(n^2) re-allocation trap flagged in "How it works" above;
+        # real engines write in place into a pre-allocated buffer. Kept as cat here for clarity.
+        K_cache = k_new if K_cache is None else torch.cat([K_cache, k_new], dim=1)
+        V_cache = v_new if V_cache is None else torch.cat([V_cache, v_new], dim=1)
+        outs.append(attn_step(split_heads(new @ Wq), K_cache, V_cache))
+    return torch.cat(outs, 0)
+
+def timeit(fn, reps=3):
+    fn()
+    t0 = time.perf_counter()
+    for _ in range(reps): fn()
+    return (time.perf_counter() - t0) / reps * 1e3
+
+print(f"{'N':>6} | {'no-cache':>10} | {'kv-cache':>10} | {'speedup':>8} | identical")
+print("-" * 58)
+for N in (256, 512, 1024, 2048):
+    emb = torch.randn(N, d_model) * 0.1
+    a, b = decode_no_cache(emb, N), decode_with_cache(emb, N)
+    same = torch.allclose(a, b, atol=1e-5)
+    ms_no  = timeit(lambda: decode_no_cache(emb, N))
+    ms_yes = timeit(lambda: decode_with_cache(emb, N))
+    print(f"{N:>6} | {ms_no:>8.1f}ms | {ms_yes:>8.1f}ms | {ms_no/ms_yes:>6.1f}x | {same}")
+```
+
+Output on a laptop CPU:
+
+```
+     N |   no-cache |   kv-cache |  speedup | identical
+----------------------------------------------------------
+   256 |     61.9ms |     50.4ms |    1.2x | True
+   512 |    172.6ms |    118.7ms |    1.5x | True
+  1024 |    507.5ms |    325.9ms |    1.6x | True
+  2048 |   1741.0ms |    833.0ms |    2.1x | True
+```
+
+> **Note:** read the table top to bottom. The **`identical` column is `True` at every length** — the cache changes nothing about *what* the model produces — while the **speedup widens** (1.2× → 2.1×) as the sequence grows. That widening *is* the $O(n^2) \to O(n)$ curve made visible: the no-cache loop's per-step work grows with position, so its total cost climbs faster than the cache's, and the ratio between them keeps opening up. On one tiny CPU layer the gap is modest; in a real multi-layer model the saved work (every layer's projections **and** MLPs for past tokens) compounds, and the curve is far steeper. Trust the *shape* — a ratio that grows with length — not any single row.
+
+> **Tip:** to see the real thing, call `model.generate(..., use_cache=True)` vs `use_cache=False` in Hugging Face on a long generation and watch the wall-clock diverge. Same idea, full model.
+
+---
+
 ## Reading the cache: FlashAttention and FlashDecoding
 
 Shrinking the cache reduces the *bytes*; the attention **kernel** decides how efficiently you move them. Standard attention materializes the full $n \times n$ score matrix in slow HBM, costing $O(n^2)$ memory traffic — wasteful, and for long context impossible to fit. **FlashAttention** ([Dao et al. 2022](https://arxiv.org/abs/2205.14135)) computes the *same* result **without ever materializing that matrix**: it tiles K and V into blocks, streams them through fast on-chip SRAM, and keeps a **running softmax** (the *online-softmax* trick) so each output is accumulated block by block. The result is exact attention at $O(n)$ memory and far fewer HBM round-trips.
 
-Decode has a twist: the query is a *single* token, so the usual parallelism (over many query positions) vanishes — one query against a long cache leaves the GPU underused. **FlashDecoding** restores it by **parallelizing over the cache's key/value dimension**: split the cached sequence into chunks, attend the lone query to each chunk in parallel, then combine the partial softmaxes. For long contexts this keeps even a single decode step bandwidth-saturated.
+Decode has a twist: the query is a *single* token, so the usual parallelism (over many query positions) vanishes — one query against a long cache leaves the GPU underused. **FlashDecoding** restores it by **parallelizing over the cache's key/value dimension**: split the cached sequence into chunks, attend the lone query to each chunk in parallel, then combine the partial softmaxes (rescaling by the running max, the same online-softmax bookkeeping FlashAttention uses). For long contexts this keeps even a single decode step bandwidth-saturated.
+
+```mermaid
+graph TD
+    Q(["1 decode query q"]):::data --> SP["split cached K,V<br/>into chunks"]:::process
+    SP --> C1["chunk 1<br/>partial attn + softmax stats"]:::out
+    SP --> C2["chunk 2<br/>partial attn + softmax stats"]:::out
+    SP --> C3["chunk 3<br/>partial attn + softmax stats"]:::out
+    C1 --> MG["combine partial softmaxes<br/>rescale by running max"]:::amber
+    C2 --> MG
+    C3 --> MG
+    MG --> O(["attention output for q"]):::data
+
+    classDef data fill:#3A6B96,stroke:#2A5B86,color:#fff
+    classDef process fill:#5D4A8A,stroke:#4D3A7A,color:#fff
+    classDef out fill:#2E7A5A,stroke:#1E6A4A,color:#fff
+    classDef amber fill:#7A6528,stroke:#6A5518,color:#fff
+```
+
+*FlashDecoding parallelizes one decode query across chunks of the KV cache, then merges the partial softmaxes — recovering the GPU utilization that a single query against a long cache would otherwise waste.*
 
 > **Note:** the cache and the kernel are complementary. The cache (plus GQA/MLA/quantization) sets *how many bytes* must be read; FlashAttention/FlashDecoding set *how close to peak bandwidth* you read them. A real long-context stack needs both — which is why "GQA + paging + FP8 + FlashAttention" is the recurring four-part recipe.
 
@@ -213,7 +310,7 @@ Decode has a twist: the query is a *single* token, so the usual parallelism (ove
 The biggest lever is architectural: **share K and V across query heads** so there are simply fewer of them to store.
 
 - ***MHA*** (multi-head attention) — every query head has its own K/V head. Biggest cache.
-- ***MQA*** (multi-query attention) — *all* query heads share **one** K/V head. Tens× smaller cache, but a noticeable quality cost.
+- ***MQA*** (multi-query attention) — *all* query heads share **one** K/V head, collapsing $n_{\text{kv\_heads}}$ to 1. The cache shrinks by the full head count (e.g. **32× or 64×**), at a noticeable quality cost.
 - ***GQA*** (grouped-query attention) — query heads share K/V in **groups** (e.g. 8 KV heads serving 64 query heads). The sweet spot, used by Llama-2/3, Mistral, and most modern models.
 
 ![Cache size for a 70B-class model under MHA vs GQA-8 vs MQA. Fewer KV heads shrink the cache proportionally — GQA-8 is ~8x smaller, MQA ~64x.](images/kv_mha_mqa_gqa.png)
@@ -222,7 +319,7 @@ It works because the formula has $n_{\text{kv\_heads}}$ as a direct multiplier: 
 
 > **Note:** GQA is *the* reason a modern 70B model is servable at long context — an 8× cut to the dominant memory cost. If you're choosing a base model for long-context serving, **check its KV-head count**, not just its parameter count.
 
-The frontier of this lever is **Multi-head Latent Attention (MLA)** (DeepSeek-V2/V3). Instead of storing K and V per head, MLA caches a single **low-rank latent vector** per token and reconstructs the per-head K and V on the fly with a learned up-projection. The cached object is far smaller than even GQA's — often a *several-fold* further reduction — while keeping close to full-MHA quality. It's the same idea taken to its limit: don't just share the numbers, **compress** them.
+The frontier of this lever is **Multi-head Latent Attention (MLA)** (DeepSeek-V2/V3). Instead of storing K and V per head, MLA caches a single **low-rank latent vector** per token and reconstructs the per-head K and V on the fly with a learned up-projection. Put it in numbers: a GQA-8 model with $d_{\text{head}}=128$ caches $n_{\text{kv\_heads}} \times d_{\text{head}} = 8 \times 128 = 1{,}024$ values per token *for each of K and V*. MLA instead caches **one latent of dimension $d_c$** (e.g. $\approx 512$) per token, and at read time multiplies it by a learned $d_c \to n_{\text{heads}}\times d_{\text{head}}$ up-projection to reconstruct every head's K and V — trading a little extra compute for a much smaller cache. DeepSeek-V2 reports its MLA cache at **~4% of the equivalent MHA cache** for its large model — well below even GQA. It's the same idea taken to its limit: don't just *share* the numbers across heads, **compress** them into a latent.
 
 > **Gotcha:** MQA/GQA/MLA are **architectural** — they're baked in at pretraining and you can't bolt them onto an existing MHA model without retraining (or a conversion + light fine-tune). The runtime levers below (paging, quantization, windowing) are the ones you *can* apply to a model you've already got.
 
@@ -305,82 +402,6 @@ The cache is also where a surprising number of production incidents live — wor
 - **Silent quality loss from a quantized cache.** Turning on FP8/INT8 to fit more requests can quietly degrade outputs (keys are sensitive). **Measure** win-rate before and after; don't ship it on faith.
 - **Stale prefix cache.** If a shared prefix's content changes but its cache key doesn't, every request reuses the wrong KV. Invalidate on prefix change.
 - **Capacity sized from the wrong number.** The most common planning error: budgeting GPUs from parameter count and forgetting the cache. Size from **Worked example 2**, not from the weights.
-
----
-
-## Code: prove it, then time it
-
-Here's a from-scratch single-layer attention that runs the decode loop **both ways** — recomputing everything vs. keeping a cache — and checks that the outputs are bit-for-bit identical, then times them. It runs on CPU in a few seconds; no GPU needed.
-
-```python
-"""From-scratch KV cache: prove identical outputs, then time the speedup.
-Verified on Python 3.12 (torch 2.12), CPU."""
-import time, torch, torch.nn.functional as F
-
-torch.manual_seed(0)
-d_model, n_heads, head_dim = 512, 8, 64
-assert n_heads * head_dim == d_model
-Wq = torch.randn(d_model, d_model) * 0.02
-Wk = torch.randn(d_model, d_model) * 0.02
-Wv = torch.randn(d_model, d_model) * 0.02
-
-def split_heads(x):                 # (T, d_model) -> (n_heads, T, head_dim)
-    T = x.shape[0]
-    return x.view(T, n_heads, head_dim).transpose(0, 1)
-
-def attn_step(q_t, K, V):           # q_t:(n_heads,1,head_dim)  K,V:(n_heads,T,head_dim)
-    scores = (q_t @ K.transpose(-1, -2)) / head_dim ** 0.5   # query attends all cached keys
-    return (F.softmax(scores, dim=-1) @ V).transpose(0, 1).reshape(1, d_model)
-
-N = 1024
-emb = torch.randn(N, d_model) * 0.1   # a fixed stream of token embeddings to "decode"
-
-def decode_no_cache():                # every step re-projects K,V for ALL tokens so far
-    outs = []
-    for t in range(1, N + 1):
-        ctx = emb[:t]
-        K, V = split_heads(ctx @ Wk), split_heads(ctx @ Wv)   # recomputed from scratch
-        q_t = split_heads(emb[t-1:t] @ Wq)
-        outs.append(attn_step(q_t, K, V))
-    return torch.cat(outs, 0)
-
-def decode_with_cache():              # project only the NEW token, append to the cache
-    outs, K_cache, V_cache = [], None, None
-    for t in range(1, N + 1):
-        new = emb[t-1:t]
-        k_new, v_new = split_heads(new @ Wk), split_heads(new @ Wv)
-        K_cache = k_new if K_cache is None else torch.cat([K_cache, k_new], dim=1)
-        V_cache = v_new if V_cache is None else torch.cat([V_cache, v_new], dim=1)
-        outs.append(attn_step(split_heads(new @ Wq), K_cache, V_cache))
-    return torch.cat(outs, 0)
-
-a, b = decode_no_cache(), decode_with_cache()
-print("outputs identical:", torch.allclose(a, b, atol=1e-5), "| max diff:", f"{(a-b).abs().max():.2e}")
-
-def timeit(fn, reps=5):
-    fn()
-    t0 = time.perf_counter()
-    for _ in range(reps): fn()
-    return (time.perf_counter() - t0) / reps * 1e3
-
-ms_no, ms_yes = timeit(decode_no_cache), timeit(decode_with_cache)  # ms per full decode
-print(f"no-cache : {ms_no:6.1f} ms")
-print(f"kv-cache : {ms_yes:6.1f} ms")
-print(f"speedup  : {ms_no/ms_yes:5.1f}x  (grows with sequence length)")
-```
-
-Output on a laptop CPU:
-
-```
-outputs identical: True | max diff: 0.00e+00
-no-cache :  530.6 ms
-kv-cache :  297.6 ms
-speedup  :   1.8x  (grows with sequence length)
-```
-
-> **Note:** the headline is **`max diff: 0.00e+00`** — the cache changes nothing about *what* the model produces, only *how fast*. The ~1.8× here is modest because this is a single tiny layer on CPU; in a real multi-layer model the saved work (every layer's projections **and** MLPs for past tokens) compounds, and the gap widens with sequence length. The conceptual win — $O(n^2) \to O(n)$ recompute — is the shape of that curve, not this one number.
-
-> **Tip:** to see the real thing, call `model.generate(..., use_cache=True)` vs `use_cache=False` in Hugging Face on a long generation and watch the wall-clock diverge. Same idea, full model.
 
 ---
 
