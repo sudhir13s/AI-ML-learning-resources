@@ -43,7 +43,7 @@ This averaging has three concrete failures:
 
 > **Gotcha:** people sometimes "fix" polysemy by giving a word *several* static vectors (sense embeddings, e.g. *bank#1*, *bank#2*). This needs a sense inventory and a word-sense-disambiguation step *to even build the table*, and it still can't handle senses you didn't enumerate or subtle context shifts. Contextual models sidestep the whole problem: there is **no inventory** — the vector is recomputed per occurrence, so there are effectively as many "senses" as there are contexts.
 
-![Static vs contextual: the same word "bank" across 8 real sentences, BERT vectors projected to 2D with PCA. The contextual vectors split cleanly into a river cluster (left) and a money cluster (right); the single static word2vec/GloVe vector is one fixed point that cannot be in two places at once, so both senses collapse onto it.](../images/ctx_static_vs_contextual.png)
+![Static vs contextual: the same word "bank" across 8 real sentences, BERT vectors projected to 2D with PCA. The contextual vectors split cleanly into two separated clusters (one per sense — PCA axis orientation is arbitrary, so don't read into which side is which); the single static word2vec/GloVe vector is one fixed point that cannot be in two places at once, so both senses collapse onto it.](../images/ctx_static_vs_contextual.png)
 
 That picture is **measured**, not illustrative: it's `bank` pulled from eight sentences through BERT-base, projected to two dimensions. The river uses and the money uses form two separated clusters — *the same token string lands in two different regions of space depending on context.* A static embedding has no way to produce that; it's the red star, one point, forever.
 
@@ -65,15 +65,41 @@ predicting each token from its **left** context. ELMo trains that, *and simultan
 
 $$p(t_1, \dots, t_N) = \prod_{k=1}^{N} p(t_k \mid t_{k+1}, \dots, t_N).$$
 
-It maximizes the **sum of the two log-likelihoods**. Crucially the forward and backward LSTMs are **separate stacks** whose outputs are *concatenated* at each layer — they are run independently and only joined at the end. (Hold that thought; it's exactly the limitation BERT removes.)
+It maximizes the **sum of the two log-likelihoods** $\sum_{k} \big[\log p(t_k \mid t_{1:k-1};\,\overrightarrow{\Theta}) + \log p(t_k \mid t_{k+1:N};\,\overleftarrow{\Theta})\big]$ (shared token-embedding and softmax weights, separate forward/backward LSTM weights $\overrightarrow{\Theta},\overleftarrow{\Theta}$). Crucially the forward and backward LSTMs are **separate stacks** whose outputs are *concatenated* at each layer — they are run independently and only joined at the end. (Hold that thought; it's exactly the limitation BERT removes.)
+
+> **Source / derivation:** the joint forward+backward biLM log-likelihood is Eq. (1)–(3) of [Peters et al., 2018, *Deep Contextualized Word Representations (ELMo)*, §3.1](https://arxiv.org/abs/1802.05365). The forward factorization $p(t_{1:N})=\prod_k p(t_k\mid t_{1:k-1})$ is the standard chain rule of probability applied left-to-right; the backward LM applies the identical chain rule right-to-left.
 
 The bottom of the stack is a **character-level CNN** that builds each word's input embedding from its characters. This is why ELMo gracefully handles **out-of-vocabulary** words — *misspellings, rare morphology, new words* — it composes them from characters rather than failing a lookup.
+
+The structure, for one token $k$ — two *independent* LSTM stacks (one reading left-to-right, one right-to-left) whose per-layer states are concatenated:
+
+```mermaid
+graph LR
+    CH(["characters of token k"]):::data --> CNN["char-CNN<br/>input embedding h_k,0"]:::process
+    CNN --> FWD["forward LSTM stack<br/>reads left -> right<br/>predicts next token"]:::out
+    CNN --> BWD["backward LSTM stack<br/>reads right -> left<br/>predicts previous token"]:::navy
+    FWD --> CAT[("concatenate per layer<br/>h_k,1 = [fwd ; bwd]<br/>h_k,2 = [fwd ; bwd]")]:::frozen
+    BWD --> CAT
+    CAT --> MIX["learned per-task softmax<br/>over layers 0,1,2"]:::amber
+    MIX --> ELMO(["ELMo vector for token k"]):::data
+
+    classDef data fill:#3A6B96,stroke:#2A5B86,color:#fff
+    classDef process fill:#5D4A8A,stroke:#4D3A7A,color:#fff
+    classDef out fill:#2E7A5A,stroke:#1E6A4A,color:#fff
+    classDef navy fill:#2A5B80,stroke:#1A4B70,color:#fff
+    classDef frozen fill:#4A5B6E,stroke:#3A4B5E,color:#fff
+    classDef amber fill:#7A6528,stroke:#6A5518,color:#fff
+```
+
+Note the **separate** forward and backward stacks that only meet at the concatenation — each direction is *blind to the other while encoding*. That shallow joining is precisely the limitation BERT will remove with deep bidirectional attention.
 
 ### The learned per-task weighting (derived)
 
 Here is ELMo's signature idea, and the part interviewers love. A two-layer biLM gives you, for each token $k$, a set of representations: the input (CNN) layer plus the two biLSTM layers — call them $h_{k,0}, h_{k,1}, h_{k,2}$ (each $h_{k,j}$ is the concatenation of the forward and backward states at layer $j$). The naive move is to just use the top layer $h_{k,2}$. ELMo's insight: **different layers capture different things** — lower layers lean **syntactic** (POS, local structure), higher layers lean **semantic** (word sense, coreference) — and *which mix a task wants is task-dependent*. So instead of picking a layer, ELMo learns a **weighted combination**, with weights trained *per downstream task*:
 
 $$\text{ELMo}_k^{\text{task}} = \gamma^{\text{task}} \sum_{j=0}^{L} s_j^{\text{task}}\, h_{k,j}.$$
+
+> **Source / derivation:** this is Eq. (1) of [Peters et al., 2018, *Deep Contextualized Word Representations (ELMo)*, §3.2](https://arxiv.org/abs/1802.05365). It is *derived* as the most general task-specific readout of a deep encoder: rather than commit to a single layer $h_{k,L}$, take a **convex combination** of all $L{+}1$ layers (weights $s_j=\text{softmax}(w_j)$ sum to 1) times a scalar gain $\gamma$ — reducing to "use the top layer" when the softmax saturates on $j{=}L$, so it strictly generalizes the single-layer baseline.
 
 Let's read every symbol, because the design choices matter:
 
@@ -82,6 +108,10 @@ Let's read every symbol, because the design choices matter:
 - $L = 2$ here (two biLSTM layers + layer 0), so $j$ ranges over $\{0,1,2\}$.
 
 So "**deep** contextualized" is literal twice over: the representations are **deep** (they pool *all* internal layers, not just the top) and **contextualized** (each $h_{k,j}$ already saw the sentence through the recurrence). You then **concatenate ELMo to your existing static word embedding** and feed the pair into whatever task model you had — ELMo was a *feature-based* add-on, not a fine-tuned end-to-end model.
+
+![ELMo's learned per-task softmax weights over the biLM's layers, illustrative. A syntactic task (POS, parsing) loads the lower biLSTM layer most heavily; a semantic task (word sense, coreference) loads the upper biLSTM layer. Each task's three weights sum to 1 (softmax), and a single scalar gain rescales the blend — so "which layer is best" is answered per task rather than fixed.](../images/ctx_elmo_layer_weighting.png)
+
+The picture makes ELMo's signature claim concrete: because lower layers carry syntax and upper layers carry semantics, the *optimal* layer mix is **task-dependent**, and a learned softmax over layers (these bars) beats committing to any single layer in advance.
 
 > **Tip:** the practical lesson from ELMo's weighting that outlived ELMo itself: **the "best" layer of a deep encoder is task-dependent, and a learned mix of layers usually beats any single layer.** You'll see this again below when we extract embeddings from BERT — *which layer to pool* is the same question, and "concatenate or sum the last four" is the folk-wisdom descendant of ELMo's softmax weights.
 
@@ -111,6 +141,33 @@ The MLM is the engine of BERT. The procedure:
 4. Run the **bidirectional** transformer encoder — every token attends to every other.
 5. At each masked position, put a softmax over the whole vocabulary on top of the final hidden state and **predict the original token**. The loss is cross-entropy on the masked positions only.
 
+The data-flow, end to end — corrupt the input, encode it **bidirectionally**, then predict only the corrupted positions:
+
+```mermaid
+graph LR
+    IN(["original tokens<br/>'...cash at the bank downtown'"]):::data --> CORR["corrupt: mask 15%<br/>'bank' -> [MASK]<br/>(80/10/10 split)"]:::amber
+    CORR --> ENC["bidirectional encoder<br/>every token attends BOTH ways<br/>(no causal mask)"]:::process
+    ENC --> HID[("hidden state h_k<br/>at the masked position<br/>(saw left AND right)")]:::frozen
+    HID --> HEAD["softmax over the<br/>WordPiece vocabulary"]:::out
+    HEAD --> PRED(["predict original token<br/>'bank' (p = 0.43)"]):::navy
+    PRED -.->|"cross-entropy loss<br/>at masked positions only"| CORR
+
+    classDef data fill:#3A6B96,stroke:#2A5B86,color:#fff
+    classDef amber fill:#7A6528,stroke:#6A5518,color:#fff
+    classDef process fill:#5D4A8A,stroke:#4D3A7A,color:#fff
+    classDef frozen fill:#4A5B6E,stroke:#3A4B5E,color:#fff
+    classDef out fill:#2E7A5A,stroke:#1E6A4A,color:#fff
+    classDef navy fill:#2A5B80,stroke:#1A4B70,color:#fff
+```
+
+Formally, let $\mathcal{M} \subset \{1,\dots,N\}$ be the masked positions and $\hat{x}$ the corrupted input. The MLM objective is the negative log-likelihood of the original tokens at just those positions, conditioned on the **whole** corrupted sequence:
+
+$$\mathcal{L}_{\text{MLM}} = -\sum_{k \in \mathcal{M}} \log p\big(x_k \mid \hat{x}_{1:N}\big), \qquad p\big(x_k \mid \hat{x}_{1:N}\big) = \text{softmax}\big(W\, h_k + b\big),$$
+
+where $h_k$ is the final-layer hidden state at position $k$ (built by **bidirectional** self-attention over all of $\hat{x}$) and $W \in \mathbb{R}^{|V| \times d}$ projects it to vocabulary logits.
+
+> **Source / derivation:** the masked-LM objective is §3.1 ("Task #1: Masked LM") of [Devlin et al., 2018, *BERT: Pre-training of Deep Bidirectional Transformers*](https://arxiv.org/abs/1810.04805). It is the **conditional** cross-entropy $-\!\sum_{k\in\mathcal{M}}\log p(x_k\mid\hat{x})$ — the *denoising* objective of a masked autoencoder: corrupt the input by masking, then maximize the likelihood of recovering the originals. Conditioning on the full $\hat{x}_{1:N}$ (not a left prefix) is exactly what makes it bidirectional, and is safe only because the targets $x_{k\in\mathcal{M}}$ were removed from $\hat{x}$.
+
 ![The masked language model objective. 15% of tokens are chosen (here 'bank' becomes [MASK]); the bidirectional BERT encoder lets every token attend to every other, so the masked position is reconstructed from BOTH its left context ('...at the') and its right context. A softmax over the ~30k WordPiece vocabulary predicts the original word — measured here, BERT-base assigns 0.43 to 'bank'.](../images/ctx_mlm_objective.png)
 
 Because the encoder is bidirectional, the masked word is reconstructed from **left *and* right context at once** — *"I deposited cash at the [MASK] downtown"* gives the model both *"deposited cash"* on the left and *"downtown"* on the right to infer `bank`. That joint conditioning is exactly what ELMo's shallow concatenation could not do, and it's why BERT's representations are called **deeply** bidirectional.
@@ -123,6 +180,8 @@ Step 3 said "**mostly** `[MASK]`." Here is the exact recipe and the reasoning, w
 - **10%** are replaced with a **random** token,
 - **10%** are **left unchanged** (kept as the original word).
 
+![BERT's masking recipe in two steps, illustrative. Step 1: 15% of token positions are selected for prediction (85% are left untouched in the input). Step 2: the selected 15% are corrupted by the 80/10/10 split — 80% become [MASK], 10% become a random token, 10% are kept unchanged. The mix is what forces good representations at EVERY position, not just where [MASK] appears.](../images/ctx_mlm_80_10_10.png)
+
 Why this elaborate corruption rather than always masking? Derive it from a **train/inference mismatch**:
 
 - The `[MASK]` token appears during pretraining but **never at fine-tuning or inference time** — real downstream sentences have no `[MASK]`. If the model only ever saw `[MASK]` at the prediction positions, it would learn the lazy shortcut *"only bother building a rich representation where I see `[MASK]`"* and produce degenerate features for ordinary, unmasked tokens — exactly the tokens that matter at inference. The corruption forces the model to **build a good predictive representation at *every* position**, because it can never be sure a given position isn't a prediction target.
@@ -130,6 +189,8 @@ Why this elaborate corruption rather than always masking? Derive it from a **tra
 - The **10% unchanged** is subtle: it makes the model **predict the correct word even when the input already is the correct word**, so its representation of a genuine, uncorrupted token is still pushed toward "what should be here given context." Without it, the model could learn *"if it's not `[MASK]`, just copy the input"* at target positions.
 
 The net effect: the model can't tell *which* of the 15% it must predict from the input alone (could be a `[MASK]`, a wrong word, or the right word), so it has to encode a context-aware guess **everywhere**. That's precisely the property that makes BERT's hidden states good general-purpose contextual embeddings.
+
+> **Source / derivation:** the 15% rate and the 80/10/10 split are specified in [Devlin et al., 2018, §3.1 + Appendix C.2 (ablation)](https://arxiv.org/abs/1810.04805); the paper's own ablation table is what establishes that the mixed corruption beats 100%-`[MASK]` (the train/inference-mismatch argument above is the reasoning the ablation confirms).
 
 > **Gotcha:** a real downside of MLM is **sample inefficiency**: BERT only computes a loss on the **15%** of positions it masked, so 85% of the tokens in every batch produce *no learning signal* for the main objective. The model "wastes" most of each sentence. Keep this in your pocket — it's exactly the inefficiency **ELECTRA** (below) was designed to remove, and the reason it trains faster.
 
@@ -231,7 +292,15 @@ Here are **measured** numbers from BERT-base (last layer), which the code sectio
 | `bank` (river) vs `bank` (loan) | **0.43** | different senses → far apart |
 | **layer-0** `bank` (river) vs `bank` (money) | **1.000** | input embedding is *static* — identical |
 
-Two things to absorb. First, **same sense → high similarity (~0.81), different sense → low (~0.43–0.48)** — BERT has disambiguated the polysemous word purely from context. Second, and this is the clincher: at **layer 0** (the input embedding, *before* any transformer block) the two `bank`s are **identical (cos = 1.000)** — because layer 0 *is* essentially a static lookup. The context-dependence is **built up by the transformer layers**. We can watch it happen:
+Two things to absorb. First, **same sense → high similarity (~0.81), different sense → low (~0.43–0.48)** — BERT has disambiguated the polysemous word purely from context. Second, and this is the clincher: at **layer 0** (the input embedding, *before* any transformer block) the two `bank`s are **near-identical (cos = 1.000 here)** — because layer 0 is dominated by the *static* token embedding. It is not bit-identical in general: layer 0 = token + **position** + segment embeddings, so the same word at a *different* position lands a hair below 1.0 (you'll see a layer-0 same-sense bar at ≈0.95 in the figure below — that gap is the position embedding). The point stands: layer 0 is essentially a static lookup, and the context-dependence is **built up by the transformer layers**.
+
+![Same-sense vs different-sense cosine for 'bank', static (layer 0) vs contextual (BERT last layer), measured. The static bars stay high for both pairs — a static lookup gives essentially the same vector for the string regardless of sense — while the contextual bars split cleanly: same sense ~0.81, different sense ~0.48. The split is the polysemy fix, in two pairs of bars.](../images/ctx_static_vs_contextual_bars.png)
+
+Read the static bars as the baseline: a word2vec/GloVe-style lookup cannot tell the two senses apart, so both pairs sit high. The contextual bars are the fix — same-sense stays high, different-sense drops. Widening that gap to a full four-sentence view:
+
+![Pairwise cosine between the 'bank' vector across four sentences (river, money, loan, teller), measured from BERT-base. The three financial uses (money/loan/teller) cluster high (0.74–0.81); the river use sits apart from all of them (0.43–0.49). The same token string occupies two regions of the space, decided entirely by surrounding context.](../images/ctx_sense_cosine_matrix.png)
+
+The matrix is the table made visual: a bright financial block (money/loan/teller all mutually similar) and a cool river row that is far from every financial use. We can also watch the contextualization *build* with depth:
 
 ![Cosine similarity between the river-sense and money-sense 'bank' vectors at each BERT layer (measured). At layer 0 they are identical (1.000) — the input embedding is static. Through the stack, self-attention mixes context in and the two senses pull apart, bottoming out around 0.41 in the middle-upper layers where word sense is most resolved.](../images/ctx_layer_probe.png)
 
@@ -375,11 +444,14 @@ It's easy to think of BERT as "old" now that decoder LLMs dominate headlines —
 
 ## Code: measure the same word getting different vectors
 
-Everything above is verifiable. This script (runs on CPU in a few seconds, on Python 3.12 with `transformers` + `torch`) loads BERT-base, extracts the contextual vector for `bank` in several sentences, and reports cosine similarities — reproducing the table and the layer-0 = 1.000 result. It also shows BERT's MLM filling a blank.
+Everything above is verifiable. The snippet below loads BERT-base, reads the contextual vector for `bank` in several sentences, and reports cosine similarities — reproducing the table and the layer-0 = 1.000 result, then shows the MLM filling a blank. It runs on CPU in a few seconds.
+
+> **Runnable project and a step-by-step notebook:** the full, verified code lives as a clean script and an executed teaching notebook next to this page — see the [step-by-step teaching notebook](code/06-Contextual-Embeddings-ELMo-BERT.ipynb) and the [single source-of-truth module](code/contextual_embeddings.py) (run it with `python contextual_embeddings.py`). The page's figures are regenerated from the *same* functions by [`make_figures_06.py`](code/make_figures_06.py), so the numbers below, in the notebook, and on every figure cannot drift. The module loads **real BERT-base when reachable** and transparently falls back to a **seeded synthetic contextual model offline**, so the notebook and figures *always* run with no network dependency that can fail.
 
 ```python
 """Contextual embeddings, measured: the SAME word -> DIFFERENT vectors by context.
-Verified on Python 3.12 (torch 2.12, transformers 5.10), CPU. ~5s after model download."""
+Verified on Python 3.12 (torch 2.12, transformers 5.10), CPU. ~5s after model download.
+This is the core of code/contextual_embeddings.py, which adds the offline synthetic fallback."""
 import warnings; warnings.filterwarnings("ignore")
 import torch, torch.nn.functional as F
 from transformers import AutoTokenizer, AutoModel, AutoModelForMaskedLM, logging
@@ -440,9 +512,11 @@ fill 'capital of France is [MASK]': [('paris', 0.417), ('lille', 0.071), ('lyon'
 
 Read the output as the whole page in miniature. The two *different* senses of `bank` (river vs money, river vs loan) sit at cosine ~**0.43–0.48**; the two *same*-sense uses (both money) sit at ~**0.81** — BERT disambiguated the polyseme **from context alone**. And the decisive line: at **layer 0** the two `bank` vectors are **identical (1.0)** — proof that the input embedding is static and the contextualization is built by the transformer stack above it. The MLM fills *"...at the [MASK] downtown"* with **bank** (0.43) and *"capital of France is [MASK]"* with **paris** (0.42) — using both-sided context, exactly the objective that made these representations possible.
 
-> **Tip:** to see contextualization build with depth yourself, loop `layer` from 0 to 12 in `word_vec` and print `cos(river, money)` at each — you'll reproduce the layer-probe curve: 1.000 at layer 0, sliding to ~0.41 mid-upper stack. That loop *is* the fourth diagram, in three lines.
+> **Tip:** to see contextualization build with depth yourself, loop `layer` from 0 to 12 in `word_vec` and print `cos(river, money)` at each — you'll reproduce the layer-probe curve: 1.000 at layer 0, sliding to ~0.41 mid-upper stack. The notebook does exactly this in one cell.
 
-> **Gotcha:** if the `from_pretrained` download fails (offline/firewall), this whole script can't run — there's no static fallback for *measured* contextual vectors, because the point *is* that you need the model. Pre-download once with internet access (`AutoModel.from_pretrained("bert-base-uncased")`), and the cached weights run offline thereafter.
+> **Gotcha — subword positions.** Reading `word_vec` with `convert_tokens_to_ids(word)` works only when `word` is a *single* WordPiece token. For rare words split into pieces (*"embeddings" → "em", "##bed", ...*), `bank` finds nothing and the lookup fails. The committed module handles this by **mean-pooling the subword vectors** at each layer — the standard fix from the extraction section. (Notice too that BERT's top fill for the *river* `[MASK]` is `##bank` — a continuation piece — a vivid reminder that the unit BERT predicts is a WordPiece, not always a whole word.)
+
+> **Gotcha — the model is the point.** These are *measured* contextual vectors, so the inline snippet genuinely needs the pretrained model; if `from_pretrained` fails offline it can't run. The committed `code/contextual_embeddings.py` therefore ships a **seeded synthetic contextual model** as a clearly-labelled fallback — it is *not* BERT, but it preserves the two qualitative facts (same-sense > cross-sense; layer-0 static, depth disambiguates) so the notebook and figures **always** run. For real numbers, pre-download once with internet (`AutoModel.from_pretrained("bert-base-uncased")`) and the cached weights run offline thereafter.
 
 ---
 

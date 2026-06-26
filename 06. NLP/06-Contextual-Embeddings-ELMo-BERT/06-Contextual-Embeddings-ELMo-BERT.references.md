@@ -3,7 +3,7 @@ id: "06-nlp/contextual-embeddings/references"
 topic: "Contextual Embeddings — References"
 parent: "06-nlp/contextual-embeddings"
 type: references
-updated: 2026-06-22
+updated: 2026-06-27
 ---
 
 # Contextual Embeddings — references and further reading
@@ -24,6 +24,10 @@ updated: 2026-06-22
 - [Transformer Models and BERT Model: Overview](https://www.youtube.com/watch?v=hsp1OAcoLBY) — **Google Cloud** — concise official overview tying transformers to BERT.
 - [BERT Explained!](https://www.youtube.com/watch?v=OR0wfP2FD3c) — **Connor Shorten** — walks through the paper's key ideas.
 - [BERT: Pre-training of Deep Bidirectional Transformers (paper walkthrough)](https://www.youtube.com/watch?v=-9evrZnBorM) — **Yannic Kilcher** — a section-by-section read of the original BERT paper.
+
+**Interactive & visual**:
+- [BertViz — visualize attention in BERT](https://github.com/jessevig/bertviz) — **Jesse Vig** — an interactive notebook tool to *see* which tokens each head attends to, layer by layer; the most direct way to watch bidirectional attention build context.
+- [A Visual Notebook to Using BERT for the First Time (Colab)](https://colab.research.google.com/github/jalammar/jalammar.github.io/blob/master/notebooks/bert/A_Visual_Notebook_to_Using_BERT_for_the_First_Time.ipynb) — **Jay Alammar** — a runnable, click-through notebook that loads BERT and extracts contextual features step by step.
 
 **Courses (free)**:
 - [Stanford CS224N: NLP with Deep Learning](https://web.stanford.edu/class/cs224n/) — **Stanford (Manning)** — the contextual-representations + pretraining lectures (ELMo → BERT), the canonical academic treatment.
@@ -53,6 +57,7 @@ updated: 2026-06-22
 
 **In this platform**:
 - Concept page (full explanation): [Contextual Embeddings (ELMo · BERT)](06-Contextual-Embeddings-ELMo-BERT.md)
+- Runnable code: [step-by-step teaching notebook](code/06-Contextual-Embeddings-ELMo-BERT.ipynb) · [source-of-truth module](code/contextual_embeddings.py) · [figure generator](code/make_figures_06.py) — the same functions produce the page's numbers, the notebook, and every figure.
 - The static limitation it fixes: [Word Embeddings (word2vec · GloVe · fastText)](../05-Word-Embeddings-Word2Vec-GloVe-FastText/05-Word-Embeddings-Word2Vec-GloVe-FastText.md)
 - Builds on this: [Sentence & Document Embeddings (Sentence-BERT · USE)](../07-Sentence-and-Document-Embeddings/07-Sentence-and-Document-Embeddings.md) — the naive-`[CLS]` trap and its fix.
 - Foundations: [Tokenization & Subword Algorithms](../02-Tokenization-and-Subword-Algorithms/02-Tokenization-and-Subword-Algorithms.md) · [Transformer Architecture](../../05.%20Deep_Learning/concepts/16-Transformer-Architecture.md) · [Attention Mechanism](../../05.%20Deep_Learning/concepts/15-Attention-Mechanism.md)
