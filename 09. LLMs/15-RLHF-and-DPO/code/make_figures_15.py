@@ -109,7 +109,7 @@ def fig_bradley_terry() -> None:
     ax_left.scatter([3.0], [_sigmoid(np.array([3.0]))[0]], color=GREEN, s=55, zorder=4)
     ax_left.annotate(
         "gap +3 → 0.95\n(confident, low loss)",
-        xy=(3.0, _sigmoid(np.array([3.0]))[0]), xytext=(-1.0, 0.90), color=GREEN, fontsize=9,
+        xy=(3.0, _sigmoid(np.array([3.0]))[0]), xytext=(-1.0, 0.85), color=GREEN, fontsize=9,
         arrowprops=dict(arrowstyle="->", color=GREEN, lw=1.1),
     )
 
@@ -153,7 +153,9 @@ def fig_overoptimization() -> None:
     ax.set_ylim(0, 3.7)
     ax.legend(loc="lower right", frameon=False, fontsize=9)
     _style_axis(ax)
-    ax.set_title("Reward over-optimization: why RLHF needs a KL leash", fontweight="bold")
+    ax.set_title(
+        "Reward over-optimization: why RLHF needs a KL leash  (illustrative)", fontweight="bold"
+    )
     _save(fig, "rlhf_overoptimization.png")
 
 
@@ -240,11 +242,59 @@ def fig_dpo_update() -> None:
     _save(fig, "dpo_update.png")
 
 
+def fig_memory_footprint() -> None:
+    """Bar chart: models held in memory during training -- PPO needs 4, DPO needs 2.
+
+    This is DPO's central practical advantage made visible. The counts are exact (not measured
+    sizes): PPO juggles {policy, reward, value/critic, frozen reference}; DPO needs only
+    {policy, frozen reference}. Each bar is stacked by which models it holds so the 4-vs-2 gap
+    -- and which two models DPO drops (the reward model and the value/critic) -- is legible.
+    """
+    # (label, colour) for each model slot, bottom-to-top in the stack.
+    ppo_models = [
+        ("policy (trained)", BLUE),
+        ("frozen reference", SLATE),
+        ("reward model", AMBER),
+        ("value / critic", RED),
+    ]
+    dpo_models = [
+        ("policy (trained)", BLUE),
+        ("frozen reference", SLATE),
+    ]
+
+    fig, ax = plt.subplots(figsize=(7.6, 4.8))
+    seen: set[str] = set()  # add each label to the legend only once
+    for x, models in ((0, ppo_models), (1, dpo_models)):
+        for i, (label, colour) in enumerate(models):
+            ax.bar(
+                x, 1.0, bottom=i, width=0.62, color=colour, edgecolor="white", linewidth=1.4,
+                zorder=3, label=label if label not in seen else None,
+            )
+            seen.add(label)
+            ax.text(x, i + 0.5, label, ha="center", va="center", color="#fff", fontsize=9, zorder=4)
+    # The two models DPO drops, called out on the PPO bar.
+    ax.annotate(
+        "DPO drops these two\n(no reward model, no RL critic)",
+        xy=(0.31, 3.0), xytext=(0.62, 3.05), color=RED, fontsize=9, fontweight="bold",
+        arrowprops=dict(arrowstyle="->", color=RED, lw=1.2),
+    )
+    ax.set_xticks([0, 1])
+    ax.set_xticklabels(["RLHF (PPO)\n4 models", "DPO\n2 models"], fontweight="bold")
+    ax.set_ylabel("models held in memory during training")
+    ax.set_yticks(range(5))
+    ax.set_ylim(0, 4.6)
+    ax.set_xlim(-0.6, 1.9)
+    _style_axis(ax)
+    ax.set_title("Why DPO is cheaper: 4 models vs 2", fontweight="bold")
+    _save(fig, "rlhf_memory_footprint.png")
+
+
 def main() -> None:
     fig_bradley_terry()
     fig_overoptimization()
     fig_dpo_margin()
     fig_dpo_update()
+    fig_memory_footprint()
     print("all figures written to", OUT_DIR)
 
 

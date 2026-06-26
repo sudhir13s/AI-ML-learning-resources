@@ -177,7 +177,7 @@ graph LR
 
 That second term — the **KL penalty** against the **frozen reference** (the SFT model) — is the single most important part of RLHF, and the part students skip. The reward model is only a *proxy* for human preference. Optimize a proxy hard enough and the policy will discover inputs where the proxy and reality diverge: text that scores absurdly high while being repetitive, sycophantic, or nonsensical. This is **reward over-optimization** — **Goodhart's Law** in action: *"when a measure becomes a target, it ceases to be a good measure."* The KL penalty is the budget that holds the policy near the region where the proxy is still trustworthy.
 
-![Reward over-optimization. As the policy drifts further from the reference (higher KL on the x-axis), the proxy reward from the reward model keeps rising, but the true human-judged quality peaks and then falls — the shaded reward-hacking gap. The KL penalty stops the policy at the sweet spot, before the proxy and reality come apart.](../images/rlhf_overoptimization.png)
+![Reward over-optimization (illustrative). As the policy drifts further from the reference (higher KL on the x-axis), the proxy reward from the reward model keeps rising, but the true human-judged quality peaks and then falls — the shaded reward-hacking gap. The KL penalty stops the policy at the sweet spot, before the proxy and reality come apart. The curves are schematic — the *shape* (proxy monotone up, true quality peak-then-fall) is the real, measured finding of Gao et al. 2022; the exact values are hand-chosen for clarity.](../images/rlhf_overoptimization.png)
 
 ### Why the objective is exactly this, and what $\beta$ tunes
 
@@ -210,13 +210,31 @@ So a full PPO-RLHF setup juggles **four models at once** — the **policy** (tra
 
 PPO works — it's the recipe behind InstructGPT and ChatGPT — but it's *heavy*: a separate reward model, online generation, a value network, and a notoriously finicky RL loop with several interacting knobs. **DPO** asks a sharper question: *do we even need the reward model and the RL?* The answer is no, and the derivation is one of the most elegant results in modern ML — worth knowing line by line, because the whole method is "just" three algebraic moves on the objective you already have.
 
+Here is the whole derivation as a skeleton — six steps from the objective you already have to the DPO loss. Each box below is one move; the three sections that follow fill them in.
+
+```mermaid
+graph LR
+    OBJ["KL-constrained<br/>RLHF objective<br/>max E[r] − β·KL"]:::start --> OPT["closed-form optimum<br/>π* ∝ π_ref·exp(r/β)"]:::step
+    OPT --> INV["invert for r<br/>r = β·log(π/π_ref)<br/>+ β·log Z(x)<br/>(implicit reward)"]:::step
+    INV --> SUB["substitute into<br/>Bradley-Terry<br/>P = σ(r_w − r_l)"]:::step
+    SUB --> CAN["β·log Z(x) cancels<br/>(shared prompt x)"]:::cancel
+    CAN --> LOSS["DPO loss<br/>−log σ(β·Δlog π/π_ref)"]:::done
+
+    classDef start fill:#3A6B96,stroke:#2A5B86,color:#fff
+    classDef step fill:#5D4A8A,stroke:#4D3A7A,color:#fff
+    classDef cancel fill:#7A6528,stroke:#6A5518,color:#fff
+    classDef done fill:#2E7A5A,stroke:#1E6A4A,color:#fff
+```
+
+*The DPO derivation spine: the KL-constrained objective has a closed-form optimum, which inverts to express the reward as an implicit log-ratio; substituting that into Bradley-Terry makes the intractable partition function $\beta\log Z(x)$ cancel between the two completions, leaving a supervised loss with no reward model and no RL.*
+
 ### Step 1 — the KL-constrained RLHF objective has a closed-form optimum
 
 Start from the exact same objective PPO optimizes, written for a single prompt $x$ as an expectation over the policy (and expand the KL as $\mathbb{E}_\pi[\log(\pi/\pi_{\text{ref}})]$):
 
 $$\max_\pi\; \mathbb{E}_{y\sim\pi}\Big[\,r(x,y) - \beta\log\tfrac{\pi(y\mid x)}{\pi_{\text{ref}}(y\mid x)}\,\Big].$$
 
-Pull out a factor of $-\beta$ and fold $r/\beta$ into the log by writing $r(x,y) = \beta\log e^{r(x,y)/\beta}$:
+Pull out a factor of $-\beta$ and fold $r/\beta$ into the log by writing $r(x,y) = \beta\log e^{r(x,y)/\beta}$ (any number $t$ equals $\log e^{t}$, so $r/\beta = \log e^{r/\beta}$ — this just rewrites the reward as a log so it can join the existing log-ratio):
 
 $$= -\beta\;\mathbb{E}_{y\sim\pi}\Big[\log\tfrac{\pi(y\mid x)}{\pi_{\text{ref}}(y\mid x)} - \tfrac{1}{\beta}r(x,y)\Big]
 = -\beta\;\mathbb{E}_{y\sim\pi}\Big[\log\frac{\pi(y\mid x)}{\pi_{\text{ref}}(y\mid x)\,e^{r(x,y)/\beta}}\Big].$$
@@ -325,6 +343,8 @@ Both routes hinge on two shared objects worth pinning down, because most of the 
 | Exploration | On-policy: can discover *new* high-reward behaviors | Offline: limited to the dataset's coverage |
 | Used by | InstructGPT, ChatGPT, Llama-2-chat | Zephyr, Tülu, and a large fraction of open models |
 
+![Models held in memory during training: RLHF (PPO) juggles four — the trained policy, the frozen reference, the reward model, and the value/critic — while DPO needs only two, the policy and the frozen reference. DPO drops exactly the two that the derivation made unnecessary: the reward model (folded into the implicit reward $\beta\log(\pi/\pi_{\text{ref}})$) and the RL value/critic (no rollouts, so no advantage baseline to learn). That 4→2 cut, more than anything else, is why DPO + LoRA fits a 7B run on one consumer GPU.](../images/rlhf_memory_footprint.png)
+
 > **Note:** the honest take interviewers want: **DPO is simpler, cheaper, and usually competitive, so it's the default for most teams** with a static preference set and limited compute. But it has real tradeoffs. It's **offline** — it can only re-rank what's *in the dataset*, so its quality is capped by the dataset's coverage and it can't *explore* new behaviors the way on-policy PPO can; this is why **online / iterative DPO** (regenerate fresh pairs from the current policy, relabel, repeat) exists, to claw back some of that exploration. And a well-tuned PPO pipeline with a strong reward model can still **edge DPO out at the frontier**, while leaving you a reusable reward model. It's a trade-off, not a strict win — the right answer in an interview is "DPO by default, PPO when you need online reward, exploration, or the last few points of quality."
 
 ---
@@ -373,7 +393,7 @@ You changed the model's behavior — how do you know it got *better*, not just *
 
 ## Where it is used
 
-- **Every major chat model.** InstructGPT and ChatGPT (PPO-RLHF); Llama-2-chat (RLHF with rejection sampling *and* PPO); Zephyr, Tülu, and a large fraction of open models (DPO); DeepSeek reasoning models (GRPO with verifiable rewards). Preference alignment is the step that turned "a model that completes text" into "an assistant you can talk to."
+- **Every major chat model.** InstructGPT and ChatGPT (PPO-RLHF); Llama-2-chat ([RLHF with rejection sampling *and* PPO, Touvron et al. 2023, §3.2.2](https://arxiv.org/abs/2307.09288)); Zephyr, Tülu, and a large fraction of open models (DPO); DeepSeek reasoning models (GRPO with verifiable rewards). Preference alignment is the step that turned "a model that completes text" into "an assistant you can talk to."
 - **Safety and refusals.** The "harmless" leg of HHH — declining dangerous requests without being uselessly evasive — is largely a product of preference alignment, often via Constitutional-AI-style AI feedback at scale.
 - **Reasoning.** Recent reasoning models lean heavily on RL-from-feedback variants (GRPO and relatives) layered on top of preference and **verifiable-reward** signals (the answer is checkably right or wrong), which sidestep the reward-hacking problem because the reward is ground truth, not a learned proxy.
 

@@ -281,9 +281,14 @@ def main() -> None:
     print()
 
     # ---- (b) Train a tiny reward model with the BT loss -----------------------------------
+    # Pinned to CPU like every other demo so the printed reward scalars are bit-reproducible on
+    # any machine. The code is device-agnostic (make_preference_features / train_reward_model both
+    # thread `device` and `.to(device)`); pass DEVICE instead of demo_device to run on the real
+    # accelerator -- only the asserted RANKING (chosen>rejected, 6/6) is then guaranteed, not the
+    # last digits of the scalars.
     print(f"(b) Tiny reward model trained with the Bradley-Terry loss ({RM_STEPS} steps):")
-    chosen, rejected = make_preference_features(device=DEVICE)  # honor the real accelerator
-    _, stats = train_reward_model(chosen, rejected, device=DEVICE)
+    chosen, rejected = make_preference_features(device=demo_device)
+    _, stats = train_reward_model(chosen, rejected, device=demo_device)
     b = stats["before"]
     a = stats["after"]
     print(
