@@ -33,6 +33,7 @@ updated: 2026-06-22
 - [LLM Training: RLHF and Its Alternatives](https://magazine.sebastianraschka.com/p/llm-training-rlhf-and-its-alternatives) — **Sebastian Raschka** — RLHF, DPO, and the preference-tuning landscape.
 
 **Key papers**:
+- [Rank Analysis of Incomplete Block Designs: I. The Method of Paired Comparisons](https://www.jstor.org/stable/2334029) — **Bradley & Terry (1952)** — the 70-year-old pairwise-comparison model the reward-model loss is built on; $P(i \succ j) = \sigma(\text{strength gap})$.
 - [Deep Reinforcement Learning from Human Preferences](https://arxiv.org/abs/1706.03741) — **Christiano et al. (2017)** — the origin of learning a reward from *pairwise comparisons* of trajectories; the seed RLHF grew from.
 - [Learning to Summarize from Human Feedback](https://arxiv.org/abs/2009.01325) — **Stiennon et al. (2020)** — the reward-model + PPO recipe applied to summarization; the bridge from Christiano to InstructGPT.
 - [Training LMs to Follow Instructions with Human Feedback (InstructGPT)](https://arxiv.org/abs/2203.02155) — **Ouyang et al. (2022)** — the canonical 3-stage RLHF pipeline.
