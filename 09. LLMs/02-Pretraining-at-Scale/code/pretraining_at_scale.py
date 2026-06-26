@@ -58,8 +58,9 @@ FINAL_LOSS_BOUND = 1.0  # the toy loss must end below this; the periodic corpus 
 
 # --- Toy MFU inputs -----------------------------------------------------------
 PRETEND_TOKENS_PER_SEC = 5e4  # a stand-in throughput measurement for the MFU demo
-PRETEND_PEAK_FLOPS = 1e12  # a stand-in hardware peak (real GPUs are ~1e14-1e15)
+PRETEND_PEAK_FLOPS = 1e12  # a stand-in hardware peak (real GPUs ~3e14 bf16 for an A100, up to ~1e15 for H100)
 FLOPS_PER_PARAM_PER_TOKEN = 6  # the 6 in 6ND: ~2N forward + ~4N backward FLOPs per token
+NUM_GPUS = 1  # num_GPUs=1 here; a real run divides by the whole cluster's peak
 
 SEED = 0
 
@@ -214,7 +215,9 @@ def demo_training_loop() -> float:
         for group in optimizer.param_groups:
             group["lr"] = lr  # apply the scheduled LR to the optimizer this step
 
-        loss = F.cross_entropy(model(inputs).reshape(-1, VOCAB_SIZE), targets.reshape(-1))  # next-token CE
+        logits = model(inputs)  # [1, ctx, vocab]
+        assert logits.shape == (1, CONTEXT_LEN, VOCAB_SIZE)  # boundary shape check: [batch, seq, vocab]
+        loss = F.cross_entropy(logits.reshape(-1, VOCAB_SIZE), targets.reshape(-1))  # next-token CE
         optimizer.zero_grad()
         loss.backward()
         torch.nn.utils.clip_grad_norm_(model.parameters(), GRAD_CLIP_NORM)  # cap the step: the seatbelt against loss spikes
@@ -231,7 +234,8 @@ def demo_mfu(model: nn.Module) -> float:
     n_params = sum(p.numel() for p in model.parameters())  # N: this model's parameter count
     flops_per_token = FLOPS_PER_PARAM_PER_TOKEN * n_params  # 6N FLOPs/token (forward + backward)
     achieved_flops = flops_per_token * PRETEND_TOKENS_PER_SEC  # 6N x tokens/sec = useful FLOP/s
-    mfu = achieved_flops / PRETEND_PEAK_FLOPS  # fraction of peak hardware compute actually used
+    # num_GPUs=1 here; a real run divides by the whole cluster's peak
+    mfu = achieved_flops / (PRETEND_PEAK_FLOPS * NUM_GPUS)  # fraction of peak hardware compute actually used
     print(f"params N = {n_params:,}   training FLOPs/token = 6N = {flops_per_token:,}")
     print(
         f"toy MFU = (6N x {PRETEND_TOKENS_PER_SEC:.0e} tok/s) / {PRETEND_PEAK_FLOPS:.0e} peak "

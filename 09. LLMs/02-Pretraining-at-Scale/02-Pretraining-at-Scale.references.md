@@ -36,16 +36,22 @@ updated: 2026-06-26
 - [How to Train Really Large Models on Many GPUs](https://lilianweng.github.io/posts/2021-09-25-train-large/) — **Lilian Weng (OpenAI)** — data, tensor, and pipeline parallelism plus ZeRO, in one clear survey.
 - [The Technology Behind BLOOM Training](https://huggingface.co/blog/bloom-megatron-deepspeed) — **Hugging Face** — a real 176B run: 3D parallelism (Megatron + DeepSpeed ZeRO), the exact engineering this page describes.
 - [Efficient Training on Multiple GPUs](https://huggingface.co/docs/transformers/en/perf_train_gpu_many) — **Hugging Face** — practical DP / TP / PP / ZeRO guidance and when to reach for each.
+- [Methods and tools for efficient training on a single GPU — gradient accumulation](https://huggingface.co/docs/transformers/en/perf_train_gpu_one#gradient-accumulation) — **Hugging Face** — states the equal-batch equivalence: accumulating $K$ micro-batches simulates one batch of size $mK$.
 - [FineWeb: decanting the web for the finest text data at scale](https://huggingface.co/spaces/HuggingFaceFW/blogpost-fineweb-v1) — **Hugging Face** — a web-scale data pipeline in full: extraction, dedup, quality filtering, decontamination, ablations.
 - [Understanding Large Language Models](https://magazine.sebastianraschka.com/p/understanding-large-language-models) — **Sebastian Raschka** — a guided path through the foundational pretraining papers.
 - [The FLOPs Calculator for Transformer models](https://kipp.ly/transformer-inference-arithmetic/) — **Kipply** — the per-token FLOP accounting behind the 6N forward+backward rule.
 
 **Key papers**:
 - [Language Models are Few-Shot Learners (GPT-3)](https://arxiv.org/abs/2005.14165) — **Brown et al. (2020)** — the 175B/300B-token run that defined "scale," and (in hindsight) the canonical under-trained model.
+- [Scaling Laws for Neural Language Models](https://arxiv.org/abs/2001.08361) — **Kaplan et al. (2020)** — the source of the $C \approx 6ND$ training-compute estimate and the original scaling-law curves.
 - [Training Compute-Optimal Large Language Models (Chinchilla)](https://arxiv.org/abs/2203.15556) — **Hoffmann et al. (2022)** — the ~20-tokens-per-parameter compute-optimal result; full derivation lives on the Scaling Laws page.
+- [PaLM: Scaling Language Modeling with Pathways](https://arxiv.org/abs/2204.02311) — **Chowdhery et al. (2022)** — defines **MFU** (model FLOPs utilization) and reports ~46% on a 540B run.
+- [Attention Is All You Need](https://arxiv.org/abs/1706.03762) — **Vaswani et al. (2017)** — the Transformer, and (§5.3) the original linear-warmup learning-rate schedule.
+- [SGDR: Stochastic Gradient Descent with Warm Restarts](https://arxiv.org/abs/1608.03983) — **Loshchilov & Hutter (2016)** — the cosine-annealing learning-rate decay used in the warmup→cosine schedule.
 - [Llama 2: Open Foundation and Fine-Tuned Chat Models](https://arxiv.org/abs/2307.09288) — **Touvron et al. (2023)** — a fully documented open pretraining recipe: data, hyperparameters, tokens-per-parameter.
 - [Megatron-LM: Training Multi-Billion Parameter Models Using Model Parallelism](https://arxiv.org/abs/1909.08053) — **Shoeybi et al. (2019)** — the tensor-parallelism approach for splitting a layer's matmuls across GPUs.
 - [ZeRO: Memory Optimizations Toward Training Trillion Parameter Models](https://arxiv.org/abs/1910.02054) — **Rajbhandari et al. (2019)** — sharding optimizer state / gradients / weights across data-parallel GPUs; the basis of FSDP.
+- [PyTorch FSDP: Experiences on Scaling Fully Sharded Data Parallel](https://arxiv.org/abs/2304.11277) — **Zhao et al. (2023)** — the primary FSDP source, completing the ZeRO→FSDP pair: how Fully Sharded Data Parallel is implemented and scaled in PyTorch.
 - [Mixed Precision Training](https://arxiv.org/abs/1710.03740) — **Micikevicius et al. (2017)** — fp16/bf16 training with an fp32 master copy and loss scaling.
 - [Decoupled Weight Decay Regularization (AdamW)](https://arxiv.org/abs/1711.05101) — **Loshchilov & Hutter (2017)** — why weight decay must be decoupled from the Adam step; the optimizer every LLM uses.
 - [GPipe: Efficient Training of Giant Neural Networks using Pipeline Parallelism](https://arxiv.org/abs/1811.06965) — **Huang et al. (2018)** — pipeline parallelism and the micro-batching that shrinks the pipeline bubble.

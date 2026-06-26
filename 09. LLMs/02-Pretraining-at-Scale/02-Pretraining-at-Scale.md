@@ -129,7 +129,7 @@ The model and its training state don't fit on one device, so you split them. The
 
 First, *why* one GPU isn't enough — the memory the optimizer demands:
 
-> **Note (the optimizer-state tax):** training a model with **N** parameters in mixed precision needs far more than just the weights. With **Adam**, per parameter you store: the bf16 weight (2 bytes), an fp32 master copy of the weight (4 bytes), and Adam's two fp32 moments — momentum and variance (4 + 4 bytes). That's **~16 bytes/parameter** *before* activations. A 7B model is thus ~**112 GB** of state — already past an 80 GB GPU. This optimizer-state tax, not the forward pass, is why even moderate models must shard.
+> **Note (the optimizer-state tax):** training a model with **N** parameters in mixed precision needs far more than just the weights. With **Adam**, per parameter you store: the bf16 weight (2 bytes), an fp32 master copy of the weight (4 bytes), and Adam's two fp32 moments — momentum and variance (4 + 4 bytes). That's **~16 bytes/parameter** *before* activations. A 7B model is thus ~**112 GB** of optimizer + master-weight state (16 × 7×10⁹ bytes), already past an 80 GB GPU before you add activations. This optimizer-state tax, not the forward pass, is why even moderate models must shard.
 
 ```mermaid
 graph TD
@@ -201,6 +201,8 @@ $$
 \end{cases}
 $$
 
+> **Source / derivation:** the cosine-decay half follows [Loshchilov & Hutter, *SGDR: Stochastic Gradient Descent with Warm Restarts* (2016)](https://arxiv.org/abs/1608.03983) — the cosine-annealing schedule. The linear-warmup half is the standard Transformer/GPT-style training recipe; the original warmup schedule is in [Vaswani et al., *Attention Is All You Need* (2017), §5.3](https://arxiv.org/abs/1706.03762).
+
 Read the two pieces. **Warmup** ($t<W$): a straight line from 0 up to $\eta_{\max}$. *Why warmup at all?* At step 0 the weights are random and Adam's variance estimate is unreliable; a full-size LR step here can wreck the model before it stabilizes. Ramping in gently lets Adam's running statistics settle. **Cosine decay** ($t\ge W$): the cosine argument runs from $0$ (at $t=W$, where $\cos 0 = 1$, giving the full $\eta_{\max}$) to $\pi$ (at $t=T$, where $\cos\pi = -1$, giving $\eta_{\min}$), so the LR follows a smooth half-cosine from peak down to floor. A slow, smooth decay lets the model take big steps early and fine, careful steps late.
 
 > **Gotcha (the off-by-one in the cosine):** the decay fraction is $\frac{t-W}{T-W}$, **not** $\frac{t}{T}$. The cosine must restart its clock *at the end of warmup* — at $t=W$ the fraction is 0 (full LR), at $t=T$ it's 1 (floor). Use $\frac{t}{T}$ and the LR is already partway down the cosine the instant warmup ends, producing a visible kink and a too-low peak LR. We print both endpoints in the code to confirm they're exactly $\eta_{\max}$ and $\eta_{\min}$.
@@ -209,9 +211,11 @@ Read the two pieces. **Warmup** ($t<W$): a straight line from 0 up to $\eta_{\ma
 
 $$\text{batch}_{\text{eff}} = m \times K \times (\text{data-parallel GPUs})$$
 
-The key claim — and the second thing we prove in code — is **equivalence**: accumulating gradients over $K$ micro-batches of size $m$ produces (to floating-point tolerance) the **same parameter update** as one true batch of size $mK$. Why? The loss is a **mean over examples**, so the gradient is a mean of per-example gradients, and the mean of $K$ groups each averaged over $m$ examples equals the single average over all $mK$ examples — *as long as you average consistently*. The mechanism is pure linearity of the gradient operator:
+The key claim — and the second thing we prove in code — is **equivalence**: accumulating gradients over $K$ micro-batches of size $m$ produces (to floating-point tolerance) the **same parameter update** as one true batch of size $mK$. We prove this on a linear model with MSE — deliberately, so the only thing that can differ between the two paths is float rounding of the gradient sum; doing it inside the Adam+schedule loop would entangle the optimizer's per-parameter scaling and hide the clean identity. Why? The loss is a **mean over examples**, so the gradient is a mean of per-example gradients, and the mean of $K$ groups each averaged over $m$ examples equals the single average over all $mK$ examples — *as long as you average consistently*. The mechanism is pure linearity of the gradient operator:
 
 $$\nabla \left(\frac{1}{mK}\sum_{i=1}^{mK} \ell_i\right) = \frac{1}{mK}\sum_{i=1}^{mK} \nabla \ell_i = \frac{1}{K}\sum_{k=1}^{K}\underbrace{\left(\frac{1}{m}\sum_{i\in \text{chunk}_k} \nabla \ell_i\right)}_{\text{micro-batch }k\text{'s mean grad}}$$
+
+> **Source / derivation:** the equal-batch equivalence (accumulating $K$ micro-batches simulates one batch of size $mK$) is stated in [Hugging Face Transformers — Methods and tools for efficient training: gradient accumulation](https://huggingface.co/docs/transformers/en/perf_train_gpu_one#gradient-accumulation); it rests on nothing more than linearity of the gradient operator (shown above).
 
 The right-hand side is exactly "average the $K$ micro-batch gradients" — which is what accumulation does. This is the single most important systems trick for large-batch training: it **decouples the math (huge effective batch) from the memory (one small micro-batch at a time)**.
 
@@ -221,6 +225,8 @@ The right-hand side is exactly "average the $K$ micro-batch gradients" — which
 
 $$C \approx 6 \, N \, D$$
 
+> **Source / derivation:** the $C \approx 6ND$ estimate is from [Kaplan et al., *Scaling Laws for Neural Language Models* (2020)](https://arxiv.org/abs/2001.08361) and used throughout [Hoffmann et al., *Training Compute-Optimal Large Language Models (Chinchilla)* (2022)](https://arxiv.org/abs/2203.15556) — the per-token compute of a forward+backward pass (full forward-$2N$ + backward-$4N$ derivation in the [Scaling Laws](../03-Scaling-Laws/03-Scaling-Laws.md) chapter).
+
 where $N$ is the number of parameters and $D$ is the number of training tokens. The **6** comes from counting multiply-adds: a forward pass over one token costs ~$2N$ FLOPs (each parameter does one multiply-add = 2 FLOPs), and the backward pass costs ~$2\times$ the forward (it computes gradients with respect to both activations and weights), giving ~$6N$ FLOPs *per token*; multiply by $D$ tokens for the total. This single formula is how every training run is budgeted.
 
 > *Where the factor of 6 comes from, in full — including the forward $2N$ and the backward $4N$ accounting — is derived in [Scaling Laws](../03-Scaling-Laws/03-Scaling-Laws.md), which also covers the **compute-optimal** question (given a fixed $C$, how to split it between a bigger $N$ and more $D$ — the Chinchilla result). This page **uses** $6ND$ as a budgeting tool; that page **derives** it and the allocation rule. Don't duplicate them in an interview — cite the split.*
@@ -229,7 +235,7 @@ where $N$ is the number of parameters and $D$ is the number of training tokens. 
 
 $$C \approx 6 \times 1.75\times10^{11} \times 3\times10^{11} = 3.15\times10^{23}\ \text{FLOPs}.$$
 
-On an A100 delivering ~$3.12\times10^{14}$ FLOP/s *of useful work* (its ~312 TFLOP/s bf16 peak, run at 100% — unrealistic), that's $3.15\times10^{23} / 3.12\times10^{14} \approx 10^{9}$ GPU-seconds ≈ **32 GPU-years**. At a realistic ~40% utilization (MFU, below) it's ~80 GPU-years — i.e. ~1000 A100s for about a month. The formula turns "how long, how many GPUs, how much money" into one multiplication.
+On an A100 delivering ~$3.12\times10^{14}$ FLOP/s *of useful work* (its ~312 TFLOP/s bf16 peak, run at 100% — unrealistic), that's $3.15\times10^{23} / 3.12\times10^{14} \approx 10^{9}$ GPU-seconds ≈ **32 GPU-years**. At a realistic ~40% utilization (MFU — the fraction of peak compute you actually achieve, defined in the next section) it's ~80 GPU-years — i.e. ~1000 A100s for about a month. The formula turns "how long, how many GPUs, how much money" into one multiplication.
 
 ---
 
@@ -242,6 +248,8 @@ Once the loop runs, you live and die by a few systems metrics — and an intervi
 **MFU — Model FLOPs Utilization.** The honest efficiency number: the ratio of the *useful* FLOPs your run actually achieves to the GPU's *peak* FLOPs.
 
 $$\text{MFU} = \frac{\text{achieved FLOP/s}}{\text{peak FLOP/s}} = \frac{6 \, N \times (\text{tokens/sec})}{\text{peak FLOP/s} \times (\text{num GPUs})}$$
+
+> **Source / derivation:** Model FLOPs Utilization is defined in [Chowdhery et al., *PaLM: Scaling Language Modeling with Pathways* (2022), §5](https://arxiv.org/abs/2204.02311) — achieved model FLOP/s as a fraction of the cluster's theoretical peak.
 
 Real large runs land at roughly **30–50% MFU** — *half* the hardware's theoretical compute is lost to communication, memory movement, pipeline bubbles, and kernel inefficiency. MFU is the number that tells you whether your parallelism strategy is good or whether you're paying for GPUs that sit idle. PaLM reported ~46% MFU as a then-impressive result. We compute a toy MFU in the code.
 
@@ -303,6 +311,7 @@ print(f"\ngrad-accum equivalence: max|big - accumulated| = {max_diff:.2e}")
 assert torch.allclose(big_grad, acc_grad, atol=1e-6)    # identical to float noise
 
 # --- 3. A tiny pretraining loop with the REAL recipe ------------------------
+torch.manual_seed(0)                                     # re-seed: the loop's trace is pinned to seed 0
 V, ctx, period = 16, 8, 4
 cycle = torch.arange(period)                             # [0,1,2,3] — a LEARNABLE next-token pattern
 data = cycle.repeat(256 // period)                      # [0,1,2,3, 0,1,2,3, ...] toy corpus
@@ -331,7 +340,8 @@ for step in range(TOTAL):
 # --- 4. Toy MFU: achieved FLOPs / peak FLOPs --------------------------------
 N = sum(p.numel() for p in model.parameters())          # this model's parameter count
 toks_per_sec, peak_flops = 5e4, 1e12                    # pretend measurements
-mfu = (6 * N * toks_per_sec) / peak_flops                # 6ND-rate / peak
+NUM_GPUS = 1                                             # num_GPUs=1 here; a real run divides by the whole cluster's peak
+mfu = (6 * N * toks_per_sec) / (peak_flops * NUM_GPUS)   # 6ND-rate / (peak x num_GPUs)
 print(f"\nparams N = {N:,}   training FLOPs/token = 6N = {6*N:,}")
 print(f"toy MFU = (6N x {toks_per_sec:.0e} tok/s) / {peak_flops:.0e} peak = {mfu:.4%}")
 ```
@@ -363,9 +373,9 @@ training FLOPs/token = 6N = 12,576
 toy MFU = (6N x 5e+04 tok/s) / 1e+12 peak = 0.0629%
 ```
 
-> **Note:** read the four blocks. **(1) LR schedule:** it's 0 at step 0, ramps *linearly* to exactly `3.000e-04` at step 10 (end of warmup), then **cosine-decays** to exactly `3.000e-05` at step 100 — the two `assert`s confirm the endpoints, proving the off-by-one is handled. The midpoint (step 55) sits at the cosine's halfway value, `1.650e-04`. **(2) Grad-accum:** the max difference between one big batch and 8 accumulated micro-batches is `5.96e-08` — *float noise* (one big matmul vs eight small ones round differently in the last digits), not a real difference. The big batch and the accumulated micro-batches compute the **same update**; that's the whole "fake a big batch" trick, verified. **(3) Training:** with the *real* recipe (AdamW + warmup→cosine + grad clip) on a *learnable* (periodic) toy corpus, loss drops cleanly `2.84 → 0.75` as the LR follows the schedule — the recipe working, made visible. **(4) MFU:** with a 2,096-param toy model, 6N = 12,576 FLOPs/token, and pretend measurements, MFU is ~0.06% — *tiny because the toy model barely uses the pretend hardware*; in a real run this lands at 30–50%.
+> **Note:** read the four blocks. **(1) LR schedule:** it's 0 at step 0, ramps *linearly* to exactly `3.000e-04` at step 10 (end of warmup), then **cosine-decays** to exactly `3.000e-05` at step 100 — the two `assert`s confirm the endpoints, proving the off-by-one is handled. The midpoint (step 55) sits at the cosine's halfway value, `1.650e-04`. **(2) Grad-accum:** the max difference between one big batch and 8 accumulated micro-batches is `5.96e-08` — *float noise* (one big matmul vs eight small ones round differently in the last digits), not a real difference. The big batch and the accumulated micro-batches compute the **same update**; that's the whole "fake a big batch" trick, verified. **(3) Training:** with the *real* recipe (AdamW + warmup→cosine + grad clip) on a *learnable* (periodic) toy corpus, loss drops cleanly `2.84 → 0.75` as the LR follows the schedule — the recipe working, made visible. The floor at ~0.75 (not ~0) is expected: windows are sampled randomly, so at a window's wrap point the next token is only learnable up to the period — a perfectly-trained model still pays a little cross-entropy there. The signal is the clean monotone descent as the LR follows the schedule, not reaching zero. **(4) MFU:** with a 2,096-param toy model, 6N = 12,576 FLOPs/token, and pretend measurements, MFU is ~0.06% — *tiny because the toy model barely uses the pretend hardware*; in a real run this lands at 30–50%.
 
-> **Try it:** before you change anything, **predict**: in the grad-accum block, what happens to `max|big - accumulated|` if you **delete the `/ K`** (so each micro-batch contributes its *full* mean gradient instead of $1/K$ of it)? Does the difference stay ~`1e-8`, grow to roughly `7×` the big-batch gradient's magnitude, or go to exactly 0? Now run it and check. (Hint: without the `/K`, you're summing $K$ micro-batch means instead of averaging them, so the accumulated gradient is **$K=8\times$ too large** — the `assert` fails and `max_diff` jumps to roughly $7\times$ the true gradient's size. That single missing division is one of the most common real-world large-batch bugs.)
+> **Try it:** before you change anything, **predict**: in the grad-accum block, what happens to `max|big - accumulated|` if you **delete the `/ K`** (so each micro-batch contributes its *full* mean gradient instead of $1/K$ of it)? Does the difference stay ~`1e-8`, grow to roughly `7×` the big-batch gradient's magnitude, or go to exactly 0? Now run it and check. (Hint: without the `/K`, you're summing $K$ micro-batch means instead of averaging them, so the accumulated gradient is **$K=8\times$ too large** (its norm is $8\times$ the true one); the difference $\max|\text{big} - \text{buggy}|$ is itself $\approx 7\times$ the true gradient's magnitude — the `assert` fails. That single missing division is one of the most common real-world large-batch bugs.)
 
 > **Tip:** to see the real thing at scale, run Karpathy's [nanoGPT](https://github.com/karpathy/nanoGPT) or [llm.c](https://github.com/karpathy/llm.c) — both implement this exact recipe (warmup+cosine, grad clip, grad accumulation, bf16) and print tokens/sec and MFU on real hardware, so you can watch the loss curve and the systems metrics together.
 
@@ -379,7 +389,7 @@ These are the named failure modes an interviewer expects you to know — each sh
 - **The gradient-accumulation BN/dropout caveat.** Accumulation is equivalent to a big batch *for the gradient* — but **not** for layers whose statistics depend on the batch. **BatchNorm** computes mean/variance over the micro-batch (size $m$), *not* the effective batch ($mK$), so its statistics are wrong relative to a true big batch. (LLMs sidestep this by using **LayerNorm/RMSNorm**, which normalize per-token and are unaffected — one reason transformers don't use BatchNorm.) **Dropout** likewise samples a fresh mask per micro-batch; usually fine, but be aware the noise pattern differs from a single big-batch pass.
 - **The cosine off-by-one (shown above).** Using $\frac{t}{T}$ instead of $\frac{t-W}{T-W}$ for the decay fraction puts a kink at the end of warmup and a too-low effective peak LR. *Fix:* restart the cosine clock at $W$. The code's two endpoint asserts are exactly the guard against this.
 - **fp16 overflow.** Plain fp16 has a *narrow exponent range*; large activations or gradients overflow to `inf`, then propagate to NaN. The old fix was **loss scaling** (multiply the loss by a big constant before backward, unscale before the step) to keep gradients in fp16's representable range. The modern fix is just **use bf16**, which has fp32's exponent range and rarely overflows — which is why bf16 is the default on hardware that supports it.
-- **Capacity/throughput sized from the wrong number.** Budgeting GPU-hours from the forward pass alone (forgetting the $6\times$ for forward+backward, or the optimizer-state memory tax) underestimates both time and memory. Size compute from **6ND** and memory from **~16 bytes/param** for Adam, not from the parameter count alone.
+- **Capacity/throughput sized from the wrong number.** Budgeting GPU-hours from the forward pass alone (forgetting the $6\times$ for forward+backward, or the optimizer-state memory tax) underestimates both time and memory. Size compute from **6ND** and memory from **~16 bytes/param** for Adam (plus activation memory, which gradient checkpointing trades away), not from the parameter count alone.
 
 ---
 
