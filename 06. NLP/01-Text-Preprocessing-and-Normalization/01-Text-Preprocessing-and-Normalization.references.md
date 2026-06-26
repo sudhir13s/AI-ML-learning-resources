@@ -3,7 +3,7 @@ id: "06-nlp/text-preprocessing/references"
 topic: "Text Preprocessing & Normalization — References"
 parent: "06-nlp/text-preprocessing"
 type: references
-updated: 2026-06-22
+updated: 2026-06-27
 ---
 
 # Text Preprocessing & Normalization — references and further reading
@@ -22,6 +22,7 @@ updated: 2026-06-22
 - [NLP with spaCy & Python — Course for Beginners](https://www.youtube.com/watch?v=dIUTsFT2MeQ) — **freeCodeCamp.org (Dr. Sowmya Vajjala)** — modern spaCy-based preprocessing from scratch (tokenizing, lemmatizing, the pipeline).
 - [Natural Language Processing with Python & NLTK](https://www.youtube.com/watch?v=X2vAabgKiuM) — **freeCodeCamp.org** — long, thorough walkthrough of tokenizing, stopwords, stemming, and lemmatizing.
 - [Tokenization, Stemming, Lemmatization, Stopwords](https://www.youtube.com/watch?v=nxhCyeRR75Q) — **Machine Learning TV** — the full clean-then-classify preprocessing pipeline end to end.
+- [Text Processing — Tokenization, Stop Words, Stemming, Lemmatization (CS50 / Natural Language Processing)](https://www.youtube.com/watch?v=8u66Ava9P-Y) — **freeCodeCamp.org (David J. Malan, Harvard CS50 AI)** — preprocessing within a rigorous, university-grade NLP lecture; situates each step in the larger pipeline.
 
 **Interactive & tools**:
 - [spaCy 101 — linguistic features (interactive)](https://spacy.io/usage/spacy-101) — **Explosion AI** — see tokenization, lemmatization, and POS tagging on your own text with the displaCy visualizer.
@@ -39,6 +40,7 @@ updated: 2026-06-22
 - [Snowball: A language for stemming algorithms](https://snowballstem.org/) — **Martin Porter** — the successor (“Porter2”) stemmers for many languages, with the rule definitions.
 - [Linguistic Features](https://spacy.io/usage/linguistic-features) — **spaCy docs** — how a production library does tokenization, lemmatization, and POS tagging.
 - [The Absolute Minimum Every Developer Must Know About Unicode](https://tonsky.me/blog/unicode/) — **Nikita Prokopov (tonsky)** — code points, combining marks, and normalization explained vividly; why “café” can be two strings.
+- [Zipf's law: modeling the distribution of terms (IR Book §5.1.2)](https://nlp.stanford.edu/IR-book/html/htmledition/zipfs-law-modeling-the-distribution-of-terms-1.html) — **Manning, Raghavan & Schütze** — the rank-frequency power law $\text{cf}_i \propto 1/i$ and the $s\approx 1$ exponent; the source for the Zipf math on the page and the motivation for stopword removal.
 
 **Key papers / specs**:
 - [An algorithm for suffix stripping](https://tartarus.org/martin/PorterStemmer/def.txt) — **Porter (1980)** — the original Porter stemmer definition (the rules cited on the page: SSES→SS, IES→I, …).
@@ -53,6 +55,9 @@ updated: 2026-06-22
 
 **In this platform**:
 - Concept page (full explanation): [Text Preprocessing & Normalization](01-Text-Preprocessing-and-Normalization.md)
+- Runnable code (single source of truth): [text_preprocessing.py](code/text_preprocessing.py) — the pipeline, Zipf fit, stemmer/lemmatizer, classifier sweep, and Unicode demo as one verified module.
+- Step-by-step teaching notebook: [01-Text-Preprocessing-and-Normalization.ipynb](code/01-Text-Preprocessing-and-Normalization.ipynb) — one idea per cell, each asserting its point before printing.
+- Figure generator: [make_figures_01.py](code/make_figures_01.py) — regenerates every embedded figure from the same functions, so the prose and images can't drift.
 - Next concept: [Tokenization & Subword Algorithms](../02-Tokenization-and-Subword-Algorithms/02-Tokenization-and-Subword-Algorithms.md) — where preprocessing meets modern subword vocabularies (BPE, WordPiece, SentencePiece, Unigram).
 - Concept depth (the *why* of subwords): [AI-ML-intuition 1.15 Tokenization & BPE](../../../AI-ML-intuition/Module_1_Representation/1.15_Tokenization_and_BPE.md)
 - The first models that consume preprocessed text: [Bag-of-Words & TF-IDF](../03-Bag-of-Words-and-TF-IDF/03-Bag-of-Words-and-TF-IDF.md)
