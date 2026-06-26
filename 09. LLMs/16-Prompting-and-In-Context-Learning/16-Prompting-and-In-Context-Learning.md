@@ -271,7 +271,7 @@ Experiment 3 wasn't a quirk of our toy. Real ICL is **notoriously sensitive to c
 
 > **Source / derivation:** the order-sensitivity result — that permuting demonstrations causes large accuracy swings and that good orderings are hard to find — is [Lu et al. 2021, *Fantastically Ordered Prompts and Where to Find Them*](https://arxiv.org/abs/2104.08786).
 
-**The fix has a name: calibration.** Because these biases are *systematic*, you can estimate and subtract them. The clean idea: feed the model a **content-free input** (e.g. the literal string `"N/A"`, or an empty input) through the *same* prompt; whatever distribution it predicts over the labels is the model's **bias** for this prompt — it *should* be uniform, and any departure is pure prompt artifact. Then divide it out of the real predictions (an affine correction on the logits) so each label starts from an even footing.
+**The fix has a name: calibration.** Because these biases are *systematic*, you can estimate and subtract them. The clean idea: feed the model a **content-free input** (e.g. the literal string `"N/A"`, or an empty input) through the *same* prompt; whatever distribution it predicts over the labels is the model's **bias** for this prompt — it *should* be uniform, and any departure is pure prompt artifact. Then divide it out of the real predictions — an affine correction on the **predicted label probabilities** ($\hat{q} = \mathrm{softmax}(\hat{W}\hat{p} + \hat{b})$; the simplest, very effective choice is $\hat{W} = \mathrm{diag}(1/\hat{p}_{\text{cf}})$, i.e. *divide the probabilities by the content-free probabilities and renormalise*) — so each label starts from an even footing.
 
 ```mermaid
 graph LR
@@ -292,7 +292,11 @@ graph LR
 
 *Contextual calibration: probe the prompt with a content-free input to estimate its label bias, then divide that bias out of real predictions. Same demonstrations, debiased output — recovering much of the accuracy that order/format/majority-label artifacts were costing.*
 
-> **Source / derivation:** the content-free calibration procedure ("calibrate before use") is [Zhao et al. 2021, *Calibrate Before Use: Improving Few-Shot Performance of Language Models*](https://arxiv.org/abs/2102.09690) — it shows majority-label, recency, and common-token biases, and that an affine correction estimated from content-free inputs substantially stabilises few-shot accuracy.
+We can **measure** the heart of this on our own model. We deliberately flood a prompt with one majority label, then feed it a **content-free query** (a key that never appears among the demonstrations, so there is nothing to copy). A perfectly calibrated prompt would answer such an empty input *uniformly*; instead the model piles **0.711** of its probability on the majority label — pure prompt bias. Dividing that content-free distribution out collapses it back to the uniform prior (**0.025** per label) — calibration's defining property, made concrete:
+
+![Content-free calibration, two panels. Left (measured from the demo): on a majority-label-biased prompt, the model's content-free probe puts 0.711 of its probability mass on the majority label — far above the 0.025 uniform prior — and dividing that bias out collapses it to exactly 0.025, the uniform prior. A calibrated prompt is unbiased on an empty input. Right (illustrative, Zhao et al. 2021): the downstream few-shot accuracy gain this debiasing buys on real tasks (0.616 → 0.792). Takeaway: calibration measures the prompt's systematic bias on a content-free input and divides it out, so the label set starts even.](../images/icl_calibration.png)
+
+> **Source / derivation:** the content-free calibration procedure ("calibrate before use") is [Zhao et al. 2021, *Calibrate Before Use: Improving Few-Shot Performance of Language Models*](https://arxiv.org/abs/2102.09690) — it shows majority-label, recency, and common-token biases, and that an affine correction on the predicted probabilities, estimated from content-free inputs, substantially stabilises and improves few-shot accuracy (the right panel above cites a representative magnitude from that work; the left panel is measured directly from this chapter's demo).
 
 ---
 
@@ -359,6 +363,7 @@ How ICL shows up in real systems, concretely:
 - *What's the core mechanism?* **Induction heads** — `... A B ... A → B` — a previous-token head + an induction head across **two** layers.
 - *Why three theories?* Induction heads (mechanism), implicit Bayesian task-inference (what's computed), implicit gradient descent (learning dynamics) — all active research, none final.
 - *Why does ICL still work with some wrong labels?* Demonstrations mainly convey the **task, input distribution, and label space**, not a clean supervised signal (Min et al.).
+- *The implicit-gradient-descent take?* A forward pass over the demonstrations can **mimic steps of gradient descent on them** — the "learning" runs in activations, not weights (von Oswald et al. 2022); a testable, constructive account, not a metaphor.
 - *Name three things ICL is sensitive to.* Example **order**, **format**, **label balance** (majority-label/recency bias).
 - *How do you fix label bias?* **Calibrate** — probe with a content-free input to measure the bias, then divide it out (Zhao et al.).
 - *Prompting vs fine-tuning?* Prompting shapes the **input** (instant, transient, no weights); fine-tuning changes the **weights** (a training job, persistent).

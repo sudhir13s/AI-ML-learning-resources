@@ -32,6 +32,7 @@ from prompting_icl import (
     CUE_ID,
     SHOT_VALUES,
     accuracy_vs_shots,
+    contextual_calibration,
     induction_lookback,
     order_sensitivity,
     train_model,
@@ -249,22 +250,82 @@ def fig_order_sensitivity(sens: dict[str, float]) -> None:
     _save(fig, "icl_order_sensitivity.png")
 
 
+# =====================================================================================
+# Figure 6 -- content-free calibration: before vs after (left MEASURED, right illustrative)
+# =====================================================================================
+def fig_calibration(cal: dict[str, float]) -> None:
+    """Two panels. LEFT (measured from the demo): the content-free probe's mass on the majority
+    label collapses from a large bias to the uniform prior after calibration -- a calibrated
+    prompt is unbiased on a content-free input. RIGHT (illustrative, Zhao et al. 2021): the
+    downstream few-shot accuracy gain that this debiasing buys on real tasks."""
+    before = cal["cf_majority_mass_before"]
+    after = cal["cf_majority_mass_after"]
+    uniform = cal["uniform_prior"]
+    acc_before = cal["reported_acc_before"]
+    acc_after = cal["reported_acc_after"]
+
+    fig, (axL, axR) = plt.subplots(1, 2, figsize=(11.0, 4.7))
+    _style_axis(axL)
+    _style_axis(axR)
+
+    # LEFT -- measured content-free bias before/after
+    barsL = axL.bar(
+        ["BEFORE\ncalibration", "AFTER\ncalibration"], [before, after],
+        color=[RED, GREEN], edgecolor="white", lw=1.4, width=0.6, zorder=3,
+    )
+    for b, v in zip(barsL, [before, after]):
+        axL.text(b.get_x() + b.get_width() / 2, v + 0.02, f"{v:.3f}",
+                 ha="center", color=INK, fontsize=12, fontweight="bold")
+    axL.axhline(uniform, color=SLATE, ls=":", lw=1.6)
+    axL.text(0.5, uniform + 0.10, f"uniform prior (1/40 = {uniform:.3f})",
+             color=SLATE, fontsize=8.5, va="bottom", ha="center")
+    axL.set_ylim(0, 1.0)
+    axL.set_ylabel("content-free probe:\nmass on the majority label")
+    axL.set_title("Measured: the bias the probe reveals,\ndivided out to uniform",
+                  fontsize=11, color=INK, fontweight="bold")
+
+    # RIGHT -- illustrative downstream accuracy gain (Zhao et al. 2021)
+    barsR = axR.bar(
+        ["BEFORE\ncalibration", "AFTER\ncalibration"], [acc_before, acc_after],
+        color=[SLATE, BLUE], edgecolor="white", lw=1.4, width=0.6, zorder=3,
+    )
+    for b, v in zip(barsR, [acc_before, acc_after]):
+        axR.text(b.get_x() + b.get_width() / 2, v + 0.015, f"{v:.3f}",
+                 ha="center", color=INK, fontsize=12, fontweight="bold")
+    axR.annotate("", xy=(1, acc_after), xytext=(0, acc_before),
+                 arrowprops=dict(arrowstyle="-|>", color=GREEN, lw=2.0))
+    axR.set_ylim(0, 1.0)
+    axR.set_ylabel("few-shot accuracy")
+    axR.set_title("Illustrative (Zhao et al. 2021):\ndownstream accuracy gain",
+                  fontsize=11, color=INK, fontweight="bold")
+
+    fig.suptitle(
+        "Content-free calibration: measure the prompt's bias on an empty input, divide it out",
+        fontsize=12.5, color=INK, fontweight="bold", y=1.02,
+    )
+    _save(fig, "icl_calibration.png")
+
+
 def main() -> None:
     print("training the tiny induction transformer (CPU, deterministic)...")
     model = train_model()
     acc = accuracy_vs_shots(model)
     look = induction_lookback(model)
     sens = order_sensitivity(model)
+    cal = contextual_calibration(model)
     # Echo the numbers so a reader can confirm figures == page == .py at a glance.
     print(f"  few-shot curve: {{{', '.join(f'{k}:{acc[k]:.3f}' for k in SHOT_VALUES)}}}")
     print(f"  induction peak weight: {look['attn_from_query'][int(look['lookback_value_pos'])]:.2f}")  # type: ignore[index]
     print(f"  order-sensitive fraction: {sens['frac_order_sensitive']:.3f}  "
           f"recency: {sens['recency_rate']:.3f}")
+    print(f"  calibration content-free mass: {cal['cf_majority_mass_before']:.3f} -> "
+          f"{cal['cf_majority_mass_after']:.3f}")
     fig_zero_vs_fewshot()
     fig_prompt_anatomy()
     fig_accuracy_curve(acc)
     fig_induction_lookback(look)
     fig_order_sensitivity(sens)
+    fig_calibration(cal)
     print("all figures written to", OUT_DIR)
 
 

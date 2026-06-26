@@ -196,6 +196,11 @@ class InductionTransformer(nn.Module):
         """Argmax next-token prediction at the final position (where the target lives)."""
         return self.forward(tokens)[:, -1, :].argmax(dim=-1)
 
+    @torch.no_grad()
+    def probs_last(self, tokens: torch.Tensor) -> torch.Tensor:
+        """Softmax probability distribution at the final position. (B, vocab)."""
+        return F.softmax(self.forward(tokens)[:, -1, :], dim=-1)
+
 
 def train_model() -> InductionTransformer:
     """Train the tiny transformer on the in-context recall task over the TRAIN alphabet only."""
@@ -337,6 +342,77 @@ def order_sensitivity(model: InductionTransformer) -> dict[str, float]:
     }
 
 
+# Zhao et al. 2021 report large few-shot accuracy gains from content-free calibration across
+# tasks (e.g. SST-2, AGNews, DBPedia) -- up to ~30 points and a big drop in variance. We cite
+# those DOWNSTREAM-ACCURACY magnitudes as clearly-labelled "illustrative" in the figure, because
+# our tiny induction model's copy is near-deterministic and so does not itself exhibit an
+# exploitable accuracy bias. What our model DOES let us measure faithfully is the calibration
+# DIAGNOSTIC itself: a content-free input should yield a UNIFORM label distribution, and
+# dividing out the measured bias makes it uniform. That measured before/after is the heart of
+# the figure; the accuracy bars are the cited-illustrative complement.
+ZHAO_REPORTED_BEFORE = 0.616  # illustrative: representative pre-calibration few-shot accuracy
+ZHAO_REPORTED_AFTER = 0.792   # illustrative: representative post-calibration accuracy (Zhao 2021)
+
+
+@torch.no_grad()
+def contextual_calibration(model: InductionTransformer) -> dict[str, float]:
+    """MEASURE the calibration diagnostic (Zhao et al. 2021) on a LABEL-BIASED prompt.
+
+    We deliberately bias the prompt: every DISTRACTOR pair carries the same value, BIAS_VALUE,
+    flooding the context with one label. We then probe the model with a CONTENT-FREE input -- the
+    same prompt body but a query key that never appears among the demos, so there is nothing to
+    copy. A well-calibrated prompt would return a UNIFORM distribution over labels for this
+    content-free input; any departure is pure prompt bias.
+
+    The calibration recipe operates on PROBABILITIES (not logits), exactly as Zhao et al.: take
+    the content-free distribution p_cf and divide it out elementwise, then renormalize --
+    p_calibrated ∝ p / p_cf. This is the divisive special case of their affine correction
+    q̂ = softmax(Ŵ p̂ + b̂) with Ŵ = diag(1/p_cf), b̂ = 0. Applied to the content-free probe
+    itself, it must FLATTEN the distribution to uniform -- that is the measured win we report.
+
+    Returns the measured content-free mass on the majority label BEFORE vs AFTER calibration
+    (before: large; after: ~1/N_SYMBOLS), plus Zhao's reported downstream-accuracy magnitudes
+    (illustrative) for the accuracy panel of the figure.
+    """
+    gen = torch.Generator().manual_seed(SEED + 4)
+    n_seqs = 400
+    bias_value = 0  # the label we flood the context with (the majority label)
+    content_free_key = CUE_ID  # never appears as a key among the demos -> nothing to copy
+    eps = 1e-8  # guard the division
+    before_total = 0.0
+    after_total = 0.0
+    for _ in range(n_seqs):
+        perm = torch.randperm(N_SYMBOLS, generator=gen)
+        query_key = int(perm[0].item())
+        true_value = int(perm[1].item())
+        if true_value == bias_value:
+            true_value = int(perm[2].item())
+        distractor_keys = perm[3 : 3 + (N_PAIRS - 1)].tolist()
+        # One correct demo of (query_key -> true_value); every other pair carries BIAS_VALUE.
+        pairs = [(query_key, true_value)] + [(dk, bias_value) for dk in distractor_keys]
+        order = torch.randperm(N_PAIRS, generator=gen).tolist()
+        pairs = [pairs[i] for i in order]
+        body: list[int] = []
+        for key, val in pairs:
+            body += [key, val]
+        cf_seq = torch.tensor(  # same prompt body, content-free query key -> measures pure bias
+            body + [CUE_ID, content_free_key], dtype=torch.long, device=DEVICE
+        )[None]
+        p_cf = model.probs_last(cf_seq)[0]  # (vocab,) the prompt's bias on a content-free input
+        before_total += float(p_cf[bias_value].item())
+        # Divide out the bias and renormalize -> a calibrated content-free input is uniform.
+        p_cal = p_cf / (p_cf + eps)
+        p_cal = p_cal / p_cal.sum()
+        after_total += float(p_cal[bias_value].item())
+    return {
+        "cf_majority_mass_before": before_total / n_seqs,
+        "cf_majority_mass_after": after_total / n_seqs,
+        "uniform_prior": 1.0 / N_SYMBOLS,
+        "reported_acc_before": ZHAO_REPORTED_BEFORE,
+        "reported_acc_after": ZHAO_REPORTED_AFTER,
+    }
+
+
 @torch.no_grad()
 def induction_lookback(model: InductionTransformer) -> dict[str, object]:
     """Read the induction head: at the query position, where does attention land?
@@ -426,6 +502,21 @@ def main() -> None:
           f"{sens['frac_order_sensitive']:.3f}")
     print(f"    recency rate (copies the LATER demo when it flips)  : "
           f"{sens['recency_rate']:.3f}")
+    print()
+
+    # ---- Experiment 4: content-free calibration removes label bias -------------------
+    cal = contextual_calibration(model)
+    # The diagnostic, MEASURED: the content-free probe reveals bias, and dividing it out makes
+    # the content-free distribution uniform (a calibrated prompt is unbiased on empty input).
+    assert cal["cf_majority_mass_before"] > 0.5, "biased prompt should pile mass on the majority label"
+    assert abs(cal["cf_majority_mass_after"] - cal["uniform_prior"]) < 1e-3, "calibration must flatten to uniform"
+    print("[4] Content-free calibration on a majority-label-biased prompt (measured diagnostic)")
+    print(f"    content-free probe, majority-label mass BEFORE : {cal['cf_majority_mass_before']:.3f}  "
+          f"(uniform would be {cal['uniform_prior']:.3f})")
+    print(f"    content-free probe, majority-label mass AFTER  : {cal['cf_majority_mass_after']:.3f}  "
+          f"-> flattened to uniform (bias removed)")
+    print(f"    downstream accuracy gain (Zhao 2021, illustrative): "
+          f"{cal['reported_acc_before']:.3f} -> {cal['reported_acc_after']:.3f}")
     print()
 
     # ---- Timing comes LAST, after every qualitative result is asserted --------------
