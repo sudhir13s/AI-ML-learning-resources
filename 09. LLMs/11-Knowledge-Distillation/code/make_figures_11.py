@@ -248,16 +248,18 @@ def fig_agreement(kd_agreement: float = 0.887, hard_agreement: float = 0.812,
 # Figure 6 -- DistilBERT: size vs performance (the headline real-world result)
 # =====================================================================================
 def fig_distilbert() -> None:
-    """Two-panel bar: DistilBERT keeps ~97% of BERT's GLUE score at 60% of the size.
+    """Three-panel bar: DistilBERT keeps ~97% of BERT's GLUE score, 40% smaller, ~1.6x faster.
 
     Numbers are DistilBERT's reported figures (Sanh et al. 2019): 66M vs 110M params
-    (40% smaller), 6 vs 12 layers, ~97% of BERT-base GLUE score, ~60% faster.
+    (40% smaller), 6 vs 12 layers, ~97% of BERT-base GLUE score, ~60% faster (= ~1.6x speedup,
+    which the half-as-many transformer layers buys -- fewer sequential matmuls per token).
     """
-    fig, axes = plt.subplots(1, 2, figsize=(11.0, 4.4))
+    models = ["BERT-base", "DistilBERT"]
+    fig, axes = plt.subplots(1, 3, figsize=(13.5, 4.4))
+
     # Panel A: parameters
     ax = axes[0]
     _style_axis(ax)
-    models = ["BERT-base", "DistilBERT"]
     params = [110, 66]  # millions
     bars = ax.bar(models, params, color=[SLATE, GREEN], zorder=3)
     for bar, v in zip(bars, params):
@@ -278,6 +280,18 @@ def fig_distilbert() -> None:
     ax.set_ylim(0, 112)
     ax.set_ylabel("% of BERT-base GLUE score")
     ax.set_title("~97% of the performance", fontweight="bold")
+
+    # Panel C: inference speed (relative). ~60% faster == ~1.6x throughput, from 6 vs 12 layers.
+    ax = axes[2]
+    _style_axis(ax)
+    speed = [1.0, 1.6]  # relative inference speed (BERT-base = 1.0x baseline)
+    bars = ax.bar(models, speed, color=[SLATE, GREEN], zorder=3)
+    for bar, v in zip(bars, speed):
+        ax.text(bar.get_x() + bar.get_width() / 2, v + 0.02, f"{v:.1f}x",
+                ha="center", va="bottom", fontsize=10, color=INK, fontweight="bold")
+    ax.set_ylim(0, 1.85)
+    ax.set_ylabel("relative inference speed")
+    ax.set_title("~1.6x faster (6 vs 12 layers)", fontweight="bold")
 
     fig.suptitle("DistilBERT: distillation buys a 40%-smaller, ~60%-faster model at ~97% quality",
                  fontweight="bold", color=INK)

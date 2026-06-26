@@ -4,7 +4,7 @@ Three things, end to end, on a tiny synthetic classification task:
 
   1. SOFT TARGETS -- print one teacher distribution at T=1 vs T=4 so the "dark knowledge"
      (the off-target probability mass on similar classes) becomes visible.
-  2. THE KD LOSS -- implement L = alpha * T^2 * KL(student_T || teacher_T) + (1-alpha) * CE,
+  2. THE KD LOSS -- implement L = alpha * T^2 * KL(teacher_T || student_T) + (1-alpha) * CE,
      with the temperature division, the KL term, and the T^2 rescale each commented inline.
   3. THE PAYOFF -- train a student two ways (hard-labels-only vs KD) from the SAME init and
      show the KD student agrees with the teacher MORE (assert KD agreement >= hard-only).
@@ -142,7 +142,7 @@ def distillation_loss(
     temperature: float = TEMPERATURE,
     alpha: float = ALPHA,
 ) -> torch.Tensor:
-    """The Hinton KD loss: L = alpha * T^2 * KL(student_T || teacher_T) + (1-alpha) * CE.
+    """The Hinton KD loss: L = alpha * T^2 * KL(teacher_T || student_T) + (1-alpha) * CE.
 
     student_logits, teacher_logits: (batch, N_CLASSES) raw logits. hard_labels: (batch,) ints.
     """

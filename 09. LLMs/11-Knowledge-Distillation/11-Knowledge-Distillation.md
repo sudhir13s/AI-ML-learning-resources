@@ -127,7 +127,7 @@ Consider the gradient of the soft cross-entropy w.r.t. a single student logit $z
 
 $$\frac{\partial \mathcal{L}_{\text{soft}}}{\partial z_i} \;=\; \frac{1}{T}\Big(p_i(T) - q_i(T)\Big).$$
 
-That leading $1/T$ is the first factor. Now expand $p_i(T)$ and $q_i(T)$ for **large $T$** (small $z_i/T$), using $\exp(x) \approx 1 + x$. When the logits are zero-meaned across classes, the high-temperature expansion gives $p_i(T) - q_i(T) \approx \frac{z_i - v_i}{K\,T}$, where $v_i$ are the teacher's logits. Substituting:
+(This is the standard softmax-cross-entropy gradient — the $\frac{1}{T}$ is the chain-rule factor from the $z_i/T$ inside the softmax; the zero-mean-logits assumption used next is without loss of generality, since softmax is shift-invariant — Hinton §2.1.) That leading $1/T$ is the first factor. Now expand $p_i(T)$ and $q_i(T)$ for **large $T$** (small $z_i/T$), using $\exp(x) \approx 1 + x$. When the logits are zero-meaned across classes, the high-temperature expansion gives $p_i(T) - q_i(T) \approx \frac{z_i - v_i}{K\,T}$, where $v_i$ are the teacher's logits. Substituting:
 
 $$\frac{\partial \mathcal{L}_{\text{soft}}}{\partial z_i} \;\approx\; \frac{1}{T}\cdot\frac{z_i - v_i}{K\,T} \;=\; \frac{1}{K\,T^2}\,(z_i - v_i).$$
 
@@ -177,7 +177,7 @@ graph TD
     classDef sum fill:#7A6528,stroke:#6A5518,color:#fff
 ```
 
-*One KD training step. The teacher runs in `eval`/`no_grad` mode — it only *produces targets*, never learns. Both logits are softened by the same $T$ for the KL term; the student's *un-softened* logits feed the hard-label CE. The gradients update **only** the student. Forward cost is teacher + student per step (the teacher pass is the price of distillation); at inference you keep only the student.*
+*One KD training step (in the diagram, $q$ = teacher and $p$ = student, matching the boxed loss above). The teacher runs in `eval`/`no_grad` mode — it only *produces targets*, never learns. Both logits are softened by the same $T$ for the KL term; the student's *un-softened* logits feed the hard-label CE. The gradients update **only** the student. Forward cost is teacher + student per step (the teacher pass is the price of distillation); at inference you keep only the student.*
 
 > **Tip:** in practice you often run the teacher **once, offline**, and cache its soft targets to disk. Then student training is as cheap as ordinary training — you're reading pre-computed targets, not re-running a 70B teacher every step. (This is *offline* distillation; more on the flavors below.)
 
@@ -305,9 +305,9 @@ Everything above is classifier-shaped (a fixed set of classes). LLMs add a twist
 
 > **Source / derivation:** [Sanh et al., *DistilBERT, a distilled version of BERT* (2019), arXiv:1910.01108](https://arxiv.org/abs/1910.01108) — the triple loss (soft-target + masked-LM + cosine-embedding), the 6-layer student initialized from the teacher, and the 40%-smaller / 60%-faster / ~97%-performance headline.
 
-![DistilBERT vs BERT-base. Left: parameters — 66M vs 110M, 40% smaller. Right: ~97% of BERT-base's GLUE score retained. Distillation buys a 40%-smaller, ~60%-faster model at ~97% of the quality.](../images/kd_distilbert.png)
+![DistilBERT vs BERT-base, three panels. Left: parameters — 66M vs 110M, 40% smaller. Middle: ~97% of BERT-base's GLUE score retained. Right: ~1.6x faster inference (the ~60% speedup). Distillation buys a 40%-smaller, ~60%-faster model at ~97% of the quality.](../images/kd_distilbert.png)
 
-*The headline result that put distillation on every LLM-compression checklist. Same idea as the classifier case — match the teacher's softened distribution — applied over the vocabulary during pretraining, with a feature-based cosine term added.*
+*The headline result that put distillation on every LLM-compression checklist. Same idea as the classifier case — match the teacher's softened distribution — applied over the vocabulary during pretraining, with a feature-based cosine term added. Each number has a mechanism: the ~60%-faster (≈1.6× speedup) comes directly from the student having **6 transformer layers instead of 12** — half as many sequential matmuls per token — and the 40%-smaller from those missing layers' parameters.*
 
 **TinyBERT — go deeper into the features.** TinyBERT pushes feature-based distillation hard: it matches not just outputs but the teacher's **embedding outputs, hidden states, *and* attention matrices**, in a two-stage (general + task-specific) scheme. The attention-matrix matching is the notable bit — the student is taught to *attend like the teacher*, which transfers linguistic structure that output matching alone misses.
 
@@ -316,6 +316,36 @@ Everything above is classifier-shaped (a fixed set of classes). LLMs add a twist
 **Sequence-level KD — distill the *generations*, not the per-token distributions.** For generation (translation, summarization, chat), matching per-token distributions ("word-level KD") is weaker than it sounds, because the student's and teacher's sequences diverge and the per-step targets stop aligning. Kim & Rush's **sequence-level KD** sidesteps this elegantly: run the teacher to **generate** outputs (e.g. via beam search), then train the student on those teacher-generated sequences as if they were the ground truth. The student learns to reproduce the *teacher's whole outputs*, not just its token-by-token hesitation. This is the form most relevant to modern LLMs.
 
 > **Source / derivation:** [Kim & Rush, *Sequence-Level Knowledge Distillation* (2016), arXiv:1606.07947](https://arxiv.org/abs/1606.07947) — distilling on the teacher's *generated sequences* rather than per-token soft targets; the foundation for generation-task and LLM distillation.
+
+```mermaid
+graph TD
+    subgraph WL["Word-level KD — match per-token distributions"]
+    direction LR
+    WIN(["input"]):::data --> WT["TEACHER: per-token soft dist<br/>at each position"]:::teach
+    WIN --> WS["STUDENT: per-token soft dist<br/>at each position"]:::stu
+    WT --> WKL["KL at every token"]:::loss
+    WS --> WKL
+    WKL --> WDRIFT["problem: once the student's<br/>generated tokens DIVERGE,<br/>the per-step targets stop aligning"]:::warn
+    end
+
+    subgraph SL["Sequence-level KD — match whole generations"]
+    direction LR
+    SIN(["input"]):::data --> STG["TEACHER GENERATES a full output<br/>(e.g. beam search) → ŷ"]:::teach
+    STG --> SPSEUDO[("teacher output ŷ<br/>used as ground-truth target")]:::soft
+    SPSEUDO --> STRAIN["STUDENT trains on ŷ<br/>(plain seq-to-seq CE on the teacher's text)"]:::stu
+    STRAIN --> SWIN["the student reproduces the teacher's<br/>WHOLE outputs — no per-step drift"]:::good
+    end
+
+    classDef data fill:#3A6B96,stroke:#2A5B86,color:#fff
+    classDef teach fill:#5D4A8A,stroke:#4D3A7A,color:#fff
+    classDef stu fill:#2A5B80,stroke:#1A4B70,color:#fff
+    classDef soft fill:#2E7A5A,stroke:#1E6A4A,color:#fff
+    classDef loss fill:#8B3B4A,stroke:#7B2B3A,color:#fff
+    classDef warn fill:#8B3B4A,stroke:#7B2B3A,color:#fff
+    classDef good fill:#2E7A5A,stroke:#1E6A4A,color:#fff
+```
+
+*Word-level vs sequence-level KD. **Word-level** (top) matches the teacher's and student's per-token distributions — but as the student generates, its tokens drift from the teacher's, so the per-step targets it's matched against no longer correspond to the text it actually produced. **Sequence-level** (bottom) sidesteps this: let the teacher **generate** a full output, then train the student on that output as if it were the gold label — the student learns to reproduce the teacher's whole generation, no per-step misalignment. This is the form behind modern LLM and synthetic-data distillation.*
 
 **Reasoning / chain-of-thought distillation — the modern frontier.** A large teacher can be prompted to produce **step-by-step reasoning** (chain-of-thought) before its answer. CoT distillation trains a *small* student on the teacher's reasoning *traces* — not just the final answer but the intermediate steps. The student learns to "show its work" the way the big model does, transferring [reasoning ability](../17-Chain-of-Thought-Reasoning/17-Chain-of-Thought-Reasoning.md) that a same-size model trained on answers alone often can't acquire. This is how many small open "reasoning" models are made: generate reasoning data from a strong teacher, then fine-tune the student on it (a sequence-level KD in spirit, with reasoning traces as the targets).
 
