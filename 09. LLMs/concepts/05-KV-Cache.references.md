@@ -40,6 +40,7 @@ updated: 2026-06-21
 - [vLLM: Easy, Fast, and Cheap LLM Serving with PagedAttention](https://blog.vllm.ai/2023/06/20/vllm.html) — **vLLM team (UC Berkeley)** — the cache-paging idea, from the people who built it.
 - [Transformer Math 101](https://blog.eleuther.ai/transformer-math/) — **EleutherAI** — full memory accounting that includes the KV cache.
 - [Accelerating Generative AI II: GPT, Fast](https://pytorch.org/blog/accelerating-generative-ai-2/) — **PyTorch team** — KV cache + quantization in a real fast-decode implementation.
+- [Flash-Decoding for long-context inference](https://pytorch.org/blog/flash-decoding/) — **Tri Dao, Daniel Haziza, Francisco Massa, Grigory Sizov (PyTorch)** — parallelizing a single decode query across the KV cache; the decode-time counterpart to FlashAttention (no paper — this blog is the canonical source).
 - [How continuous batching enables 23× throughput](https://www.anyscale.com/blog/continuous-batching-llm-inference) — **Anyscale** — why cache management and batching dominate serving throughput.
 - [LLM Inference Performance Engineering: Best Practices](https://www.databricks.com/blog/llm-inference-performance-engineering-best-practices) — **Databricks** — the KV cache in the memory/latency budget.
 - [Optimizing AI Inference at Character.AI](https://research.character.ai/optimizing-inference/) — **Character.AI** — aggressive KV-cache reduction (MQA, cross-layer sharing) in production.
@@ -47,13 +48,15 @@ updated: 2026-06-21
 **Key papers**:
 - [Fast Transformer Decoding: One Write-Head is All You Need (MQA)](https://arxiv.org/abs/1911.02150) — **Shazeer (2019)** — multi-query attention to shrink the KV cache.
 - [GQA: Training Generalized Multi-Query Transformer Models](https://arxiv.org/abs/2305.13245) — **Ainslie et al. (2023)** — grouped-query attention, the KV-cache sweet spot used by Llama-2/3.
+- [DeepSeek-V2: A Strong, Economical MoE Model (Multi-head Latent Attention)](https://arxiv.org/abs/2405.04434) — **DeepSeek-AI (2024)** — MLA: low-rank latent KV compression, the frontier of the MQA→GQA→MLA line (cache ~4% of MHA).
+- [KIVI: A Tuning-Free 2-bit KV Cache Quantization](https://arxiv.org/abs/2402.02750) — **Liu et al. (2024)** — quantize K per-channel and V per-token to ~2 bits, exploiting the key/value sensitivity asymmetry.
 - [Efficient Memory Management for LLM Serving (PagedAttention)](https://arxiv.org/abs/2309.06180) — **Kwon et al. (2023)** — paging the KV cache like OS virtual memory.
 - [Efficiently Scaling Transformer Inference](https://arxiv.org/abs/2211.05102) — **Pope et al. (2022, Google)** — the canonical analysis of inference cost, including the cache.
 - [Efficient Streaming LLMs with Attention Sinks (StreamingLLM)](https://arxiv.org/abs/2309.17453) — **Xiao et al. (2023)** — bounding the cache with a sliding window + sink tokens.
 - [FlashAttention: Fast and Memory-Efficient Exact Attention](https://arxiv.org/abs/2205.14135) — **Dao et al. (2022)** — IO-aware tiled attention (the online-softmax trick); FlashDecoding follows for decode.
 - [SGLang: Efficient Execution with RadixAttention](https://arxiv.org/abs/2312.07104) — **Zheng et al. (2023)** — prefix-sharing the KV cache via a radix tree.
 - [Mooncake: A KVCache-centric Disaggregated Architecture](https://arxiv.org/abs/2407.00079) — **Qin et al. (2024)** — disaggregated prefill/decode with a shared KV-cache pool.
-- [Roofline: An Insightful Visual Performance Model](https://www2.eecs.berkeley.edu/Pubs/TechRpts/2008/EECS-2008-134.html) — **Williams, Waterman & Patterson (2009)** — the compute-vs-bandwidth model behind "decode is memory-bound."
+- [Roofline: An Insightful Visual Performance Model (CACM 2009)](https://www2.eecs.berkeley.edu/Pubs/TechRpts/2008/EECS-2008-134.html) — **Williams, Waterman & Patterson** — the compute-vs-bandwidth model behind "decode is memory-bound"; link is the free Berkeley tech-report version of the CACM 2009 paper.
 
 **Books (free chapters)**:
 - [Speech and Language Processing, 3rd ed. — Ch. 10 "Large Language Models"](https://web.stanford.edu/~jurafsky/slp3/10.pdf) — **Jurafsky & Martin** — autoregressive decoding, the loop the cache accelerates.
