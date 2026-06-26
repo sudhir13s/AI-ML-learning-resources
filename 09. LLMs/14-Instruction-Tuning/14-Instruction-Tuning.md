@@ -137,7 +137,7 @@ For completeness, the objective. Given an instruction-tuning example rendered as
 
 $$\mathcal{L} \;=\; -\sum_{t=r}^{T} \log p_\theta\!\left(y_t \mid y_{<t}\right)$$
 
-— the **masked next-token cross-entropy**: identical to SFT, summed *only over the response positions* (the instruction/input prefix is not scored). Instruction tuning is this exact loss, applied across a **diverse multitask instruction mix**.
+— the **masked next-token cross-entropy** (where $r$ is the first response-token index; the prefix at positions $<r$ is masked out and contributes nothing to the loss): identical to SFT, summed *only over the response positions* (the instruction/input prefix is not scored). Instruction tuning is this exact loss, applied across a **diverse multitask instruction mix**.
 
 > **Source / derivation:** this is the SFT loss of [**chapter 13 — Supervised Fine-Tuning**](../13-Supervised-Fine-Tuning/13-Supervised-Fine-Tuning.md) (where the response-masking is derived); it is the same objective used in the [**InstructGPT** SFT stage (Ouyang et al. 2022, §3)](https://arxiv.org/abs/2203.02155). We deliberately do **not** re-derive it here — the novelty of instruction tuning is the *data*, not the loss.
 
@@ -158,7 +158,9 @@ We train **two models on identical init and identical compute budget**, differin
 - **Multitask** — `SUBSTITUTE` with a **fresh random key every example**, plus `REVERSE` and `COPY`. To fit ever-changing keys, it has no choice but to learn the general skill *"read the key and apply it."*
 - **Single-task** — `SUBSTITUTE` with **one fixed key**, always. It can fit its data by **memorizing that single mapping** — it never needs to read the key.
 
-Then we evaluate **both** zero-shot on `SUBSTITUTE` with **fresh, unseen keys**. This is a clean proxy for FLAN's "held-out task type": success requires a skill (reading the instruction) that *only* the diverse mix forces.
+Then we evaluate **both** zero-shot on **held-out `SUBSTITUTE` (key, input) combinations** — rows neither model trained on. This is a clean proxy for FLAN's "held-out task type": success requires a skill (reading the instruction) that *only* the diverse mix forces.
+
+> **A precise word on "held-out" (so the claim is exactly right):** with only `N_SYMBOLS! = 6! = 720` possible keys, the multitask model — which draws ~2,667 random-key `SUBSTITUTE` examples — has almost certainly seen **every key** at least once during training, including each evaluation key. What is genuinely *unseen* is this specific **(key, input) pairing**, never that exact combination. Generalization is therefore to a **novel combination**, which still requires the model to *read this key and apply it to this input* — the very skill we're testing. (The stronger "this exact key never appeared in training" holds only for the **single-task** model, which saw just one key.)
 
 > **Why this design and not modular arithmetic:** an earlier draft tried "shift by k" held out one shift — but a tiny model just *memorizes* each shift's lookup table rather than learning addition (the classic grokking failure), so the gap never appears. The substitution-key design makes the held-out generalization **robustly learnable**: the key is *given in-context*, so "read it and apply it" is a skill a small model reliably acquires — and reliably *fails* to acquire when the key never varies. The lesson about diversity is the same; the demo is just one that actually runs.
 
@@ -167,7 +169,8 @@ The from-scratch core (full runnable script: [`code/instruction_tuning.py`](code
 ```python
 # Three samplers define the whole experiment. The MULTITASK sampler draws a FRESH key
 # for every SUBSTITUTE example (so the model must READ it); the SINGLE-TASK sampler always
-# uses one fixed key (so the model can MEMORIZE it). Held-out = SUBSTITUTE with unseen keys.
+# uses one fixed key (so the model can MEMORIZE it). Held-out = SUBSTITUTE on (key, input)
+# COMBINATIONS the model never trained on.
 def sample_multitask_row(gen):
     op_id = int(torch.randint(0, 3, (1,), generator=gen))          # SUBSTITUTE / REVERSE / COPY
     inp = torch.randint(0, N_SYMBOLS, (INPUT_LEN,), generator=gen)
@@ -180,10 +183,14 @@ def sample_singletask_row(gen):
 
 def sample_heldout_row(gen):                                       # the ZERO-SHOT test
     inp = torch.randint(0, N_SYMBOLS, (INPUT_LEN,), generator=gen)
-    key = torch.randperm(N_SYMBOLS, generator=gen)                 # a key NEITHER model saw
+    # only 6!=720 keys exist, so the multitask model has seen each key; what's held out is
+    # this (key, input) PAIR. ~1/720 of these random keys equals the single-task model's
+    # memorized key by chance -- that collision rate IS its ~0.7% score below.
+    key = torch.randperm(N_SYMBOLS, generator=gen)                 # a held-out (key, input) pair
     return render_example(OP_ID_SUBSTITUTE, inp, key)
 
-# The loss is chapter 13's masked next-token cross-entropy, scored ONLY on the output block.
+# The loss is chapter 13's masked next-token cross-entropy, scored ONLY on the output block
+# (the instruction/input prefix at positions < RESPONSE_START is masked out -- not scored).
 def masked_next_token_loss(logits, targets):
     pred = logits[:, :-1, :]                 # logits predicting positions 1..T-1
     gold = targets[:, 1:]                    # the actual next tokens
@@ -202,22 +209,23 @@ Instruction-template format  [OP | KEY | SEP | input -> output]:
   SUBSTITUTE: op=7 key=[2, 0, 1, 4, 5, 3] SEP input=[1, 5, 0, 2] -> output=[0, 3, 2, 1]
      REVERSE: op=8 key=[10, 10, 10, 10, 10, 10] SEP input=[1, 1, 5, 5] -> output=[5, 5, 1, 1]
         COPY: op=9 key=[10, 10, 10, 10, 10, 10] SEP input=[5, 0, 2, 3] -> output=[5, 0, 2, 3]
-  HELD-OUT  : op=7 key=[4, 5, 0, 1, 2, 3] (UNSEEN) SEP input=[0, 3, 5, 1] -> output=[4, 1, 3, 5]   <-- ZERO-SHOT test
+  HELD-OUT  : op=7 key=[4, 5, 0, 1, 2, 3] (this key+input PAIR unseen) SEP input=[0, 3, 5, 1] -> output=[4, 1, 3, 5]   <-- ZERO-SHOT test
 
 --- Results (exact-match accuracy) ---
-  SUBSTITUTE, fixed key   | multitask: 100.0% | singletask: 100.0%
-  SUBSTITUTE, UNSEEN keys | multitask: 100.0% | singletask:   0.7%
+  SUBSTITUTE, fixed key      | multitask: 100.0% | singletask: 100.0%
+  SUBSTITUTE, held-out pairs  | multitask: 100.0% | singletask:   0.7%
 
   zero-shot generalization GAP (multitask - singletask): +99.3%
+  (singletask's 0.7% is the ~1/720 chance a random held-out key equals its memorized key)
   assert multitask_heldout_acc > singletask_heldout_acc: PASSED
 ```
 
-![Measured from the demo: LEFT — on the in-distribution fixed-key task both models score 100% (capacity is not the issue). RIGHT — on the zero-shot test (unseen keys) the multitask model scores 100% while the single-task model collapses to 0.7%: a +99-point generalization gap that comes from the DATA MIX alone.](../images/it_multitask_vs_single.png)
+![Measured from the demo: LEFT — on the in-distribution fixed-key task both models score 100% (capacity is not the issue). RIGHT — on the zero-shot test (held-out key, input combinations) the multitask model scores 100% while the single-task model collapses to 0.7%: a +99-point generalization gap that comes from the DATA MIX alone.](../images/it_multitask_vs_single.png)
 
 Read the two panels together — this is the entire thesis of instruction tuning in one picture:
 
 - **Left (in-distribution): both score 100%.** The two models have *identical* capacity, init, and compute, and both perfectly master the fixed-key task. So the difference on the right is **not** about model power.
-- **Right (zero-shot, unseen keys): 100% vs 0.7%.** The multitask model, *forced* by ever-changing keys to learn *"read the key and apply it,"* applies brand-new keys flawlessly. The single-task model, which got away with **memorizing one mapping**, has no such skill and fails the moment the key changes.
+- **Right (zero-shot, held-out combinations): 100% vs 0.7%.** The multitask model, *forced* by ever-changing keys to learn *"read the key and apply it,"* applies held-out (key, input) combinations flawlessly. The single-task model, which got away with **memorizing one mapping**, has no such skill and fails the moment the key changes — its **0.7%** is not noise but a *signature*: it's the **~1/720 chance** a random held-out key happens to equal its one memorized key `[1,2,3,4,5,0]` (≈1.4 rows per 1,000). That the floor lands exactly at the key-collision rate confirms the single-task model can do *only* its single mapping — the design is sound, not cherry-picked.
 
 The **+99.3-point gap came purely from instruction diversity** — same loss, same architecture, same budget. That is FLAN's result, reproduced in ~100 lines on a CPU: *a diverse instruction mix installs a transferable skill that a narrow mix cannot.*
 
@@ -299,6 +307,10 @@ graph TD
 | **[InstructGPT SFT demos](https://arxiv.org/abs/2203.02155)** | human labelers write demonstrations for real prompts | ~13K | the SFT/instruction-tuning stage *inside* the RLHF pipeline |
 
 > **Note (templates / verbalizers, defined):** a **template** (or **verbalizer**) is the natural-language wrapper that turns a raw `(input, label)` pair into an instruction. E.g. the SST-2 pair `("a masterpiece", positive)` becomes *"Review: a masterpiece. Is this review positive or negative? → positive"*. The same pair under three templates yields three training examples — the diversity that prevents template overfitting.
+
+The growth of these corpora makes Law 1 visible: the **number and diversity of instruction tasks was pushed hard** across 2021→2023, exactly the axis that drives held-out generalization.
+
+![Illustrative log-scale bar chart of instruction-corpus size over time, colored by build method (academic-recast / synthetic / human): FLAN (62 datasets, 2021) → Super-NaturalInstructions (1,616 tasks) → FLAN Collection (1,836 tasks); alongside example-counted sets Alpaca (52K, synthetic), Dolly-15k (15K, human), LIMA (1K, human). The x-axis deliberately mixes TASKS and EXAMPLES (annotated per bar), so it is labelled illustrative — but the upward march of the diversity axis is the point, and it reinforces Law 1.](../images/it_dataset_scaling.png)
 
 ---
 

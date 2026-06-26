@@ -294,6 +294,60 @@ def fig_cot_in_mix() -> None:
     _save(fig, "it_cot_in_mix.png")
 
 
+# =====================================================================================
+# Figure 7 -- the diversity axis pushed hard over time (instruction-corpus size, log scale)
+# =====================================================================================
+def fig_dataset_scaling() -> None:
+    """Horizontal log-scale bars: instruction corpora grew along the DIVERSITY axis over time.
+
+    Colour = build method (academic-recast / synthetic / human). The x-axis deliberately MIXES
+    two units -- some bars count TASKS (FLAN, Super-NI, FLAN Collection) and some count EXAMPLES
+    (Alpaca, Dolly, LIMA) -- so it is labelled "illustrative" and each bar's unit is annotated.
+    The takeaway is the visible RISE in the number/diversity of instruction tasks over 2021->2023,
+    reinforcing Law 1 (more, more-diverse tasks -> better zero-shot).
+    """
+    ACADEMIC, SYNTHETIC, HUMAN = BLUE, PURPLE, GREEN
+    # (label, value, unit, build-method colour), ordered small->large for a clean log ladder.
+    rows = [
+        ("LIMA (2023)", 1_000, "examples", HUMAN),
+        ("Dolly-15k (2023)", 15_000, "examples", HUMAN),
+        ("Alpaca (2023)", 52_000, "examples", SYNTHETIC),
+        ("FLAN (2021)", 62, "datasets", ACADEMIC),
+        ("Super-NaturalInstructions (2022)", 1_616, "tasks", ACADEMIC),
+        ("FLAN Collection (2022/23)", 1_836, "tasks", ACADEMIC),
+    ]
+    # sort by value so the log ladder is monotone
+    rows = sorted(rows, key=lambda r: r[1])
+    labels = [f"{r[0]}  ({r[2]})" for r in rows]
+    values = [r[1] for r in rows]
+    colors = [r[3] for r in rows]
+    y = np.arange(len(rows))
+
+    fig, ax = plt.subplots(figsize=(10.8, 5.0))
+    _style_axis(ax)
+    bars = ax.barh(y, values, color=colors, zorder=3)
+    ax.set_xscale("log")
+    ax.set_yticks(y)
+    ax.set_yticklabels(labels)
+    ax.set_xlabel("instruction-corpus size (log scale; TASKS or EXAMPLES — see each bar)")
+    ax.set_xlim(50, 200_000)
+    for bar, v in zip(bars, values):
+        ax.text(v * 1.12, bar.get_y() + bar.get_height() / 2, f"{v:,}",
+                va="center", ha="left", fontsize=9, color=INK, fontweight="bold")
+    # a small legend mapping colour -> build method
+    handles = [
+        plt.Rectangle((0, 0), 1, 1, color=ACADEMIC),
+        plt.Rectangle((0, 0), 1, 1, color=SYNTHETIC),
+        plt.Rectangle((0, 0), 1, 1, color=HUMAN),
+    ]
+    ax.legend(handles, ["academic-recast", "synthetic (model-generated)", "human-written"],
+              frameon=False, loc="lower right", fontsize=9)
+    ax.set_title("The diversity axis, pushed hard (2021->2023): instruction corpora grew fast (illustrative; mixed units)",
+                 fontweight="bold", fontsize=10)
+    fig.tight_layout()
+    _save(fig, "it_dataset_scaling.png")
+
+
 def main() -> None:
     print(f"writing figures to {OUT_DIR}")
     print(f"measured (from instruction_tuning.py): multitask held-out={MULTI_HELDOUT_ACC:.1%}, "
@@ -304,6 +358,7 @@ def main() -> None:
     fig_diversity_vs_count()
     fig_task_taxonomy()
     fig_cot_in_mix()
+    fig_dataset_scaling()
     print("done.")
 
 
