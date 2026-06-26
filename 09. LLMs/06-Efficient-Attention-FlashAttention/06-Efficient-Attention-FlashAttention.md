@@ -51,7 +51,7 @@ That sounds harmless — until you remember you need **one such matrix per atten
 
 $$0.125\ \text{GiB} \times 16 \times 32 = \mathbf{64\ GiB}.$$
 
-That single intermediate — just the attention scores, for one layer — **overflows an 80 GB A100** before you've stored a single weight or activation. Push to $N=16{,}384$ and one fp16 matrix is already 0.5 GiB; the quadratic term explodes.
+That single intermediate — just the attention scores, for one layer — **consumes 64 of an 80 GB A100's GiB on scratch alone**, leaving almost nothing for the weights, the activations, or the dozens of *other* layers. And that's at one layer; a real model has many, plus every other tensor competing for the same 80 GB. Push $N$ to $16{,}384$ and one fp16 matrix is already 0.5 GiB — so the per-(batch, head) total quadruples to 256 GiB and there is no contest. The quadratic term simply explodes.
 
 > **Source / derivation:** the $N\times N$ score-matrix size and the memory-bound diagnosis are from [Tri Dao, Daniel Y. Fu, Stefano Ermon, Atri Rudra, Christopher Ré, *FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness* (2022)](https://arxiv.org/abs/2205.14135) — §2–§3 quantify the $O(N^2)$ HBM memory and traffic of standard attention. The byte counts above recompute directly from the demo's `flash_attention.py` output (one fp16 8192² matrix = 0.125 GiB; ×16×32 = 64 GiB).
 

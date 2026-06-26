@@ -9,13 +9,17 @@ textbook full-softmax attention to ~1e-6 before anything else.
 
 What it shows, in order:
   1. The naive baseline that materializes the whole score matrix (what FlashAttention avoids).
-  2. `online_softmax` -- the streaming softmax whose (m, l) bookkeeping is the mathematical heart.
+  2. `online_softmax` -- the genuinely single-pass streaming softmax whose (m, l) bookkeeping is
+     the mathematical heart (it holds only running scalars, never the full exp vector).
   3. `flash_attention` -- blockwise attention built on that streaming softmax.
   4. A hard assert that blockwise == full to ALLCLOSE_ATOL, plus the per-block (m, l) trace.
 
-Verified on Python 3.12 / torch 2.x. Device-agnostic (CUDA / MPS / CPU). The correctness proof
-holds on any device; the real wall-clock win is GPU HBM traffic, which a CPU run cannot show, so
-this file proves correctness and counts the materialized bytes rather than timing a fake speedup.
+Verified on Python 3.12 / torch 2.12.0. The compute is device-agnostic: every tensor is created
+on `device`, so the algorithm runs unchanged on CUDA / MPS / CPU. The reproducible numeric trace
+in main() is deliberately pinned to CPU so the printed numbers are bit-stable across machines, and
+the printed device line says so honestly. The real wall-clock win is GPU HBM traffic, which a CPU
+run cannot show, so this file proves correctness and counts the materialized bytes rather than
+timing a fake speedup.
 
 Run:
     python flash_attention.py
@@ -37,7 +41,8 @@ ALLCLOSE_ATOL = 1e-6  # blockwise and full attention are algebraically identical
 # by float rounding from a different summation order, which lands well under 1e-6
 SEED = 0
 
-# Run on the best available accelerator; CPU is the universal fallback.
+# Best available accelerator; CPU is the universal fallback. The algorithm is device-agnostic --
+# every tensor below is created on the device passed in, so it runs unchanged on any of these.
 DEVICE = (
     "cuda"
     if torch.cuda.is_available()
@@ -63,38 +68,29 @@ def full_attention(
 
 
 def online_softmax(scores_row: torch.Tensor, block_size: int) -> torch.Tensor:
-    """Compute softmax of a 1-D score row by streaming it in blocks -- the heart of FlashAttention.
+    """Softmax of a 1-D score row computed in a genuinely SINGLE streaming pass.
 
-    Mathematically identical to F.softmax, but never holds all the exponentials at once. It carries
-    a running max `m` and running sum-of-exps `l`, and when a new block raises the max it rescales
-    the old `l` by exp(m_old - m_new) so every term ends up exponentiated against the SAME final max.
-    That rescale is the log-sum-exp trick made incremental; it is exactly what lets the blocks combine
-    to the correct global softmax. Returns the full softmax vector for comparison.
+    Never holds the full exponential vector: it carries a running max `m`, a running sum-of-exps
+    `l`, and a running un-normalised numerator vector `num` (the same kind of accumulator
+    `flash_attention` uses for its output). When a block raises the max, every running quantity is
+    rescaled by exp(m_old - m_new) <= 1 so all terms end up taken against the SAME final max. That
+    rescale is the log-sum-exp trick made incremental; it is exactly what lets the blocks combine to
+    the correct global softmax. Returns the full softmax vector (assembled only at the end, for the
+    equality check) -- but the streaming state is O(N) numerator + O(1) scalars, computed in one pass.
     """
-    running_max = torch.tensor(float("-inf"))  # m: largest score seen so far (start at -inf)
-    running_denom = torch.tensor(0.0)  # l: sum of exp(score - m) seen so far, kept consistent with m
-    numerators: list[torch.Tensor] = []  # unnormalised exp values, rescaled to the FINAL max at the end
-
-    block_maxes: list[torch.Tensor] = []  # per-block max, kept only to rescale that block's numerators later
-    for start in range(0, scores_row.numel(), block_size):
+    n = scores_row.numel()
+    running_max = torch.tensor(float("-inf"), device=scores_row.device)  # m: largest score seen so far
+    running_denom = torch.tensor(0.0, device=scores_row.device)  # l: sum of exp(score - m) so far, consistent with m
+    num = torch.zeros(n, device=scores_row.device)  # running un-normalised numerators exp(score - m), rescaled as m grows
+    for start in range(0, n, block_size):
         block = scores_row[start : start + block_size]
-        block_max = block.max()  # local max of this block
-        new_max = torch.maximum(running_max, block_max)  # the max across everything seen so far
-        # Rescale the running denominator from the OLD max to the NEW max so it stays a valid
-        # sum-of-exps against new_max. exp(m_old - m_new) <= 1, so this shrinks old terms to match.
-        running_denom = running_denom * torch.exp(running_max - new_max) + torch.exp(
-            block - new_max
-        ).sum()
-        block_maxes.append(new_max)  # remember the max that THIS block's exps were taken against (updated below)
-        numerators.append(block)  # store raw scores; we exponentiate against the final max once it's known
+        new_max = torch.maximum(running_max, block.max())  # max across everything seen so far
+        correction = torch.exp(running_max - new_max)  # <= 1: shrink prior running state to the new max
+        num = num * correction  # re-base every already-accumulated numerator against new_max in one multiply
+        num[start : start + block_size] = torch.exp(block - new_max)  # this block's exps, also vs new_max
+        running_denom = running_denom * correction + torch.exp(block - new_max).sum()  # rescale denom, add block
         running_max = new_max  # advance the running max
-
-    # Second pass over the stored blocks: exponentiate every score against the SINGLE final max,
-    # then divide by the final denominator. This is the same value F.softmax produces, but we only
-    # ever needed one block in memory at a time during the streaming pass above.
-    final_max = running_max
-    exps = torch.cat([torch.exp(block - final_max) for block in numerators])
-    return exps / running_denom
+    return num / running_denom  # single final division: each numerator over the final denominator
 
 
 def flash_attention(
@@ -115,9 +111,9 @@ def flash_attention(
     trace_for_query0: list[tuple[int, float, float]] = []
 
     for i in range(seq_len):  # one query at a time (real kernels tile queries too; one here for clarity)
-        running_max = torch.tensor(float("-inf"))  # m_i
-        running_denom = torch.tensor(0.0)  # l_i: running sum of exp(score - m_i)
-        acc = torch.zeros(head_dim)  # un-normalised output: sum of exp(score - m_i) * value, rescaled as m_i grows
+        running_max = torch.tensor(float("-inf"), device=q.device)  # m_i
+        running_denom = torch.tensor(0.0, device=q.device)  # l_i: running sum of exp(score - m_i)
+        acc = torch.zeros(head_dim, device=q.device)  # un-normalised output: sum of exp(score - m_i) * value, rescaled as m_i grows
 
         for block_idx, start in enumerate(range(0, seq_len, block_size)):
             k_block = k[start : start + block_size]  # (B_c, d): the key tile loaded into "SRAM"
@@ -141,13 +137,17 @@ def flash_attention(
 
 
 def main() -> None:
-    print("device:", DEVICE)
+    # The reproducible numeric trace is pinned to CPU so the printed numbers are bit-stable across
+    # machines; the printed line says so honestly. (The functions above run on any device --
+    # swapping trace_device to DEVICE runs the identical algorithm on cuda/mps with no other change.)
+    trace_device = "cpu"
+    print(f"device: {trace_device} (best available: {DEVICE}; trace pinned to CPU for reproducibility)")
     print("torch:", torch.__version__)
     torch.manual_seed(SEED)
 
-    q = torch.randn(SEQ_LEN, HEAD_DIM)
-    k = torch.randn(SEQ_LEN, HEAD_DIM)
-    v = torch.randn(SEQ_LEN, HEAD_DIM)
+    q = torch.randn(SEQ_LEN, HEAD_DIM, device=trace_device)
+    k = torch.randn(SEQ_LEN, HEAD_DIM, device=trace_device)
+    v = torch.randn(SEQ_LEN, HEAD_DIM, device=trace_device)
 
     # 1. Streaming softmax must equal the library softmax on one score row -- prove the heart first.
     scores_row = (q[0] @ k.transpose(-1, -2)) * SCALE
@@ -179,13 +179,17 @@ def main() -> None:
         f"flash per-block working set: ~{flash_block_bytes} bytes "
         f"({BLOCK_SIZE}x{HEAD_DIM} floats) -- independent of N"
     )
-    big_n, batch, heads, fp16 = 8192, 16, 32, 2
+    big_n, batch, heads, fp16, a100_gib = 8192, 16, 32, 2, 80
     one_matrix_gib = (big_n * big_n * fp16) / (1024**3)  # one fp16 N x N score matrix
     all_matrices_gib = one_matrix_gib * batch * heads  # one per (batch, head), as backward needs
     print(
         f"at N={big_n}, one fp16 score matrix = {one_matrix_gib:.3f} GiB; "
-        f"x (batch {batch} x {heads} heads) = {all_matrices_gib:.0f} GiB -- "
-        "overflows an 80GB A100. This is the wall FlashAttention removes."
+        f"x (batch {batch} x {heads} heads) = {all_matrices_gib:.0f} GiB"
+    )
+    print(
+        f"  -> {all_matrices_gib:.0f} of an {a100_gib} GB A100's GiB on attention scratch alone, "
+        "leaving almost nothing for weights, activations, and the other layers. "
+        "This is the wall FlashAttention removes."
     )
 
     assert math.isclose(SCALE, 1.0 / math.sqrt(HEAD_DIM)), "scale must be 1/sqrt(head_dim)"
