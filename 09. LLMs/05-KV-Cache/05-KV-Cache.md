@@ -148,6 +148,8 @@ $$\text{cache bytes} \;=\; 2 \times n_{\text{layers}} \times n_{\text{kv\_heads}
 
 The leading **2** is for storing both **K** and **V**. Everything else is just "how many numbers, at what precision."
 
+> **Note:** this formula assumes a **per-head K/V** cache — it holds for MHA, MQA, and GQA, where you vary $n_{\text{kv\_heads}}$. **MLA breaks it**: it stores no per-head K/V at all, so substitute the latent width $d_c + d_R$ (e.g. $512+64$) for the whole $2 \times n_{\text{kv\_heads}} \times d_{\text{head}}$ term (and drop the leading 2 — one latent reconstructs both K and V).
+
 > *Where this comes from: the formula falls directly out of the per-layer attention shapes in **Attention Is All You Need** (Vaswani et al. 2017, §3.2), and is worked through explicitly in **Transformer Inference Arithmetic** (Kipply) and **Transformer Math 101** (EleutherAI) — all three in the references.*
 
 **Worked example 1 — cache per token (Llama-2-7B, FP16).** Its config: $n_{\text{layers}}=32$, $n_{\text{kv\_heads}}=32$, $d_{\text{head}}=128$, and FP16 = 2 bytes. Per token:
@@ -178,6 +180,8 @@ $$\text{arithmetic intensity} \approx \frac{2 \times \text{params}}{\text{bytes 
 
 An A100 does ~312 TFLOP/s of compute but only ~2 TB/s of memory bandwidth — a ratio of ~**156 FLOP/byte** before compute becomes the limit. At an intensity of ~1, decode is **deeply** memory-bound: the compute units sit ~99% idle, waiting on memory. The cure is **batching**: process $B$ sequences together and you read each weight **once** but do $B\times$ the math, multiplying arithmetic intensity by $B$ and walking toward the compute-bound regime. That's why throughput-oriented serving batches aggressively — and why, once weights are amortized across a big batch, the **KV cache** becomes the bytes you're actually moving, so shrinking it (GQA, FP8) translates almost directly into more tokens/second.
 
+> **Note (when does the cache overtake the weights?):** at batch 1 on 7B-MHA, the per-token cache is 0.5 MiB and the weights are ~14 GiB, so the cache equals the weights at $14\,\text{GiB} / 0.5\,\text{MiB} \approx \mathbf{28{,}672}$ **tokens** — past ~28K context, you stream *more* cache than weights every step, and shrinking the cache becomes the dominant lever on decode speed.
+
 > **Tip:** when you hear "we doubled inference throughput by quantizing the KV cache to FP8," translate it: they **halved the bytes the GPU has to stream per token.** In a bandwidth-bound regime, halving the bytes ≈ doubling the speed. The cache size *is* the speed.
 
 ---
@@ -186,7 +190,7 @@ An A100 does ~312 TFLOP/s of compute but only ~2 TB/s of memory bandwidth — a 
 
 Here's a from-scratch single-layer attention that runs the decode loop **both ways** — recomputing everything vs. keeping a cache — checks that the outputs match to floating-point tolerance, then times them **across growing sequence lengths** so you can *watch the speedup widen*. It runs on CPU in a few seconds; no GPU needed.
 
-> **Runnable project and a step-by-step notebook:** the same verified code lives as a clean script and an executed teaching notebook next to this page — see [`code/05-KV-Cache.ipynb`](code/05-KV-Cache.ipynb) and [`code/`](code/) (`python code/kv_cache.py`).
+> **Runnable project and a step-by-step notebook:** the same verified code lives as a clean script and an executed teaching notebook next to this page — see the [step-by-step teaching notebook](code/05-KV-Cache.ipynb) and the [runnable demo script](code/kv_cache.py) (run it with `python kv_cache.py`).
 
 ```python
 """From-scratch KV cache: prove identical outputs, then time how the speedup GROWS with length.
@@ -289,6 +293,8 @@ graph TD
 
 *FlashDecoding parallelizes one decode query across chunks of the KV cache, then merges the partial softmaxes — recovering the GPU utilization that a single query against a long cache would otherwise waste.*
 
+> **Note:** the number of splits is a tradeoff — too many splits adds combine/reduction overhead, too few leaves the GPU's streaming multiprocessors idle. The kernel picks the split count from the cache length and the number of SMs so there's just enough parallelism to saturate the hardware.
+
 > **Note:** the cache and the kernel are complementary. The cache (plus GQA/MLA/quantization) sets *how many bytes* must be read; FlashAttention/FlashDecoding set *how close to peak bandwidth* you read them. A real long-context stack needs both — which is why "GQA + paging + FP8 + FlashAttention" is the recurring four-part recipe.
 
 ---
@@ -315,17 +321,28 @@ The biggest lever is architectural: **share K and V across query heads** so ther
 
 - ***MHA*** (multi-head attention) — every query head has its own K/V head. Biggest cache.
 - ***MQA*** (multi-query attention) — *all* query heads share **one** K/V head, collapsing $n_{\text{kv\_heads}}$ to 1. The cache shrinks by the full head count (e.g. **32× or 64×**), at a noticeable quality cost.
-- ***GQA*** (grouped-query attention) — query heads share K/V in **groups** (e.g. 8 KV heads serving 64 query heads). The sweet spot, used by Llama-2/3, Mistral, and most modern models.
+- ***GQA*** (grouped-query attention) — query heads share K/V in **groups**. The sweet spot, used by Llama-2/3, Mistral, and most modern models.
 
 ![Cache size for a 70B-class model under MHA vs GQA-8 vs MQA. Fewer KV heads shrink the cache proportionally — GQA-8 is ~8x smaller, MQA ~64x.](../images/kv_mha_mqa_gqa.png)
 
-It works because the formula has $n_{\text{kv\_heads}}$ as a direct multiplier: cut KV heads from 64 to 8 and the cache shrinks **8×**, with the query heads (and thus most of the model's expressiveness) untouched. GQA keeps almost all of MHA's quality while paying MQA-like memory.
+**The group-sharing mechanism.** GQA with $G$ groups (written **GQA-$G$**) splits the $H$ query heads into $G$ equal groups; every head in a group shares **one** K/V head. So you store $G$ K/V heads instead of $H$ — the formula's $n_{\text{kv\_heads}}$ multiplier drops from $H$ to $G$, and the cache shrinks by exactly $H/G$. MHA is $G=H$ (no sharing); MQA is $G=1$ (everyone shares). Cut KV heads from 64 to 8 and the cache shrinks **8×** while every query head — and thus most of the model's expressiveness — stays untouched.
 
-> **Note:** GQA is *the* reason a modern 70B model is servable at long context — an 8× cut to the dominant memory cost. If you're choosing a base model for long-context serving, **check its KV-head count**, not just its parameter count.
+**You can convert an existing MHA model to GQA without retraining from scratch.** Take the $H$ K heads, partition them into $G$ groups, and **mean-pool** the heads within each group down to one K head (same for V); then **uptrain** the converted model on **~5% of the original pretraining compute** to recover quality (Ainslie et al., [GQA 2023](https://arxiv.org/abs/2305.13245)). That's a light conversion, not a fresh pretrain — which nuances the "you can't bolt it on" gotcha below.
 
-The frontier of this lever is **Multi-head Latent Attention (MLA)** (DeepSeek-V2/V3). Instead of storing K and V per head, MLA caches a single **low-rank latent vector** per token and reconstructs the per-head K and V on the fly with a learned up-projection. Put it in numbers: a GQA-8 model with $d_{\text{head}}=128$ caches $n_{\text{kv\_heads}} \times d_{\text{head}} = 8 \times 128 = 1{,}024$ values per token *for each of K and V*. MLA instead caches **one latent of dimension $d_c$** (e.g. $\approx 512$) per token, and at read time multiplies it by a learned $d_c \to n_{\text{heads}}\times d_{\text{head}}$ up-projection to reconstruct every head's K and V — trading a little extra compute for a much smaller cache. DeepSeek-V2 reports its MLA cache at **~4% of the equivalent MHA cache** for its large model — well below even GQA. It's the same idea taken to its limit: don't just *share* the numbers across heads, **compress** them into a latent.
+| Variant | KV heads stored | per-token cache rel. MHA | quality | used by |
+|---|---|---:|---|---|
+| MHA | $H$ (one per query head) | 1× | reference | GPT-2, Llama-2-7B |
+| GQA-$G$ | $G$ groups (e.g. 8) | $G/H$ (e.g. 1/4–1/8) | ~MHA | Llama-2-70B, Llama-3, Mistral |
+| MQA | 1 | $1/H$ (e.g. 1/32–1/64) | small drop | Falcon, PaLM, early Gemini |
+| MLA | latent $d_c$ + RoPE key $d_R$ | ~4% of MHA | ≥ MHA (reported) | DeepSeek-V2/V3 |
 
-> **Gotcha:** MQA/GQA/MLA are **architectural** — they're baked in at pretraining and you can't bolt them onto an existing MHA model without retraining (or a conversion + light fine-tune). The runtime levers below (paging, quantization, windowing) are the ones you *can* apply to a model you've already got.
+> **Note:** GQA is *the* reason a modern 70B model is servable at long context — a large cut to the dominant memory cost. If you're choosing a base model for long-context serving, **check its KV-head count**, not just its parameter count.
+
+The frontier of this lever is **Multi-head Latent Attention (MLA)** (DeepSeek-V2/V3). Instead of storing K and V per head, MLA caches a single **low-rank latent vector** per token and reconstructs the per-head K and V on the fly with a learned up-projection. Put it in numbers: standard MHA with $n_{\text{heads}}=128$, $d_{\text{head}}=128$ caches $2 \times 128 \times 128 = 32{,}768$ values per token per layer (the factor 2 is K and V). DeepSeek-V2's MLA instead caches a **latent of $d_c=512$** ($=4\,d_{\text{head}}$) **plus a small decoupled-RoPE key of $d_R=64$** = **576 values per token** — *no* factor of 2, because the single latent reconstructs both K and V. That's the **~4% of MHA** figure DeepSeek-V2 reports, well below even GQA.
+
+> **Note (the RoPE subtlety):** RoPE doesn't commute with the low-rank up-projection — you can't rotate a compressed latent and then up-project it and get the right per-head positional key — so MLA caches a small *separately-RoPE'd* key dimension ($d_R=64$) **directly**, alongside the compressed latent. That extra 64 is why the cache is $512+64$, not just $512$.
+
+> **Gotcha:** MQA/GQA/MLA are **architectural** — they're chosen at pretraining. You can't toggle them at runtime, but as shown above an MHA→GQA conversion + ~5% uptrain is a realistic light retrofit. The runtime levers below (paging, quantization, windowing) are the ones you can apply to a model you've already got, untouched.
 
 ---
 
@@ -335,15 +352,63 @@ Even with a small per-token cache, the *allocation* is wasteful. A naive engine 
 
 **PagedAttention** ([vLLM](https://arxiv.org/abs/2309.06180)) borrows the operating-system trick of **virtual memory**: store the cache in small fixed-size **blocks** (e.g. 16 tokens each), with a per-request **block table** mapping logical positions to physical blocks — exactly like an OS page table maps virtual to physical pages. Memory is allocated **on demand**, one block at a time, so a request only ever holds blocks for the tokens it actually generated; there's near-zero waste, and the attention kernel just gathers the scattered blocks via the block table. By reclaiming the 60–80% that fragmentation used to waste, vLLM packs far more concurrent requests onto a GPU and reports **2–4× the throughput** of the contiguous-allocation systems that came before it.
 
-> **Tip:** paging unlocks a second win — **sharing**. Because blocks are addressable, two requests with the same **prefix** (e.g. a shared system prompt, or beam-search branches) can *point at the same physical blocks*, copying-on-write only when they diverge. **Automatic prefix caching** built on this can make agent and chat workloads with long fixed system prompts dramatically cheaper.
+**The block-table lookup, concretely.** Block size 16, and you want token 40. Its **logical block** is $40 // 16 = 2$ and its **offset** is $40 \% 16 = 8$. Suppose this request's block table is `[9, 2, 5]` — logical block 2 maps to **physical block 5**. So the kernel reads **slot 8 of physical block 5**. Logically contiguous tokens 0…47 live in three physical blocks scattered anywhere in VRAM (9, 2, 5); the block table is the only thing that makes them *look* contiguous.
+
+```mermaid
+graph LR
+    subgraph LOG["Logical blocks (one request)"]
+    L0["logical 0<br/>tokens 0-15"]:::data
+    L1["logical 1<br/>tokens 16-31"]:::data
+    L2["logical 2<br/>tokens 32-47"]:::data
+    end
+    BT["block table<br/>[9, 2, 5]"]:::amber
+    subgraph PHY["Physical KV blocks (scattered in VRAM)"]
+    P9["phys 9"]:::frozen
+    P2["phys 2"]:::process
+    P5["phys 5"]:::out
+    end
+    L0 --> BT
+    L1 --> BT
+    L2 --> BT
+    BT -->|"logical 0 → phys 9"| P9
+    BT -->|"logical 1 → phys 2"| P2
+    BT -->|"logical 2 → phys 5"| P5
+
+    classDef data fill:#3A6B96,stroke:#2A5B86,color:#fff
+    classDef amber fill:#7A6528,stroke:#6A5518,color:#fff
+    classDef out fill:#2E7A5A,stroke:#1E6A4A,color:#fff
+    classDef process fill:#5D4A8A,stroke:#4D3A7A,color:#fff
+    classDef frozen fill:#4A5B6E,stroke:#3A4B5E,color:#fff
+```
+
+*Logical block → block table → scattered physical block. Token 40 → logical 2 → phys 5, slot 8.*
+
+> **Note (the block-size tradeoff):** paging caps a request's wasted memory at **less than one block** — at most 15 unused token-slots, *regardless of sequence length*. That's what turns the old 60–80% worst-case-reservation waste into ~4%. **Smaller** blocks waste even less, but multiply the **block-table size** and the per-step gather overhead; **larger** blocks gather faster but waste more on partial blocks. vLLM's default of **16** is the balance.
+
+> **Tip:** paging unlocks a second win — **sharing**. Because blocks are addressable, two requests with the same **prefix** (e.g. a shared system prompt, or beam-search branches) *point at the same physical blocks*; the moment one diverges, only that one block is **copied** and only that request's block table is repointed (copy-on-write). **Automatic prefix caching** built on this makes agent and chat workloads with long fixed system prompts dramatically cheaper.
 
 ---
 
 ## Lever 3: quantize the cache
 
-The cache is just numbers, and you rarely need 16 bits of precision for them. Storing K and V in **FP8 or INT8** instead of FP16 **halves or quarters** the bytes — and because decode is bandwidth-bound, fewer bytes streamed per token is *directly* faster, on top of fitting more requests. **FP8** is hardware-native on recent GPUs (Hopper) and often essentially lossless; **INT8** needs **per-token or per-channel scales** to handle outliers; research schemes like **KIVI** push K to ~2 bits by quantizing it per-channel and V per-token — exploiting exactly the asymmetry below.
+The cache is just numbers, and you rarely need 16 bits of precision for them. Storing K and V in **FP8 or INT8** instead of FP16 **halves or quarters** the bytes — and because decode is bandwidth-bound, fewer bytes streamed per token is *directly* faster, on top of fitting more requests. **FP8** is hardware-native on recent GPUs (Hopper) and often essentially lossless; **INT8/INT4** need a **scale factor per group of values** to map a small numeric range onto few bits without one extreme value ruining the rest.
 
-> **Gotcha:** it's not free quality-wise. **Keys are more sensitive** to quantization than values (a few outlier channels dominate the attention scores), which is why good schemes use **per-channel or per-token scales** and sometimes quantize K and V asymmetrically. FP8 is often near-lossless; INT4 needs care. If you turn on a quantized cache, **measure quality**, don't assume it's free.
+**Why K and V want *different* quantization (the mechanism).** This is the part worth understanding, because it's the whole idea behind the best low-bit schemes. The two tensors have opposite error structure:
+
+- **Keys** have **persistent large-magnitude outliers in a few *fixed* channels** — the same feature dimensions blow up across nearly every token. Quantize a key vector *per-token* (one shared scale across that token's channels) and a single outlier channel sets the scale, crushing every other channel's precision to near-zero. The fix: quantize keys **per-channel** — give each channel its own scale, so a loud channel only spends bits on itself.
+- **Values** have **no such structured channel outliers**, *and* the attention output is a per-token **weighted sum** of value vectors. Error that's localized **per-token** gets averaged down by that sum, so **per-token** scaling is exactly right for V.
+
+That split — **keys per-channel, values per-token, ~2 bits each** — is precisely **KIVI** ([Liu et al. 2024](https://arxiv.org/abs/2402.02750)). The asymmetry isn't a heuristic; it falls out of where each tensor's error lands.
+
+| Precision | bytes/elem | cache vs FP16 | quality | notes |
+|---|---:|---:|---|---|
+| FP16 (baseline) | 2 | 1.00× | reference | what the formula above assumes |
+| FP8 (E5M2/E4M3) | 1 | 0.50× | near-lossless | hardware-native on Hopper; the common default |
+| INT8 | 1 | 0.50× | small loss | needs per-token (V) / per-channel (K) scales |
+| INT4 | 0.5 | 0.25× | needs care | measure win-rate; outliers bite without good scaling |
+| KIVI 2-bit | ~0.25 | ~0.125× | good w/ the K/V split | K per-channel + V per-token, ~2 bits each |
+
+> **Gotcha:** low-bit caches are not free quality-wise. FP8 is often near-lossless; INT4 and below need the per-channel/per-token scaling above to survive. If you turn on a quantized cache, **measure win-rate** before and after — don't assume it's free.
 
 ---
 
@@ -352,7 +417,9 @@ The cache is just numbers, and you rarely need 16 bits of precision for them. St
 The other levers shrink bytes-per-token; this one caps the **number of tokens**. If you don't truly need unbounded history, keep only the most recent $w$ tokens:
 
 - **Sliding-window attention** (Mistral) — each token attends only to the last $w$ tokens, so the cache never exceeds $w$ entries regardless of how long the conversation runs.
-- **Attention sinks** ([StreamingLLM](https://arxiv.org/abs/2309.17453)) — keep the first few tokens *plus* the recent window. The surprising finding is that those first "sink" tokens are load-bearing: the softmax needs somewhere to dump attention mass, and dropping them collapses quality. Keep ~4 sink tokens + the window and you get stable, **infinite-length** streaming at bounded memory.
+- **Attention sinks** ([StreamingLLM](https://arxiv.org/abs/2309.17453)) — keep the first few tokens *plus* the recent window. Those first "sink" tokens turn out to be load-bearing, and the reason is mechanical: **softmax forces the attention weights to sum to 1** — there is no "attend to nothing" option. When the current query matches no recent token well, that mandatory probability mass has to land *somewhere*, and it pools on the first few tokens, which are visible from **every** position. Evict them and you delete a large chunk of the softmax **denominator**; the surviving weights renormalize wildly, and quality collapses. Keep ~4 sink tokens + the recent window and you get stable, **infinite-length** streaming at bounded memory.
+
+> **Note: a window doesn't mean a token can only "see" $w$ back.** Stacking layers gives a window the same reach a stack of convolutions gives a CNN: layer 1's output at position $i$ already mixes the last $w$ tokens, so layer 2 reading those outputs reaches $2w$ back, and over $L$ layers information propagates **window-by-window up the stack** to an effective receptive field of $\approx L \times w$ tokens. Mistral's $w=4096$ over 32 layers reaches **~131K tokens** of effective context — far beyond the 4K window — while the cache stays capped at $w$.
 
 > **Tip:** these four levers **compose**. A production stack serving "128K context efficiently" is usually **GQA + PagedAttention + FP8 cache** (and FlashAttention for the compute side), with windowing layered on for truly endless streams. Each lever attacks a different term of the cache-bytes formula.
 
@@ -360,12 +427,16 @@ The other levers shrink bytes-per-token; this one caps the **number of tokens**.
 
 ## The cache in real models
 
-Tying the levers to models you've heard of makes them concrete:
+Tying the levers to models you've heard of makes them concrete. Each per-token figure below is $2 \times n_{\text{layers}} \times n_{\text{kv\_heads}} \times d_{\text{head}} \times 2$ bytes (FP16), straight from the model's real config:
 
-- **Llama-3** — GQA with 8 KV heads (serving up to 64 query heads), so the cache is ~8× smaller than MHA — which is what makes its 8K–128K context servable on commodity GPUs.
-- **Mistral 7B** — GQA **plus** a **sliding window** of 4,096 tokens, so the cache is capped no matter how long the conversation runs.
-- **DeepSeek-V2/V3** — **MLA**, caching a compact low-rank latent per token: the most aggressive architectural cache compression shipped in a frontier model.
-- **Every serving engine** (vLLM, TGI, TensorRT-LLM) — **PagedAttention**-style block management underneath, increasingly with an **FP8 cache** option and **automatic prefix caching** for shared system prompts.
+| Model | Attn | KV heads | $d_{\text{head}}$ | Layers | Window | per-token cache (FP16) | what it buys |
+|---|---|---:|---:|---:|---|---:|---|
+| Llama-2-7B | MHA | 32 | 128 | 32 | full | $2{\cdot}32{\cdot}32{\cdot}128{\cdot}2 = $ **0.50 MiB** | the MHA baseline |
+| Llama-3-8B | GQA-8 | 8 | 128 | 32 | full | $2{\cdot}32{\cdot}8{\cdot}128{\cdot}2 = $ **0.125 MiB** | 4× smaller → 8K–128K servable |
+| Mistral-7B | GQA-8 | 8 | 128 | 32 | 4096 | **0.125 MiB**, capped at $w$ → ≤ 512 MiB total | cache can't grow past the window |
+| DeepSeek-V2 | MLA | latent 512 + RoPE 64 | — | 60 | full | $60{\cdot}576{\cdot}2 = $ **0.066 MiB** | ~4% of same-shape MHA |
+
+Read off the columns: the same $d_{\text{head}}=128$, 32-layer 7B-class shape costs **0.50 MiB/token** under MHA and **0.125 MiB/token** under GQA-8 (the $32 \to 8$ KV-head cut). Mistral adds a window so the total is bounded; MLA breaks the per-head formula entirely and lands at ~4% of MHA. And every serving engine (vLLM, TGI, TensorRT-LLM) layers **PagedAttention** block management on top of whichever of these the model ships with, increasingly with an **FP8 cache** option and **automatic prefix caching** for shared system prompts.
 
 > **Note:** **beam search** multiplies the cache by the beam width — each beam is a distinct continuation needing its own K/V. A paged, block-addressable cache makes this cheap: the beams **share** the blocks of their common prefix and only fork (copy-on-write) where they diverge. Same trick, again: address the cache in blocks and sharing falls out for free.
 
@@ -420,6 +491,7 @@ The cache is also where a surprising number of production incidents live — wor
 - *Prefill vs decode?* Prefill = one parallel, compute-bound pass (sets TTFT); decode = one-token-at-a-time, memory-bound loop (sets TPOT).
 - *Why is decode memory-bound?* Arithmetic intensity ≈ 1 FLOP/byte vs the GPU's ~156 — it moves bytes, barely computes; batching fixes it.
 - *What does GQA change in the formula?* It shrinks `n_kv_heads` (e.g. 64 → 8), cutting the cache proportionally.
+- *What does MLA do?* Caches one low-rank latent per token (+ a tiny RoPE key) and reconstructs per-head K/V at read time — ~4% of MHA.
 - *What does PagedAttention fix?* Memory fragmentation — page the cache into blocks (OS-style) for near-zero waste + prefix sharing.
 - *How is 128K context actually served?* The full stack at once: GQA + quantized cache + paging (+ windowing for endless streams).
 - *Does the cache change the output?* No — bit-for-bit identical; it only changes speed and memory.
