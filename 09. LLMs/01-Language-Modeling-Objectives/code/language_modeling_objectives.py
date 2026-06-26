@@ -9,7 +9,8 @@ Three self-contained demos that make the causal language-modeling objective conc
 
 This is the same verified demo embedded in the concept page and the teaching notebook.
 Verified on Python 3.12 / torch 2.x. Device-agnostic (CUDA / MPS / CPU); the by-hand numbers
-are exact on any device, and the training curve drops the same way everywhere.
+are exact on any device; the training curve drops toward its floor the same way everywhere
+(the exact mid-curve digits are device-dependent, so the trace is run on CPU).
 
 Run:
     python language_modeling_objectives.py
@@ -52,6 +53,10 @@ DEVICE = (
     if torch.backends.mps.is_available()
     else "cpu"
 )
+
+# train the trace on CPU so the printed loss curve matches the page/notebook on every machine
+# (MPS/CUDA reorder float ops and shift the mid-curve digits)
+TRACE_DEVICE = "cpu"
 
 
 def cross_entropy_by_hand(prob_of_true_token: float) -> tuple[float, float]:
@@ -102,6 +107,8 @@ def causal_lm_loss(logits: torch.Tensor, token_ids: torch.Tensor) -> torch.Tenso
     """
     shifted_logits = logits[:, :-1].reshape(-1, VOCAB_SIZE)  # drop the last position (no next token)
     shifted_labels = token_ids[:, 1:].reshape(-1)  # drop the first position (it's never a target)
+    # F.cross_entropy fuses log_softmax + NLL in one numerically-stable op; never compute
+    # log(softmax(logits)) yourself — it overflows for large logits
     return F.cross_entropy(shifted_logits, shifted_labels)  # averages -log p(true) over positions
 
 
@@ -123,11 +130,13 @@ def demo_causal_mask() -> None:
     print(mask.int().numpy(), "\n")
 
 
-def demo_training() -> None:
+def demo_training() -> float:
     """Train the tiny LM and print loss / perplexity dropping toward ~1.0 (memorizing one sentence)."""
     torch.manual_seed(SEED)
-    sentence = torch.tensor(TRAIN_SENTENCE_IDS, device=DEVICE)  # [1, 5] token ids
-    model = TinyCausalLM(VOCAB_SIZE, EMBED_DIM).to(DEVICE)
+    # Build/run the trace on CPU (TRACE_DEVICE) so the printed loss curve is reproducible on
+    # every machine; the detected DEVICE is still reported in main() for correctness work.
+    sentence = torch.tensor(TRAIN_SENTENCE_IDS, device=TRACE_DEVICE)  # [1, 5] token ids
+    model = TinyCausalLM(VOCAB_SIZE, EMBED_DIM).to(TRACE_DEVICE)
     optimizer = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
 
     print(f"{'step':>4} | {'loss':>7} | {'perplexity':>10}")
@@ -149,7 +158,7 @@ def demo_training() -> None:
 
 
 def main() -> None:
-    print(f"device: {DEVICE}")
+    print(f"compute device available: {DEVICE} (the tiny training trace runs on CPU for a reproducible curve)")
     print("torch:", torch.__version__, "\n")
 
     # 1. Cross-entropy / perplexity by hand on one toy prediction.
@@ -167,6 +176,7 @@ def main() -> None:
 
     # 3. Training drives perplexity toward its floor (~1.0 for one memorized sentence).
     final_loss = demo_training()
+    # loose on purpose: the exact final digit (~1e-4) is device-dependent; <0.1 holds on CPU/MPS/CUDA alike
     assert final_loss < 0.1, "memorizing one sentence should drive the loss well below 0.1"
 
 

@@ -48,6 +48,7 @@ updated: 2026-06-26
 - [RoBERTa: A Robustly Optimized BERT Pretraining Approach](https://arxiv.org/abs/1907.11692) — **Liu et al. (2019)** — shows the masked-LM recipe matters: drop next-sentence prediction, train longer, and MLM gets much stronger.
 - [Exploring the Limits of Transfer Learning with T5](https://arxiv.org/abs/1910.10683) — **Raffel et al. (2020)** — the span-corruption objective and the text-to-text framing that unifies all three objectives.
 - [ELECTRA: Pre-training Text Encoders as Discriminators](https://arxiv.org/abs/2003.10555) — **Clark et al. (2020)** — a more sample-efficient alternative to masked LM (replaced-token detection), directly addressing MLM's 15%-only inefficiency.
+- [UL2: Unifying Language Learning Paradigms](https://arxiv.org/abs/2205.05131) — **Tay et al. (2022)** — the primary source for treating all three objectives (causal, masked, span) as one knob — a single "mixture-of-denoisers" pre-training recipe.
 
 **Books (free chapters)**:
 - [Speech and Language Processing, 3rd ed. — Ch. 10 "Large Language Models"](https://web.stanford.edu/~jurafsky/slp3/10.pdf) — **Jurafsky & Martin** — autoregressive LMs, the cross-entropy training objective, and perplexity, derived cleanly.

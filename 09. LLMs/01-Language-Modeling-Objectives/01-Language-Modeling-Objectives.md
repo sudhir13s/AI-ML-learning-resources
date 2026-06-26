@@ -89,7 +89,7 @@ graph TD
     classDef amber fill:#7A6528,stroke:#6A5518,color:#fff
 ```
 
-> **Note:** read the diagram as *one* decision — "how do you hide a token?" — with three answers. The transformer block underneath each branch is the same stack of attention + MLP layers. What changes is the **mask** (can a position see the future?) and the **loss positions** (where do you score the prediction?). Everything that makes GPT a generator and BERT an encoder lives in those two knobs.
+> **Note:** read the diagram as *one* decision — "how do you hide a token?" — with three answers. The transformer block underneath each branch is the same stack of attention + MLP layers. What changes is the **mask** (can a position see the future?) and the **loss positions** (where do you score the prediction?). Everything that makes GPT a generator and BERT an encoder lives in those two knobs. (the encoder/decoder split is unpacked in the seq2seq section below).
 
 > **See it in 3D:** Brendan Bycroft's [interactive LLM visualizer](https://bbycroft.net/llm) walks a single token through a small GPT's entire forward pass — the clearest way to *see* the context turn into a next-token distribution, which is the causal objective made visible.
 
@@ -176,6 +176,8 @@ You get the best of both: bidirectional *encoding* of the source (like BERT) and
 
 > **Note:** prefix-LM is a close cousin: a *single* stack where the **prefix** (the prompt) gets bidirectional attention and the **continuation** gets causal attention. It blurs the encoder/decoder split into one model. The point of all three seq2seq variants: *bidirectional where you're reading, causal where you're writing.*
 
+> **Gotcha (why not use encoder-decoder for everything?):** the encoder-decoder split doubles the parameter bookkeeping and needs a clean `(source -> target)` pairing. For free-form continuation (chat, code) there is no fixed "source" to encode, so a single causal decoder is simpler and strictly more flexible. Encoder-decoder earns its complexity only when input and output are distinct, bounded sequences (translate, summarize).
+
 ---
 
 ## The math: softmax, cross-entropy, and perplexity
@@ -207,6 +209,8 @@ where $T$ is the number of scored positions. This is a single scalar; backprop p
 **Step 4 — perplexity, the human-readable twin.** Loss in "nats" (log base $e$) is hard to feel. **Perplexity** exponentiates it back into a number you can interpret:
 
 $$\text{PPL} \;=\; e^{\mathcal{L}} \;=\; \exp\!\left(\frac{1}{T}\sum_{t=1}^{T} -\log p(x_t \mid x_{<t})\right)$$
+
+Because the loss is in nats (natural log), we invert with $e$; had we measured in bits (log base 2) we'd write $\text{PPL}=2^{\mathcal L}$ — same number, the base just has to match the log you used. (This is also why bits-per-byte is the tokenizer-free cousin.)
 
 Perplexity is the **effective branching factor** — *how many equally-likely choices the model feels it's choosing between at each step.* If a model has perplexity 20, it's about as uncertain as if it were picking uniformly among 20 tokens at every position. Lower is better:
 
@@ -280,7 +284,7 @@ for step in range(0, 201, 40):
     print(f"{step:>4} | {loss.item():>7.4f} | {math.exp(loss.item()):>10.4f}")
 ```
 
-Output on a laptop CPU:
+Output (the by-hand numbers are exact on any device; the tiny training trace runs on CPU so its loss curve reproduces everywhere — MPS/CUDA reorder float ops and shift only the low-order digits):
 
 ```
 p(true='sat') = 0.50
@@ -306,7 +310,7 @@ step | loss    | perplexity
 
 > **Note:** read the three blocks in order. **(1) By hand:** the model gave the true token "sat" a probability of 0.50, so cross-entropy is $-\log 0.50 = 0.6931$ nats and perplexity is $e^{0.6931} = 2.0$ — the model is "as uncertain as a fair coin" about this token. Had it said 0.05 instead, the loss jumps to ~3.0: confident-and-wrong is brutally penalized, exactly as the math promised. **(2) The mask** is lower-triangular — position 0 sees only itself, position 3 sees all four; the zeros above the diagonal are the future, blocked. **(3) Training:** loss falls $1.71 \to 0.0001$ and perplexity collapses $5.6 \to 1.0001$ — the model goes from "uncertain among ~6 tokens" to "all but certain of the right next token," because it memorized the one sentence. That perplexity-toward-1 curve *is* maximum likelihood working.
 
-> **Try it:** before you run it, **predict** — we trained on a *single* repeated sentence, so the model drove perplexity to ~1.0 by **memorizing** it. If you instead trained on **two different** sentences that share a prefix but diverge (e.g. `the cat sat on mat` *and* `the cat sat on rug`), would the final perplexity settle **at 1.0**, **above 1.0**, or **below 1.0**? Now change `sentence` to a small batch of both and check. (Hint: after `the cat sat on`, the *true* next token is genuinely ambiguous — sometimes `mat`, sometimes `rug` — so even a perfect model can't put probability 1 on either. The best it can do is ~0.5 each, which floors perplexity *above* 1.0. That floor is the **irreducible entropy** of the data — the real reason no LM reaches PPL 1 on real text.)
+> **Try it:** before you run it, **predict** — we trained on a *single* repeated sentence, so the model drove perplexity to ~1.0 by **memorizing** it. If you instead trained on **two different** sentences that share a prefix but diverge (e.g. `the cat sat on mat` *and* `the cat sat on rug`), would the final perplexity settle **at 1.0**, **above 1.0**, or **below 1.0**? Now change `sentence` to a small batch of both and check. (Hint: after `the cat sat on`, the *true* next token is genuinely ambiguous — sometimes `mat`, sometimes `rug` — so even a perfect model can't put probability 1 on either. The best it can do is ~0.5 each, which floors perplexity *above* 1.0. That floor is the **irreducible entropy** of the data — the real reason no LM reaches PPL 1 on real text — here ~1.19, a touch above the theoretical ~1.09 because 400 steps don't fully zero even the deterministic positions; train longer and it settles toward ~1.09, but never to 1.0.)
 
 > **Tip:** to see the real thing at scale, compute perplexity with `model(...).loss` on a held-out text in Hugging Face for a small GPT-2 vs a larger one — the bigger model's perplexity is lower, which is exactly the signal scaling laws are built on (see [Scaling Laws](../03-Scaling-Laws/03-Scaling-Laws.md)).
 
@@ -327,6 +331,7 @@ This is the crux, and it's worth stating plainly: **the objective is chosen once
 
 - **Don't use masked LM if you need to generate.** BERT cannot write you a paragraph — it never learned left-to-right production. Reaching for an encoder to do generation is the classic mismatch.
 - **Don't use causal LM if your task is pure understanding of a fixed input** (sentence classification, embedding for search). A bidirectional encoder will usually give better representations for the same compute, because it sees both sides of every token. (Though in 2024+, large causal LMs are so capable that they're often used for *everything* anyway — the line is blurring as scale papers over the gap.)
+- **Don't reach for encoder-decoder / T5 on open-ended generation:** there is no fixed source to encode, and a causal decoder does it more simply.
 
 > **Note:** the modern story is that **causal LM won** for the headline use cases — not because it makes better *representations* (masked LM arguably does, per-token) but because generation is the killer app, causal LM is more data-efficient, and a big enough causal model turns out to be a great encoder *too* (you can read its hidden states). When in doubt at scale, people reach for a decoder.
 
