@@ -53,6 +53,7 @@ updated: 2026-06-21
 - [Efficient Memory Management for LLM Serving (PagedAttention)](https://arxiv.org/abs/2309.06180) — **Kwon et al. (2023)** — paging the KV cache like OS virtual memory.
 - [Efficiently Scaling Transformer Inference](https://arxiv.org/abs/2211.05102) — **Pope et al. (2022, Google)** — the canonical analysis of inference cost, including the cache.
 - [Efficient Streaming LLMs with Attention Sinks (StreamingLLM)](https://arxiv.org/abs/2309.17453) — **Xiao et al. (2023)** — bounding the cache with a sliding window + sink tokens.
+- [Mistral 7B](https://arxiv.org/abs/2310.06825) — **Jiang et al. (2023)** — sliding-window attention with the layered-receptive-field argument (a window $w$ over $L$ layers reaches $\approx L\,w$ tokens) and GQA.
 - [FlashAttention: Fast and Memory-Efficient Exact Attention](https://arxiv.org/abs/2205.14135) — **Dao et al. (2022)** — IO-aware tiled attention (the online-softmax trick); FlashDecoding follows for decode.
 - [SGLang: Efficient Execution with RadixAttention](https://arxiv.org/abs/2312.07104) — **Zheng et al. (2023)** — prefix-sharing the KV cache via a radix tree.
 - [Mooncake: A KVCache-centric Disaggregated Architecture](https://arxiv.org/abs/2407.00079) — **Qin et al. (2024)** — disaggregated prefill/decode with a shared KV-cache pool.

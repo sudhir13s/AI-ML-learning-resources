@@ -3,10 +3,12 @@
 A single-layer attention runs the decode loop both ways -- recomputing K/V for every past
 token (the O(n^2) trap) versus keeping a cache (O(n)) -- asserts the two produce identical
 outputs to floating-point tolerance, then times them across growing sequence lengths so the
-widening speedup is visible. Runs on CPU in a few seconds; no GPU needed.
+widening speedup is visible.
 
-This is the same verified demo embedded in 05-KV-Cache.md and 05-KV-Cache.ipynb.
-Verified on Python 3.12 / torch 2.x, CPU.
+This is the same verified demo embedded in the concept page and the teaching notebook.
+Verified on Python 3.12 / torch 2.x. Device-agnostic (CUDA / MPS / CPU); the absolute
+milliseconds are device-dependent, but the identical-output check and the widening-speedup
+trend hold on any device.
 
 Run:
     python kv_cache.py
@@ -15,6 +17,7 @@ Run:
 from __future__ import annotations
 
 import time
+from collections.abc import Callable
 
 import torch
 import torch.nn.functional as F
@@ -23,18 +26,28 @@ import torch.nn.functional as F
 D_MODEL = 512
 N_HEADS = 8
 HEAD_DIM = 64
+SCALE = HEAD_DIM**-0.5  # 1/sqrt(head_dim) attention scaling, hoisted out of the hot loop
 SEQ_LENGTHS = (256, 512, 1024, 2048)
 TIMING_REPS = 3
 ALLCLOSE_ATOL = 1e-5
+
+# Run on the best available accelerator; CPU is the universal fallback.
+DEVICE = (
+    "cuda"
+    if torch.cuda.is_available()
+    else "mps"
+    if torch.backends.mps.is_available()
+    else "cpu"
+)
 
 
 def build_projections(seed: int = 0) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     """Return the (Wq, Wk, Wv) projection matrices for the single attention layer."""
     torch.manual_seed(seed)
     assert N_HEADS * HEAD_DIM == D_MODEL, "n_heads * head_dim must equal d_model"
-    w_q = torch.randn(D_MODEL, D_MODEL) * 0.02
-    w_k = torch.randn(D_MODEL, D_MODEL) * 0.02
-    w_v = torch.randn(D_MODEL, D_MODEL) * 0.02
+    w_q = torch.randn(D_MODEL, D_MODEL, device=DEVICE) * 0.02
+    w_k = torch.randn(D_MODEL, D_MODEL, device=DEVICE) * 0.02
+    w_v = torch.randn(D_MODEL, D_MODEL, device=DEVICE) * 0.02
     return w_q, w_k, w_v
 
 
@@ -49,7 +62,7 @@ def attn_step(q_t: torch.Tensor, keys: torch.Tensor, values: torch.Tensor) -> to
 
     q_t: (n_heads, 1, head_dim); keys, values: (n_heads, T, head_dim).
     """
-    scores = (q_t @ keys.transpose(-1, -2)) / HEAD_DIM**0.5
+    scores = (q_t @ keys.transpose(-1, -2)) * SCALE
     return (F.softmax(scores, dim=-1) @ values).transpose(0, 1).reshape(1, D_MODEL)
 
 
@@ -86,7 +99,7 @@ def decode_with_cache(
     return torch.cat(outs, 0)
 
 
-def timeit(fn, reps: int = TIMING_REPS) -> float:
+def timeit(fn: Callable[[], torch.Tensor], reps: int = TIMING_REPS) -> float:
     """Return mean wall-clock milliseconds over `reps` runs (one warmup run first)."""
     fn()  # warmup
     start = time.perf_counter()
@@ -97,13 +110,17 @@ def timeit(fn, reps: int = TIMING_REPS) -> float:
 
 def main() -> None:
     w_q, w_k, w_v = build_projections()
+    print(f"device: {DEVICE}")
+    # The `identical` column reports whether the cached output matches the no-cache output
+    # to within ALLCLOSE_ATOL -- proof the cache is a speed trick, not a modeling change.
     print(f"{'N':>6} | {'no-cache':>10} | {'kv-cache':>10} | {'speedup':>8} | identical")
     print("-" * 58)
     for n_steps in SEQ_LENGTHS:
-        emb = torch.randn(n_steps, D_MODEL) * 0.1
+        emb = torch.randn(n_steps, D_MODEL, device=DEVICE) * 0.1
         out_no = decode_no_cache(emb, n_steps, w_q, w_k, w_v)
         out_yes = decode_with_cache(emb, n_steps, w_q, w_k, w_v)
         identical = torch.allclose(out_no, out_yes, atol=ALLCLOSE_ATOL)
+        assert identical, f"outputs diverged at N={n_steps}"
         ms_no = timeit(lambda e=emb, n=n_steps: decode_no_cache(e, n, w_q, w_k, w_v))
         ms_yes = timeit(lambda e=emb, n=n_steps: decode_with_cache(e, n, w_q, w_k, w_v))
         print(
