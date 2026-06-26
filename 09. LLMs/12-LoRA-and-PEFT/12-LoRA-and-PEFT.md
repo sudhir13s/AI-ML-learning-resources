@@ -40,7 +40,7 @@ A forward+backward pass needs more than the weights. With the **Adam/AdamW** opt
 - two **optimizer moments** ($m$ and $v$, the running mean and variance of the gradient),
 - and (in mixed-precision training) an **fp32 master copy** of the weight.
 
-Count the bytes for a 7B model. Weights in fp16 are $7\text{B} \times 2 = 14$ GB. Gradients in fp16 add another 14 GB. Adam's two moments plus the fp32 master are kept in **fp32** — that's $7\text{B} \times 3 \times 4 = 84$ GB. Total to *update*: **~112 GB**, before a single activation. That does not fit on an 80 GB A100. (Even with everything in fp16 it is ~70 GB.)
+Count the bytes for a 7B model (in GiB, $1\,\text{GiB} = 1024^3$ bytes, matching the figure below). Weights in fp16 are $7\text{B} \times 2 = \mathbf{13.0\ GiB}$. Gradients in fp16 add another **13.0 GiB**. Adam's two moments plus the fp32 master are kept in **fp32** — that's $7\text{B} \times 3 \times 4 = \mathbf{78.2\ GiB}$. Total to *update*: $13.0 + 13.0 + 78.2 = $ **~104 GiB**, before a single activation. That does not fit on an 80 GB A100. (Even with everything in fp16 it is ~65 GiB.)
 
 ![Full fine-tuning a 7B model stores weights, gradients, and Adam's optimizer states for every parameter (~104 GiB). LoRA freezes the weights, so gradients and optimizer states exist only for the ~0.1% adapter parameters — the whole update fits in roughly the weights themselves (~13 GiB).](../images/lora_optimizer_memory.png)
 
@@ -100,9 +100,13 @@ Three details make this work, and each is an interview question:
 2. **$B$ is initialized to zero** (and $A$ to small random values). So at step 0, $\Delta W = BA = 0$, and $h = W_0 x$ exactly. **Training begins precisely at the pretrained model** — no random perturbation to recover from — and the adapter learns its way *away* from zero. (If you zeroed $A$ instead, $A$'s gradient would also be zero and it could never start learning; zeroing $B$ keeps $A$'s gradient alive. One of the two must be zero so $\Delta W$ starts at 0, and it has to be $B$.)
 3. **The $\alpha/r$ scaling** lets you change $r$ without re-tuning the learning rate. $\alpha$ is a fixed constant (often $\alpha = 2r$ or $\alpha = r$); dividing by $r$ keeps the *magnitude* of the update roughly constant as you sweep rank.
 
-![At initialization B = 0, so ΔW = B·A = 0 and the adapted layer is bit-for-bit the pretrained layer. As training proceeds, B moves off zero and ΔW grows; the model walks away from the pretrained point rather than starting from a random perturbation of it.](../images/lora_param_comparison.png)
+![max|ΔW| over training, from the demo's own run. At step 0 it is exactly 0 because B = 0, so the adapted layer is bit-for-bit the pretrained layer — training starts at the pretrained model. As B moves off zero the update grows and settles; the model walks *away* from the pretrained point rather than starting from a random perturbation of it.](../images/lora_delta_growth.png)
 
-*(The bar above is the parameter win at a glance — full fine-tuning trains all $d^2$ of $W_0$; LoRA trains only $2rd$. We derive that count next.)*
+The headline this buys is a parameter count: full fine-tuning trains all $d^2$ of $W_0$, while LoRA trains only the thin $2rd$ of $A$ and $B$.
+
+![Trainable parameters for one $d\times d$ layer (log scale): full fine-tuning trains all $d^2 = 1{,}048{,}576$ of $W_0$; LoRA, $r=8$ trains only $2rd = 16{,}384$ — a **64×** reduction. (These are the demo's $d=1024$ numbers, used so the run fits on CPU; the math section below works the $d=4096$ case, where the same formula gives a **256×** reduction — both are correct, the ratio just grows with width.)](../images/lora_param_comparison.png)
+
+We derive that count exactly in the next section.
 
 ---
 
@@ -233,18 +237,18 @@ max|ΔW| before any training: 0.0e+00  (exactly zero -> starts at pretrained)
 merged == unmerged forward: True   max abs diff: 8.11e-06 (within float-noise tolerance)
 ```
 
-> **Note:** read those two outputs as the two halves of LoRA's promise. **First:** $\max|\Delta W| = 0$ before training — $B=0$ means the adapted model *is* the pretrained model at step 0, so fine-tuning starts from the right place. **Second:** the merged single-matrix forward equals the two-path LoRA forward to floating-point noise — so at inference you fold $BA$ into $W_0$ and pay **nothing** extra. The tiny $8\times10^{-6}$ gap is float rounding between "two matmuls then add" and "add then one matmul," not a modeling difference.
+> **Note:** read those two outputs as the two halves of LoRA's promise. **First:** $\max|\Delta W| = 0$ before training — $B=0$ means the adapted model *is* the pretrained model at step 0, so fine-tuning starts from the right place. **Second:** the merged single-matrix forward equals the two-path LoRA forward to floating-point noise — so at inference you fold $BA$ into $W_0$ and pay **nothing** extra. The tiny $8\times10^{-6}$ gap is float rounding between "two matmuls then add" and "add then one matmul" — the fp32 accumulation floor, four-plus orders below the $10^{-4}$ assertion tolerance, and not a modeling difference.
 
 **The rank cliff.** Sweeping $r$ on a task whose true update is rank-4 shows the central tradeoff concretely:
 
 ```
  rank r |  trainable | % of full FT |   final loss
 ----------------------------------------------------
-      1 |      2,048 |       0.195% |   2.7149e-01   <- underfits: rank too small
-      2 |      4,096 |       0.391% |   1.7225e-01   <- still underfits
-      4 |      8,192 |       0.781% |   3.9308e-08   <- fits! r = true rank
-      8 |     16,384 |       1.562% |   3.4374e-07   <- fits, but 2x the params for nothing
-     32 |     65,536 |       6.250% |   1.8023e-07   <- fits, 8x the params, no better
+      1 |      2,048 |       0.195% |   2.7211e-01   <- underfits: rank too small
+      2 |      4,096 |       0.391% |   1.7230e-01   <- still underfits
+      4 |      8,192 |       0.781% |   8.5932e-07   <- fits! r = true rank (loss drops 5 orders)
+      8 |     16,384 |       1.562% |   2.1496e-07   <- fits, but 2x the params for nothing
+     32 |     65,536 |       6.250% |   1.3950e-07   <- fits, 8x the params, no better
 ```
 
 ![Rank versus the two things it trades off: trainable parameters (green, linear in r — the 2rd cost) and final fit loss (red, log scale). On a task whose true update is rank 4, the loss falls off a cliff exactly at r = 4 and is flat afterward — more rank past the true rank only buys parameters, never quality. Below the true rank, the adapter cannot represent the update and underfits.](../images/lora_rank_vs_fit.png)
@@ -267,7 +271,7 @@ The adapters themselves stay in **bf16** and train normally — the gradient flo
 
 > **Source / derivation:** [Dettmers, Pagnoni, Holtzman & Zettlemoyer, *QLoRA: Efficient Finetuning of Quantized LLMs* (2023)](https://arxiv.org/abs/2305.14314) — introduces NF4, double quantization, and paged optimizers; shows 4-bit base + LoRA matches 16-bit full fine-tuning quality while fitting 65B on a single 48 GB GPU.
 
-![QLoRA's memory win. LoRA on an fp16 base for a 65B model needs ~131 GiB — over a single 80 GB GPU. Quantizing the frozen base to 4-bit NF4 cuts it to ~30 GiB, and with bf16 adapters, paged optimizer state, and activations the whole fine-tune lands around ~40 GiB — comfortably on one GPU.](../images/lora_qlora_memory.png)
+![QLoRA's memory win. LoRA on an fp16 base for a 65B model needs ~131 GiB — far over budget. Quantizing the frozen base to 4-bit NF4 cuts it to ~30 GiB, and with bf16 adapters, paged optimizer state, and activations the whole fine-tune lands around ~40 GiB — under the 48 GB line the QLoRA paper used, i.e. on a single 48 GB GPU.](../images/lora_qlora_memory.png)
 
 The result that made QLoRA famous: **fine-tuning a 65B model on a single GPU**, at quality matching 16-bit full fine-tuning. The combination — *quantize the part you don't train, keep precision on the tiny part you do* — is the template for memory-efficient adaptation.
 

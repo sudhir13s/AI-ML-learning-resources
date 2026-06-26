@@ -23,6 +23,10 @@ import matplotlib
 matplotlib.use("Agg")  # headless backend: write files, never open a window
 import matplotlib.pyplot as plt
 import numpy as np
+import torch
+import torch.nn.functional as F
+
+torch.set_num_threads(1)  # single-threaded -> the delta-growth curve is bit-reproducible (matches lora_peft.py)
 
 # ---- Palette (matches the chapter Mermaid classDefs) --------------------------------
 BLUE = "#3A6B96"
@@ -44,12 +48,12 @@ RANK_SWEEP = (1, 2, 4, 8, 16, 32)
 # Final losses from lora_peft.py's rank sweep (recomputed there; pasted here as the figure's
 # ground truth so the curve matches the script's printed table exactly).
 RANK_SWEEP_LOSS = {
-    1: 2.7149e-01,
-    2: 1.7225e-01,
-    4: 3.9308e-08,
-    8: 3.4374e-07,
-    16: 8.2200e-08,
-    32: 1.8023e-07,
+    1: 2.7211e-01,
+    2: 1.7230e-01,
+    4: 8.5932e-07,
+    8: 2.1496e-07,
+    16: 1.0558e-07,
+    32: 1.3950e-07,
 }
 
 # Figures live in the SHARED chapter images dir (09. LLMs/images/), matching the KV-Cache
@@ -254,8 +258,10 @@ def fig_qlora_memory() -> None:
     ax.bar(cats, [adapters_and_states, adapters_and_states], w,
            bottom=[fp16_base, nf4_base], color=BLUE, zorder=3,
            label="bf16 adapters + paged optim + activations")
-    ax.axhline(80, color=SLATE, linestyle="--", linewidth=1.4, zorder=4)
-    ax.text(1.45, 82, "single 80 GB GPU", ha="right", color=INK)
+    # 48 GB is the QLoRA paper's headline budget (65B fine-tuned on a single 48 GB GPU);
+    # the figure should PROVE that headline, so the budget line is the paper's, not 80 GB.
+    ax.axhline(48, color=SLATE, linestyle="--", linewidth=1.4, zorder=4)
+    ax.text(1.45, 50, "single 48 GB GPU (QLoRA paper)", ha="right", color=INK)
     ax.set_ylabel("memory (GiB), 65B model")
     ax.set_title("QLoRA: 4-bit base shrinks 65B fine-tuning onto one GPU")
     ax.text(0, fp16_base + adapters_and_states + 3, f"~{fp16_base + adapters_and_states:.0f} GiB",
@@ -267,6 +273,57 @@ def fig_qlora_memory() -> None:
     _save(fig, "lora_qlora_memory.png")
 
 
+def fig_delta_growth() -> None:
+    """max|ΔW| over training steps: starts at exactly 0 (B=0 init), then grows as B leaves zero.
+
+    Reproduces lora_peft.py's training setup (same SEED, constants, and init order) so the curve
+    is the chapter's own number: ΔW = 0 at step 0, then the adapter walks away from the
+    pretrained point. This is the figure the B=0/init caption belongs to.
+    """
+    seed = 0
+    rank, alpha = LORA_RANK, 16  # alpha = 16 as in lora_peft.py / the page
+    scaling = alpha / rank
+    n_samples, true_rank, steps = 256, TRUE_RANK, 300
+
+    torch.manual_seed(seed)
+    # Same construction order as LoRALinear.__init__ then make_synthetic_task in lora_peft.py.
+    weight = torch.randn(OUT_FEATURES, IN_FEATURES) * 0.02     # frozen W (consumes RNG first)
+    lora_a = torch.empty(rank, IN_FEATURES)
+    lora_b = torch.zeros(OUT_FEATURES, rank)                    # B = 0 -> ΔW = 0 at init
+    torch.nn.init.kaiming_uniform_(lora_a, a=5**0.5)
+    lora_a.requires_grad_(True)
+    lora_b.requires_grad_(True)
+
+    torch.manual_seed(seed)  # make_synthetic_task re-seeds, exactly as in lora_peft.py
+    base_weight = torch.randn(OUT_FEATURES, IN_FEATURES) * 0.02
+    u = torch.randn(OUT_FEATURES, true_rank) * 0.1
+    v = torch.randn(true_rank, IN_FEATURES) * 0.1
+    x = torch.randn(n_samples, IN_FEATURES)
+    y = F.linear(x, base_weight + u @ v)
+    weight = base_weight  # the layer adapts this frozen base
+
+    optimizer = torch.optim.Adam([lora_a, lora_b], lr=1e-2)
+    delta_max = []
+    for _ in range(steps + 1):  # record step 0 (pre-update) through step `steps`
+        delta_max.append(((lora_b @ lora_a) * scaling).abs().max().item())
+        optimizer.zero_grad()
+        update = F.linear(F.linear(x, lora_a), lora_b) * scaling
+        F.mse_loss(F.linear(x, weight) + update, y).backward()
+        optimizer.step()
+
+    fig, ax = plt.subplots(figsize=(7, 4.2))
+    ax.plot(range(len(delta_max)), delta_max, color=PURPLE, linewidth=2.2, zorder=4)
+    ax.scatter([0], [delta_max[0]], color=GREEN, s=70, zorder=6)
+    ax.annotate(f"step 0: max|ΔW| = {delta_max[0]:.0f}\n(B = 0 → ΔW = 0:\nstarts at the pretrained model)",
+                xy=(0, delta_max[0]), xytext=(35, max(delta_max) * 0.55),
+                color=INK, arrowprops=dict(arrowstyle="->", color=SLATE))
+    ax.set_xlabel("training step")
+    ax.set_ylabel(r"max$|\Delta W|= $ max$|(\alpha/r)\,B\!\cdot\!A|$")
+    ax.set_title("ΔW starts at exactly 0 (B=0 init), then grows as the adapter learns")
+    _style_axis(ax)
+    _save(fig, "lora_delta_growth.png")
+
+
 def main() -> None:
     fig_param_comparison()
     fig_param_vs_rank()
@@ -274,6 +331,7 @@ def main() -> None:
     fig_optimizer_memory()
     fig_multi_lora_storage()
     fig_qlora_memory()
+    fig_delta_growth()
     print("all figures written to", OUT_DIR)
 
 

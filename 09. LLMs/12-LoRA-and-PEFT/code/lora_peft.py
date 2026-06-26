@@ -27,6 +27,11 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+# Pin to a single CPU thread: multi-threaded matmul reduction ordering is non-deterministic
+# across processes, which perturbs the ~1e-7 sweep losses. Single-threaded reduction is
+# bit-reproducible, so this script, the notebook, and the figure print IDENTICAL numbers.
+torch.set_num_threads(1)
+
 # ---- Hyperparameters (hoisted, named -- the knobs the page discusses) -----------------
 IN_FEATURES = 1024  # d: input width of the wrapped linear layer
 OUT_FEATURES = 1024  # k: output width (square here so the d^2 vs 2rd contrast is clean)
@@ -38,7 +43,7 @@ LEARNING_RATE = 1e-2
 N_SAMPLES = 256  # rows in the tiny synthetic dataset
 TRUE_RANK = 4  # the synthetic target update is genuinely low-rank (rank 4) -- LoRA's premise
 RANK_SWEEP = (1, 2, 4, 8, 16, 32)  # ranks compared in the params-vs-fit sweep
-MERGE_ATOL = 1e-5  # merged vs unmerged outputs feed identical math; only float rounding differs
+MERGE_ATOL = 1e-4  # merged vs unmerged feed identical math; the ~8e-6 gap is the fp32 accumulation floor (two-matmul vs one-matmul ordering), so 1e-4 sits 4+ orders below any real merge bug while not being thin on float noise
 
 # Detect the best accelerator for honesty in the printout, but pin the reproducible trace to
 # CPU so the numbers below are bit-stable across machines (the strict device-honesty rule).
@@ -173,6 +178,10 @@ def rank_sweep(x: torch.Tensor, y: torch.Tensor) -> list[tuple[int, int, float]]
     """For each rank r: (r, trainable params, final loss) -- the params-vs-fit tradeoff."""
     rows: list[tuple[int, int, float]] = []
     for r in RANK_SWEEP:
+        # Re-seed before EACH swept layer so the sweep is independent of prior RNG state --
+        # this makes the numbers identical here, in the notebook, and in the figure generator
+        # (the reproducibility rule: page == notebook == .py == figure).
+        torch.manual_seed(SEED)
         layer = LoRALinear(IN_FEATURES, OUT_FEATURES, rank=r, alpha=LORA_ALPHA).to(DEVICE)
         layer.weight.data.copy_(BASE_WEIGHT)  # same frozen base for every rank -> fair comparison
         trainable, _ = count_parameters(layer)
