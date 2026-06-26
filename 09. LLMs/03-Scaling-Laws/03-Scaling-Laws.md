@@ -53,6 +53,8 @@ There is one more structural fact baked into the curve. Text has an **irreducibl
 
 $$L \;=\; \underbrace{E}_{\text{irreducible (data entropy)}} \;+\; \underbrace{\text{(power-law term)}}_{\text{reducible by scale}}.$$
 
+*Source / derivation: the irreducible + reducible decomposition is from [Henighan et al. 2020 (arXiv 2010.14701)](https://arxiv.org/abs/2010.14701) and formalized as the $E$ term in [Hoffmann et al. 2022 — Chinchilla (arXiv 2203.15556)](https://arxiv.org/abs/2203.15556).*
+
 ![Test loss vs compute on log-log axes. The reducible part is a straight line (a power law over many orders of magnitude); the total loss bends toward — but never crosses — the irreducible floor E, the entropy of the data. This straight-line predictability over 10 orders of magnitude is what makes giant runs plannable.](../images/scaling_power_law.png)
 
 > **Gotcha:** a frequent misconception is "scale enough and loss → 0." It cannot. Loss bottoms out at $E$, the data's entropy — typically well above zero (for English web text, on the order of ~1.7 nats/token in these fits). Scaling buys you the *reducible* part only. When someone shows a scaling curve that looks like it's flattening, ask whether it's approaching the irreducible floor (fundamental) or just running out of one resource while another is held fixed (fixable) — those look similar on a plot but mean opposite things.
@@ -64,6 +66,8 @@ $$L \;=\; \underbrace{E}_{\text{irreducible (data entropy)}} \;+\; \underbrace{\
 The foundational paper — **Kaplan et al., "Scaling Laws for Neural Language Models" (2020)** — trained a large grid of transformers and found that when you hold everything else generous and bottleneck on *one* resource at a time, the loss is a clean power law in that resource. Three laws, one per knob:
 
 $$L(N) \approx \left(\frac{N_c}{N}\right)^{\alpha_N}, \qquad L(D) \approx \left(\frac{D_c}{D}\right)^{\alpha_D}, \qquad L(C) \approx \left(\frac{C_c}{C}\right)^{\alpha_C}.$$
+
+*Source / derivation: the three single-resource power laws (and the fitted exponents $\alpha_N \approx 0.076$, $\alpha_D \approx 0.095$, $\alpha_C \approx 0.057$) are from [Kaplan et al. 2020 (arXiv 2001.08361)](https://arxiv.org/abs/2001.08361), §3–4.*
 
 Reading these symbol by symbol:
 
@@ -78,6 +82,8 @@ The exponents are *small* — that's why each factor-of-10 in resource only shav
 When **two** resources are limited at once, the losses combine. Kaplan proposed (and Chinchilla later refined) a **joint parametric form** that is the single most important equation to memorize on this topic:
 
 $$\boxed{\,L(N, D) \;=\; E \;+\; \frac{A}{N^{\alpha}} \;+\; \frac{B}{D^{\beta}}\,}$$
+
+*Source / derivation: the joint parametric form was proposed by [Kaplan et al. 2020 (arXiv 2001.08361)](https://arxiv.org/abs/2001.08361) and re-fit by [Hoffmann et al. 2022 — Chinchilla (arXiv 2203.15556)](https://arxiv.org/abs/2203.15556), whose Approach-3 fit gives $E \approx 1.69$, $A \approx 406$, $B \approx 411$, $\alpha \approx 0.34$, $\beta \approx 0.28$.*
 
 - $E$ — the **irreducible loss**, the entropy floor (Chinchilla fit $E \approx 1.69$).
 - $A/N^{\alpha}$ — the loss you pay for having a **finite model** (limited capacity); vanishes as $N \to \infty$.
@@ -96,6 +102,8 @@ You can't talk about a *compute* budget without a formula linking compute to $N$
 
 $$\boxed{\,C \approx 6 \, N \, D\,}$$
 
+*Source / derivation: the $C \approx 6ND$ estimate is from the FLOP accounting in [Kaplan et al. 2020, Appendix (arXiv 2001.08361)](https://arxiv.org/abs/2001.08361); the per-piece count below is derived here and matches [EleutherAI — Transformer Math 101](https://blog.eleuther.ai/transformer-math/).*
+
 — total training FLOPs ≈ 6 × parameters × tokens. The factor **6** is not magic; it falls out of counting operations, and you should be able to derive it on a whiteboard. Here's the count, in three pieces.
 
 **Piece 1 — the forward pass costs ~2 FLOPs per parameter per token.** Almost all the compute in a transformer is in the big matrix multiplies (the attention projections and the MLP layers); element-wise ops, norms, and softmax are negligible by comparison. Consider one weight $w$ in a matmul. To use it for one token, the hardware does exactly **two** floating-point operations: **one multiply** ($w \times \text{input}$) and **one add** (accumulate that product into the running sum). A "multiply-accumulate" is 2 FLOPs by the standard convention. Every one of the $N$ parameters participates in one multiply-accumulate per token. So:
@@ -109,6 +117,8 @@ $$\text{backward FLOPs} \approx 4 N \quad \text{per token.}$$
 **Piece 3 — add them.** Per token, forward + backward ≈ $2N + 4N = 6N$ FLOPs. Multiply by $D$ tokens of training:
 
 $$C \;\approx\; \underbrace{6}_{2\,\text{fwd}\,+\,4\,\text{bwd}} \times N \times D.$$
+
+*Source / derivation: the 2N (forward) + 4N (backward) per-token count is derived above from first principles, following [Kaplan et al. 2020, Appendix B (arXiv 2001.08361)](https://arxiv.org/abs/2001.08361) and [EleutherAI — Transformer Math 101](https://blog.eleuther.ai/transformer-math/).*
 
 > **Note:** the "6" bundles three approximations: (i) only the matmul FLOPs count (true to a few %); (ii) backward = 2× forward (standard for dense transformers); (iii) the attention-score computation ($O(\text{seq}^2)$) is folded in as negligible — fine when the model dimension dwarfs the sequence length, which holds for most pretraining. For very long context, attention FLOPs stop being negligible and the effective factor creeps above 6. For interviews and budget math, **6ND is the right number**; quote the caveats to show you know where it comes from.
 
@@ -142,6 +152,8 @@ Let's actually find that minimum. Minimize the parametric loss subject to the co
 
 $$\min_{N, D} \; L(N, D) = E + \frac{A}{N^{\alpha}} + \frac{B}{D^{\beta}} \qquad \text{subject to} \qquad 6ND = C.$$
 
+*Source / derivation: the constrained-minimization (compute-optimal) argument is from [Hoffmann et al. 2022 — Chinchilla (arXiv 2203.15556)](https://arxiv.org/abs/2203.15556), Approach 3; the substitution and differentiation steps below are worked out here.*
+
 Use the constraint to eliminate $D = \dfrac{C}{6N}$ and substitute:
 
 $$L(N) = E + \frac{A}{N^{\alpha}} + B\left(\frac{6N}{C}\right)^{\beta} = E + A\,N^{-\alpha} + B\left(\frac{6}{C}\right)^{\beta} N^{\beta}.$$
@@ -164,6 +176,8 @@ The exponents must sum to 1 (since $N \cdot D \propto C$). With Chinchilla's fit
 
 $$\boxed{\,N^\ast \propto C^{0.5}, \qquad D^\ast \propto C^{0.5}\,}$$
 
+*Source / derivation: the equal ($\approx C^{0.5}$) compute-optimal exponents are the central result of [Hoffmann et al. 2022 — Chinchilla (arXiv 2203.15556)](https://arxiv.org/abs/2203.15556) (Approaches 1–2 give 0.50/0.50; Approach 3 gives 0.46/0.54); the derivation above recovers them from the parametric fit.*
+
 **Scale model and data *equally* as your budget grows.** Double-and-double, not all-into-size. (The code below recovers fitted exponents ≈ 0.45/0.55 from the parametric fit and ≈ 0.50/0.50 from the equal-exponent regime.)
 
 > **Note:** the *equal* (0.5/0.5) exponents are what Chinchilla's iso-FLOP "Approach 1 & 2" found empirically and what gives a perfectly *constant* tokens-per-parameter ratio. The *parametric* "Approach 3" fit (the $\alpha, \beta$ above) gives 0.45/0.55, a ratio that drifts slowly upward with scale. The three approaches roughly agree, and the field rounds to **0.5/0.5 and ~20 tokens/param** as the working rule. Don't be surprised that different methods in the *same paper* give slightly different exponents — that's the messy reality, and naming it is a sign you actually read the paper.
@@ -173,6 +187,8 @@ $$\boxed{\,N^\ast \propto C^{0.5}, \qquad D^\ast \propto C^{0.5}\,}$$
 Because $N^\ast$ and $D^\ast$ both scale like $\sqrt{C}$, their **ratio $D^\ast/N^\ast$ is roughly constant** across budgets — and Chinchilla's fits put that constant near **20**:
 
 $$\frac{D^\ast}{N^\ast} \;\approx\; \mathbf{20\ \text{tokens per parameter}.}$$
+
+*Source / derivation: the ~20 tokens-per-parameter rule follows from the equal-exponent result and is reported directly in [Hoffmann et al. 2022 — Chinchilla (arXiv 2203.15556)](https://arxiv.org/abs/2203.15556), Table 3.*
 
 ![Left: compute-optimal N* and D* each grow like the square root of the budget (parallel lines on log-log, matching the C^0.5 guide). Right: their ratio D*/N* is essentially flat at ~20 tokens per parameter across eight orders of magnitude of compute — the famous Chinchilla rule.](../images/chinchilla_allocation.png)
 
@@ -186,7 +202,11 @@ There's a second, complementary way to use $L(N,D) = E + A/N^{\alpha} + B/D^{\be
 
 $$L^\ast(C) \;=\; E \;+\; \left(\frac{C_c}{C}\right)^{\alpha_C}, \qquad \alpha_C = \frac{\alpha\beta}{\alpha+\beta}.$$
 
-This is the deep reason Kaplan's $L(C)$ law and the Chinchilla parametric law are the *same physics seen two ways*: the compute law is just the joint law *evaluated along its own optimum*. The compute exponent $\alpha_C = \frac{\alpha\beta}{\alpha+\beta}$ is the **harmonic-mean-like combination** of the model and data exponents — always *smaller* than either, which is why returns to raw compute (≈0.05) are even weaker than returns to model size or data alone. Two cheap knobs, combined, give a stingy third.
+*Source / derivation: that the compute law is the joint law evaluated along its own optimum (and $\alpha_C$ the harmonic-mean-like combination) is derived here; the $L(C)$ power law itself is from [Kaplan et al. 2020 (arXiv 2001.08361)](https://arxiv.org/abs/2001.08361) and [Hoffmann et al. 2022 (arXiv 2203.15556)](https://arxiv.org/abs/2203.15556).*
+
+This is the deep reason Kaplan's $L(C)$ law and the Chinchilla parametric law are the *same physics seen two ways*: the compute law is just the joint law *evaluated along its own optimum*. The compute exponent $\alpha_C = \frac{\alpha\beta}{\alpha+\beta}$ is the **harmonic-mean-like combination** of the model and data exponents — always *smaller* than either, which is why returns to raw compute are even weaker than returns to model size or data alone. Two cheap knobs, combined, give a stingy third.
+
+> **Note (which numbers go in the formula):** the *form* $\alpha_C = \frac{\alpha\beta}{\alpha+\beta}$ holds whatever exponents you plug in, but the two papers fit *different* exponents to *different* quantities, so they give different $\alpha_C$. Kaplan's **single-resource** exponents ($\alpha_N\approx0.076$, $\alpha_D\approx0.095$) combine to $\frac{0.076\cdot0.095}{0.076+0.095}\approx\mathbf{0.042}$ — matching Kaplan's *directly fitted* compute exponent $\alpha_C\approx0.057$ (the ≈0.05 we quote for the $L(C)$ law and use in Worked Example 3). Chinchilla's **reducible-loss** exponents ($\alpha\approx0.34$, $\beta\approx0.28$) are a *different parameterization* of the same surface and combine to $\frac{0.34\cdot0.28}{0.34+0.28}\approx0.15$. Don't read Chinchilla's 0.34/0.28 as drop-in replacements for Kaplan's 0.076/0.095 — they answer different questions (reducible-loss decay vs. single-resource decay), which is exactly why their numeric $\alpha_C$ differ. The *small* compute exponent that drives the brutal frontier economics is Kaplan's ≈0.05.
 
 > **Note:** this is also why you must *jointly* scale to stay on the frontier. If you scale only $N$ (the Kaplan instinct), you slide *off* the valley floor up the right wall of the iso-compute curve, and your effective exponent collapses toward the *data*-limited regime — you're paying for compute but moving along the wrong axis. Staying on the line $D = 20N$ is what keeps you realizing the full $\alpha_C$.
 
@@ -265,6 +285,8 @@ graph TD
     classDef danger fill:#8B3B4A,stroke:#7B2B3A,color:#fff
 ```
 
+*The allocation decision in one picture: a fixed budget $C$ forks on the objective. Optimizing the **training** run alone gives Chinchilla-optimal ($N^\ast, D^\ast \propto \sqrt{C}$, ~20 tokens/param); optimizing **lifetime** cost (heavy inference) gives the inference-aware path (smaller $N$, over-trained, $D \gg 20N$). Either way you pick $(N,D)$ on $6ND=C$ and read the predicted $L^\ast$ off the power law — and as $D$ grows toward the high-quality token supply, the **data wall** (dashed) forces repetition, synthesis, or new modalities.*
+
 > **Note:** "GPT-3 was undertrained" is *the* canonical Chinchilla soundbite, but state it precisely: GPT-3 was undertrained **relative to its size, for its compute budget** — given its ~$3.15\times10^{23}$ FLOPs, a Chinchilla-optimal model would have been *smaller* (~30–40B params) trained on *far more* tokens (~1T), and would have reached *lower* loss for the same money. It wasn't a bad model; it was a *misallocated* one. The compute was real; the split was wrong.
 
 > **Tip:** there's a hidden bonus in the Chinchilla allocation that the loss number alone hides: the optimal model is **smaller**, so it is also **cheaper and faster to serve** — fewer parameters means less memory and fewer FLOPs per token at inference. Chinchilla didn't just train to lower loss; it produced a model that is better *and* cheaper to run. That observation is the seam where the next idea — inference-aware scaling — pries the rule open.
@@ -308,6 +330,8 @@ The most contested corner of scaling. **Wei et al., "Emergent Abilities of Large
 
 This is in real tension with the smoothness of scaling laws. Loss is *smooth* in scale; how can capabilities be *discontinuous*? **Schaeffer et al., "Are Emergent Abilities of Large Language Models a Mirage?" (2023)** proposed a deflating explanation: emergence is often an artifact of the **metric**, not the model. Many "emergent" tasks are scored with **discontinuous, all-or-nothing** metrics — exact-match accuracy, or "get all $k$ tokens right." Under such a metric, a model whose *per-token* correctness is improving **smoothly** will show **near-zero** task accuracy until the per-token probability crosses a threshold, then a **sudden** jump — purely because $p^k$ (probability all $k$ tokens are right) stays tiny until $p$ gets large, then shoots up. Swap to a **continuous** metric (per-token log-likelihood, partial credit, token edit distance) and the *same* runs reveal **smooth, predictable** improvement. The "emergence" was in the ruler, not the model.
 
+*Source / derivation: the emergence phenomenon is documented in [Wei et al. 2022 (arXiv 2206.07682)](https://arxiv.org/abs/2206.07682); the metric-artifact ($p \to p^k$) explanation is from [Schaeffer et al. 2023 — "Are Emergent Abilities a Mirage?" (arXiv 2304.15004)](https://arxiv.org/abs/2304.15004).*
+
 ![The same underlying capability under two metrics. Left: exact-match accuracy (a discontinuous, all-k-tokens-right metric) shows a sharp 'emergent' jump. Right: a continuous metric (per-token correctness probability) on the identical models shows smooth, predictable improvement. Schaeffer et al.'s point: the sharpness can be an artifact of the metric, not a property of the model.](../images/emergent_abilities.png)
 
 The honest, current understanding holds **both** sides:
@@ -350,6 +374,27 @@ The script below fits $L(N) = E + A/N^{\alpha_N}$ to a ladder of six model sizes
 Fitting a straight line to $\log(L - E)$ vs $\log N$ recovers **$\alpha_N \approx 0.30$** (ground truth 0.30) — a clean power law over more than two orders of magnitude in $N$. The same plot, run on a real corpus, gives the left panel of the first diagram: **a straight line on log-log.** Once you have that line, you extrapolate it (Worked Example 3) to a model far bigger than any you trained — *that* is the entire trick that lets labs commit to nine-figure runs.
 
 > **Tip:** the recipe generalizes exactly. Pick the smallest models you can train cheaply, span as wide a range of $N$ (or $C$) as you can afford, **fit the line**, and **extrapolate**. The wider your fitted range and the straighter your line, the more you can trust the extrapolation. If your points *don't* fall on a line, something is wrong (bad LR schedule, data leakage, a bottleneck you didn't control) — fix it before trusting any prediction.
+
+This is the loop that makes a nine-figure run a calculated bet rather than a gamble:
+
+```mermaid
+graph LR
+    LAD["train a LADDER<br/>of cheap small runs<br/>(span wide N or C)"]:::data --> FIT["FIT the power law<br/>log L-E vs log N<br/>→ recover the exponent"]:::process
+    FIT --> STRAIGHT{"points fall on<br/>a straight line?"}
+    STRAIGHT -->|"no — bug:<br/>LR schedule,<br/>leakage, bottleneck"| LAD
+    STRAIGHT -->|"yes"| EXT["EXTRAPOLATE the line<br/>to the big budget C<br/>→ predicted L*"]:::amber
+    EXT --> ALLOC["ALLOCATE: pick N,D<br/>on 6ND=C<br/>(~20:1, or inference-aware)"]:::process
+    ALLOC --> LAUNCH(["LAUNCH big run;<br/>checkpoint at each<br/>intermediate scale"]):::out
+    LAUNCH -.->|"a checkpoint<br/>falls OFF the line<br/>→ regime changed"| STOP["STOP & re-fit<br/>(data wall? new regime?)"]:::danger
+
+    classDef data fill:#3A6B96,stroke:#2A5B86,color:#fff
+    classDef process fill:#5D4A8A,stroke:#4D3A7A,color:#fff
+    classDef amber fill:#7A6528,stroke:#6A5518,color:#fff
+    classDef out fill:#2E7A5A,stroke:#1E6A4A,color:#fff
+    classDef danger fill:#8B3B4A,stroke:#7B2B3A,color:#fff
+```
+
+*The de-risking loop, end to end. Cheap small runs fit the line; a non-straight fit means a bug, not a law, so you debug and re-ladder. A straight line extrapolates to the big budget's predicted loss; you allocate $(N,D)$ on $6ND=C$ and launch — but keep **checkpointing at intermediate scales**, because the one time the line bends (the data wall, a new regime) is the one time a blind extrapolation costs you the whole budget. The line is your best prior, not a contract.*
 
 ---
 
@@ -395,6 +440,8 @@ Fitting a straight line to $\log(L - E)$ vs $\log N$ recovers **$\alpha_N \appro
 ## Code: derive the constants and fit the law
 
 This script does the four computations the page relies on — $C = 6ND$, the Chinchilla-optimal allocation, the loss extrapolation, and fitting the power-law exponent from a measured ladder — so every number above is reproducible. It runs on CPU in under a second; no GPU needed.
+
+> **Runnable project and a step-by-step notebook:** the same verified demos live as a clean, device-agnostic script and an executed teaching notebook next to this page — see the [step-by-step teaching notebook](code/03-Scaling-Laws.ipynb) and the [runnable demo script](code/scaling_laws.py) (run it with `python scaling_laws.py`). The script fits the power law (recovers $\alpha_N \approx 0.30$), finds the compute-optimal U-curve minimum (the ~20 tokens/param rule), and works the $6ND$ calculator on GPT-3 and Chinchilla — with asserts that pin every number.
 
 ```python
 """Scaling laws, end to end: C=6ND, Chinchilla allocation, extrapolation, exponent fit.
@@ -453,7 +500,7 @@ Output (CPU, <1 s):
 
 > **Note:** the parametric fit in `[2]` reports a $D/N$ above 20 (56–98) because the *parametric* (Approach-3) exponents 0.34/0.28 aren't exactly equal — its optimal ratio drifts upward with scale. The simple-rule estimate (equal-exponent, 0.5/0.5) gives the canonical **~20:1** and the 5B/100B allocation. Both are "Chinchilla"; the field quotes the simple rule. This is the real-paper subtlety from the note above, made concrete in numbers.
 
-> **Tip:** to run the *actual* mini scaling experiment (train a ladder of tiny transformers and fit the line on a real corpus, producing the log-log straight line) and to regenerate all four figures on this page, see `tools/gen_scaling_laws_diagrams.py`. Swap the synthetic loss in step `[4]` for losses you measure from your own training loop and the same `polyfit` recovers *your* exponent.
+> **Tip:** to run the *actual* mini scaling experiment, swap the synthetic loss in step `[4]` (or in the [teaching notebook](code/03-Scaling-Laws.ipynb)) for losses you measure from your own training loop — a ladder of tiny transformers on a real corpus — and the same log-log fit recovers *your* exponent and produces the straight line. The wider the range of $N$ you span and the straighter your line, the further you can trust the extrapolation.
 
 ---
 

@@ -21,7 +21,7 @@ updated: 2026-06-22
 - [Understanding LLM Chinchilla Scaling Laws](https://www.youtube.com/watch?v=TYCw8QSNT9w) — **Cloudvala** — the compute-optimal idea, visually and concretely; the best short explainer of the N-vs-D split.
 - [Deep Dive into LLMs like ChatGPT](https://www.youtube.com/watch?v=7xTGNNLPyMI) — **Andrej Karpathy** — scaling laws in the context of the full LLM training pipeline.
 - [Intro to Large Language Models](https://www.youtube.com/watch?v=zjkBMFhNj_g) — **Andrej Karpathy** — the "scaling laws are remarkably smooth and predictable" insight in plain terms.
-- [Scaling Laws — Stanford CS25 / guest lectures](https://www.youtube.com/watch?v=UFem7xa3Q2Q) — **Stanford CS25** — the research framing of why loss is a power law and how it's used to plan runs.
+- [Stanford CS224N — Guest Lecture: Scaling Language Models](https://www.youtube.com/watch?v=UFem7xa3Q2Q) — **Stanford Online** — the research framing of why loss is a power law and how scaling laws are used to plan runs.
 
 **Courses (free)**:
 - [Stanford CS324 — Large Language Models](https://stanford-cs324.github.io/winter2022/) — **Stanford (Liang, Hashimoto, et al.)** — derives and interprets the power-law fits in a full LLM course.
