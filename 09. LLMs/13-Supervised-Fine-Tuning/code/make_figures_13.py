@@ -33,6 +33,7 @@ import torch.nn.functional as F
 # Reuse the EXACT demo machinery so figures and the script can never disagree.
 from supervised_fine_tuning import (
     DEMOS,
+    EOS,
     IGNORE_INDEX,
     LEARNING_RATE,
     N_SFT_STEPS,
@@ -166,13 +167,15 @@ def fig_training_curve() -> None:
     vocab_size = len(stoi)
     examples = [build_example(i, r, stoi, "cpu") for i, r in DEMOS]
     max_len = max(ex[0].size(0) for ex in examples)
-    pad_id = 0
+    pad_id = stoi[EOS]  # SAME pad_id as supervised_fine_tuning.py + the notebook (cross-file consistency)
     batch_inputs = torch.full((len(examples), max_len), pad_id, dtype=torch.long)
     batch_labels = torch.full((len(examples), max_len), IGNORE_INDEX, dtype=torch.long)
     for row, (ids, labs, _) in enumerate(examples):
         batch_inputs[row, : ids.size(0)] = ids
         batch_labels[row, : labs.size(0)] = labs
 
+    # build the model RIGHT after the seed above (no intervening forward pass), identical to
+    # the .py training block -> RNG-identical init -> the SAME trace in all four places.
     model = TinyCausalLM(vocab_size)
     model.train()
     optimizer = torch.optim.AdamW(model.parameters(), lr=LEARNING_RATE)

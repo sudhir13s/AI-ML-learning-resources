@@ -29,7 +29,6 @@ import torch.nn.functional as F
 
 # ---- Hyperparameters (hoisted; one source of truth for the page + notebook + figures) ----
 IGNORE_INDEX = -100  # PyTorch cross-entropy skips any target position equal to this
-VOCAB_SIZE = 0  # filled in once the toy tokenizer is built (kept here for grouping)
 D_MODEL = 64  # tiny embedding/hidden width -- enough to train in seconds on CPU
 N_HEADS = 4
 HEAD_DIM = D_MODEL // N_HEADS  # 16
@@ -237,6 +236,12 @@ def main() -> None:
     print("assert OK: masked loss == response-only average, and != loss-on-all-tokens")
 
     # ---- Run a few SFT steps; watch the RESPONSE-token loss drop -------------------------
+    # Re-seed and build a FRESH model right before training so the printed loss trace is
+    # identical across this script, the notebook, and make_figures_13.py regardless of how many
+    # forward passes ran above (dropout advances the global RNG). This makes the trace the
+    # single canonical SFT result quoted on the page, in the figure caption, and the notebook.
+    torch.manual_seed(SEED)
+    model = TinyCausalLM(vocab_size).to(train_device)
     model.train()
     optimizer = torch.optim.AdamW(model.parameters(), lr=LEARNING_RATE)
     examples = [build_example(i, r, stoi, train_device) for i, r in DEMOS]
