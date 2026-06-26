@@ -1,16 +1,18 @@
 """Reproducible figure generator for the Quantization chapter.
 
 Renders every original PNG used on the page into ../images/, with a muted palette that matches
-the chapter's Mermaid colors. Numbers here are derived from the same constants/algorithms as
-quantization.py, so the figures and the prose stay in lockstep. Re-run after any numeric change:
+the chapter's Mermaid colors. The quantitative figures (outlier-error bars, error-vs-bits) call
+the SAME seeded-torch routines as quantization.py — imported below — so the plotted numbers are
+bit-identical in provenance to the code the page cites. Re-run after any numeric change:
 
     python make_figures.py
 
-Verified on Python 3.12 / matplotlib 3.x. CPU only, deterministic (seeded).
+Verified on Python 3.12 / matplotlib 3.x, torch 2.x. CPU only, deterministic (seeded).
 """
 
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 
 import matplotlib
@@ -18,6 +20,12 @@ import matplotlib
 matplotlib.use("Agg")  # headless: write PNGs, never open a window
 import matplotlib.pyplot as plt
 import numpy as np
+import torch
+
+# Share ONE source of truth with the demo: import the seeded-torch quantizers and constants
+# from quantization.py so the figures plot exactly what the code/notebook/page report.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import quantization as q  # noqa: E402  (path set above)
 
 # Muted palette mirroring the chapter's Mermaid classDefs (all readable on white).
 BLUE = "#3A6B96"
@@ -116,35 +124,29 @@ def fig_weight_histogram_bins() -> str:
     return out.name
 
 
-def _quant_per_tensor(w: np.ndarray) -> np.ndarray:
-    s = np.abs(w).max() / INT8_QMAX
-    return np.clip(np.round(w / s), -INT8_QMAX, INT8_QMAX) * s
+def _outlier_matrix() -> torch.Tensor:
+    """Rebuild quantization.py §2's matrix EXACTLY: same seed, shape, and outlier column.
 
-
-def _quant_per_row(w: np.ndarray) -> np.ndarray:
-    s = np.abs(w).max(axis=1, keepdims=True) / INT8_QMAX
-    s = np.where(s == 0, 1.0, s)
-    return np.clip(np.round(w / s), -INT8_QMAX, INT8_QMAX) * s
-
-
-def _quant_per_group_cols(w: np.ndarray, group: int) -> np.ndarray:
-    rows, cols = w.shape
-    wg = w.reshape(rows, cols // group, group)
-    s = np.abs(wg).max(axis=-1, keepdims=True) / INT8_QMAX
-    s = np.where(s == 0, 1.0, s)
-    return (np.clip(np.round(wg / s), -INT8_QMAX, INT8_QMAX) * s).reshape(rows, cols)
+    Reproduces the §2 draw order bit-for-bit (seed 0 -> randn(8,128)*0.1, then column 17 set to
+    randn(8)*10.0) so the figure plots the same numbers the code/notebook/page report.
+    """
+    torch.manual_seed(SEED)
+    w = torch.randn(8, 128) * 0.1            # matches quantization.py §2: tame weights ~ N(0, 0.1)
+    w[:, 17] = torch.randn(8) * 10.0         # the one ~100x-louder column, in every row
+    return w
 
 
 def fig_outlier_error_bars() -> str:
-    """Reconstruction error: per-tensor vs per-channel vs per-group, under a column outlier."""
-    rng = np.random.default_rng(SEED)
-    rows, cols = 8, 128
-    w = rng.normal(0, 0.1, size=(rows, cols))
-    w[:, 17] = rng.normal(0, 10.0, size=rows)  # one loud column across all rows
+    """Reconstruction error: per-tensor vs per-channel vs per-group, under a column outlier.
+
+    Uses the SAME seeded-torch quantizers as quantization.py §2, so the bars read the cited
+    numbers (per-tensor 0.031840 / per-channel 0.016886 / per-group 0.002333).
+    """
+    w = _outlier_matrix()
     err = {
-        "per-tensor\n(1 scale)": np.abs(w - _quant_per_tensor(w)).mean(),
-        "per-channel\n(1 / row)": np.abs(w - _quant_per_row(w)).mean(),
-        "per-group\n(1 / 16 cols)": np.abs(w - _quant_per_group_cols(w, 16)).mean(),
+        "per-tensor\n(1 scale)": q.reconstruction_error(w, q.quantize_per_tensor_int8(w)),
+        "per-channel\n(1 / row)": q.reconstruction_error(w, q.quantize_per_channel_int8(w)),
+        "per-group\n(1 / 16 cols)": q.reconstruction_error(w, q.quantize_group_wise_int8(w, 16)),
     }
     fig, ax = plt.subplots(figsize=(6.6, 3.8))
     labels = list(err.keys())
@@ -196,7 +198,7 @@ def fig_outlier_heatmap() -> str:
 
 def fig_int4_memory_bars() -> str:
     """Llama-2-70B memory across fp16 / int8 / int4(group) — the headline reduction."""
-    b_int4 = INT4_QMAX and (4 / 8 + FP16_BYTES / GROUP_SIZE)  # 0.5 code + scale overhead = 0.5312
+    b_int4 = 4 / 8 + FP16_BYTES / GROUP_SIZE  # 0.5 byte code + fp16 scale per group = 0.5312
     params = 70e9
     precisions = ["fp16", "int8", "int4\n(group-64)"]
     bpp = [FP16_BYTES, 1.0, b_int4]
@@ -225,19 +227,24 @@ def fig_int4_memory_bars() -> str:
 
 
 def fig_error_vs_bits() -> str:
-    """Reconstruction error vs bit-width for group-wise weight quantization (measured here)."""
-    rng = np.random.default_rng(SEED)
-    w = rng.normal(0, 0.1, size=(256, 1024))
+    """Reconstruction error vs bit-width for group-wise weight quantization.
+
+    Uses the SAME seeded-torch weight block as quantization.py §3 (seed 0, randn(256,1024)*0.1,
+    group=64), so the 4-bit point reads exactly the cited 0.009132.
+    """
+    torch.manual_seed(SEED)
+    w = torch.randn(256, 1024) * 0.1          # matches quantization.py §3 exactly
     group = GROUP_SIZE
+    rows, cols = w.shape
     bits_list = [8, 6, 5, 4, 3, 2]
     errs = []
     for b in bits_list:
-        qmax = (1 << (b - 1)) - 1
-        wg = w.reshape(256, 1024 // group, group)
-        s = np.abs(wg).max(axis=-1, keepdims=True) / qmax
-        s = np.where(s == 0, 1.0, s)
-        w_hat = (np.clip(np.round(wg / s), -qmax, qmax) * s).reshape(256, 1024)
-        errs.append(np.abs(w - w_hat).mean())
+        qmax = (1 << (b - 1)) - 1             # signed symmetric max for b bits
+        wg = w.view(rows, cols // group, group)
+        s = wg.abs().amax(dim=-1, keepdim=True) / qmax            # one scale per group
+        s = torch.where(s == 0, torch.ones_like(s), s)
+        w_hat = (torch.clamp(torch.round(wg / s), -qmax, qmax) * s).view(rows, cols)
+        errs.append(q.reconstruction_error(w, w_hat))
     fig, ax = plt.subplots(figsize=(7.0, 3.8))
     ax.plot(bits_list, errs, "-o", color=PURPLE, linewidth=2, markersize=7)
     for b, e in zip(bits_list, errs):
@@ -258,6 +265,44 @@ def fig_error_vs_bits() -> str:
     return out.name
 
 
+# The 16 NF4 levels from the QLoRA paper (Dettmers et al. 2023): quantiles of a standard normal,
+# normalized to [-1, 1]. Denser near 0 (where Gaussian weights live), sparser in the tails.
+NF4_LEVELS = (
+    -1.0, -0.6961928009986877, -0.5250730514526367, -0.39491748809814453,
+    -0.28444138169288635, -0.18477343022823334, -0.09105003625154495, 0.0,
+    0.07958029955625534, 0.16093020141124725, 0.24611230194568634, 0.33791524171829224,
+    0.44070982933044434, 0.5626170039176941, 0.7229568362236023, 1.0,
+)
+
+
+def fig_nf4_vs_int4_levels() -> str:
+    """NF4 (quantile-spaced) vs evenly-spaced int4 levels over a Gaussian weight histogram."""
+    rng = np.random.default_rng(SEED)
+    w = rng.normal(0, 0.3, size=40000)        # a wider Gaussian so the level spread is visible
+    absmax = np.abs(w).max()
+    nf4 = np.array(NF4_LEVELS) * absmax        # NF4 levels scaled to the tensor's range
+    int4 = np.linspace(-absmax, absmax, 16)    # 16 evenly-spaced int4 levels over the same range
+    fig, ax = plt.subplots(figsize=(8.6, 3.6))
+    ax.hist(w, bins=120, color=BLUE, alpha=0.35, edgecolor="none", label="weights ~ N(0, 0.3)")
+    ax.vlines(nf4, 0, ax.get_ylim()[1] * 0.62, color=GREEN, linewidth=1.6,
+              label="NF4 levels (quantile-spaced)")
+    ax.vlines(int4, ax.get_ylim()[1] * 0.66, ax.get_ylim()[1] * 0.98, color=AMBER, linewidth=1.6,
+              label="int4 levels (evenly spaced)")
+    _style_ax(ax)
+    ax.set_xlabel("weight value", color=SLATE)
+    ax.set_ylabel("count", color=SLATE)
+    ax.set_title(
+        "NF4 puts its 16 levels where the weights are: dense near 0, sparse in the tails\n"
+        "evenly-spaced int4 wastes levels on the empty tails — NF4 is optimal for Gaussian data",
+        color=SLATE, fontsize=10)
+    ax.legend(loc="upper right", frameon=False, fontsize=8)
+    out = IMAGES_DIR / "nf4_vs_int4_levels.png"
+    fig.tight_layout()
+    fig.savefig(out, dpi=DPI, bbox_inches="tight")
+    plt.close(fig)
+    return out.name
+
+
 def main() -> None:
     IMAGES_DIR.mkdir(parents=True, exist_ok=True)
     made = [
@@ -267,6 +312,7 @@ def main() -> None:
         fig_outlier_error_bars(),
         fig_int4_memory_bars(),
         fig_error_vs_bits(),
+        fig_nf4_vs_int4_levels(),
     ]
     print(f"wrote {len(made)} figures to {IMAGES_DIR}:")
     for name in made:

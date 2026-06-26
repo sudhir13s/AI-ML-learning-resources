@@ -3,7 +3,7 @@ problem (per-tensor vs per-channel/group), and int4 group-wise — with reconstr
 and the real memory math.
 
 The whole landscape of LLM quantization rests on one formula: map a real value x to a small
-integer q with q = round(x / s) - z and recover it with x_hat = s * (q + z). This script
+integer q with q = round(x / s) + z and recover it with x_hat = s * (q - z). This script
 implements that map from scratch, then shows the single fact that makes LLM quantization hard:
 a few large-magnitude "outlier" channels wreck a per-tensor scale, and finer granularity
 (per-channel, then per-group) is the fix. Finally it quantizes a weight matrix to int4 in
