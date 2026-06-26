@@ -6,7 +6,7 @@ level: intermediate
 prereqs: ["linear-algebra", "softmax", "logistic-regression"]
 interview_frequency: very-high
 template: concept-deep
-updated: 2026-06-22
+updated: 2026-06-27
 ---
 
 # Word Embeddings: turning words into geometry
@@ -46,11 +46,11 @@ The most literal way to feed a word to a model is **one-hot encoding**: fix a vo
 
 **Flaw 2 — huge and sparse.** The dimension *equals the vocabulary*. A model's first weight matrix mapping one-hot inputs into a hidden layer of size $h$ is $V \times h$ — for $V=50{,}000$, $h=300$ that's **15 million parameters in the input layer alone**, almost all touched by exactly one word each. It's a lookup table wearing a matrix-multiply costume, and a wasteful one.
 
-![Top: a one-hot vector — its length equals the whole vocabulary, all zeros but a single 1, and every word sits equidistant and orthogonal to every other. Bottom: a short dense embedding where every dimension carries graded meaning and two words can be compared by cosine similarity.](../images/emb_onehot_vs_dense.png)
+![Top: a one-hot vector — its length equals the whole vocabulary, all zeros but a single 1, so every word sits orthogonal to every other and cos('cat','kitten') = cos('cat','tuesday') = 0. Bottom: a short dense embedding where every dimension carries graded meaning and two words are compared by cosine. The whole chapter is the recipe for getting from the top row to the bottom one.](../images/we_onehot_vs_dense.png)
 
 The fix rests on a beautifully simple 1950s idea — the **distributional hypothesis**, captured by J.R. Firth's slogan *"you shall know a word by the company it keeps"* (Firth, 1957). Words that appear in similar contexts (you *ruled* a *kingdom*; you *wore* a *crown*; you *sat* on a *throne*) tend to mean similar things. Turn that into a recipe: **learn a dense vector per word such that words sharing contexts get similar vectors.** That single sentence is the entire research program of this page — word2vec, GloVe, and FastText are three different ways to carry it out.
 
-> *Where this comes from: the distributional hypothesis traces to **Firth (1957)**, "A synopsis of linguistic theory," and Harris's distributional structure (1954). Its modern, operational form is laid out in **Speech and Language Processing** (Jurafsky & Martin) Ch. 6, "Vector Semantics" — in the references.*
+> **Source / derivation:** the distributional hypothesis traces to Firth's *"A synopsis of linguistic theory"* (1957) and [Harris, *Distributional Structure* (1954)](https://doi.org/10.1080/00437956.1954.11659520); its modern, operational form — vectors learned so context-sharing words are close — is laid out in [Jurafsky & Martin, *Speech and Language Processing* (3rd ed.), Ch. 6 "Vector Semantics and Embeddings"](https://web.stanford.edu/~jurafsky/slp3/6.pdf) (also in the references).
 
 ---
 
@@ -108,7 +108,7 @@ $$\boxed{\ p(o\mid c) = \frac{\exp(u_o^\top v_c)}{\sum_{w \in V}\exp(u_w^\top v_
 
 Read it plainly: the score of context word $o$ given center $c$ is the **dot product** $u_o^\top v_c$ (high when the two vectors point the same way), squashed through a softmax so the scores over all possible context words form a probability distribution. Maximize this and you are literally pushing $v_c$ toward the $u$'s of the words that *actually* surround $c$ — which is the distributional hypothesis in equation form.
 
-> *Where this comes from: skip-gram and CBOW are **Efficient Estimation of Word Representations in Vector Space** (Mikolov, Chen, Corrado & Dean, 2013); the softmax objective and its gradients are derived step by step in **SLP3** Ch. 6 (Jurafsky & Martin) and **d2l.ai** Ch. 15 — all in the references.*
+> **Source / derivation:** the skip-gram and CBOW architectures are [Mikolov, Chen, Corrado & Dean, *Efficient Estimation of Word Representations in Vector Space* (2013)](https://arxiv.org/abs/1301.3781); the softmax conditional $p(o\mid c)$ and its gradient are derived step by step in [Jurafsky & Martin, *SLP3* Ch. 6](https://web.stanford.edu/~jurafsky/slp3/6.pdf) and [*Dive into Deep Learning*, Ch. 15.1 (word2vec)](https://d2l.ai/chapter_natural-language-processing-pretraining/word2vec.html).
 
 ### Deriving the gradient (the part you should be able to do)
 
@@ -123,6 +123,8 @@ $$\frac{\partial \ell}{\partial v_c} = -\,u_o + \sum_{w\in V} p(w\mid c)\,u_w = 
 This is worth pausing on. The gradient is the **observed** context vector $u_o$ minus the **model's expected** context vector under its current beliefs. A gradient step moves $v_c$ *toward* the true neighbour $u_o$ and *away* from whatever the model currently over-predicts — exactly "make the real neighbours likely, the rest less so." Beautiful, and entirely standard softmax-classifier calculus.
 
 > **Gotcha — the softmax bottleneck.** Look at the denominator $\sum_{w\in V}$. Computing $p(o\mid c)$ — and its gradient, which contains $\sum_w p(w\mid c)\,u_w$ — requires a sum over the **entire vocabulary** on *every* (center, context) pair. With $V$ in the millions and billions of pairs, that's a non-starter. The full-softmax skip-gram is correct but **computationally impossible at scale**. Everything clever about word2vec's *training* is about dodging this sum.
+
+![Cost per training pair on log–log axes: the full softmax does O(V) dot products per pair (red, climbs with vocabulary), while negative sampling does a constant O(k)=k+1 (green, flat). At V=10⁶ with k=10 that is roughly 91,000× less work per pair — the change that let word2vec train on billions of words on one machine.](../images/we_softmax_bottleneck.png)
 
 ### CBOW: the same machinery, run backwards
 
@@ -163,19 +165,19 @@ Negatives are *not* sampled uniformly, and *not* from the raw word frequencies e
 
 $$P_n(w) = \frac{\text{count}(w)^{0.75}}{\sum_{w'} \text{count}(w')^{0.75}}.$$
 
-The exponent **0.75** is a deliberate compromise between two failure modes. Sample by raw frequency and you waste almost every negative on `the`, `of`, `a`; sample uniformly and you over-pick ultra-rare words that teach little. The 3/4 power **damps the frequent words and lifts the rare ones** — a sweet spot Mikolov found empirically. Concretely, take counts $[1000, 600, 40, 18, 6]$:
+The exponent **0.75** is a deliberate compromise between two failure modes. Sample by raw frequency and you waste almost every negative on `the`, `of`, `a`; sample uniformly and you over-pick ultra-rare words that teach little. The 3/4 power **damps the frequent words and lifts the rare ones** — a sweet spot Mikolov found empirically. Concretely, take counts $[1000, 500, 100, 50, 10]$:
 
 | word | raw $p(w)$ | smoothed $p(w)^{0.75}$ |
 |---|---|---|
-| the (1000) | 0.602 | 0.524 |
-| of (600) | 0.301 | **0.311** |
-| king (40) | 0.060 | **0.093** |
-| queen (18) | 0.030 | **0.055** |
-| kingdom (6) | 0.006 | **0.017** |
+| the (1000) | 0.6024 | 0.5236 |
+| of (500) | 0.3012 | **0.3113** |
+| king (100) | 0.0602 | **0.0931** |
+| queen (50) | 0.0301 | **0.0554** |
+| kingdom (10) | 0.0060 | **0.0166** |
 
-The rare word `kingdom` is sampled ~**3×** more often under the 0.75 power (0.017 vs 0.006), while `the` is damped (0.524 vs 0.602). These exact numbers are reproduced in the verification code below.
+The rare word `kingdom` is sampled ~**2.75×** more often under the 0.75 power (0.0166 vs 0.0060), while `the` is damped (0.5236 vs 0.6024). These exact numbers are produced by `word_embeddings.py` — and they are the right-hand panel of the negative-sampling figure above.
 
-> *Where this comes from: negative sampling, hierarchical softmax, the $\text{freq}^{0.75}$ negative distribution, and subsampling of frequent words are all from **Distributed Representations of Words and Phrases and their Compositionality** (Mikolov et al., 2013b) — see its §2. The clean re-derivation of negative sampling as binary logistic regression is in **SLP3** Ch. 6.*
+> **Source / derivation:** negative sampling, hierarchical softmax, the $\text{freq}^{0.75}$ negative distribution, and subsampling of frequent words are all from [Mikolov, Sutskever, Chen, Corrado & Dean, *Distributed Representations of Words and Phrases and their Compositionality* (2013)](https://arxiv.org/abs/1310.4546) (the boxed loss is Eq. 4, the $\text{freq}^{0.75}$ choice is §2.2). The clean re-derivation of negative sampling as binary logistic regression is in [Jurafsky & Martin, *SLP3* Ch. 6](https://web.stanford.edu/~jurafsky/slp3/6.pdf).
 
 ### The other speedup: hierarchical softmax (briefly)
 
@@ -193,7 +195,7 @@ $$u_o^\top v_c \;=\; \text{PMI}(o, c) - \log k, \qquad \text{where}\quad \text{P
 
 In words: the dot product SGNS learns for a (context, center) pair *converges to* how much more often those two words co-occur than chance (their PMI), shifted down by $\log k$ (the number of negatives). So the "predictive" neural method and the "count-based" methods are **secretly doing the same thing** — both extract a low-rank approximation of a co-occurrence/PMI matrix. This is *why* word2vec and GloVe vectors behave almost identically despite their opposite-looking training, and it's the bridge to GloVe, which factorizes log-co-occurrence *explicitly*.
 
-> *Where this comes from: **Neural Word Embedding as Implicit Matrix Factorization** (Levy & Goldberg, 2014) — in the references. PMI as a measure of word association predates it by decades (Church & Hanks, 1990).*
+> **Source / derivation:** the SGNS ≈ shifted-PMI factorization result is [Levy & Goldberg, *Neural Word Embedding as Implicit Matrix Factorization* (NeurIPS 2014)](https://papers.nips.cc/paper/5477-neural-word-embedding-as-implicit-matrix-factorization). PMI as a word-association measure predates it by decades — [Church & Hanks, *Word Association Norms, Mutual Information, and Lexicography* (1990)](https://aclanthology.org/J90-1003/).
 
 ---
 
@@ -213,6 +215,8 @@ Every term earns its place:
 - $b_i, \tilde b_j$ — per-word **bias** terms that absorb each word's overall frequency, so the dot product only has to model the *interaction*.
 - $f(X_{ij})$ — a **weighting function** that down-weights both extremes: it's 0 at $X_{ij}=0$ (skip pairs that never co-occur — the matrix is sparse, which makes this cheap), rises with count, then **caps** so that hyper-frequent pairs like ("the", "of") don't dominate the fit. The paper uses $f(x) = \min\!\big((x/x_{\max})^{0.75},\ 1\big)$ — and there's that **0.75** again, the same frequency-damping instinct as negative sampling.
 
+![GloVe's weighting function f(x) = min((x/x_max)^0.75, 1): exactly zero at x=0 (never-co-occurring pairs are skipped — the matrix is sparse, so this is cheap), rising with the co-occurrence count, then flattening to a hard cap of 1 once x ≥ x_max so that a handful of ultra-frequent pairs can't dominate the least-squares fit. The same 0.75 frequency-damping exponent appears in word2vec's negative-sampling distribution.](../images/we_glove_weighting.png)
+
 ### Worked example: the ice/steam ratio, by the numbers
 
 The ratio intuition is easy to *measure*. Take a (toy) co-occurrence matrix for `ice` and `steam` against four probe words, and turn counts into conditional probabilities $P(j\mid i) = X_{ij}/X_i$:
@@ -224,13 +228,15 @@ The ratio intuition is easy to *measure*. Take a (toy) co-occurrence matrix for 
 | water | 0.303 | 0.311 | **0.97** | ≈ 1 → related to **both** |
 | fashion | 0.010 | 0.011 | **0.91** | ≈ 1 → related to **neither** |
 
+![The co-occurrence ratio P(j|ice)/P(j|steam) on a log axis for four probe words: solid sits at 9.09 (≫1, belongs to ice), gas at 0.13 (≪1, belongs to steam), while water (0.97) and fashion (0.91) both land on the dashed ratio=1 line — for opposite reasons. The discriminating signal that distinguishes ice from steam lives in the ratio, not the raw counts, which is exactly what GloVe is built to encode in vector differences.](../images/we_ice_steam_ratio.png)
+
 Look at what the **ratio** does that a raw probability can't: `water` and `fashion` both give ratio ≈ 1, but for opposite reasons (both-relevant vs both-irrelevant), and `solid`/`gas` cleanly point to one word each. The discriminating signal — "what distinguishes ice from steam" — lives in the *ratio*, not the raw counts. GloVe is engineered so that **vector differences reproduce these ratios**: it sets $w_i^\top \tilde w_j \approx \log X_{ij}$, so that $w_{\text{ice}}^\top \tilde w_j - w_{\text{steam}}^\top \tilde w_j \approx \log\!\big(X_{\text{ice},j}/X_{\text{steam},j}\big)$ — exactly the log-ratio that isolates meaning. That is *why* differences of GloVe vectors are linear and analogies work. (These numbers are reproducible; the structure, not the toy counts, is the point.)
 
 > **Tip — the clean interview contrast:** **word2vec is predictive** (stream local windows, online SGD, never builds a matrix); **GloVe is count-based** (build the global co-occurrence matrix once, then batch-factorize it). But by **Levy & Goldberg**, skip-gram is *implicitly* factorizing a (shifted-PMI) co-occurrence matrix too — so the two end up extracting the same statistics, which is why their vectors are nearly interchangeable in practice. "Different roads, same city."
 
 > **Note — a fourth method you should be able to name: SVD on the PMI matrix.** The oldest count-based route is to build the PMI (or PPMI = positive PMI) word–context matrix *directly* and take its truncated **SVD** for low-rank vectors. Levy & Goldberg (2015) showed that, tuned well, this classic method is *competitive* with word2vec/GloVe — driving home that all four (SVD-PPMI, SGNS, GloVe, and even good old LSA) are variations on **factorize a co-occurrence-association matrix**. The neural framing was a faster, online way to do something statistics had been doing for decades.
 
-> *Where this comes from: **GloVe: Global Vectors for Word Representation** (Pennington, Socher & Manning, 2014), §3–4 for the derivation and the $f(x)$ weighting, §3.1 for the ice/steam ratio intuition.*
+> **Source / derivation:** the weighted-least-squares objective and the $f(x)$ weighting are [Pennington, Socher & Manning, *GloVe: Global Vectors for Word Representation* (EMNLP 2014)](https://nlp.stanford.edu/pubs/glove.pdf) — §3 derives $w_i^\top\tilde w_j \approx \log X_{ij}$ from the ratio requirement, §4.2 gives $f(x)=\min((x/x_{\max})^{0.75},1)$, and §3 opens with the ice/steam ratio table.
 
 ---
 
@@ -250,6 +256,8 @@ graph LR
     classDef out fill:#2E7A5A,stroke:#1E6A4A,color:#fff
 ```
 
+![The seen word 'kingdom' and the unseen plural 'kingdoms' decomposed into character n-grams (boundary-marked, plus the whole-word token). Green tiles are n-grams the two words share; amber tiles are the few unique to one. Because 18 of 'kingdoms'’s 27 n-grams are shared with 'kingdom', summing the n-gram vectors gives the OOV word a vector with cosine 0.9997 to 'kingdom' — a sensible vector for a word that was never in the training vocabulary.](../images/we_fasttext_oov.png)
+
 The word `kingdom`, padded with boundary markers `<kingdom>`, is decomposed into all character n-grams of length 3–6 (`<ki`, `kin`, `ing`, `ngd`, ..., plus the special whole-word token), each n-gram has its *own* learned vector, and the word's vector is their **sum**. Then SGNS runs exactly as before, but on n-gram vectors. Two payoffs fall out:
 
 1. **OOV is solved.** An unseen word still has n-grams you *did* see, so it gets a sensible vector from its pieces. We *measure* this below: a FastText model that never saw `kingdoms` still produces a vector for it (norm 0.60, not zero), and that vector has cosine **0.9997** with `kingdom` — it correctly infers the plural's meaning from shared n-grams.
@@ -257,7 +265,7 @@ The word `kingdom`, padded with boundary markers `<kingdom>`, is decomposed into
 
 This is the *same instinct* that **subword tokenization** (BPE/WordPiece/Unigram) brings to modern LLMs: never let an unknown word break you — fall back to pieces. See [Tokenization & Subword Algorithms](../02-Tokenization-and-Subword-Algorithms/02-Tokenization-and-Subword-Algorithms.md) for that lineage.
 
-> *Where this comes from: **Enriching Word Vectors with Subword Information** (Bojanowski, Grave, Joulin & Mikolov, 2017) — see §3.1 for the n-gram model and §3.2 for the OOV behaviour.*
+> **Source / derivation:** the subword model — a word vector as the sum of its character-n-gram vectors, trained with SGNS — is [Bojanowski, Grave, Joulin & Mikolov, *Enriching Word Vectors with Subword Information* (TACL 2017)](https://arxiv.org/abs/1607.04606) (§3.1 the n-gram scoring function, §3.2 the boundary markers and OOV behaviour).
 
 ---
 
@@ -273,9 +281,9 @@ We use the *angle* and not raw Euclidean distance because a word's vector **magn
 
 ### Analogies as parallelograms
 
-The analogy "$a$ is to $b$ as $c$ is to **?**" is solved by the **vector offset method**: compute $b - a + c$ and return the word whose vector is closest (by cosine) to it. The geometry is a **parallelogram** — if the displacement $b - a$ (e.g. man→king, the "royalty" direction) is the same as $d - c$ (woman→queen), then the four points form a parallelogram and $b - a + c \approx d$. The picture below is drawn from **real GloVe vectors**: `man→king` and `woman→queen` are near-parallel, and `king − man + woman` lands right on `queen`:
+The analogy "$a$ is to $b$ as $c$ is to **?**" is solved by the **vector offset method**: compute $b - a + c$ and return the word whose vector is closest (by cosine) to it. The geometry is a **parallelogram** — if the displacement $b - a$ (e.g. man→king, the "royalty" direction) is *approximately* the same as $d - c$ (woman→queen), then the four points roughly form a parallelogram and $b - a + c \approx d$. The picture below is drawn from **real GloVe vectors**: `man→king` and `woman→queen` are near-parallel, and `king − man + woman` lands *closest to* `queen` (cosine 0.85) — close, but, honestly, not exactly on it:
 
-![A parallelogram drawn from real GloVe vectors: man, king, woman, queen as labelled points, with near-parallel arrows man→king (royalty direction) and woman→queen. The computed point king − man + woman (open circle) lands essentially on queen.](../images/we_analogy_parallelogram.png)
+![A parallelogram drawn from real GloVe-50 vectors, projected onto the plane spanned by the royalty (king−man) and gender (woman−man) directions: man, king, woman, queen as labelled points with near-parallel arrows man→king and woman→queen. The computed point king − man + woman (green ring) is the parallelogram's fourth corner; queen is its NEAREST word (cosine 0.85) but not identical — the dotted line is the small residual, an honest reminder that the analogy is approximate, not exact.](../images/we_analogy_parallelogram.png)
 
 > **Gotcha — analogies are flakier than the famous example suggests.** Two caveats interviewers reward you for knowing: (1) the search **excludes the input words** $a, b, c$ from the answer — without that exclusion, `king − man + woman` often returns `king` itself, because it's still the nearest vector. (2) Analogy accuracy is real but **brittle** — it works well for frequent, "clean" relations (capital–country, male–female, comparatives) and poorly for rare or noisy ones. It's a *property* of the space, not a reliable reasoning engine.
 
@@ -283,7 +291,7 @@ The analogy "$a$ is to $b$ as $c$ is to **?**" is solved by the **vector offset 
 
 > **Gotcha — embeddings absorb the stereotypes in their training text.** Because they're learned from human-written corpora, embeddings encode the biases in that text. The *same* arithmetic that gives `king − man + woman ≈ queen` also yields, on real Google-News vectors, `doctor − man + woman ≈ nurse` and `computer_programmer − man + woman ≈ homemaker` (Bolukbasi et al., 2016). This is a **measured, real-world harm**, not a curiosity: any downstream system — résumé screening, search, recommendation — built on biased embeddings can **propagate and amplify** that bias. "How do embeddings encode bias, and how would you measure/mitigate it?" is a frequent interview *and* ethics question. Mitigations exist (projecting out a learned "gender direction," as in Bolukbasi et al.) but are partial — the bias is diffuse, not confined to one axis.
 
-> *Where this comes from: **Man is to Computer Programmer as Woman is to Homemaker? Debiasing Word Embeddings** (Bolukbasi, Chang, Zou, Saligrama & Kalai, 2016) — in the references.*
+> **Source / derivation:** the measured gender bias and the "gender-direction" projection mitigation are [Bolukbasi, Chang, Zou, Saligrama & Kalai, *Man is to Computer Programmer as Woman is to Homemaker? Debiasing Word Embeddings* (NeurIPS 2016)](https://arxiv.org/abs/1607.06520).
 
 ---
 
@@ -306,6 +314,8 @@ Every embedding on this page is **static** — *one fixed vector per word, forev
 - "I deposited cash at the **bank**." (the financial institution)
 
 Static embeddings give the **identical** vector to both `bank`s — the representation was baked in *before* the model ever saw your sentence, so it can't disambiguate. The best a single vector can do is land at a blurry *average* of all senses, which is wrong for each of them.
+
+![Left: a static embedding collapses both senses of 'bank' onto one vector — a blurry average that sits between the river-bank and money-bank meanings and is wrong for each. Right: a contextual embedding (ELMo/BERT) computes a different vector for 'bank' depending on its sentence, so 'river bank' and 'savings bank' finally separate. This single failure of static embeddings is what motivated contextual ones.](../images/we_static_vs_contextual.png)
 
 That one limitation is exactly what motivated **contextual embeddings** — [ELMo and BERT](../06-Contextual-Embeddings-ELMo-BERT/06-Contextual-Embeddings-ELMo-BERT.md) — which compute a *different* vector for a word **depending on its surrounding sentence**. "river bank" and "savings bank" finally get different vectors. Static embeddings didn't disappear, though: when you need **cheap, fixed, precomputed** vectors (classic retrieval, cold-start features, on-device NLP, billions of items to embed once), they're still exactly the right tool. The progression static → contextual is one of the cleanest "why did the field move" stories in NLP, and a very common interview arc.
 
@@ -351,12 +361,22 @@ If you actually had to *use* static embeddings on a task, here's the end-to-end 
 
 ## Code 1: train skip-gram with negative sampling from scratch
 
-A from-scratch skip-gram-with-negative-sampling on a tiny but **structured** corpus (royalty words share contexts; animal words share contexts). It won't rival pretrained vectors, but it *proves the mechanism*: words that share contexts end up with higher cosine similarity. Runs on CPU in seconds.
+A from-scratch skip-gram-with-negative-sampling on a tiny but **structured** corpus (royalty words share contexts; animal words share contexts). It won't rival pretrained vectors, but it *proves the mechanism*: words that share contexts end up with higher cosine similarity. The model is **device-agnostic** (CUDA / MPS / CPU); the trace below is **pinned to CPU** so the numbers are reproducible.
+
+> **Runnable project and a step-by-step notebook:** the same verified code lives as a clean, seeded source-of-truth script and an executed teaching notebook next to this page — see the [step-by-step teaching notebook](code/05-Word-Embeddings-Word2Vec-GloVe-FastText.ipynb) and the [runnable demo script](code/word_embeddings.py) (run it with `python word_embeddings.py`). Every number on this page is produced by that file, and [`make_figures_05.py`](code/make_figures_05.py) regenerates every figure by importing the *same* functions, so nothing here can drift.
 
 ```python
-"""Skip-gram with negative sampling, from scratch. Verified on Python 3.12 (torch 2.x), CPU."""
-import torch, torch.nn as nn, torch.nn.functional as F
-torch.manual_seed(0)
+"""Skip-gram with negative sampling, from scratch. Device-agnostic; trace pinned to CPU.
+Verified on Python 3.12 / torch 2.12.0."""
+import numpy as np, torch, torch.nn as nn, torch.nn.functional as F
+
+SEED = 0
+torch.manual_seed(SEED); np.random.seed(SEED)
+# pick the best device, but pin the reproducible trace to CPU (tiny tensors -> GPU adds only noise)
+DEVICE = ("cuda" if torch.cuda.is_available()
+          else "mps" if torch.backends.mps.is_available() else "cpu")
+device = "cpu"
+print(f"device: {device} (detected {DEVICE}; pinned to CPU for reproducibility)  |  torch: {torch.__version__}")
 
 # a small but STRUCTURED corpus: royalty words share contexts; animal words share contexts
 royalty, animals = ["king", "queen"], ["dog", "cat"]
@@ -375,36 +395,47 @@ for s in sents:
     for i, c in enumerate(idx):
         for j in range(max(0, i - W), min(len(idx), i + W + 1)):
             if j != i: pairs.append((c, idx[j]))
-pairs = torch.tensor(pairs)
+pairs = torch.tensor(pairs, device=device)             # every tensor created on `device`
 
 d, K = 16, 5                                           # embedding dim, # negatives
-emb_in, emb_out = nn.Embedding(V, d), nn.Embedding(V, d)
+emb_in  = nn.Embedding(V, d).to(device)                # v_c  (center vectors)
+emb_out = nn.Embedding(V, d).to(device)                # u_o  (context vectors)
 opt = torch.optim.Adam(list(emb_in.parameters()) + list(emb_out.parameters()), lr=0.01)
+losses = []
 for _ in range(300):
-    perm = pairs[torch.randperm(len(pairs))]; centers, contexts = perm[:, 0], perm[:, 1]
-    negs = torch.randint(0, V, (len(perm), K))         # k random negatives per pair
+    perm = pairs[torch.randperm(len(pairs), device=device)]; centers, contexts = perm[:, 0], perm[:, 1]
+    negs = torch.randint(0, V, (len(perm), K), device=device)       # k random negatives per pair
     vc = emb_in(centers)
     pos = (vc * emb_out(contexts)).sum(-1)             # true-pair score  u_o . v_c
     neg = torch.bmm(emb_out(negs), vc.unsqueeze(-1)).squeeze(-1)    # negative scores
     loss = -(F.logsigmoid(pos) + F.logsigmoid(-neg).sum(-1)).mean()  # the boxed NS loss
-    opt.zero_grad(); loss.backward(); opt.step()
+    opt.zero_grad(); loss.backward(); opt.step(); losses.append(loss.item())
 
 E = F.normalize(emb_in.weight.detach(), dim=1)         # unit vectors -> cosine = dot
 cos = lambda a, b: (E[w2i[a]] @ E[w2i[b]]).item()
+assert losses[-1] < losses[0]                          # loss must fall
+assert cos("king", "queen") > cos("king", "dog")       # within-cluster beats cross-cluster
+print(f"loss: {losses[0]:.3f} -> {losses[-1]:.3f}")
 print(f"cos(king, queen) = {cos('king','queen'):+.3f}  (royalty pair  -> HIGH)")
 print(f"cos(dog,  cat)   = {cos('dog','cat'):+.3f}  (animal pair   -> HIGH)")
-print(f"cos(king, dog)   = {cos('king','dog'):+.3f}  (unrelated     -> LOWER)")
+print(f"cos(king, dog)   = {cos('king','dog'):+.3f}  (cross-cluster -> LOWER)")
 ```
 
 Output:
 
 ```
+device: cpu (detected mps; pinned to CPU for reproducibility)  |  torch: 2.12.0
+loss: 10.477 -> 1.614
 cos(king, queen) = +0.537  (royalty pair  -> HIGH)
 cos(dog,  cat)   = +0.319  (animal pair   -> HIGH)
-cos(king, dog)   = +0.270  (unrelated     -> LOWER)
+cos(king, dog)   = +0.270  (cross-cluster -> LOWER)
 ```
 
-> **Note:** with only a few dozen sentences the numbers are modest, but the **ordering is the whole point** — words that shared contexts (king/queen, dog/cat) ended up more similar than words that didn't. Scale this to billions of words and you get the vectors that solve `king − man + woman ≈ queen`. The `loss` line is *exactly* the boxed negative-sampling objective: `logsigmoid(pos)` is $\log\sigma(u_o^\top v_c)$ and `logsigmoid(-neg).sum` is $\sum_i \log\sigma(-u_{n_i}^\top v_c)$.
+![The from-scratch skip-gram + negative-sampling loss falling from 10.48 to 1.61 over 300 steps — the model learning to separate true (center, context) pairs from random noise. This is the exact run that produces the cosines below.](../images/we_training_loss.png)
+
+![The learned cosine similarities as bars: king~queen (+0.537) and dog~cat (+0.319) — both within-cluster — sit above the cross-cluster king~dog (+0.270). On a corpus this small the magnitudes are modest; the ORDERING is the proof that shared context produced shared geometry.](../images/we_cosine_neighbors.png)
+
+> **Note:** with only a few dozen sentences the numbers are modest, but the **ordering is the whole point** — words that shared contexts (king/queen, dog/cat) ended up more similar than words that didn't. Scale this to billions of words and you get the vectors that solve `king − man + woman ≈ queen`. The `loss` line is *exactly* the boxed negative-sampling objective: `logsigmoid(pos)` is $\log\sigma(u_o^\top v_c)$ and `logsigmoid(-neg).sum` is $\sum_i \log\sigma(-u_{n_i}^\top v_c)$. Note every tensor is created with `device=device` and each module is moved with `.to(device)` — swap the pin to `device = DEVICE` and it runs unchanged on a GPU.
 
 ---
 
@@ -520,8 +551,8 @@ print(f"sigma(u_o.v_c)={sig(s_o):.4f}  sigma(-u_n.v_c)={sig(-s_n):.4f}  NS loss=
 grad_vc = (sig(s_o) - 1) * uo + sig(s_n) * un
 print("grad_vc =", np.round(grad_vc, 4))
 
-# (d) the freq^0.75 sampling trick
-counts = np.array([1000, 600, 40, 18, 6], dtype=float)
+# (d) the freq^0.75 sampling trick (the/of/king/queen/kingdom counts)
+counts = np.array([1000, 500, 100, 50, 10], dtype=float)
 p_raw = counts / counts.sum()
 p_075 = counts ** 0.75; p_075 /= p_075.sum()
 print("raw unigram  :", np.round(p_raw, 4))
