@@ -73,6 +73,8 @@ graph TD
     classDef navy fill:#2A5B80,stroke:#1A4B70,color:#fff
 ```
 
+*One MoE layer: the router scores all $N$ experts, top-$k$ selects a few (here experts 1 and 3), only those run, and their outputs are combined by the gate weights. The gate values (0.7 / 0.3) and chosen indices are **schematic — illustrative numbers**; the fully-worked single-token example below computes the real softmax and gives 0.731 / 0.269 to experts 1 and 2.*
+
 That's the whole architecture. The diagram above is *one MoE layer* — and in a real model, **only some** of the transformer blocks use MoE (often every other block, or every block); the rest stay dense. The attention sublayers are **unchanged** — MoE replaces the FFN, never attention.
 
 > **Gotcha:** a common misconception is that MoE routes *whole sequences* or *whole prompts* to experts ("a coding expert, a math expert"). It does **not**. Routing is **per-token, per-layer** — the same sentence has its tokens scattered across many experts, and a single token can hit different experts in different layers. The learned specializations are subtle and rarely human-interpretable (they tend to cluster on syntactic or positional features, not clean topics). Don't promise an interviewer "expert 5 is the Python expert" — that's almost never how it works.
@@ -107,6 +109,8 @@ $$
 h \;=\; W_g\, x \;\in\; \mathbb{R}^{N}, \qquad\qquad g(x) \;=\; \operatorname{softmax}(h) \;\in\; \mathbb{R}^{N}, \qquad g_i(x) = \frac{e^{h_i}}{\sum_{j=1}^{N} e^{h_j}}.
 $$
 
+> **Source / derivation:** [Shazeer et al., *Outrageously Large Neural Networks: The Sparsely-Gated MoE Layer* (2017)](https://arxiv.org/abs/1701.06538) §2.1 — defines the softmax gating $g(x)=\operatorname{softmax}(x \cdot W_g)$ over experts that all modern MoE routers (Switch, Mixtral, DeepSeek) inherit.
+
 $g_i(x)$ is the router's probability that expert $i$ is the right one for this token; $\sum_i g_i(x) = 1$. This is the entire router — **one tiny matmul plus a softmax**, costing $O(N d)$, utterly negligible next to the experts. (Many implementations apply the softmax *after* selecting top-k; we'll note that variant below.)
 
 **Step 2 — select the top-$k$ experts.** Let $\mathcal{T}(x) \subset \{1,\dots,N\}$ be the indices of the **$k$ largest** entries of $g(x)$:
@@ -115,6 +119,8 @@ $$
 \mathcal{T}(x) \;=\; \operatorname*{arg\,top\text{-}k}_{\,i} \; g_i(x).
 $$
 
+> **Source / derivation:** [Shazeer et al., *Sparsely-Gated MoE Layer* (2017)](https://arxiv.org/abs/1701.06538) §3.1 (noisy top-$k$ gating) — keeping only the $k$ largest gates and zeroing the rest is what makes the layer *sparse*; [Fedus et al., *Switch Transformers* (2021)](https://arxiv.org/abs/2101.03961) §2.1 specialises it to $k=1$.
+
 For $k=2, N=8$, $\mathcal{T}$ holds the two best experts. The other $N-k$ experts are **not evaluated at all** — this is where the sparsity, and all the FLOP savings, come from.
 
 **Step 3 — combine the chosen experts' outputs, weighted by the gates.** Each selected expert $E_i$ is an ordinary FFN, $E_i : \mathbb{R}^d \to \mathbb{R}^d$. The layer output is the gate-weighted sum over the selected experts:
@@ -122,6 +128,8 @@ For $k=2, N=8$, $\mathcal{T}$ holds the two best experts. The other $N-k$ expert
 $$
 \boxed{\;y \;=\; \sum_{i \in \mathcal{T}(x)} \tilde{g}_i(x)\, E_i(x)\;}
 $$
+
+> **Source / derivation:** [Shazeer et al., *Sparsely-Gated MoE Layer* (2017)](https://arxiv.org/abs/1701.06538) eq. (1), $y=\sum_i G(x)_i\, E_i(x)$ — the gate-weighted sum of expert outputs; the renormalise-over-selected convention is [Fedus et al., *Switch Transformers* (2021)](https://arxiv.org/abs/2101.03961) and [Jiang et al., *Mixtral of Experts* (2024)](https://arxiv.org/abs/2401.04088) §2.
 
 where $\tilde{g}_i$ are the gate weights for the selected experts. Two conventions exist for $\tilde{g}$:
 
@@ -155,7 +163,31 @@ and experts 3 and 4 are **never run** for this token. That's the whole forward p
 
 ## Why it works: sparse activation decouples capacity from compute
 
-This is the heart of MoE, and it's worth deriving from the FLOP count rather than asserting it.
+This is the heart of MoE, and it's worth deriving from the FLOP count rather than asserting it. First, the picture — what a single token's FFN compute looks like in a dense block vs an MoE block with the **same total parameters**:
+
+```mermaid
+graph TD
+    subgraph DENSE["Dense FFN — every parameter is a FLOP"]
+    XD(["token x"]):::data --> FD["ONE big FFN<br/>(all N-experts' worth<br/>of params)"]:::process
+    FD --> YD(["y<br/>compute = ALL params"]):::out
+    end
+    subgraph SPARSE["MoE — N experts, only k run"]
+    XS(["token x"]):::data --> RT["router<br/>(tiny matmul)"]:::amber
+    RT -->|"top-k=2"| EA["Expert i (FFN)"]:::out
+    RT -->|"top-k=2"| EB["Expert j (FFN)"]:::out
+    RT -. "idle" .-> EZ["Experts ... (N-k)<br/>zero compute"]:::frozen
+    EA --> YS(["y = g_i·E_i + g_j·E_j<br/>compute = k params only"]):::out
+    EB --> YS
+    end
+
+    classDef data fill:#3A6B96,stroke:#2A5B86,color:#fff
+    classDef process fill:#5D4A8A,stroke:#4D3A7A,color:#fff
+    classDef out fill:#2E7A5A,stroke:#1E6A4A,color:#fff
+    classDef frozen fill:#4A5B6E,stroke:#3A4B5E,color:#fff
+    classDef amber fill:#7A6528,stroke:#6A5518,color:#fff
+```
+
+*Same total parameters, opposite compute. The dense block runs every parameter on every token; the MoE block holds $N$ experts but runs only $k$ — so its per-token FLOPs are set by $k$ while its capacity is set by $N$. The greyed experts are stored in memory but contribute zero compute for this token.*
 
 The compute cost of an MoE layer for one token is **the cost of the router plus the cost of $k$ experts** — *not* $N$ experts:
 
@@ -174,6 +206,8 @@ The decisive fact: **this depends on $k$, not $N$.** Add more experts — grow $
 $$
 \text{Params}_{\text{MoE layer}} \;=\; \underbrace{N \cdot \text{Params}_{\text{expert}}}_{\text{grows with } N} \;+\; \underbrace{Nd}_{\text{router (tiny)}}, \qquad\qquad \text{Params/token run} \;=\; k \cdot \text{Params}_{\text{expert}}.
 $$
+
+> **Source / derivation:** [Fedus et al., *Switch Transformers* (2021)](https://arxiv.org/abs/2101.03961) §2 — the FLOPs-per-token are set by the *active* experts ($k$) while total parameters scale with $N$; this "decouple parameters from compute" accounting is also the thesis of [Du et al., *GLaM* (2022)](https://arxiv.org/abs/2112.06905), which runs ~97B of 1.2T params per token. (The standard $\approx 2{\cdot}\text{params}$ forward-FLOP rule the expert term uses is from [Kaplan et al., *Scaling Laws for Neural LMs* (2020)](https://arxiv.org/abs/2001.08361).)
 
 So as $N$ grows, **capacity (total params) climbs while compute (active params/token) stays flat.** That is the decoupling — the single most important quantitative property of MoE, and the reason it exists.
 
@@ -213,6 +247,8 @@ $$
 \boxed{\;\mathcal{L}_{\text{aux}} \;=\; \alpha \cdot N \cdot \sum_{i=1}^{N} f_i \cdot P_i\;}
 $$
 
+> **Source / derivation:** [Fedus et al., *Switch Transformers* (2021)](https://arxiv.org/abs/2101.03961) eq. (4)–(6) — the exact $\mathcal{L}_{\text{aux}} = \alpha N \sum_i f_i P_i$ form (with $f_i$ the dispatch fraction and $P_i$ the mean gate probability, $\alpha=10^{-2}$), a differentiable simplification of the importance + load losses first introduced in [Shazeer et al., *Sparsely-Gated MoE Layer* (2017)](https://arxiv.org/abs/1701.06538) §4.
+
 where, over a batch of $T$ tokens:
 
 - $f_i$ = **fraction of tokens dispatched to expert $i$** — i.e. $f_i = \frac{1}{T}\sum_t \mathbb{1}[\,\text{expert } i \text{ is the top choice for token } t\,]$. This is the *hard* routing statistic (a count). It is **not differentiable** (it comes from argmax).
@@ -223,7 +259,7 @@ where, over a batch of $T$ tokens:
 
 1. **Differentiability through the back door.** $f_i$ is a hard count with no gradient. But in the product $f_i P_i$, the **gradient flows through $P_i$** (the soft probability) while $f_i$ acts as a *measured weight*. So the loss says: "for every expert that's currently **over**-loaded (large $f_i$), **push its router probability $P_i$ down**." Lowering $P_i$ for the popular experts makes the router less likely to pick them next time — directly counteracting the rich-get-richer pull. We get a usable gradient on a non-differentiable quantity by pairing it with a differentiable proxy.
 
-2. **It's minimized exactly at uniform.** Treat $P$ as a probability distribution ($\sum_i P_i = 1$) and assume $f \approx P$ at the optimum (they track each other). Then $\sum_i P_i^2$ is the quantity being minimized, and $\sum_i P_i^2$ subject to $\sum_i P_i = 1$ is minimized when all $P_i = 1/N$ (uniform), giving $N \cdot \sum_i (1/N)^2 = N \cdot N \cdot (1/N^2) = 1$. So the loss bottoms out at **1.0** for perfect balance and rises toward $N$ as routing concentrates. (This is just the statement that a uniform distribution minimizes the sum of squared probabilities — the same fact behind why entropy is maximized at uniform.)
+2. **It's minimized exactly at uniform.** Be precise about what is being optimized: the loss is the cross term $\sum_i f_i P_i$, and **gradient descent only back-props through $P$** ($f$ is a measured constant, no gradient — point 1). So the penalty's *only* lever is to push $P_i$ down wherever $f_i$ is large — i.e. away from the over-loaded experts. Since $f$ is itself produced by sampling top-$k$ from those same probabilities, lowering $P_i$ on the busy experts drives $f_i$ down too on the next batch: **$f$ and $P$ co-adapt toward each other and toward uniform** at the fixed point. Once $f \approx P$ there, the minimized object is effectively $\sum_i P_i^2$, and $\sum_i P_i^2$ subject to $\sum_i P_i = 1$ is minimized when all $P_i = 1/N$, giving $N \cdot \sum_i (1/N)^2 = N \cdot N \cdot (1/N^2) = 1$. So the loss bottoms out at **1.0** for perfect balance and rises toward $N$ as routing concentrates. (The $\sum P_i^2$-minimized-at-uniform fact is the same one behind why entropy is maximized at uniform.)
 
 ![The auxiliary loss L_aux = N times the sum of f_i P_i, computed on two small batches with N=4 experts. Left: balanced routing (every expert gets 25 percent of tokens and 25 percent mean probability) gives L_aux = 1.000, the minimum. Right: collapsed routing (one expert gets 70 percent of tokens) gives L_aux = 1.947, nearly double. The loss is a smooth, differentiable penalty that is small exactly when usage is uniform and grows as a few experts dominate.](../images/moe_aux_loss.png)
 
@@ -256,11 +292,15 @@ $$
 \mathcal{L}_{z} \;=\; \frac{\beta}{T} \sum_{t=1}^{T} \Big( \log \sum_{i=1}^{N} e^{h_i(x_t)} \Big)^2,
 $$
 
+> **Source / derivation:** [Zoph et al., *ST-MoE: Designing Stable and Transferable Sparse Expert Models* (2022)](https://arxiv.org/abs/2202.08906) §3.2, eq. (5) — the router z-loss penalises the squared log-partition (log-sum-exp) of the router logits to keep them small, the single change that made large-MoE training stable ($\beta \approx 10^{-3}$).
+
 which penalizes the **log-sum-exp** (the softmax normalizer) of the logits. Driving the log-partition toward zero keeps logits bounded and the router numerically stable, with negligible quality cost. The full training loss is therefore:
 
 $$
 \mathcal{L} \;=\; \underbrace{\mathcal{L}_{\text{task}}}_{\text{next-token CE}} \;+\; \underbrace{\alpha \, \mathcal{L}_{\text{aux}}}_{\text{balance}} \;+\; \underbrace{\beta \, \mathcal{L}_{z}}_{\text{stability}}.
 $$
+
+> **Source / derivation:** [Zoph et al., *ST-MoE* (2022)](https://arxiv.org/abs/2202.08906) §3 — the full MoE objective combines the task cross-entropy with the load-balancing aux loss ($\alpha$) of [Switch Transformers (2021)](https://arxiv.org/abs/2101.03961) and the router z-loss ($\beta$); they solve *different* problems (balance vs logit scale) and are used together.
 
 A third common trick is **noisy / jitter routing**: add a little noise to the router logits (or multiply the input by uniform jitter) during training. This stops the router from over-committing early, encourages exploration of underused experts, and acts as a regularizer — much like the noise in noisy top-k gating from the original Shazeer paper.
 
@@ -275,6 +315,8 @@ There's a hardware reality the math above glosses over. To run experts efficient
 $$
 \text{capacity} \;=\; \Big\lceil \frac{T}{N} \cdot C_f \Big\rceil,
 $$
+
+> **Source / derivation:** [Lepikhin et al., *GShard* (2020)](https://arxiv.org/abs/2006.16668) §2.2 introduces the fixed per-expert capacity and token dropping; [Fedus et al., *Switch Transformers* (2021)](https://arxiv.org/abs/2101.03961) §2.2 defines the **capacity factor** $C_f$ exactly as $\lceil (T/N)\,C_f \rceil$ and analyses the drop-rate vs compute trade-off.
 
 where $T/N$ is the tokens-per-expert under perfect balance and $C_f$ is the **capacity factor** (e.g. 1.0, 1.25, 2.0) — a safety margin for imbalance. With $C_f = 1.25$, each expert can hold 25% more than its fair share.
 
@@ -323,7 +365,9 @@ $$
 y \;=\; \underbrace{E_{\text{shared}}(x)}_{\text{always run}} \;+\; \sum_{i \in \mathcal{T}(x)} \tilde{g}_i(x)\, E_i(x).
 $$
 
-> **Tip:** DeepSeek-V3 (671B total, ~37B active) combines fine-grained experts, shared experts, and an **auxiliary-loss-free** balancing scheme (it adjusts a per-expert *bias* added to the router logits to equalize load, instead of a gradient penalty — dodging the quality cost of the aux-loss tug-of-war). It's the most refined production MoE recipe as of this writing, and a great "what's state of the art" answer in an interview.
+> **Source / derivation:** [Dai et al., *DeepSeekMoE: Towards Ultimate Expert Specialization* (2024)](https://arxiv.org/abs/2401.06066) §3, eq. (5)–(8) — the fine-grained-expert + isolated **shared-expert** formulation: one (or few) always-on experts absorb common knowledge so the routed experts specialise; carried into [DeepSeek-V3 (2024)](https://arxiv.org/abs/2412.19437).
+
+> **Tip:** [DeepSeek-V3](https://arxiv.org/abs/2412.19437) (671B total, ~37B active) combines fine-grained experts, shared experts, and an **auxiliary-loss-free** balancing scheme (it adjusts a per-expert *bias* added to the router logits to equalize load, instead of a gradient penalty — dodging the quality cost of the aux-loss tug-of-war). It's the most refined production MoE recipe as of this writing, and a great "what's state of the art" answer in an interview.
 
 > **Gotcha:** "more experts is strictly better" is wrong. Fine-grained experts increase **routing overhead** (more all-to-all communication, more router compute), increase **memory** (more, smaller matrices have worse hardware utilization), and eventually hit diminishing returns from the scaling laws. The sweet spot is a balance — DeepSeek's choices (64 routed + shared, top-6/8) are tuned, not maximal.
 
@@ -422,6 +466,8 @@ MoE went from research curiosity to the dominant frontier architecture in a few 
 ## Code: a real MoE layer, routed and balanced
 
 Here's a from-scratch single MoE layer in PyTorch. It builds $N$ expert FFNs and a router, does top-k routing with the gate-weighted combine, computes the auxiliary load-balancing loss, and — the point — **measures expert utilization with and without the balance loss**, so you can watch the collapse happen and the loss fix it. It runs on CPU in a few seconds.
+
+> **Runnable project and a step-by-step notebook:** the same verified code lives as a clean script and an executed teaching notebook next to this page — see the [step-by-step teaching notebook](code/07-Mixture-of-Experts.ipynb) (routes a batch, prints which expert each token hit, then trains the collapse-vs-balanced demo) and the [runnable demo script](code/mixture_of_experts.py) (run it with `python mixture_of_experts.py`). Every number printed below is reproduced verbatim by both.
 
 ```python
 """From-scratch MoE layer: route tokens, combine experts, and SHOW that the
