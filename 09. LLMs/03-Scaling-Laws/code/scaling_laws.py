@@ -1,6 +1,6 @@
 """Scaling laws, made visible from scratch: fit a power law, find the compute-optimal split, do the 6ND math.
 
-Three self-contained demos, each the small-scale version of what a frontier lab does before a
+Four self-contained demos, each the small-scale version of what a frontier lab does before a
 nine-figure run:
 
   1. FIT THE POWER LAW. Generate synthetic loss-vs-N points from a KNOWN law L = E + A/N^alpha,
@@ -11,9 +11,12 @@ nine-figure run:
      minimizes it -- the U-shaped iso-compute curve. We print the implied tokens/param.
   3. THE 6ND CALCULATOR. Given N and D, training compute C = 6ND. Worked for GPT-3 and for
      Chinchilla (70B x 1.4T), with the asserts that pin the arithmetic.
+  4. EXTRAPOLATE THE LOSS. Fit the compute power law L(C) = E + (Cc/C)^alpha_C to small runs,
+     then predict the loss at 10x and 100x the budget -- the payoff that lets a lab commit to a
+     run it hasn't done. We assert each 10x of compute multiplies the reducible term by 10^-alpha_C.
 
-These are the SAME numbers embedded in the concept page and the teaching notebook -- this file is the
-single source the page's "Output (CPU, <1 s)" block was read from.
+These are the SAME numbers embedded in the concept page and the teaching notebook: the page's
+"Output" block is this file's stdout, pasted verbatim, so page == script == notebook.
 
 Verified on Python 3.12 / torch 2.x. Device-agnostic (CUDA / MPS / CPU). The whole computation is
 tiny and exact arithmetic, so the numbers are identical on any device; the trace pins to CPU
@@ -62,6 +65,13 @@ GPT3_N, GPT3_D = 175e9, 300e9  # GPT-3: 175B params, 300B tokens -> ~1.7 tokens/
 CHINCHILLA_N, CHINCHILLA_D = 70e9, 1.4e12  # Chinchilla: 70B params, 1.4T tokens -> ~20 tokens/param
 GPT3_EXPECTED_C = 3.15e23  # the by-hand answer; asserted exact below
 CHINCHILLA_EXPECTED_C = 5.88e23  # 6 * 70e9 * 1.4e12 = 5.88e23; asserted exact below
+
+# --- loss-extrapolation demo: the compute power law L(C) = E + (Cc/C)^alpha_C ------------------
+EXTRAP_E = 1.69  # irreducible floor (same entropy floor as the parametric fit)
+EXTRAP_CC = 3.0e8  # fitted scale constant Cc (arbitrary units matching the budget axis)
+EXTRAP_ALPHA_C = 0.057  # Kaplan's directly-fitted compute exponent (the small one that bites)
+EXTRAP_C0 = 1e21  # the base budget; we predict the loss at 1x, 10x, 100x this
+EXTRAP_FACTORS = (1, 10, 100)
 
 # Run on the best available accelerator; CPU is the universal fallback.
 DEVICE = (
@@ -237,6 +247,31 @@ def demo_6nd_calculator() -> None:
     print()
 
 
+def predicted_loss(budget_flops: float) -> float:
+    """Compute power law L(C) = E + (Cc/C)^alpha_C: the loss along the compute-optimal frontier.
+
+    budget_flops: the compute C. Returns the predicted loss -- the irreducible floor plus a
+    reducible term that decays as C^(-alpha_C).
+    """
+    return EXTRAP_E + (EXTRAP_CC / budget_flops) ** EXTRAP_ALPHA_C
+
+
+def demo_extrapolate() -> None:
+    """Demo 4: predict the loss at 10x and 100x compute from the fitted compute power law."""
+    print("[4] Extrapolate the loss: predict 10x and 100x compute from the power law")
+    base = predicted_loss(EXTRAP_C0)
+    for factor in EXTRAP_FACTORS:
+        loss = predicted_loss(factor * EXTRAP_C0)
+        print(f"    {factor:4d}x compute -> L = {loss:.4f}")
+    # each 10x of compute multiplies the REDUCIBLE term by exactly 10^-alpha_C (a fixed small slice).
+    reducible_base = base - EXTRAP_E
+    reducible_10x = predicted_loss(10 * EXTRAP_C0) - EXTRAP_E
+    ratio = reducible_10x / reducible_base
+    print(f"    10x shrinks the reducible term by 10^-alpha_C = {10 ** -EXTRAP_ALPHA_C:.4f}")
+    assert abs(ratio - 10 ** -EXTRAP_ALPHA_C) < 1e-9, "10x should scale the reducible term by 10^-alpha_C"
+    print()
+
+
 def main() -> None:
     print(f"device: {DEVICE} (trace pinned to {TRACE_DEVICE})")
     print("torch:", torch.__version__)
@@ -244,7 +279,11 @@ def main() -> None:
     demo_fit_power_law()
     demo_compute_optimal()
     demo_6nd_calculator()
-    print("all asserts passed: recovered exponent, interior optimum, and 6ND arithmetic all hold.")
+    demo_extrapolate()
+    print(
+        "all asserts passed: recovered exponent, interior optimum, 6ND arithmetic, "
+        "and the loss extrapolation all hold."
+    )
 
 
 if __name__ == "__main__":

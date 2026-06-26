@@ -202,7 +202,14 @@ There's a second, complementary way to use $L(N,D) = E + A/N^{\alpha} + B/D^{\be
 
 $$L^\ast(C) \;=\; E \;+\; \left(\frac{C_c}{C}\right)^{\alpha_C}, \qquad \alpha_C = \frac{\alpha\beta}{\alpha+\beta}.$$
 
-*Source / derivation: that the compute law is the joint law evaluated along its own optimum (and $\alpha_C$ the harmonic-mean-like combination) is derived here; the $L(C)$ power law itself is from [Kaplan et al. 2020 (arXiv 2001.08361)](https://arxiv.org/abs/2001.08361) and [Hoffmann et al. 2022 (arXiv 2203.15556)](https://arxiv.org/abs/2203.15556).*
+Where does that $\alpha_C = \frac{\alpha\beta}{\alpha+\beta}$ come from? Plug the optimal-allocation exponents (from above, $N^\ast \propto C^{\beta/(\alpha+\beta)}$ and $D^\ast \propto C^{\alpha/(\alpha+\beta)}$) into the two reducible terms and watch them line up:
+
+- the **model-size penalty**: $\dfrac{A}{N^{\ast\,\alpha}} \propto \left(C^{\beta/(\alpha+\beta)}\right)^{-\alpha} = C^{-\alpha\beta/(\alpha+\beta)}$;
+- the **data penalty**: $\dfrac{B}{D^{\ast\,\beta}} \propto \left(C^{\alpha/(\alpha+\beta)}\right)^{-\beta} = C^{-\alpha\beta/(\alpha+\beta)}$.
+
+Both reducible terms decay as $C^{-\alpha\beta/(\alpha+\beta)}$ — *the same* exponent (they must, or one would dominate and you wouldn't be on the optimum). Their sum is therefore also $\propto C^{-\alpha\beta/(\alpha+\beta)}$, which is exactly $\left(C_c/C\right)^{\alpha_C}$ with $\boxed{\alpha_C = \frac{\alpha\beta}{\alpha+\beta}}$.
+
+*Source / derivation: that the compute law is the joint law evaluated along its own optimum (and $\alpha_C$ the harmonic-mean-like combination) is derived just above; the $L(C)$ power law itself is from [Kaplan et al. 2020 (arXiv 2001.08361)](https://arxiv.org/abs/2001.08361) and [Hoffmann et al. 2022 (arXiv 2203.15556)](https://arxiv.org/abs/2203.15556).*
 
 This is the deep reason Kaplan's $L(C)$ law and the Chinchilla parametric law are the *same physics seen two ways*: the compute law is just the joint law *evaluated along its own optimum*. The compute exponent $\alpha_C = \frac{\alpha\beta}{\alpha+\beta}$ is the **harmonic-mean-like combination** of the model and data exponents — always *smaller* than either, which is why returns to raw compute are even weaker than returns to model size or data alone. Two cheap knobs, combined, give a stingy third.
 
@@ -226,14 +233,16 @@ Read top to bottom and you can see the field's entire arc in one column: the Kap
 
 ### Worked example 2: allocate a fixed budget the Chinchilla way
 
-You have a budget $C = 3\times10^{21}$ FLOPs (a modest research run). What's the compute-optimal $(N, D)$?
+You have a budget $C = 1\times10^{21}$ FLOPs (a modest research run). What's the compute-optimal $(N, D)$?
 
 **Fast estimate via the rule.** Use $C = 6ND$ and $D = 20N$ together: $C = 6N(20N) = 120N^2$, so
 
-$$N^\ast = \sqrt{\frac{C}{120}} = \sqrt{\frac{3\times10^{21}}{120}} = \sqrt{2.5\times10^{19}} \approx \mathbf{5.0\times10^{9}\ \text{params (5B)}},$$
-$$D^\ast = 20\,N^\ast \approx \mathbf{1.0\times10^{11}\ \text{tokens (100B)}}.$$
+$$N^\ast = \sqrt{\frac{C}{120}} = \sqrt{\frac{1\times10^{21}}{120}} = \sqrt{8.3\times10^{18}} \approx \mathbf{2.89\times10^{9}\ \text{params (2.9B)}},$$
+$$D^\ast = 20\,N^\ast \approx \mathbf{5.8\times10^{10}\ \text{tokens (58B)}}.$$
 
-Check: $6 \times 5\times10^9 \times 10^{11} = 3\times10^{21}$ ✓. So a **5B model on 100B tokens** — *not* a 50B model on 10B tokens (way undertrained) and *not* a 0.5B model on 1T tokens (too small to use the data). The minimizing search in code lands at $N^\ast \approx 3\times10^9$ for the *parametric* fit (whose ratio runs a bit above 20); the simple-rule estimate of 5B/100B is the right ballpark and the one to quote. Same machinery scales to any budget — the script also solves $C=10^{24}$ → $N^\ast \approx 4\times10^{10}$ (40B), $D^\ast \approx 4\times10^{12}$ (4T).
+Check: $6 \times 2.89\times10^9 \times 5.8\times10^{10} \approx 1\times10^{21}$ ✓. So a **~2.9B model on ~58B tokens** — *not* a 30B model on a few B tokens (way undertrained) and *not* a 0.3B model on hundreds of B tokens (too small to use the data).
+
+**A subtlety to name out loud.** If instead you do the full minimizing search over the *parametric* loss $L(N,D)=E+A/N^\alpha+B/D^\beta$ (the code does exactly this), it lands at $N^\ast \approx 1.82\times10^9$ with a ratio of **~50 tokens/param** — *well above* the 20 the simple rule gives. This is **not** a contradiction or an error: it's the **known Approach-3 drift**. The parametric exponents $\alpha\approx0.34$, $\beta\approx0.28$ aren't exactly equal, so the optimal ratio $D^\ast/N^\ast$ creeps *upward* with scale rather than staying pinned at 20. The equal-exponent "Approach 1 & 2" result is what gives the flat 20:1 — and **20:1 (here, 2.9B/58B) is the number to quote**, with the ~50 from the parametric search flagged as the drift. (Same machinery scales to any budget; the note in the code section makes this concrete in the printed output.)
 
 ### Worked example 3: extrapolate the loss at 10× compute
 
@@ -241,7 +250,7 @@ This is the payoff — *predicting* a run you haven't done. Suppose you've fit t
 
 $$L(C_0) = 1.69 + \left(\frac{3\times10^8}{10^{21}}\right)^{0.057} = 1.69 + (3\times10^{-13})^{0.057} \approx \mathbf{1.883\ \text{nats/token}.}$$
 
-Now ask: what loss do I get at **10×** the compute, $C = 10^{22}$? The reducible term shrinks by $10^{-\alpha_C} = 10^{-0.057} \approx 0.877$:
+Now ask: what loss do I get at **10×** the compute, $C = 10^{22}$? Because the reducible term is $(C_c/C)^{\alpha_C}$, multiplying $C$ by 10 multiplies that term by $10^{-\alpha_C} = 10^{-0.057} \approx 0.877$ — a *fixed* shrink factor, the same for every decade of compute:
 
 $$L(10\,C_0) = 1.69 + 0.877 \times (1.883 - 1.69) = 1.69 + 0.877\times0.193 \approx \mathbf{1.860\ \text{nats/token}.}$$
 
@@ -328,7 +337,7 @@ This **data wall** reshapes the strategy in several ways:
 
 The most contested corner of scaling. **Wei et al., "Emergent Abilities of Large Language Models" (2022)** documented capabilities that appear **absent** in smaller models and then, past some scale threshold, appear **suddenly** — multi-step arithmetic, word unscrambling, certain instruction-following and reasoning tasks. Plotted as accuracy vs scale, these look like **sharp phase transitions**: flat near zero, then a knee, then a jump. The implication is unsettling and exciting: scale doesn't just smoothly lower loss, it *unlocks qualitatively new behaviors* you couldn't have predicted from smaller models.
 
-This is in real tension with the smoothness of scaling laws. Loss is *smooth* in scale; how can capabilities be *discontinuous*? **Schaeffer et al., "Are Emergent Abilities of Large Language Models a Mirage?" (2023)** proposed a deflating explanation: emergence is often an artifact of the **metric**, not the model. Many "emergent" tasks are scored with **discontinuous, all-or-nothing** metrics — exact-match accuracy, or "get all $k$ tokens right." Under such a metric, a model whose *per-token* correctness is improving **smoothly** will show **near-zero** task accuracy until the per-token probability crosses a threshold, then a **sudden** jump — purely because $p^k$ (probability all $k$ tokens are right) stays tiny until $p$ gets large, then shoots up. Swap to a **continuous** metric (per-token log-likelihood, partial credit, token edit distance) and the *same* runs reveal **smooth, predictable** improvement. The "emergence" was in the ruler, not the model.
+This is in real tension with the smoothness of scaling laws. Loss is *smooth* in scale; how can capabilities be *discontinuous*? **Schaeffer et al., "Are Emergent Abilities of Large Language Models a Mirage?" (2023)** proposed a deflating explanation: emergence is often an artifact of the **metric**, not the model. Many "emergent" tasks are scored with **discontinuous, all-or-nothing** metrics — exact-match accuracy, or "get all $k$ tokens right." Under such a metric, a model whose *per-token* correctness is improving **smoothly** will show **near-zero** task accuracy until the per-token probability crosses a threshold, then a **sudden** jump — purely because $p^k$ (probability all $k$ tokens are right) stays tiny until $p$ gets large, then shoots up. Put a number on it: say a task needs $k=5$ tokens all correct. At per-token $p = 0.6$, task accuracy is $0.6^5 \approx 0.078$ — looks like the model "can't do it." Nudge $p$ up to $0.9$ (a mere **1.5×** improvement in the *smooth* underlying quantity) and accuracy jumps to $0.9^5 \approx 0.59$ — a **~7.6× leap** in the *measured* score. The model improved smoothly; the exact-match ruler manufactured the cliff. Swap to a **continuous** metric (per-token log-likelihood, partial credit, token edit distance) and the *same* runs reveal **smooth, predictable** improvement. The "emergence" was in the ruler, not the model.
 
 *Source / derivation: the emergence phenomenon is documented in [Wei et al. 2022 (arXiv 2206.07682)](https://arxiv.org/abs/2206.07682); the metric-artifact ($p \to p^k$) explanation is from [Schaeffer et al. 2023 — "Are Emergent Abilities a Mirage?" (arXiv 2304.15004)](https://arxiv.org/abs/2304.15004).*
 
@@ -439,68 +448,88 @@ graph LR
 
 ## Code: derive the constants and fit the law
 
-This script does the four computations the page relies on — $C = 6ND$, the Chinchilla-optimal allocation, the loss extrapolation, and fitting the power-law exponent from a measured ladder — so every number above is reproducible. It runs on CPU in under a second; no GPU needed.
+This script does the four computations the page relies on — fitting the power-law exponent from a measured ladder, the compute-optimal allocation, the $C = 6ND$ calculator, and the loss extrapolation — so every number above is reproducible. It runs on CPU in well under a second; no GPU needed.
 
-> **Runnable project and a step-by-step notebook:** the same verified demos live as a clean, device-agnostic script and an executed teaching notebook next to this page — see the [step-by-step teaching notebook](code/03-Scaling-Laws.ipynb) and the [runnable demo script](code/scaling_laws.py) (run it with `python scaling_laws.py`). The script fits the power law (recovers $\alpha_N \approx 0.30$), finds the compute-optimal U-curve minimum (the ~20 tokens/param rule), and works the $6ND$ calculator on GPT-3 and Chinchilla — with asserts that pin every number.
+> **Runnable project and a step-by-step notebook:** the same verified demos live as a clean, device-agnostic script and an executed teaching notebook next to this page — see the [step-by-step teaching notebook](code/03-Scaling-Laws.ipynb) and the [runnable demo script](code/scaling_laws.py) (run it with `python scaling_laws.py`). The script fits the power law (recovers $\alpha_N \approx 0.30$), finds the compute-optimal U-curve minimum, works the $6ND$ calculator on GPT-3 and Chinchilla, and extrapolates the loss to 10× and 100× compute — with asserts that pin every number.
+
+Here is the spine of the shipped `scaling_laws.py` (the full file, with named constants and asserts, is next to this page):
 
 ```python
-"""Scaling laws, end to end: C=6ND, Chinchilla allocation, extrapolation, exponent fit.
-Verified on Python 3.12 (numpy 2.x), CPU."""
 import numpy as np
+import torch
 
-# --- 1. C = 6ND : training compute for GPT-3 by hand -------------------------
-N, D = 175e9, 300e9
-C = 6 * N * D
-print(f"[1] GPT-3: C = 6ND = {C:.3e} FLOPs  ({C/(1e15*86400):.0f} PF-days)")
-print(f"    tokens/param D/N = {D/N:.1f}   (Chinchilla wants ~20)")
+# --- C = 6ND : training compute from N and D --------------------------------
+def training_flops(N, D):           # forward 2N + backward 4N FLOPs/token, x D tokens
+    return 6 * N * D
 
-# --- 2. Chinchilla-optimal (N*, D*) for a fixed budget -----------------------
-E, A, B, a, b = 1.69, 406.4, 410.7, 0.34, 0.28      # parametric fit (approx)
-loss = lambda N, D: E + A / N**a + B / D**b
-for C_ in (3e21, 1e24):
-    Ng = np.logspace(7, 13, 200_000)
-    Dg = C_ / (6 * Ng)                               # enforce 6ND = C
-    i = np.argmin(loss(Ng, Dg))
-    print(f"[2] C={C_:.0e}: N*={Ng[i]:.2e}, D*={Dg[i]:.2e}, "
-          f"D/N={Dg[i]/Ng[i]:.0f}, L*={loss(Ng[i],Dg[i]):.4f}")
-# simple-rule estimate: C = 6*N*(20N) = 120 N^2
-N_rule = np.sqrt(3e21 / 120)
-print(f"    20:1 rule for C=3e21: N*~{N_rule:.2e} ({N_rule/1e9:.1f}B), "
-      f"D*~{20*N_rule:.2e} ({20*N_rule/1e9:.0f}B)")
+# --- Chinchilla parametric loss L(N,D) = E + A/N^a + B/D^b -------------------
+E, A, B, a, b = 1.69, 406.4, 410.7, 0.34, 0.28        # Hoffmann et al. 2022 fit
+def parametric_loss(N, D):
+    return E + A / N**a + B / D**b
 
-# --- 3. Extrapolate loss at 10x and 100x compute via the power law -----------
-Ec, Cc, alpha = 1.69, 3.0e8, 0.057
-for fac in (1, 10, 100):
-    print(f"[3] {fac:4d}x compute -> L = {Ec + (Cc/(1e21*fac))**alpha:.4f}")
+# [2] sweep N along the iso-compute line 6ND = C, read off the U-curve minimum
+budget = 1e21
+N_grid = torch.logspace(7, 13, 200_000, dtype=torch.float64)
+D_grid = budget / (6 * N_grid)                         # enforce 6ND = C
+i = int(torch.argmin(parametric_loss(N_grid, D_grid)))
+N_star, D_star = float(N_grid[i]), float(D_grid[i])    # the valley floor
+N_rule = (budget / (6 * 20)) ** 0.5                    # equal-exponent rule: C = 6N(20N)
 
-# --- 4. Fit the power-law exponent from a measured ladder of tiny models ------
+# [1] recover a known exponent from a synthetic "measured" ladder (seed=0)
 Ns = np.array([1e4, 3e4, 1e5, 3e5, 1e6, 3e6])
-trueE, trueA, true_a = 1.55, 18.0, 0.30
-rng = np.random.default_rng(0)
-losses = trueE + trueA / Ns**true_a + rng.normal(0, 0.01, Ns.shape)   # "measured"
-slope, _ = np.polyfit(np.log(Ns), np.log(losses - trueE), 1)           # fit reducible
-print(f"[4] fitted exponent alpha_N = {-slope:.3f}  (true {true_a})")
-for n, l in zip(Ns, losses):
-    print(f"    N={n:>9.0f}  loss={l:.4f}")
+losses = 1.55 + 18.0 / Ns**0.30 + np.random.default_rng(0).normal(0, 0.01, Ns.shape)
+slope = np.polyfit(np.log(Ns), np.log(losses - 1.55), 1)[0]   # log-log slope = -alpha
+
+# [4] extrapolate: compute power law L(C) = E + (Cc/C)^alpha_C, predict 10x/100x
+def predicted_loss(C):
+    return 1.69 + (3.0e8 / C) ** 0.057
 ```
 
-Output (CPU, <1 s):
+Running the full script (`python scaling_laws.py`) prints — verbatim, this stdout is the source of every number on the page:
 
 ```
-[1] GPT-3: C = 6ND = 3.150e+23 FLOPs  (3646 PF-days)
-    tokens/param D/N = 1.7   (Chinchilla wants ~20)
-[2] C=3e+21: N*=3.00e+09, D*=1.67e+11, D/N=56, L*=2.2297
-[2] C=1e+24: N*=4.13e+10, D*=4.04e+12, D/N=98, L*=1.9112
-    20:1 rule for C=3e21: N*~5.00e+09 (5.0B), D*~1.00e+11 (100B)
-[3]    1x compute -> L = 1.8833
-[3]   10x compute -> L = 1.8595
-[3]  100x compute -> L = 1.8387
-[4] fitted exponent alpha_N = 0.299  (true 0.3)
+device: mps (trace pinned to cpu)
+torch: 2.12.0
+
+[1] Fit a power law: recover the exponent from a measured ladder
+    N=     10000  loss=2.6870
+    N=     30000  loss=2.3655
+    N=    100000  loss=2.1256
+    N=    300000  loss=1.9604
+    N=   1000000  loss=1.8299
+    N=   3000000  loss=1.7588
+    recovered alpha_N = 0.299   (true 0.3)
+
+[2] Compute-optimal frontier: sweep N along 6ND = C, find the U-curve minimum
+    budget C = 1e+21 FLOPs   (the iso-compute curve below; loss is U-shaped)
+      N (params) |   D (tokens) |   L(N,D)
+    --------------------------------------
+        1.00e+07 |     1.67e+13 |   3.4657  <- near N*
+        1.00e+08 |     1.67e+12 |   2.6198  <- near N*
+        1.00e+09 |     1.67e+11 |   2.3400  <- near N*
+        1.00e+10 |     1.67e+10 |   2.4160
+        1.00e+11 |     1.67e+09 |   2.8389
+        1.00e+12 |     1.67e+08 |   3.7722
+        1.00e+13 |     1.67e+07 |   5.6085
+    optimum: N*=1.82e+09, D*=9.14e+10, L*=2.3289, tokens/param=50
+    20:1 rule: N*=2.89e+09 (2.89B), D*=5.77e+10 (58B), tokens/param=20
+
+[3] The 6ND calculator: training compute from N and D
+          GPT-3: N=2e+11, D=3.0e+11 -> C=6ND=3.150e+23 FLOPs (3646 PF-days), tokens/param=1.7
+     Chinchilla: N=7e+10, D=1.4e+12 -> C=6ND=5.880e+23 FLOPs (6806 PF-days), tokens/param=20.0
+
+[4] Extrapolate the loss: predict 10x and 100x compute from the power law
+       1x compute -> L = 1.8833
+      10x compute -> L = 1.8595
+     100x compute -> L = 1.8387
+    10x shrinks the reducible term by 10^-alpha_C = 0.8770
+
+all asserts passed: recovered exponent, interior optimum, 6ND arithmetic, and the loss extrapolation all hold.
 ```
 
-> **Note:** the parametric fit in `[2]` reports a $D/N$ above 20 (56–98) because the *parametric* (Approach-3) exponents 0.34/0.28 aren't exactly equal — its optimal ratio drifts upward with scale. The simple-rule estimate (equal-exponent, 0.5/0.5) gives the canonical **~20:1** and the 5B/100B allocation. Both are "Chinchilla"; the field quotes the simple rule. This is the real-paper subtlety from the note above, made concrete in numbers.
+> **Note:** the parametric optimum in `[2]` reports `tokens/param=50` — *well above* 20 — because the *parametric* (Approach-3) exponents 0.34/0.28 aren't exactly equal, so the optimal ratio drifts upward with scale (the known Approach-3 drift, **not** an error — the same subtlety flagged under "reading the frontier off the parametric fit"). The equal-exponent **20:1 rule** on the line below gives the canonical allocation — $N^\ast = 2.89\text{B}$, $D^\ast = 58\text{B}$. Both are "Chinchilla"; the field quotes the simple 20:1 rule, and that's the number to carry into an interview.
 
-> **Tip:** to run the *actual* mini scaling experiment, swap the synthetic loss in step `[4]` (or in the [teaching notebook](code/03-Scaling-Laws.ipynb)) for losses you measure from your own training loop — a ladder of tiny transformers on a real corpus — and the same log-log fit recovers *your* exponent and produces the straight line. The wider the range of $N$ you span and the straighter your line, the further you can trust the extrapolation.
+> **Tip:** to run the *actual* mini scaling experiment, swap the synthetic loss in step `[1]` (or in the [teaching notebook](code/03-Scaling-Laws.ipynb)) for losses you measure from your own training loop — a ladder of tiny transformers on a real corpus — and the same log-log fit recovers *your* exponent and produces the straight line. The wider the range of $N$ you span and the straighter your line, the further you can trust the extrapolation.
 
 ---
 
