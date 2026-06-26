@@ -54,4 +54,4 @@ deep pipelines (EasyOCR), and end-to-end transformers (TrOCR).
 ## 🔗 In this platform
 - Foundation: [Object Detection](07-Object-Detection.md) (text detection stage) · [Deep Learning › RNN / LSTM / GRU](../../05.%20Deep_Learning/concepts/14-RNN-LSTM-GRU.md) (CRNN's recurrent core)
 - Foundation: [Deep Learning › CNNs & Convolution](../../05.%20Deep_Learning/concepts/13-CNNs-and-Convolution.md)
-- Related domain: [NLP › Sequence Labeling](../../06.%20NLP/concepts/09-Sequence-Labeling-POS-and-NER.md) (CTC is alignment-free sequence labeling)
+- Related domain: [NLP › Sequence Labeling](../../06.%20NLP/09-Sequence-Labeling-POS-and-NER/09-Sequence-Labeling-POS-and-NER.md) (CTC is alignment-free sequence labeling)

@@ -65,4 +65,4 @@ updated: 2026-06-21
 - Block internals: [11 Normalization](11-Normalization.md) (LayerNorm / RMSNorm, pre- vs post-norm) · [18 Residual / Skip Connections](18-Residual-Skip-Connections.md) (the residual stream) · [03 Activation Functions](03-Activation-Functions.md) (ReLU → GELU → SwiGLU in the FFN) · [17 Positional Encoding](17-Positional-Encoding.md)
 - Prerequisite: [14 RNN / LSTM / GRU](14-RNN-LSTM-GRU.md) (what the transformer replaced)
 - At scale / inference: [KV Cache](../../09.%20LLMs/05-KV-Cache/05-KV-Cache.md) · [Efficient Attention (FlashAttention)](../../09.%20LLMs/06-Efficient-Attention-FlashAttention/06-Efficient-Attention-FlashAttention.md)
-- Field overview: [Deep Learning](../README.md) · related: [06. NLP](../../06.%20NLP/concepts/README.md) · [09. LLMs](../../09.%20LLMs/README.md)
+- Field overview: [Deep Learning](../README.md) · related: [06. NLP](../../06.%20NLP/README.md) · [09. LLMs](../../09.%20LLMs/README.md)

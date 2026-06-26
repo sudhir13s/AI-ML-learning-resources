@@ -54,4 +54,4 @@ corpus.
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 1.06 Vector Similarities](../../../AI-ML-intuition/Module_1_Representation/1.06_Vector_Similarities_The_Scaled_Dot-Product.md) · [1.17 BoW & TF-IDF](../../../AI-ML-intuition/Module_1_Representation/1.17_BoW_and_TF-IDF.md)
 - Prereqs: [04 Vector Databases & ANN Indexes](04-Vector-Databases-and-ANN-Indexes.md) · Next: [06 Re-ranking (cross-encoders)](06-Re-ranking-Cross-Encoders.md)
-- Related domain: [06. NLP — Bag-of-Words & TF-IDF](../../06.%20NLP/concepts/03-Bag-of-Words-and-TF-IDF.md) · [06. NLP — Information Retrieval & Semantic Search](../../06.%20NLP/concepts/16-Information-Retrieval-and-Semantic-Search.md)
+- Related domain: [06. NLP — Bag-of-Words & TF-IDF](../../06.%20NLP/03-Bag-of-Words-and-TF-IDF/03-Bag-of-Words-and-TF-IDF.md) · [06. NLP — Information Retrieval & Semantic Search](../../06.%20NLP/16-Information-Retrieval-and-Semantic-Search/16-Information-Retrieval-and-Semantic-Search.md)

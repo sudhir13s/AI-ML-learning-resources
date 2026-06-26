@@ -68,6 +68,6 @@ updated: 2026-06-27
 
 **In this platform**:
 - Concept page (full explanation): [LLM Evaluation & Benchmarks](19-LLM-Evaluation-and-Benchmarks.md)
-- Foundations (the *why* behind the math): [NLP Evaluation Metrics (perplexity, BLEU, ROUGE, BERTScore)](../../06.%20NLP/concepts/18-NLP-Evaluation-Metrics.md) · [Information Theory: Entropy & KL Divergence](../../../AI-ML-intuition/Module_5_Generation/5.01_Information_Theory_Entropy_KL_Divergence.md)
+- Foundations (the *why* behind the math): [NLP Evaluation Metrics (perplexity, BLEU, ROUGE, BERTScore)](../../06.%20NLP/18-NLP-Evaluation-Metrics/18-NLP-Evaluation-Metrics.md) · [Information Theory: Entropy & KL Divergence](../../../AI-ML-intuition/Module_5_Generation/5.01_Information_Theory_Entropy_KL_Divergence.md)
 - Shares the math: [RLHF & DPO](../15-RLHF-and-DPO/15-RLHF-and-DPO.md) (the Bradley–Terry reward model is the same logistic as Elo)
 - Related concepts: [Chain-of-Thought Reasoning](../17-Chain-of-Thought-Reasoning/17-Chain-of-Thought-Reasoning.md) (why GSM8K rewards reasoning) · [Decoding & Sampling](../18-Decoding-and-Sampling/18-Decoding-and-Sampling.md) (the sampling that pass@k accounts for) · [Hallucination & Alignment Basics](../20-Hallucination-and-Alignment-Basics/20-Hallucination-and-Alignment-Basics.md) (why calibration matters)

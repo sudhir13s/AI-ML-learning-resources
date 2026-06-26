@@ -53,7 +53,7 @@ and — for the gold demo chapter — a runnable notebook and `code/`.
 ### Related concepts (canonical home is another section)
 > Foundations or applications of LLMs, linked here to avoid repetition.
 - **Transformer · Attention · Positional encoding** → [Deep Learning](../05.%20Deep_Learning/concepts/README.md) ([Transformer](../05.%20Deep_Learning/concepts/16-Transformer-Architecture.md) · [Attention](../05.%20Deep_Learning/concepts/15-Attention-Mechanism.md) · [Positional Encoding](../05.%20Deep_Learning/concepts/17-Positional-Encoding.md))
-- **Tokenization & subword (BPE/WordPiece) · Contextual embeddings (BERT)** → [NLP](../06.%20NLP/concepts/README.md) ([Tokenization](../06.%20NLP/concepts/02-Tokenization-and-Subword-Algorithms.md) · [Contextual Embeddings](../06.%20NLP/concepts/06-Contextual-Embeddings-ELMo-BERT.md))
+- **Tokenization & subword (BPE/WordPiece) · Contextual embeddings (BERT)** → [NLP](../06.%20NLP/README.md) ([Tokenization](../06.%20NLP/02-Tokenization-and-Subword-Algorithms/02-Tokenization-and-Subword-Algorithms.md) · [Contextual Embeddings](../06.%20NLP/06-Contextual-Embeddings-ELMo-BERT/06-Contextual-Embeddings-ELMo-BERT.md))
 - **Retrieval-Augmented Generation (RAG)** → [RAG & LLM Applications](../11.%20RAG_and_LLM_Applications/concepts/README.md)
 - **PPO & policy-gradient mechanics** (the RL engine under RLHF) → [Reinforcement Learning](../08.%20Reinforcement_Learning/concepts/README.md)
 
@@ -85,4 +85,4 @@ and — for the gold demo chapter — a runnable notebook and `code/`.
 
 ## 🔗 In this platform
 - Build one: [project_06 ChatGPT-from-scratch](../../AI-ML-problemsets/projects/project_06_chatgpt_from_scratch/) · Intuition: [Module 8 — LLMs & Agentic Systems](../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/) · Systems: [LLM Systems curriculum](../llm_systems_curriculum.md)
-- Foundations: [Transformer Architecture](../05.%20Deep_Learning/concepts/16-Transformer-Architecture.md) · [Attention](../05.%20Deep_Learning/concepts/15-Attention-Mechanism.md) · [Contextual Embeddings (BERT)](../06.%20NLP/concepts/06-Contextual-Embeddings-ELMo-BERT.md)
+- Foundations: [Transformer Architecture](../05.%20Deep_Learning/concepts/16-Transformer-Architecture.md) · [Attention](../05.%20Deep_Learning/concepts/15-Attention-Mechanism.md) · [Contextual Embeddings (BERT)](../06.%20NLP/06-Contextual-Embeddings-ELMo-BERT/06-Contextual-Embeddings-ELMo-BERT.md)

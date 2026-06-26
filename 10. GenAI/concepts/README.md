@@ -44,6 +44,6 @@ updated: 2026-06-20
 
 - **Autoencoders (plain / denoising / sparse)** — the deterministic precursor to the VAE → [Deep Learning · Autoencoders](../../05.%20Deep_Learning/concepts/19-Autoencoders.md)
 - **LLM text generation & autoregressive language models** — GPT-style next-token generation → [LLMs](../../09.%20LLMs/README.md)
-- **Decoding strategies for text** (greedy · beam · top-k · top-p) → [NLP · Decoding Strategies](../../06.%20NLP/concepts/17-Decoding-Strategies.md)
+- **Decoding strategies for text** (greedy · beam · top-k · top-p) → [NLP · Decoding Strategies](../../06.%20NLP/17-Decoding-Strategies/17-Decoding-Strategies.md)
 - **Gaussian Mixture Models & the EM algorithm** — the classic latent-variable model → [Unsupervised Learning · GMM & EM](../../04.%20Unsupervised_Learning/concepts/04-Gaussian-Mixture-Models-and-EM.md)
 - **Information theory** (entropy · cross-entropy · KL divergence) — the objective under every likelihood model → [Foundations](../../01.%20Foundations/concepts/README.md)

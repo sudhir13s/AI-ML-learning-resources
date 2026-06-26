@@ -55,4 +55,4 @@ APIs, open BGE/MiniLM cross-encoders, ColBERT-style late interaction).
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 1.06 Vector Similarities — Scaled Dot-Product](../../../AI-ML-intuition/Module_1_Representation/1.06_Vector_Similarities_The_Scaled_Dot-Product.md)
 - Prereqs: [03 Embedding Models for Retrieval](03-Embedding-Models-for-Retrieval.md) · [05 Hybrid Search](05-Hybrid-Search-BM25-and-Dense.md) · Next: [07 Query Transformation](07-Query-Transformation-HyDE-Multi-Query.md)
-- Related domain: [06. NLP — Information Retrieval & Semantic Search](../../06.%20NLP/concepts/16-Information-Retrieval-and-Semantic-Search.md) · [05. Deep Learning — Attention](../../05.%20Deep_Learning/concepts/README.md)
+- Related domain: [06. NLP — Information Retrieval & Semantic Search](../../06.%20NLP/16-Information-Retrieval-and-Semantic-Search/16-Information-Retrieval-and-Semantic-Search.md) · [05. Deep Learning — Attention](../../05.%20Deep_Learning/concepts/README.md)

@@ -55,4 +55,4 @@ attribute a bad answer to retrieval vs generation.
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 8.02 Retrieval-Augmented Generation](../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.02_Retrieval_Augmented_Generation.md)
 - Prereqs: [01 RAG Fundamentals](01-RAG-Fundamentals.md) · Next: [12 Long-Context vs RAG](12-Long-Context-vs-RAG.md)
-- Related domain: [09. LLMs — LLM Evaluation & Benchmarks](../../09.%20LLMs/19-LLM-Evaluation-and-Benchmarks/19-LLM-Evaluation-and-Benchmarks.md) · [06. NLP — NLP Evaluation Metrics](../../06.%20NLP/concepts/18-NLP-Evaluation-Metrics.md)
+- Related domain: [09. LLMs — LLM Evaluation & Benchmarks](../../09.%20LLMs/19-LLM-Evaluation-and-Benchmarks/19-LLM-Evaluation-and-Benchmarks.md) · [06. NLP — NLP Evaluation Metrics](../../06.%20NLP/18-NLP-Evaluation-Metrics/18-NLP-Evaluation-Metrics.md)
