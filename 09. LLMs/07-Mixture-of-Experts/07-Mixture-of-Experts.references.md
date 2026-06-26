@@ -44,6 +44,7 @@ updated: 2026-06-22
 - [DeepSeek-V3 Technical Report](https://arxiv.org/abs/2412.19437) — **DeepSeek-AI (2024)** — 671B-total / 37B-active MoE with auxiliary-loss-free load balancing.
 - [Sparse Upcycling: Training MoE from Dense Checkpoints](https://arxiv.org/abs/2212.05055) — **Komatsuzaki et al. (2022)** — initialize an MoE from a trained dense model.
 - [A Review of Sparse Expert Models in Deep Learning](https://arxiv.org/abs/2209.01667) — **Fedus, Dean & Zoph (2022)** — the authoritative survey of MoE methods and history.
+- [Scaling Laws for Neural Language Models](https://arxiv.org/abs/2001.08361) — **Kaplan et al. (2020)** — the $\approx 2{\cdot}\text{params}$ forward-pass FLOP rule behind MoE's active-vs-total compute accounting.
 
 **Books (free chapters)**:
 - [Dive into Deep Learning — Attention & Transformers](https://d2l.ai/chapter_attention-mechanisms-and-transformers/index.html) — **Zhang et al.** — the transformer block (and its FFN) that the MoE layer modifies.
