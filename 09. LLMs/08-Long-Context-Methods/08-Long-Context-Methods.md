@@ -38,6 +38,8 @@ $$131072 \times 0.5\,\text{MiB} \;=\; \mathbf{64\ GiB} \quad \text{for a *single
 
 That alone overflows an 80 GB GPU once you add the 14 GB of weights. *(Knocked down by GQA/MLA, quantized caches, and the **eviction/sink** methods below.)*
 
+![KV cache (GiB) for a single sequence vs context length: 7B MHA at 0.5 MiB/token hits 64 GiB at 128K — overrunning an 80 GB GPU — while 8B GQA-8 at 0.125 MiB/token stays at 16 GiB. The memory wall is linear in context length, and GQA cuts the slope 4×.](images/kv_cache_wall.png)
+
 **Wall 3 — positions the model never trained on.** This is the subtle one, and the heart of this page. A model trained with positions $0\ldots4095$ has simply **never seen** position 4096, let alone 100,000. With learned absolute position embeddings there isn't even a vector *for* that slot. With RoPE there is a value, but it corresponds to a rotation angle outside the trained range — and the model's behaviour there is undefined. **Run a 4K-trained model at 8K with no fix and perplexity explodes**; the output degenerates into repetition or noise. No amount of memory or compute helps — the model is positionally lost.
 
 ```mermaid
@@ -65,6 +67,8 @@ graph TD
 Before any math, here's the mental model that makes the positional wall — and its fix — obvious.
 
 **RoPE** ([Su et al. 2021](https://arxiv.org/abs/2104.09864)) encodes a token's position not by *adding* a vector but by *rotating* its query and key vectors. Picture each pair of feature dimensions as the two hands of a clock. The token's position is the *time*: at position $m$, hand $i$ has rotated to angle $\theta_{m,i}$. Different feature pairs are clocks ticking at **different speeds** — some sweep a full circle every few tokens, others take thousands of tokens for one revolution.
+
+![Rotation angle vs token position for two RoPE frequency pairs: the fast pair (i=0) rotates one radian per token, while the slowest pair barely moves over the whole window. This per-pair speed range is what lets RoPE encode both fine local order and coarse long-range position.](images/rope_clock_hands.png)
 
 Why does this give *relative* position? Because when a query at position $i$ dots with a key at position $j$, both have been rotated, and the dot product of two rotated vectors depends only on the **angle between them** — i.e. on $i - j$. The absolute times cancel; only the *offset* survives. *(We prove exactly this in code below — the same offset at positions (2,5) and (10,13) gives a bit-for-bit identical score.)*
 
@@ -106,13 +110,19 @@ $$\theta^{\text{PI}}_{m,i} \;=\; \big(m \cdot \tfrac{L_\text{train}}{L_\text{tar
 
 Now position $L_\text{target}-1$ maps to angle $(L_\text{target}-1)\cdot\frac{L_\text{train}}{L_\text{target}} \approx L_\text{train}-1$ — back inside the trained range. **The price:** adjacent tokens are now only $\frac{L_\text{train}}{L_\text{target}}$ of an angle apart instead of a full unit, so fine positional resolution shrinks. A short fine-tune restores quality. PI is *interpolation* (squeeze in) rather than *extrapolation* (push out) — and interpolating within a trained range is always safer than extrapolating beyond it.
 
+![The headline visual: the fast pair's maximum rotation angle vs position when extending a 16-token model to 64 tokens. Naïve extrapolation (red) shoots to 63 rad — 4.2× past the trained ceiling of 15 (green shaded) — while Position Interpolation (blue) squeezes it back to 15.75 rad, just inside the trained range. Same numbers as the code below.](images/extrapolation_vs_pi.png)
+
 ### NTK-aware and YaRN: don't squeeze every clock equally
 
 PI's flaw: it slows **every** clock by the same factor, including the slow high-$i$ pairs that weren't anywhere near their limit — needlessly crushing their resolution. **NTK-aware scaling** and its refinement **YaRN** ([Peng et al. 2023](https://arxiv.org/abs/2309.00071)) fix this by scaling **frequency-dependently**: barely touch the high-frequency (fast) pairs that carry local order, scale the low-frequency (slow) pairs that carry long-range position the most.
 
+YaRN decides per pair by **wavelength** (the number of tokens a pair takes for one full rotation, $\lambda_i = 2\pi/\text{base}^{-2i/d_\text{head}}$): a pair that completes **many** rotations within the training window (short wavelength, $\lambda_i \ll L_\text{train}$) is left almost untouched, because it never lacked positions to learn from; a pair whose wavelength **exceeds** the training window ($\lambda_i > L_\text{train}$ — it never finished even one full rotation in training) gets the full PI squeeze. The scale $s_i$ below is exactly that interpolation, by wavelength, between "leave alone" and "squeeze."
+
 $$\text{YaRN: } \theta^{\text{YaRN}}_{m,i} = m\cdot \frac{\text{base}^{-2i/d_\text{head}}}{s_i}, \quad s_i \text{ interpolates from }1\text{ (fast pairs)}\to \tfrac{L_\text{target}}{L_\text{train}}\text{ (slow pairs)}.$$
 
 > **Source / derivation:** [Peng et al., *YaRN: Efficient Context Window Extension of Large Language Models* (2023)](https://arxiv.org/abs/2309.00071) — the "NTK-by-parts" wavelength-dependent interpolation plus an attention-temperature correction; reaches 128K with ~0.1% of the original pretraining tokens, far less fine-tuning than PI.
+
+> **See it side by side:** this [interactive YaRN explainer](https://mbrenndoerfer.com/writing/yarn-rope-context-extension-llm) (Michael Brenndoerfer) plots PI's uniform squeeze against YaRN's frequency-dependent scaling on the same axes — the clearest external visual of *why* leaving the fast pairs alone preserves local order. For the paper's own perplexity-vs-length curves, see [Peng et al. (2023), Fig. 1](https://arxiv.org/abs/2309.00071).
 
 > **Tip:** the one-line mental model. **PI**: slow all clocks equally (simple, blunt). **NTK/YaRN**: slow each clock by how close it was to overflowing (smarter, the modern default). **ALiBi**: don't use clocks — penalise by distance (extrapolates natively, but loses RoPE's exact relative encoding). Most production long-context models (Llama-3, Qwen-2, Mistral) use **RoPE + YaRN-style scaling**.
 
@@ -157,6 +167,8 @@ $$\text{reach} \;\approx\; 1 + L\,(W-1) \;\approx\; L\cdot W \text{ tokens.}$$
 
 > **Source / derivation:** [Jiang et al., *Mistral 7B* (2023), §2.1](https://arxiv.org/abs/2310.06825) — the layered-receptive-field argument: a window $w$ over $L$ layers reaches $\approx L\,w$ tokens. Mistral's $W=4096$ over 32 layers reaches **$4096\times32 = 131{,}072$** tokens of effective context — while the KV cache stays capped at $W$ per layer.
 
+![Effective receptive field vs depth for a window of W=4: the reach grows 4 → 7 → 10 → 12 tokens as layers stack, tracking the closed form 1 + L·(W−1) until it hits the sequence start. One layer is hard-bounded to W; depth multiplies it. Same numbers the code asserts.](images/receptive_field_growth.png)
+
 > **Note:** this is the crux that makes sliding-window attention *and* its bounded cache (Wall 2) actually work. You get linear compute, a constant-size cache, **and** a receptive field that spans the whole sequence — three wins from one mechanism. *(We prove the $1 + L(W-1)$ reach numerically in the code below.)*
 
 ---
@@ -191,6 +203,8 @@ graph LR
 ```
 
 *Evicting the first tokens removes the attention sinks and collapses the softmax; keeping ~4 sink tokens alongside the recent window preserves the denominator and enables endless streaming. We reproduce this drift numerically below.*
+
+![Left: the full attention distribution — the first 4 tokens (the sinks, red) absorb 85.3% of the softmax mass while the rest (blue) get almost nothing. Right: the max drift of the recent-window weights when you evict the sinks (0.295) versus keep them (0.001). Deleting the sinks deletes most of the denominator, so the survivors renormalize wildly. Same numbers the code asserts.](images/attention_sinks.png)
 
 > **Note (related cache levers):** **H2O** (Heavy-Hitter Oracle) keeps the tokens that *historically received the most attention* rather than just the recent/first ones. **KV quantization** (FP8/INT4 — see [Quantization](../10-Quantization/10-Quantization.md)) shrinks each cached entry. **MLA** (DeepSeek, in [KV Cache](../05-KV-Cache/05-KV-Cache.md)) caches one low-rank latent per token. These attack the *size* of each entry or *which* entries to keep — orthogonal to, and combinable with, sinks.
 
@@ -335,6 +349,8 @@ The honest tests:
 - **Needle-in-a-haystack.** Hide a specific fact ("the magic number is 7492") at a random depth in a long document and ask for it back. This directly tests whether the model can *retrieve* from anywhere in the context — and many models that report huge context windows fail badly at certain depths.
 - **"Lost in the middle"** ([Liu et al. 2023](https://arxiv.org/abs/2307.03172)) — the now-famous finding that retrieval accuracy is **U-shaped**: models reliably use information at the **start** and **end** of a long context but systematically **miss the middle**. A relevant fact buried at 50% depth is often invisible even when the model "supports" that length.
 
+![Illustrative U-shaped retrieval curve: accuracy is high when the relevant fact sits at the start (primacy) or end (recency) of the context and dips sharply in the middle. The shape — not the exact values — is the point; see Liu et al. (2023) Fig. 1 for the measured curves across real models.](images/lost_in_the_middle.png)
+
 > **Note:** this is why "context length" on a model card is a *ceiling, not a guarantee*. When evaluating a long-context model for real work, **run needle-in-a-haystack at multiple depths** and check the middle. The number that matters is *effective* context (where retrieval still works), which is often far below the advertised window.
 
 ---
@@ -347,9 +363,11 @@ Tying the techniques to models you've heard of. Note that **every** one of these
 |---|---|---|---|---|
 | Llama-3-8B/70B | RoPE + scaling | FlashAttention | GQA-8 | 8K → 128K |
 | Mistral-7B | RoPE | sliding window $W{=}4096$ | GQA-8, cache capped at $W$ | 32K effective |
-| Qwen-2 / Qwen-2.5 | RoPE + YaRN | FlashAttention | GQA | up to 128K–1M |
+| Qwen-2 / Qwen-2.5 | RoPE + YaRN (+ DCA at 1M) | FlashAttention | GQA | 128K (1M tier) |
 | DeepSeek-V2/V3 | decoupled RoPE | FlashAttention | **MLA** (latent KV) | 128K |
 | Code Llama | RoPE base rescaled (NTK-flavoured) | FlashAttention | GQA | 16K → 100K |
+
+> **Note (Qwen's 1M tier):** Qwen-2.5's **128K** models use YaRN, but the **1M** tier (Qwen2.5-1M) adds **Dual Chunk Attention (DCA)** on top — DCA splits the sequence into chunks and remaps positions so intra- and inter-chunk distances both stay within the trained range, which YaRN alone does not achieve at 1M. So the honest attribution is **YaRN to 128K, YaRN + DCA to 1M**.
 
 > **Note:** read the columns, not the rows. **Position** is almost always RoPE plus some scaling (PI/NTK/YaRN); **compute** is FlashAttention (often with a sliding window); **memory** is GQA or MLA plus a paged, often quantized cache. "128K context" is the *product* of one choice from each column. Llama-3 extended from 8K to 128K by **continued pretraining on long sequences with RoPE scaling**, not by changing the architecture.
 

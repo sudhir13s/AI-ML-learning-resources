@@ -282,7 +282,7 @@ def demo_attention_sinks() -> None:
     w_stream = torch.softmax(stream_logits, dim=-1)
 
     # Compare each surviving recent token's weight to its weight in the full distribution.
-    recent_idx = torch.arange(seq_len - RECENT_W, seq_len)
+    recent_idx = torch.arange(seq_len - RECENT_W, seq_len, device=cpu)
     drift_evicted = (w_evicted[recent_idx] - full[recent_idx]).abs().max().item()
     drift_stream = (w_stream[recent_idx] - full[recent_idx]).abs().max().item()
     print(f"     recent-window weight drift WITHOUT sinks = {drift_evicted:.3f}  (renormalized wildly)")
