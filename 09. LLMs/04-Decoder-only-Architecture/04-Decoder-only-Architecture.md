@@ -6,7 +6,7 @@ level: advanced
 prereqs: ["transformer-architecture", "attention", "language-modeling-objectives"]
 interview_frequency: very-high
 template: concept-deep
-updated: 2026-06-22
+updated: 2026-06-26
 ---
 
 # Decoder-only Architecture: why GPT's shape won
@@ -132,6 +132,8 @@ Recall ordinary **scaled dot-product attention** (full derivation in [Attention 
 
 $$\text{Attention}(Q, K, V) = \text{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}}\right) V.$$
 
+> **Source / derivation:** [Vaswani et al., *Attention Is All You Need* (2017), §3.2.1](https://arxiv.org/abs/1706.03762) — defines scaled dot-product attention, including the $1/\sqrt{d_k}$ factor that stops large $d_k$ from pushing softmax into its saturated, near-zero-gradient region.
+
 The score matrix $S = \frac{QK^\top}{\sqrt{d_k}}$ is $(T, T)$: entry $S_{ij}$ is how much query position $i$ wants to attend to key position $j$. In a *bidirectional* model (BERT), every $S_{ij}$ is allowed. In a **causal** model we must zero out every entry where $j > i$ — position $i$ must not see anything to its right.
 
 The trick is to do this **before the softmax**, by adding a **mask matrix** $M$ where the forbidden entries are $-\infty$ and the rest are $0$:
@@ -139,6 +141,8 @@ The trick is to do this **before the softmax**, by adding a **mask matrix** $M$ 
 $$M_{ij} = \begin{cases} 0 & j \le i \quad(\text{allowed: at or before me}) \\ -\infty & j > i \quad(\text{forbidden: the future}) \end{cases}$$
 
 $$\text{CausalAttention}(Q,K,V) = \text{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}} + M\right)V.$$
+
+> **Source / derivation:** the additive $-\infty$ mask on the decoder's self-attention is from [Vaswani et al., *Attention Is All You Need* (2017), §3.2.3](https://arxiv.org/abs/1706.03762) ("masking out … all values … which correspond to illegal connections"); using it to enforce the **left-to-right autoregressive factorization** $p(x)=\prod_t p(x_t\mid x_{<t})$ is the decoder-only LM of [Radford et al., *Improving Language Understanding by Generative Pre-Training* (2018)](https://cdn.openai.com/research-covers/language-unsupervised/language_understanding_paper.pdf).
 
 Why $-\infty$, and why before the softmax? Because softmax exponentiates: $\text{softmax}(x)_j \propto e^{x_j}$. Adding $-\infty$ to a score sends $e^{-\infty} = 0$, so that key gets **exactly zero attention weight** — and since softmax renormalizes over the *remaining* (allowed) keys, the row still sums to 1. The future doesn't get a "small" weight; it gets *no* weight, and the allowed positions absorb all of it. (In code it's $-10^9$ or the dtype's most-negative value, not literal `-inf`, to keep the math finite.)
 
@@ -235,6 +239,8 @@ The model outputs, at each position, a logit vector $z \in \mathbb{R}^V$ over th
 
 $$\mathcal{L} = -\frac{1}{T}\sum_{t=1}^{T} \log P_\theta\!\left(x_{t+1} \mid x_{\le t}\right).$$
 
+> **Source / derivation:** the autoregressive (causal-LM) objective — maximizing $\sum_t \log P_\theta(x_t\mid x_{<t})$ over a decoder-only transformer — is [Radford et al., *Improving Language Understanding by Generative Pre-Training* (2018), §3.1](https://cdn.openai.com/research-covers/language-unsupervised/language_understanding_paper.pdf) and [Radford et al., *Language Models are Unsupervised Multitask Learners* (GPT-2, 2019), §2](https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf). Full derivation (perplexity, maximum-likelihood) in [Language Modeling Objectives](../01-Language-Modeling-Objectives/01-Language-Modeling-Objectives.md).
+
 That's it — plain cross-entropy, one term per position, all computed from the single forward pass above. The full treatment (perplexity, why this is maximum-likelihood, label smoothing) lives in **[Language Modeling Objectives](../01-Language-Modeling-Objectives/01-Language-Modeling-Objectives.md)**; we only need it here to motivate the **LM head**, which is what turns the final hidden states into those logits.
 
 ---
@@ -248,6 +254,8 @@ $$z_t = h_t \, W_{\text{out}}, \qquad W_{\text{out}} \in \mathbb{R}^{d \times V}
 Now the elegant part. We already *have* a $V \times d$ matrix in the model — the **input embedding** $E$, which maps token ids to vectors. The LM head needs a $d \times V$ matrix mapping vectors back to token scores. These are transposes of each other in shape, and it turns out you can **use the same matrix for both**:
 
 $$W_{\text{out}} = E^\top.$$
+
+> **Source / derivation:** [Press & Wolf, *Using the Output Embedding to Improve Language Models* (2017)](https://arxiv.org/abs/1608.05859) — derives that tying the output projection to the input embedding ($W_{\text{out}}=E^\top$) lowers perplexity and removes the duplicate $V\times d$ matrix; introduced concurrently by [Inan et al., *Tying Word Vectors and Word Classifiers* (2017)](https://arxiv.org/abs/1611.01462).
 
 This is **weight tying** (Press & Wolf 2017; Inan et al. 2017), and it's the default in GPT-2, GPT-3, and most modern models. Two reasons it's a good idea:
 
@@ -284,6 +292,8 @@ The factor of 4 in the FFN ($d_{\text{ff}} = 4d$) is the classic Transformer cho
 **Whole model.**
 
 $$N \approx \underbrace{12\,d^2\,L}_{\text{blocks}} \;+\; \underbrace{V \, d}_{\text{token embedding (= tied head)}} \;+\; \underbrace{T_{\max}\, d}_{\text{learned positions (0 for RoPE)}}.$$
+
+> **Source / derivation:** the per-block $12d^2$ count follows directly from the layer shapes in [Vaswani et al., *Attention Is All You Need* (2017), §3.2.2 & §3.3](https://arxiv.org/abs/1706.03762) — four $d\times d$ attention projections ($4d^2$) plus a feed-forward up/down pair at width $d_{\text{ff}}=4d$ ($8d^2$); the same accounting underlies the standard $N\approx 12d^2L$ estimate used by [Kaplan et al., *Scaling Laws for Neural Language Models* (2020), §2.1](https://arxiv.org/abs/2001.08361).
 
 **Worked example 2 — GPT-2 small from scratch.** Config: $d=768$, $L=12$, $V=50{,}257$, $T_{\max}=1024$.
 
@@ -377,6 +387,8 @@ graph TD
 4. **SwiGLU instead of GELU FFN.** The FFN becomes a **gated** unit: $\text{SwiGLU}(x) = (\text{Swish}(xW_{\text{gate}}) \odot xW_{\text{up}})W_{\text{down}}$ — a learned gate that modulates the up-projection. It consistently beats a plain GELU MLP at equal compute, so it's the modern default; the hidden width is shrunk to ~$\tfrac{8}{3}d$ to offset the third matrix and keep parameters roughly constant. (See [Activation Functions](../../05.%20Deep_Learning/concepts/03-Activation-Functions.md).)
 5. **(Bonus) GQA instead of plain MHA.** **Grouped-query attention** shares each key/value head across a *group* of query heads (e.g. 8 KV heads serving 32 query heads). It barely touches quality but shrinks the **KV cache** by the group factor — a ~4-8× memory cut that's the difference between serving long context and not. (Full treatment in [KV Cache](../05-KV-Cache/05-KV-Cache.md).)
 
+> **Source / derivation:** each component above is its primary paper — **pre-norm** ($x + \text{Sublayer}(\text{Norm}(x))$, the warmup-free residual highway) is [Xiong et al., *On Layer Normalization in the Transformer Architecture* (2020)](https://arxiv.org/abs/2002.04745); **RMSNorm** is [Zhang & Sennrich (2019)](https://arxiv.org/abs/1910.07467); **RoPE** is [Su et al. (2021)](https://arxiv.org/abs/2104.09864); **SwiGLU** is [Shazeer, *GLU Variants Improve Transformer* (2020)](https://arxiv.org/abs/2002.05202); **GQA** is [Ainslie et al. (2023)](https://arxiv.org/abs/2305.13245). The combined recipe is spelled out in [Touvron et al., *LLaMA* (2023), §2.1](https://arxiv.org/abs/2302.13971).
+
 > **Note:** none of these change the *fundamental* shape — it's still a causal-masked stack of attention+FFN blocks trained on next-token prediction. They're **quality-and-efficiency refinements** on a frozen blueprint. That stability is itself the point: the decoder-only architecture has been the right answer long enough that progress is now in *components, data, and scale*, not in the skeleton.
 
 > **Tip:** a clean way to remember the modern recipe is **"Pre-RMS-RoPE-SwiGLU-GQA"** — pre-norm with RMSNorm, RoPE for position, SwiGLU for the FFN, GQA for the attention. Say those five and you've described LLaMA-2/3, Mistral, Qwen-2, and Gemma to first order.
@@ -454,6 +466,8 @@ Each step is one concept on this platform — this page is the spine that connec
 ## Code: a tiny decoder block, then a real GPT-2
 
 Two runnable pieces, both verified on Python 3.12 (torch 2.12, transformers 5.10). First, a **from-scratch single decoder block** so the shapes and the causal mask are concrete; then a **real GPT-2** to ground it in a model you can download.
+
+> **Runnable project and a step-by-step notebook:** the from-scratch code below is also a clean, multi-layer **decoder-only *stack*** (`d_model=32`, 4 heads, 2 layers, weight-tied head) next to this page — a [runnable demo script](code/decoder_only_architecture.py) (`python decoder_only_architecture.py`) and an executed [step-by-step teaching notebook](code/04-Decoder-only-Architecture.ipynb). They print the shape at **every** stage and run the **no-leakage proof**: changing a *future* token leaves every *earlier* position's logits **bit-for-bit identical** (`torch.equal`, max abs diff `0.00e+00`) — the causal mask's guarantee that makes parallel teacher-forced training legal. Device-agnostic (CUDA → MPS → CPU), seeded for reproducibility.
 
 ### A tiny decoder block from scratch (shapes you can trace)
 
