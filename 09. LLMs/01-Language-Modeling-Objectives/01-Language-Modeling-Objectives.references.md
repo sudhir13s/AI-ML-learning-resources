@@ -41,6 +41,7 @@ updated: 2026-06-26
 - [Perplexity for LLM Evaluation](https://huggingface.co/docs/transformers/en/perplexity) — **Hugging Face** — how perplexity is computed in practice (sliding window, the shift, padding), and its pitfalls.
 
 **Key papers**:
+- [A Neural Probabilistic Language Model](https://www.jmlr.org/papers/v3/bengio03a.html) — **Bengio et al. (2003)** — the first neural language model; introduces the chain-rule factorization $p(x)=\prod_t p(x_t\mid x_{<t})$ learned by a neural network, the objective every modern LLM still trains on.
 - [Attention Is All You Need](https://arxiv.org/abs/1706.03762) — **Vaswani et al. (2017)** — the transformer; §3 has the per-position vocabulary projection the loss is computed over.
 - [Improving Language Understanding by Generative Pre-Training (GPT)](https://cdn.openai.com/research-covers/language-unsupervised/language_understanding_paper.pdf) — **Radford et al. (2018)** — the original causal-LM pre-training paper that started the line.
 - [Language Models are Few-Shot Learners (GPT-3)](https://arxiv.org/abs/2005.14165) — **Brown et al. (2020)** — the causal LM objective at scale; §2 covers the objective and training.
@@ -51,7 +52,10 @@ updated: 2026-06-26
 - [UL2: Unifying Language Learning Paradigms](https://arxiv.org/abs/2205.05131) — **Tay et al. (2022)** — the primary source for treating all three objectives (causal, masked, span) as one knob — a single "mixture-of-denoisers" pre-training recipe.
 
 **Books (free chapters)**:
+- [Speech and Language Processing, 3rd ed. — Ch. 3 "N-gram Language Models"](https://web.stanford.edu/~jurafsky/slp3/3.pdf) — **Jurafsky & Martin** — §3.1 derives the chain-rule sequence factorization and §3.2 defines perplexity as exponentiated cross-entropy.
 - [Speech and Language Processing, 3rd ed. — Ch. 10 "Large Language Models"](https://web.stanford.edu/~jurafsky/slp3/10.pdf) — **Jurafsky & Martin** — autoregressive LMs, the cross-entropy training objective, and perplexity, derived cleanly.
+- [Deep Learning — Ch. 5 "Machine Learning Basics" (§5.5 Maximum Likelihood)](https://www.deeplearningbook.org/contents/ml.html) — **Goodfellow, Bengio & Courville** — the maximum-likelihood estimation that the cross-entropy / NLL training loss is an instance of.
+- [Deep Learning — Ch. 6 "Deep Feedforward Networks" (§6.2.2 Output Units)](https://www.deeplearningbook.org/contents/mlp.html) — **Goodfellow, Bengio & Courville** — the softmax output unit that turns logits into a categorical distribution.
 - [Deep Learning — Ch. 10 "Sequence Modeling"](https://www.deeplearningbook.org/contents/rnn.html) — **Goodfellow, Bengio & Courville** — the maximum-likelihood / sequence-modeling foundations the objective rests on.
 
 **In this platform**:

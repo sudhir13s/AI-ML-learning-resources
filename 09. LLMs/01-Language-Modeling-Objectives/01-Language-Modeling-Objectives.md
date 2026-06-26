@@ -103,6 +103,8 @@ The probability of a whole sequence factorizes by the **chain rule of probabilit
 
 $$p(x_1, x_2, \dots, x_n) \;=\; \prod_{t=1}^{n} p(x_t \mid x_1, \dots, x_{t-1}) \;=\; \prod_{t=1}^{n} p(x_t \mid x_{<t})$$
 
+> **Source / derivation:** [Jurafsky & Martin, *Speech and Language Processing* (3rd ed.), Ch. 3 "N-gram Language Models", §3.1](https://web.stanford.edu/~jurafsky/slp3/3.pdf) and [Bengio et al., *A Neural Probabilistic Language Model* (2003)](https://www.jmlr.org/papers/v3/bengio03a.html) — the chain-rule factorization of a sequence probability that defines the autoregressive language-modeling objective.
+
 Read it left to right: the probability of the sentence is the probability of the first token, times the probability of the second *given* the first, times the third *given* the first two, and so on. We write $x_{<t}$ as shorthand for "all tokens before position $t$" — the **context**. The model's only job is to learn each conditional $p(x_t \mid x_{<t})$: *given everything so far, what comes next?*
 
 > **Note:** this factorization is **exact**, not an assumption — the chain rule of probability holds for *any* joint distribution. The modeling assumption is only that a transformer with finite parameters can *approximate* each conditional well. (Contrast classic **n-gram** models, which *do* approximate, by truncating the context to the last $n-1$ tokens — see [N-gram Language Models](../../06.%20NLP/concepts/04-N-gram-Language-Models-and-Smoothing.md). Neural LMs keep the full context.)
@@ -188,11 +190,15 @@ Now make the loss precise — this is the part interviewers ask you to derive on
 
 $$p(x_t = j \mid x_{<t}) \;=\; \text{softmax}(z)_j \;=\; \frac{e^{z_j}}{\sum_{k=1}^{|V|} e^{z_k}}$$
 
+> **Source / derivation:** [Goodfellow, Bengio & Courville, *Deep Learning* (2016), §6.2.2 "Output Units"](https://www.deeplearningbook.org/contents/mlp.html) — the softmax that maps a logit vector to a normalized categorical distribution over the vocabulary.
+
 The exponential makes everything positive; dividing by the sum makes the $|V|$ probabilities add to 1. Now $p(\cdot \mid x_{<t})$ is a proper distribution over "what comes next."
 
 **Step 2 — score the truth (cross-entropy = negative log-likelihood).** We want the model to assign **high probability to the token that actually came next**. The clean way to score that is the **negative log-probability of the true token** — the cross-entropy between the one-hot truth and the model's distribution. At position $t$, if the true next token is $x_t$:
 
 $$\mathcal{L}_t \;=\; -\log p(x_t \mid x_{<t})$$
+
+> **Source / derivation:** [Goodfellow, Bengio & Courville, *Deep Learning* (2016), §5.5 "Maximum Likelihood Estimation"](https://www.deeplearningbook.org/contents/ml.html) — the per-position cross-entropy / negative log-likelihood, which is exactly the maximum-likelihood objective for the model's distribution.
 
 If the model is certain and correct ($p \to 1$), then $-\log p \to 0$ — no loss. If it's certain and *wrong* ($p \to 0$), then $-\log p \to \infty$ — huge loss. The log turns "multiply probabilities along the sequence" into "add log-probabilities," which is numerically stable and exactly what gradient descent wants.
 
@@ -202,6 +208,8 @@ If the model is certain and correct ($p \to 1$), then $-\log p \to 0$ — no los
 
 $$\mathcal{L} \;=\; \frac{1}{T}\sum_{t=1}^{T} -\log p(x_t \mid x_{<t})$$
 
+> **Source / derivation:** [Goodfellow, Bengio & Courville, *Deep Learning* (2016), §5.5 "Maximum Likelihood Estimation"](https://www.deeplearningbook.org/contents/ml.html) and [Jurafsky & Martin, *Speech and Language Processing* (3rd ed.), Ch. 3, §3.2](https://web.stanford.edu/~jurafsky/slp3/3.pdf) — averaging the per-position negative log-likelihood gives the mean cross-entropy training loss.
+
 where $T$ is the number of scored positions. This is a single scalar; backprop pushes the model to raise $p$ on the true tokens.
 
 > *Where this comes from: the cross-entropy / maximum-likelihood objective for language models is laid out in **Speech and Language Processing** (Jurafsky & Martin, Ch. 10) and **Deep Learning** (Goodfellow et al., Ch. 10), both in the references. The shapes follow directly from the transformer's per-position vocabulary projection in **Attention Is All You Need** (Vaswani et al. 2017).*
@@ -209,6 +217,8 @@ where $T$ is the number of scored positions. This is a single scalar; backprop p
 **Step 4 — perplexity, the human-readable twin.** Loss in "nats" (log base $e$) is hard to feel. **Perplexity** exponentiates it back into a number you can interpret:
 
 $$\text{PPL} \;=\; e^{\mathcal{L}} \;=\; \exp\!\left(\frac{1}{T}\sum_{t=1}^{T} -\log p(x_t \mid x_{<t})\right)$$
+
+> **Source / derivation:** [Jurafsky & Martin, *Speech and Language Processing* (3rd ed.), Ch. 3 "N-gram Language Models", §3.2 "Evaluating Language Models: Perplexity"](https://web.stanford.edu/~jurafsky/slp3/3.pdf) — perplexity as the exponentiated cross-entropy, read as the effective branching factor.
 
 Because the loss is in nats (natural log), we invert with $e$; had we measured in bits (log base 2) we'd write $\text{PPL}=2^{\mathcal L}$ — same number, the base just has to match the log you used. (This is also why bits-per-byte is the tokenizer-free cousin.)
 
