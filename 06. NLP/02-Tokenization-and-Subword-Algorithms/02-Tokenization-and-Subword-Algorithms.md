@@ -6,7 +6,7 @@ level: intermediate
 prereqs: ["text-preprocessing", "language-modeling"]
 interview_frequency: very-high
 template: concept-deep
-updated: 2026-06-22
+updated: 2026-06-27
 ---
 
 # Tokenization and subword algorithms: how text becomes numbers
@@ -23,6 +23,8 @@ I'm going to teach this the way I'd actually walk a colleague through it from sc
 - reason about the **downstream costs** — context length and dollars, broken arithmetic, the 2-4× multilingual tax, and glitch tokens — and choose a vocabulary size deliberately.
 
 > **Note:** keep one thing straight from the start. The tokenizer is a **separate, pre-trained artifact** that is frozen before the language model's training begins. It is *not* learned jointly with the network weights — it's trained once on a corpus (BPE merges, a WordPiece vocab, a Unigram model), saved, and then used as a fixed lookup for the model's entire life. Change the tokenizer and you must retrain the model; that's why it's such a consequential, locked-in decision.
+
+> **Build it yourself:** every algorithm below is implemented from scratch — BPE training, WordPiece scoring, Unigram Viterbi, and the vocab-size sweep — in a single seeded module, run step-by-step in a companion notebook. See the [step-by-step teaching notebook](code/02-Tokenization-and-Subword-Algorithms.ipynb) and the [runnable source module](code/tokenization.py) (`python tokenization.py`). Every figure on this page is regenerated from those same functions by [`make_figures_02.py`](code/make_figures_02.py), so the prose, the diagrams, and the code can never drift.
 
 ---
 
@@ -164,7 +166,15 @@ Spelled out:
 
 The two outputs are the **vocabulary** (all base symbols plus all merged symbols) and the **ordered list of merge rules** — and that order matters enormously, because encoding replays the merges in exactly the order they were learned.
 
-> **Note:** BPE is **deterministic and greedy** — at each step it takes the locally most-frequent pair, never reconsidering. It does not optimize any global objective; it's a hill-climbing heuristic that happens to produce excellent vocabularies. (Unigram LM, below, *does* optimize a global likelihood — that's the key conceptual contrast.)
+Stated as the objective BPE greedily optimizes at each step: from the set of adjacent symbol pairs $\mathcal{P}$ in the current corpus, pick
+
+$$(a, b)^\star \;=\; \arg\max_{(a,b)\,\in\,\mathcal{P}} \ \text{freq}(a, b),$$
+
+where $\text{freq}(a,b)$ is the corpus-wide count of the adjacent pair (weighted by word frequency). That's the whole rule — *most frequent adjacent pair wins* — applied greedily and recorded in order.
+
+> **Source / derivation:** [Sennrich, Haddow & Birch, *Neural Machine Translation of Rare Words with Subword Units* (ACL 2016), §3.2 / Algorithm 1](https://arxiv.org/abs/1508.07909) — the merge-most-frequent-pair training loop that brought BPE (originally Gage's 1994 compression algorithm) to NLP. The objective above is Algorithm 1's selection step.
+
+> **Note:** BPE is **deterministic and greedy** — at each step it takes the locally most-frequent pair, never reconsidering. It does not optimize any *global* objective over the final vocabulary; it's a hill-climbing heuristic that happens to produce excellent vocabularies. (Unigram LM, below, *does* optimize a global likelihood — that's the key conceptual contrast.)
 
 ### Worked example 1: learning BPE merges by hand
 
@@ -213,6 +223,12 @@ Final: **`low` + `est</w>`** — two tokens, both already in the vocabulary even
 
 > **Tip:** there's a subtle but classic interview point here — *training* BPE picks merges by **global corpus frequency**, but *encoding* a single word applies the merge list **greedily in learned order**. These can disagree: encoding doesn't search for the locally-best split for *that* word, it replays the globally-learned rules. This is exactly the inflexibility Unigram LM was designed to fix.
 
+This coverage guarantee generalizes to *any* unseen word. The figure below trains BPE on a slightly larger corpus and then segments six **held-out** words it never saw — each one is covered, reusing learned multi-character subwords where it can and falling to single characters only where it must:
+
+![Six unseen words segmented by a trained BPE: a word that happens to be in-vocabulary stays whole, others reuse learned subwords like `new`, `old`, `est</w>`, `wid`, and a word made of rare letters (`qux`) falls all the way to single characters — the worst case, but still fully covered with no [UNK]. Green = a learned 3+-char subword, blue = a learned 2-char subword, slate = a single-character fallback.](../images/tok_bpe_segmentation.png)
+
+Read the rows: more of a word covered by green/blue (learned pieces) means a shorter token sequence and more shared structure with other words; more slate (single-char fallbacks) means longer sequences and less reuse — but **never** an `[UNK]`. The character floor is always there to catch anything, which is the whole coverage promise made visible.
+
 The same vocabulary growth — one new token per merge, plotted from the actual run above — looks like this:
 
 ![BPE training on the low/lower/newest/widest corpus: the vocabulary starts at the 11-symbol alphabet and grows by exactly one token per merge, each labelled with the merged pair and its frequency. The merge order matches Worked Example 1.](../images/tok_bpe_merges.png)
@@ -227,6 +243,8 @@ The insight: every possible string, in every language and script, is *already* a
 
 This is why GPT-2/3/4 tokenizers have **no `[UNK]` token at all** — they don't need one. Paste in Japanese, an emoji, a hex dump, a binary blob's text rendering, anything: it tokenizes to *some* sequence of byte-level tokens, always.
 
+> **Source / derivation:** [Radford et al., *Language Models are Unsupervised Multitask Learners* (GPT-2, 2019), §2.2](https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf) — introduces byte-level BPE: run BPE over the 256 UTF-8 byte values (with a reversible byte-to-unicode map so spaces and control bytes are printable during training), guaranteeing universal coverage with no `[UNK]`.
+
 > **Note:** byte-level BPE also handles whitespace cleanly by encoding the **leading space as part of the token**. In GPT tokenizers `" developers"` (with a leading space) and `"developers"` (without) are *different* tokens — you'll see this in Worked Example 4's figure, where the space appears as `␣` glued to the front. This lets the tokenizer round-trip whitespace perfectly, and is why GPT-2 introduced a reversible byte-to-unicode mapping so spaces and control bytes are printable during training.
 
 > **Gotcha:** byte-level coverage is total but not *free* of weirdness. A single emoji or CJK character is **several UTF-8 bytes**, so it can cost 2-4 tokens, and a multi-byte character split across token boundaries can produce tokens that aren't valid standalone strings (they're byte fragments). This is the root of the multilingual tax and of some streaming-decode glitches where a half-character flashes on screen before the next byte arrives.
@@ -239,6 +257,8 @@ This is why GPT-2/3/4 tokenizers have **no `[UNK]` token at all** — they don't
 
 $$\text{score}(a, b) \;=\; \frac{\text{freq}(a, b)}{\text{freq}(a)\,\cdot\,\text{freq}(b)}$$
 
+> **Source / derivation:** [Schuster & Nakajima, *Japanese and Korean Voice Search* (ICASSP 2012), §2.2](https://research.google/pubs/japanese-and-korean-voice-search/) — the original WordPiece, whose merge criterion maximizes the training-data likelihood under a unigram model; the closed-form score is the standard restatement (see [Wu et al., *GNMT* (2016), §4.1](https://arxiv.org/abs/1609.08144), the scheme BERT inherited, and Hugging Face's [WordPiece walkthrough](https://huggingface.co/learn/llm-course/en/chapter6/6)).
+
 Read this carefully, because it's the heart of the algorithm. The numerator is how often the pair occurs together; the denominator is how often each piece occurs *on its own*. So WordPiece doesn't reward a pair just for being frequent — it rewards a pair whose two halves are **frequent together but rare apart**. A pair like `(t, h)` might be very frequent, but if `t` and `h` are each independently very common, the denominator is large and the score is small. WordPiece prefers merges that reveal genuine *associations*, not just common co-occurrences. (Intuitively: it's merging the pairs that "surprise" a model that assumed the two pieces were independent — the highest-pointwise-mutual-information pairs.)
 
 > **Note:** the derivation: a unigram LM assigns the corpus probability $\prod_i p(t_i)$. Merging $a, b$ into $ab$ changes the log-likelihood by approximately $\log \frac{p(ab)}{p(a)\,p(b)}$ per occurrence. Maximizing that gain is, up to corpus-size constants, maximizing $\frac{\text{freq}(a,b)}{\text{freq}(a)\,\text{freq}(b)}$ — the score above. WordPiece is BPE made *probabilistic* in its choice of what to merge.
@@ -249,16 +269,22 @@ This is the example that makes the difference click — and I **verified the num
 
 **BPE** ranks by raw frequency. The top pairs are `(e,s)`, `(s,t)`, `(t,</w>)`, each at frequency **9** — BPE's first merge is `(e, s)`.
 
-**WordPiece** ranks by $\frac{\text{freq}(a,b)}{\text{freq}(a)\,\text{freq}(b)}$. Let's score a few pairs using the symbol counts in this corpus (`e` appears 8 times, `s`=9, `t`=9, `i`=3, `d`=3, `l`=7, `o`=7):
+**WordPiece** ranks by $\frac{\text{freq}(a,b)}{\text{freq}(a)\,\text{freq}(b)}$. Let's score a few pairs using the symbol counts in this corpus (`e` appears 17 times — twice in `newest`×6 plus once each in `lower`×2 and `widest`×3 — `s`=9, `t`=9, `i`=3, `d`=3, `l`=7, `o`=7). **These are the exact numbers the from-scratch scorer prints**, so the table and the figure can't drift:
 
 | pair | freq(pair) | freq(a) · freq(b) | WordPiece score |
 |---|---|---|---|
 | `(i, d)` | 3 | 3 · 3 = 9 | **0.333** |
 | `(l, o)` | 7 | 7 · 7 = 49 | 0.143 |
-| `(e, s)` | 9 | 8 · 9 = 72 | 0.125 |
 | `(s, t)` | 9 | 9 · 9 = 81 | 0.111 |
+| `(e, s)` | 9 | 17 · 9 = 153 | 0.059 |
 
 WordPiece's first merge is **`(i, d)`** — even though it occurs only **3** times, far less than `(e,s)`'s 9 — because `i` and `d` are *each* rare but *always appear together* (in `widest`), so their normalized score is highest. **Same data, completely different first merge: BPE says `(e,s)`, WordPiece says `(i,d)`.** That single contrast is the cleanest way to show you understand the two algorithms.
+
+The same numbers, plotted from the from-scratch scorer, make the disagreement impossible to miss:
+
+![Left: pairs ranked by raw frequency (BPE's criterion) — `(e,s)` wins at frequency 9. Right: the same pairs ranked by the WordPiece score freq(a,b)/(freq(a)·freq(b)) — `(i,d)` wins at 0.333 despite occurring only 3 times, because its two halves never appear apart. The two winners are highlighted; the same six pairs are scored both ways on the identical toy corpus.](../images/tok_wordpiece_vs_bpe.png)
+
+The left panel is sorted-by-height frequency, the right panel is sorted-by-association score, and *the tallest bar is a different pair in each*. That is the entire BPE-vs-WordPiece distinction in one picture: **frequency** versus **frequent-together-but-rare-apart**.
 
 ### Encoding and the `##` marker
 
@@ -276,7 +302,15 @@ And whereas BPE encodes greedily by *replaying merges left-to-right*, WordPiece 
 
 The third major algorithm, **Unigram language-model tokenization** (Kudo, 2018), flips the whole strategy. BPE and WordPiece are **bottom-up** — start small, grow by merging. Unigram is **top-down** — start with a *huge* candidate vocabulary and **prune it down** to the target size by repeatedly removing the tokens that hurt the corpus likelihood least.
 
-The model: assume each token is generated independently with probability $p(t)$ (a unigram model over subwords). The probability of a particular segmentation $\mathbf{s} = (t_1, \ldots, t_k)$ of a string is $P(\mathbf{s}) = \prod_{i} p(t_i)$. A string can be segmented many ways; the model's score for the string is (in training) the sum over segmentations, and (at encode time) the **single most probable segmentation**. Training proceeds as:
+The model: assume each token is generated independently with probability $p(t)$ (a unigram model over subwords). The probability of a particular segmentation $\mathbf{s} = (t_1, \ldots, t_k)$ of a string $X$ is
+
+$$P(\mathbf{s}) \;=\; \prod_{i=1}^{k} p(t_i), \qquad \sum_{t \in \mathcal{V}} p(t) = 1,$$
+
+and training maximizes the corpus marginal log-likelihood over all valid segmentations of each string:
+
+$$\mathcal{L} \;=\; \sum_{X \in \text{corpus}} \log \!\!\sum_{\mathbf{s} \in S(X)} \prod_{i} p(t_i),$$
+
+where $S(X)$ is the set of all segmentations of $X$. A string can be segmented many ways; the model's score for the string is (in training) that **sum over segmentations**, and (at encode time) the **single most probable segmentation** $\arg\max_{\mathbf{s}} P(\mathbf{s})$. Training proceeds as:
 
 1. **Seed** a large candidate vocabulary (e.g. all substrings up to some length, or a big BPE vocab) — often millions of candidates.
 2. **Fit** the token probabilities $p(t)$ that maximize the corpus likelihood, using **Expectation-Maximization (EM)**: the E-step computes expected token counts under the current probabilities (summing over all segmentations via the forward-backward / Viterbi machinery), the M-step re-estimates $p(t)$ from those counts.
@@ -284,6 +318,14 @@ The model: assume each token is generated independently with probability $p(t)$ 
 4. **Repeat** EM + pruning until the vocabulary reaches the target size $V$.
 
 At **encode** time, given the trained $p(t)$, find the highest-probability segmentation of a string with the **Viterbi algorithm** (a dynamic program over split points) — the globally optimal split under the model, not a greedy replay.
+
+> **Source / derivation:** [Kudo, *Subword Regularization* (ACL 2018), §3.1–3.2](https://arxiv.org/abs/1804.10959) — defines the unigram-LM segmentation model, the marginal-likelihood objective $\mathcal{L}$ above, the EM training with iterative pruning, and Viterbi decoding for the single best segmentation (plus the subword-regularization sampling that motivated the paper).
+
+Concretely, Viterbi fills a table $\text{best}[i]$ = the best log-probability of segmenting the first $i$ characters, considering every vocabulary piece that *ends* at position $i$; the best path back-pointers reconstruct the optimal split. The figure traces it on the word `lowest` under a tiny hand-built model where the pieces `low` and `est` are cheap:
+
+![A Viterbi lattice over the string 'lowest': nodes are the 7 character-boundary positions 0–6, and each in-vocabulary piece is an arc from its start to its end position. The green path low(0→3) + est(3→6) maximizes the summed log-probability (−2.41); the greyed arcs are the character-level and alternative pieces it beat. This is a global dynamic-programming optimum, not a left-to-right greedy merge replay.](../images/tok_unigram_viterbi.png)
+
+The contrast with BPE is the punchline: BPE *replays a fixed merge order* and accepts whatever split falls out; Unigram *searches all split points* and returns the one the model scores highest for *this* string. Same goal (good subword pieces), fundamentally different decode.
 
 > **Note:** the deep advantage of Unigram is **probabilistic, global segmentation**. Because it scores whole segmentations, it can pick the split that's best *for this string*, not the one a fixed merge-order happens to produce. It also enables **subword regularization** (Kudo 2018): during training, *sample* a segmentation from the top-$k$ probable ones instead of always taking the best, so the model sees `un|happiest`, `unhapp|iest`, `u|n|happiest`, etc. — a data-augmentation that makes the model robust to alternative splits at inference. BPE has an analogous trick called **BPE-dropout**.
 
@@ -297,6 +339,8 @@ A common point of confusion: **SentencePiece** (Kudo & Richardson, 2018) is *not
 
 - **It treats the input as a raw stream of Unicode, including whitespace** — no language-specific pre-tokenizer that assumes spaces separate words. This is essential for languages like Chinese, Japanese, and Thai that **don't put spaces between words**. SentencePiece encodes the space itself as a visible meta-symbol **`▁`** (U+2581, "lower one-eighth block"), so `"Hello world"` becomes `▁Hello ▁world`. Because the space is now just another character in the stream, **decoding is perfectly reversible** — replace `▁` with a space and concatenate, recovering the exact original text (a property plain WordPiece's `##` scheme lacks).
 - **It's deterministic and self-contained** — the trained model is a single file with the vocabulary and scores, no external pre-tokenization rules to reproduce on the inference side.
+
+> **Source / derivation:** [Kudo & Richardson, *SentencePiece: A simple and language independent subword tokenizer* (EMNLP 2018 demo)](https://arxiv.org/abs/1808.06226) — the framework that treats whitespace as the `▁` meta-symbol for fully reversible, language-agnostic tokenization, wrapping either a BPE or a Unigram engine.
 
 So the modern landscape is best drawn as: **BPE** (the algorithm) is used *raw* by GPT (byte-level) and *via SentencePiece* by some models; **Unigram** (the algorithm) is used *via SentencePiece* by T5/ALBERT/LLaMA. SentencePiece is the *delivery vehicle*; BPE and Unigram are the *engines*.
 
@@ -398,7 +442,11 @@ The one hyperparameter you set when training a tokenizer is **vocabulary size** 
 - **Larger $V$** → longer, more meaningful tokens → **shorter sequences** (cheaper attention, more text per context window) → but a **bigger embedding table and output softmax** (more parameters, more memory), and each token is seen less often so its embedding is **less well-trained** (data sparsity).
 - **Smaller $V$** → fewer parameters and better-trained embeddings → but **longer sequences** (quadratic attention cost) and the model burns capacity reassembling pieces.
 
-In practice the field has converged on a band: **~30k-50k** for older monolingual models (BERT: 30,522; GPT-2: 50,257), **~100k-130k** for modern multilingual LLMs that need to cover many scripts (GPT-4's `cl100k_base`: ~100k; Llama-3: 128k). Bigger multilingual vocabularies buy back some of the multilingual tax by giving non-English scripts more dedicated tokens.
+You can *watch* the upside of a larger vocabulary directly. The figure sweeps the number of BPE merges (which equals base alphabet + merges = vocabulary size) and plots two things at once: average **tokens-per-word** on the training corpus (the compression you buy) and the fraction of **held-out** words that fall all the way to single characters (the coverage quality):
+
+![Two falling curves against vocabulary size, from the from-scratch sweep. Blue: tokens per word drops from ~4.3 toward ~1.1 as the vocabulary grows — bigger vocab compresses harder. Red: the share of held-out words that fall to single-character fallbacks drops from 100% to 0% — bigger vocab covers more rare words with learned subwords. Both gains are paid for in embedding-table parameters and per-token data sparsity.](../images/tok_vocab_sweep.png)
+
+Both curves fall — more vocabulary means shorter sequences *and* better coverage of rare words — but the y-axes you *don't* see are the embedding-table parameter count and the per-token training frequency, both of which get *worse* as $V$ grows. That tension is the whole reason vocab size is a tuned hyperparameter and not just "as big as possible." In practice the field has converged on a band: **~30k-50k** for older monolingual models (BERT: 30,522; GPT-2: 50,257), **~100k-130k** for modern multilingual LLMs that need to cover many scripts (GPT-4's `cl100k_base`: ~100k; Llama-3: 128k). Bigger multilingual vocabularies buy back some of the multilingual tax by giving non-English scripts more dedicated tokens.
 
 > **Tip:** the rule of thumb worth stating in an interview — **vocab size trades sequence length against embedding-table size and per-token data sparsity.** Multilingual coverage pushes it up (more scripts to cover); a small, single-domain corpus pulls it down (you can't well-train 100k embeddings on a little data). There's no universal best — it's tuned to corpus size, language mix, and the sequence-length budget.
 
@@ -408,9 +456,11 @@ In practice the field has converged on a band: **~30k-50k** for older monolingua
 
 Two runnable snippets. The first **trains a BPE tokenizer from scratch in pure Python** so you can watch merges being learned (and it matches Worked Example 1 exactly); the second uses the **real production tokenizers** to reproduce the measured counts above. Both run in seconds on CPU.
 
+> **Runnable module and notebook:** these snippets are the heart of the canonical [`tokenization.py`](code/tokenization.py) module — which also implements the WordPiece scorer, the Unigram Viterbi decoder, and the vocab-size sweep — and the [step-by-step notebook](code/02-Tokenization-and-Subword-Algorithms.ipynb) walks every piece one cell at a time. The page, the notebook, and every figure import the *same* functions, so nothing can drift. Device: `cpu (pure-Python/numpy)` — the subword algorithms are integer/string bookkeeping with no tensors to accelerate.
+
 ```python
 """From-scratch BPE training + encoding. Reproduces Worked Examples 1 & 2.
-Verified on Python 3.12 (CPython). Pure standard library."""
+Verified on Python 3.12 (CPython). Pure standard library. (Canonical version: tokenization.py)"""
 from collections import Counter
 
 corpus = {"low": 5, "lower": 2, "newest": 6, "widest": 3}
