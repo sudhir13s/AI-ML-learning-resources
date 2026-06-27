@@ -89,13 +89,13 @@ graph LR
 
 *The affine quantize → store → dequantize round-trip. Only the integer code $q$ (and the per-group $s$, $z$) are stored; $x̂$ is reconstructed on the fly. The dashed arrow is the error, bounded by half a step.*
 
-**The quantize map.** Given a real range and a $b$-bit integer range $[q_\min, q_\max]$:
+**The quantize map.** Given a real range and a $b$-bit integer range $[q_{\text{min}}, q_{\text{max}}]$:
 
-$$s = \frac{x_\max - x_\min}{q_\max - q_\min}, \qquad z = q_\min - \operatorname{round}\!\left(\frac{x_\min}{s}\right), \qquad q = \operatorname{clamp}\!\big(\operatorname{round}(x/s) + z,\; q_\min,\; q_\max\big).$$
+$$s = \frac{x_{\text{max}} - x_{\text{min}}}{q_{\text{max}} - q_{\text{min}}}, \qquad z = q_{\text{min}} - \operatorname{round}\!\left(\frac{x_{\text{min}}}{s}\right), \qquad q = \operatorname{clamp}\!\big(\operatorname{round}(x/s) + z,\; q_{\text{min}},\; q_{\text{max}}\big).$$
 
 > **Source / derivation:** [Jacob et al., *Quantization and Training of Neural Networks for Efficient Integer-Arithmetic-Only Inference* (2017)](https://arxiv.org/abs/1712.05877) — the canonical affine (scale + integer zero-point) formulation; see also the survey [Gholami et al., *A Survey of Quantization Methods for Efficient Neural Network Inference* (2021)](https://arxiv.org/abs/2103.13630) §III for the same map and its symmetric/asymmetric variants.
 
-Reading it back through the ruler analogy: $s$ is the tick spacing (real range ÷ integer range); $z$ is the integer tick that real $0$ lands on (it *slides* the ruler so $[q_\min,q_\max]$ covers $[x_\min,x_\max]$); $\operatorname{round}$ snaps to the nearest tick — **this is the only lossy step** — and $\operatorname{clamp}$ keeps codes inside the grid.
+Reading it back through the ruler analogy: $s$ is the tick spacing (real range ÷ integer range); $z$ is the integer tick that real $0$ lands on (it *slides* the ruler so $[q_{\text{min}},q_{\text{max}}]$ covers $[x_{\text{min}},x_{\text{max}}]$); $\operatorname{round}$ snaps to the nearest tick — **this is the only lossy step** — and $\operatorname{clamp}$ keeps codes inside the grid.
 
 **The dequantize map** simply inverts it:
 
@@ -111,13 +111,13 @@ This single inequality drives everything: error $\propto s$, and $s = \text{rang
 
 Two flavors of the map, differing only in whether $z = 0$:
 
-- **Symmetric** ($z = 0$): real $0$ maps to integer $0$; the ruler is centered on zero, spanning $[-\max|x|, +\max|x|]$. Set $s = \max|x| / q_\max$ with a signed range (e.g. $[-127, 127]$). **Best for weights**, which are roughly zero-centered — and it's cheaper (no zero-point to store or subtract), which is why weight-only int8/int4 schemes are almost always symmetric.
+- **Symmetric** ($z = 0$): real $0$ maps to integer $0$; the ruler is centered on zero, spanning $[-\max|x|, +\max|x|]$. Set $s = \max|x| / q_{\text{max}}$ with a signed range (e.g. $[-127, 127]$). **Best for weights**, which are roughly zero-centered — and it's cheaper (no zero-point to store or subtract), which is why weight-only int8/int4 schemes are almost always symmetric.
 
-  $$s = \frac{\max|x|}{q_\max}, \qquad q = \operatorname{clamp}(\operatorname{round}(x/s),\, -q_\max,\, q_\max), \qquad \hat{x} = s\,q.$$
+  $$s = \frac{\max|x|}{q_{\text{max}}}, \qquad q = \operatorname{clamp}(\operatorname{round}(x/s),\, -q_{\text{max}},\, q_{\text{max}}), \qquad \hat{x} = s\,q.$$
 
   > **Source / derivation:** [Gholami et al. (2021)](https://arxiv.org/abs/2103.13630) §III-A — symmetric quantization as the $z=0$ special case; standard in weight-only LLM quantizers (GPTQ, AWQ).
 
-- **Asymmetric** ($z \ne 0$): the ruler slides to fit a range *not* centered on zero — e.g. a post-GELU activation with a short negative tail and a long positive one. Symmetric would waste every tick on the unused side; asymmetric fits the actual $[x_\min, x_\max]$ window, so its step is finer. **Best for activations.**
+- **Asymmetric** ($z \ne 0$): the ruler slides to fit a range *not* centered on zero — e.g. a post-GELU activation with a short negative tail and a long positive one. Symmetric would waste every tick on the unused side; asymmetric fits the actual $[x_{\text{min}}, x_{\text{max}}]$ window, so its step is finer. **Best for activations.**
 
 We can *see* the difference. On a lopsided tensor `[-0.5, -0.1, 0.3, 1.2, 2.5, 4.0]`, symmetric must span $[-4, 4]$ (wasting the levels below $-0.5$) while asymmetric spans only $[-0.5, 4.0]$:
 
@@ -402,7 +402,7 @@ Read it against the number-line figure above: the loudest value `2.10` pins the 
 
 The full script then runs the **outlier column** experiment (per-tensor blows up 39×; per-group fixes it) and **int4 group-wise** (0.53 bytes/param, 73% smaller than FP16), asserting `per_group_error < per_tensor_error` and `int4_bytes < int8_bytes < fp16_bytes` **before** printing — so a regression in the math fails loudly instead of printing a wrong number.
 
-> **Try it:** before running, **predict**: in `quantize_symmetric_int8`, if you change `INT8_QMAX` from 127 to 7 (i.e. int**4**), does the reconstruction error go up or down, and by roughly how much? (Hint: the step $s = \max|x|/q_\max$ grows by $127/7 \approx 18\times$, and error $\le s/2$ — so expect ~18× more error. Run it and check against the error-vs-bits figure.)
+> **Try it:** before running, **predict**: in `quantize_symmetric_int8`, if you change `INT8_QMAX` from 127 to 7 (i.e. int**4**), does the reconstruction error go up or down, and by roughly how much? (Hint: the step $s = \max|x|/q_{\text{max}}$ grows by $127/7 \approx 18\times$, and error $\le s/2$ — so expect ~18× more error. Run it and check against the error-vs-bits figure.)
 
 > **Device note:** the script detects CUDA/MPS but **pins the reproducible trace to CPU** and prints so honestly — `device: cpu (detected mps; pinned to CPU for reproducibility)`. The quantization math is identical on any device (it's elementwise `round`/`clamp`); CPU just makes the printed numbers reproducible for this page.
 
