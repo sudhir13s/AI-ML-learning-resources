@@ -3,7 +3,7 @@ id: "06-nlp/seq2seq-encoder-decoder/references"
 topic: "Sequence-to-Sequence & Encoder–Decoder — References"
 parent: "06-nlp/seq2seq-encoder-decoder"
 type: references
-updated: 2026-06-22
+updated: 2026-06-27
 ---
 
 # Sequence-to-Sequence & Encoder–Decoder — references and further reading
@@ -41,8 +41,11 @@ updated: 2026-06-22
 - [Learning Phrase Representations using RNN Encoder–Decoder](https://arxiv.org/abs/1406.1078) — **Cho et al. (2014)** — the GRU encoder–decoder; the parallel seq2seq foundation, conditioning the decoder on the context each step.
 - [Neural Machine Translation by Jointly Learning to Align and Translate](https://arxiv.org/abs/1409.0473) — **Bahdanau, Cho & Bengio (2015)** — introduces (additive) attention; removes the bottleneck and yields soft alignment.
 - [Effective Approaches to Attention-based Neural Machine Translation](https://arxiv.org/abs/1508.04025) — **Luong, Pham & Manning (2015)** — multiplicative/dot-product attention; global vs local attention.
+- [A Learning Algorithm for Continually Running Fully Recurrent Neural Networks](https://ieeexplore.ieee.org/document/6795228) — **Williams & Zipser (1989)** — the origin of **teacher forcing** (feed the gold previous token while training a recurrent net).
 - [Scheduled Sampling for Sequence Prediction with RNNs](https://arxiv.org/abs/1506.03099) — **Bengio et al. (2015)** — the classic remedy for exposure bias (anneal from teacher forcing to own predictions).
 - [Sequence Level Training with Recurrent Neural Networks](https://arxiv.org/abs/1511.06732) — **Ranzato et al. (2016)** — names exposure bias and trains at the sequence level (optimizing the metric directly).
+- [Google's Neural Machine Translation System (GNMT)](https://arxiv.org/abs/1609.08144) — **Wu et al. (2016)** — production-scale seq2seq; the source of the **length-normalization** and **coverage** penalties for beam search.
+- [A Mathematical Theory of Communication](https://people.math.harvard.edu/~ctm/home/text/others/shannon/entropy/entropy.pdf) — **Shannon (1948)** — the source-coding bound behind the bottleneck's information-capacity argument ($S$ digits need $S\log_2 10$ bits).
 - [Pointer Networks](https://arxiv.org/abs/1506.03134) — **Vinyals, Fortunato & Jaitly (2015)** — attention as a pointer that copies from the input.
 - [Get To The Point: Summarization with Pointer-Generator Networks](https://arxiv.org/abs/1704.04368) — **See, Liu & Manning (2017)** — the copy/generate gate and coverage for abstractive summarization.
 - [Attention Is All You Need](https://arxiv.org/abs/1706.03762) — **Vaswani et al. (2017)** — the Transformer encoder–decoder; self-attention replaces recurrence, cross-attention replaces Bahdanau attention.
@@ -52,6 +55,11 @@ updated: 2026-06-22
 **Books (free chapters)**:
 - [Speech and Language Processing, 3rd ed. — Ch. 13 "Machine Translation"](https://web.stanford.edu/~jurafsky/slp3/13.pdf) — **Jurafsky & Martin** — encoder–decoder, attention, beam search, and BLEU in the standard text.
 - [Dive into Deep Learning — Ch. 10–11 (encoder–decoder, seq2seq, Bahdanau attention)](https://d2l.ai/chapter_attention-mechanisms-and-transformers/index.html) — **Zhang et al.** — the math with runnable code and figures.
+
+**Runnable code (this chapter)**:
+- [Teaching notebook (executed, step-by-step)](code/08-Sequence-to-Sequence-and-Encoder-Decoder.ipynb) — the bottleneck and attention measured from scratch, one idea per cell, assert-before-print.
+- [`seq2seq.py` — the seeded source of truth](code/seq2seq.py) — encoder, both decoders, training, free-running accuracy, alignment-matrix extractor, greedy/beam demo (device-agnostic).
+- [`make_figures_08.py` — figure generator](code/make_figures_08.py) — regenerates every figure on the page from the *same* functions, so the prose and figures cannot drift.
 
 **In this platform**:
 - Concept page (full explanation): [Sequence-to-Sequence & Encoder–Decoder](08-Sequence-to-Sequence-and-Encoder-Decoder.md)
