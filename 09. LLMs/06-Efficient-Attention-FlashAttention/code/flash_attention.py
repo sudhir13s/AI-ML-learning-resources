@@ -136,6 +136,113 @@ def flash_attention(
     return out, trace_for_query0
 
 
+# ---------------------------------------------------------------------------------------
+# Seeded, reproducible data helpers for the figure generator (make_figures_06.py).
+#
+# Every number a figure draws comes from one of these helpers so there are no orphan
+# magic numbers in the plots: the (m, l) trace is the EXACT trace flash_attention() emits
+# on the seeded inputs; the byte/IO curves recompute from the same constants the chapter
+# prose uses (fp16 = 2 bytes, the A100 = 80 GiB, head dim d, SRAM size M). Analytic curves
+# (memory, IO accesses) are deterministic closed forms and are labelled "model" where they
+# are not a direct measurement; the materialized-bytes curve is an actual measurement taken
+# by running full_attention() at each N.
+# ---------------------------------------------------------------------------------------
+
+# Hardware/format constants used by the chapter's prose, hoisted so figures reuse them.
+FP16_BYTES = 2  # one fp16 element
+A100_GIB = 80  # an A100-80GB's HBM capacity, the wall the prose marks
+BATCH = 16  # the prose's example batch
+HEADS = 32  # the prose's example head count
+GIB = 1024**3
+
+
+def seeded_qkv(
+    seq_len: int = SEQ_LEN, head_dim: int = HEAD_DIM, device: str = "cpu"
+) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    """The chapter's seeded (q, k, v) tensors. Pinned to the same SEED so every figure that
+    redraws the trace gets the identical numbers the .py and notebook print."""
+    torch.manual_seed(SEED)
+    q = torch.randn(seq_len, head_dim, device=device)
+    k = torch.randn(seq_len, head_dim, device=device)
+    v = torch.randn(seq_len, head_dim, device=device)
+    return q, k, v
+
+
+def online_softmax_trace(
+    seq_len: int = SEQ_LEN, head_dim: int = HEAD_DIM, block_size: int = BLOCK_SIZE
+) -> tuple[list[int], list[float], list[float], list[float]]:
+    """Replay the online softmax for query 0 and return, per block, the running max m, the
+    running denominator l, and the correction factor exp(m_old - m_new) applied that block.
+
+    These are the exact (m, l) values flash_attention()'s trace emits -- recomputed here with
+    the correction factor exposed so the figure can annotate the rescale. Pure measurement on
+    the seeded inputs; no magic numbers.
+    """
+    q, k, v = seeded_qkv(seq_len, head_dim)
+    running_max = torch.tensor(float("-inf"))
+    running_denom = torch.tensor(0.0)
+    block_idx: list[int] = []
+    max_trace: list[float] = []
+    denom_trace: list[float] = []
+    corr_trace: list[float] = []
+    for idx, start in enumerate(range(0, seq_len, block_size)):
+        k_block = k[start : start + block_size]
+        scores = (q[0] @ k_block.transpose(-1, -2)) * SCALE
+        new_max = torch.maximum(running_max, scores.max())
+        correction = torch.exp(running_max - new_max)  # <= 1; inf->0 on the first block
+        p = torch.exp(scores - new_max)
+        running_denom = running_denom * correction + p.sum()
+        running_max = new_max
+        block_idx.append(idx)
+        max_trace.append(running_max.item())
+        denom_trace.append(running_denom.item())
+        corr_trace.append(float(correction.item()))
+    return block_idx, max_trace, denom_trace, corr_trace
+
+
+def standard_attention_memory_gib(
+    seq_lengths: list[int], batch: int = BATCH, heads: int = HEADS
+) -> list[float]:
+    """Model: GiB held by the standard-attention N x N fp16 score matrices, one per
+    (batch, head), as the backward pass needs them all live. The exact O(N^2) formula the
+    prose uses: N*N*2 bytes * batch * heads. Deterministic closed form."""
+    return [(n * n * FP16_BYTES * batch * heads) / GIB for n in seq_lengths]
+
+
+def measured_materialized_bytes(seq_lengths: list[int]) -> list[int]:
+    """Measurement: actually run full_attention() at each N (head dim d, single batch/head)
+    and read back the bytes its N x N score matrix occupies -- the very quantity FlashAttention
+    refuses to store. Not a formula plugged in by hand; the bytes full_attention() reports."""
+    out: list[int] = []
+    for n in seq_lengths:
+        q, k, v = seeded_qkv(seq_len=n)
+        _, materialized = full_attention(q, k, v)
+        out.append(materialized)
+    return out
+
+
+def flash_working_set_bytes(
+    block_size: int = BLOCK_SIZE, head_dim: int = HEAD_DIM, fp32_bytes: int = 4
+) -> int:
+    """FlashAttention's per-tile working set in bytes: one (block_size x head_dim) K/V tile.
+    Independent of N -- the whole point. fp32 here matches the demo tensors' element size."""
+    return block_size * head_dim * fp32_bytes
+
+
+def io_accesses(
+    seq_lengths: list[int], head_dim: int, sram_elems: int
+) -> tuple[list[float], list[float]]:
+    """Model: HBM element accesses for standard vs FlashAttention, the paper's Theorem-1 forms.
+
+    standard:  Theta(N*d + N^2)  -- it writes and reads the N x N score matrix.
+    flash:     Theta(N^2 * d^2 / M)  -- tiling; M = SRAM size in elements.
+    Deterministic closed forms (the leading-constant Thetas), labelled "model" in the figure.
+    """
+    standard = [float(n * head_dim + n * n) for n in seq_lengths]
+    flash = [float(n * n * head_dim * head_dim) / sram_elems for n in seq_lengths]
+    return standard, flash
+
+
 def main() -> None:
     # The reproducible numeric trace is pinned to CPU so the printed numbers are bit-stable across
     # machines; the printed line says so honestly. (The functions above run on any device --
