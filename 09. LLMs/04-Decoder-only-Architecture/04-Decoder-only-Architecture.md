@@ -124,6 +124,8 @@ Crucially, the *only* thing it ever does is **answer the question "given everyth
 
 The causal mask is what makes this honest. When the model is learning to predict token $t$, it must be *forbidden* from seeing tokens $t, t{+}1, \dots$ — otherwise it would just copy the answer and learn nothing. So each position is allowed to look only *backward*. That single constraint is the entire secret, and it's worth deriving carefully, because it does double duty: it defines the model's *semantics* (autoregressive) **and** it's the trick that makes *training* absurdly efficient.
 
+> **Watch it (external animations):** to *see* a single token flow through the whole decoder-only forward pass — embeddings → masked attention → MLP → logits → next token — step through Brendan Bycroft's interactive 3D LLM visualizer at [bbycroft.net/llm](https://bbycroft.net/llm) (it walks a small GPT one token at a time). For the geometric intuition behind attention and the next-token loop, 3Blue1Brown's [*But what is a GPT?*](https://www.youtube.com/watch?v=wjZofJX0v4M) and [*Attention in transformers*](https://www.youtube.com/watch?v=eMlx5fFNoYc) are the clearest moving explanations. (Linked, not reproduced here — © their respective authors.)
+
 ---
 
 ## Causal masking, derived
