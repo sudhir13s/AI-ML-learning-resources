@@ -3,7 +3,7 @@ id: "06-nlp/decoding-strategies/references"
 topic: "Decoding Strategies — References"
 parent: "06-nlp/decoding-strategies"
 type: references
-updated: 2026-06-22
+updated: 2026-06-27
 ---
 
 # Decoding Strategies — references and further reading
@@ -44,17 +44,26 @@ updated: 2026-06-22
 - [Locally Typical Sampling](https://arxiv.org/abs/2202.00666) — **Meister et al. (2023)** — sampling tokens whose surprise is close to the distribution's entropy.
 - [Truncation Sampling as Language Model Desmoothing (epsilon/eta)](https://arxiv.org/abs/2210.15191) — **Hewitt et al. (2022)** — principled absolute/entropy thresholds for truncating the tail.
 - [CTRL: A Conditional Transformer Language Model](https://arxiv.org/abs/1909.05858) — **Keskar et al. (2019)** — origin of the repetition penalty used across modern decoders.
+- [Turning Up the Heat: Min-p Sampling for Creative and Coherent LLM Outputs](https://arxiv.org/abs/2407.01082) — **Nguyen et al. (2024)** — the relative-floor (min-p) truncation that behaves more gracefully than top-p at high temperature.
+- [Distilling the Knowledge in a Neural Network](https://arxiv.org/abs/1503.02531) — **Hinton, Vinyals & Dean (2015)** — §2 defines temperature-scaled softmax $\text{softmax}(z/T)$, the exact operation temperature decoding uses.
 - [Fast Inference from Transformers via Speculative Decoding](https://arxiv.org/abs/2211.17192) — **Leviathan et al. (2023)** — the provably-lossless draft-and-verify speedup.
 - [Accelerating Large Language Model Decoding with Speculative Sampling](https://arxiv.org/abs/2302.01318) — **Chen et al. (2023)** — concurrent speculative-decoding formulation from DeepMind.
+- [A Mathematical Theory of Communication](https://people.math.harvard.edu/~ctm/home/text/others/shannon/entropy/entropy.pdf) — **Shannon (1948)** — defines entropy $H=-\sum p\log p$, the "peakiness" measure temperature controls and the basis for typical sampling.
 
 **Books (free chapters)**:
 - [Speech and Language Processing, 3rd ed. — Ch. 10 "Large Language Models" (sampling & decoding)](https://web.stanford.edu/~jurafsky/slp3/10.pdf) — **Jurafsky & Martin** — greedy, beam, temperature, top-k, top-p in the standard reference.
 - [Speech and Language Processing, 3rd ed. — Ch. 13 "Machine Translation" (beam search)](https://web.stanford.edu/~jurafsky/slp3/13.pdf) — **Jurafsky & Martin** — beam search in its original decoding setting.
+
+**Runnable code (in this chapter)**:
+- [Step-by-step teaching notebook](code/17-Decoding-Strategies.ipynb) — every number on the page, computed and asserted, one idea per cell (greedy/beam, length norm, temperature, top-k/top-p, degeneration, GPT-2).
+- [Canonical demo script](code/decoding_strategies.py) — the single seeded source of truth; run `python decoding_strategies.py` (every claim asserted before it prints).
+- [Figure generator](code/make_figures_17.py) — regenerates all eight `decode_*` figures from the same functions.
 
 **In this platform**:
 - Concept page (full explanation): [Decoding Strategies](17-Decoding-Strategies.md)
 - Prior step (the models being decoded): [08 Sequence-to-Sequence & Encoder–Decoder](../08-Sequence-to-Sequence-and-Encoder-Decoder/08-Sequence-to-Sequence-and-Encoder-Decoder.md)
 - Puts decoding to work: [12 Machine Translation](../12-Machine-Translation/12-Machine-Translation.md) (beam search) · [13 Text Summarization](../13-Text-Summarization/13-Text-Summarization.md) (beam + no-repeat n-gram)
 - How decoded text is scored: [18 NLP Evaluation Metrics](../18-NLP-Evaluation-Metrics/18-NLP-Evaluation-Metrics.md)
+- The LLM-systems view (KV-cache interaction, prefill/decode phases, throughput): [09 LLMs · 18 Decoding & Sampling](../../09.%20LLMs/18-Decoding-and-Sampling/18-Decoding-and-Sampling.md) — the LLM-serving counterpart to this general sequence-generation page (no overlap; cross-linked from the speculative-decoding section)
 - The speedup decode relies on: [09 LLMs · KV Cache](../../09.%20LLMs/05-KV-Cache/05-KV-Cache.md) (why decode is memory-bound; speculative decoding)
 - The *why* behind the math: [AI-ML-intuition 5.05 Autoregressive Generation & Sampling](../../../AI-ML-intuition/Module_5_Generation/5.05_Autoregressive_Generation_Sampling.md) · [5.01 Entropy & KL (temperature)](../../../AI-ML-intuition/Module_5_Generation/5.01_Information_Theory_Entropy_KL_Divergence.md)

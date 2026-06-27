@@ -6,7 +6,7 @@ level: intermediate
 prereqs: ["seq2seq-encoder-decoder", "softmax", "autoregressive-generation"]
 interview_frequency: very-high
 template: concept-deep
-updated: 2026-06-22
+updated: 2026-06-27
 ---
 
 # Decoding Strategies: turning probabilities into text
@@ -61,7 +61,7 @@ graph TD
     classDef navy fill:#2A5B80,stroke:#1A4B70,color:#fff
 ```
 
-> *Where this framing comes from: the search-vs-sampling split is laid out in **Speech and Language Processing, 3rd ed.** (Jurafsky & Martin, the decoding/sampling sections) and in the canonical practitioner guide **How to generate text** (von Platen, Hugging Face) — both in the references.*
+> **Source / derivation:** the chain-rule factorization $p_\theta(x_{1:T}) = \prod_t p_\theta(x_t \mid x_{<t})$ and the search-vs-sampling split are laid out in [Speech and Language Processing, 3rd ed., Ch. 10](https://web.stanford.edu/~jurafsky/slp3/10.pdf) (Jurafsky & Martin, the decoding/sampling sections) and in the canonical practitioner guide [How to generate text](https://huggingface.co/blog/how-to-generate) (von Platen, Hugging Face) — both in the references.
 
 ---
 
@@ -87,7 +87,7 @@ It's deterministic (same prompt → same output every time), trivially fast (one
 
 The cleanest way to feel this is a tiny two-step tree. Suppose after the prompt the model gives $P(\text{A}) = 0.55$ and $P(\text{B}) = 0.45$, so greedy picks **A**. But the continuations differ in shape: after A the next token is spread out ($P(\text{X}|\text{A}) = 0.40$, $P(\text{Y}|\text{A}) = 0.35$, $P(\text{Z}|\text{A}) = 0.25$), while after B almost all the mass piles on one token ($P(\text{P}|\text{B}) = 0.95$). Greedy, having committed to A, ends at **AX** with joint probability $0.55 \times 0.40 = 0.22$. But the genuinely most-probable two-token sequence is **BP** at $0.45 \times 0.95 = 0.4275$ — nearly **double**. Greedy never even considered it, because B lost the *first* comparison.
 
-![A two-step generation tree. Greedy takes the locally-best first token A (0.55) and ends at AX with joint probability 0.22; but the globally best sequence is BP (0.4275), reachable only by keeping the lower-probability first token B. Beam search with width 2 keeps both A and B and recovers BP.](../images/dec_beam_tree.png)
+![A two-step generation tree. Greedy takes the locally-best first token A (0.55) and ends at AX with joint probability 0.22; but the globally best sequence is BP (0.4275), reachable only by keeping the lower-probability first token B. Beam search with width 2 keeps both A and B and recovers BP. Numbers computed in `code/decoding_strategies.py`.](../images/decode_beam_tree.png)
 
 > **Gotcha:** "greedy maximizes probability" is a common interview mistake. Greedy maximizes the probability of *each next token*, **not** of the full sequence — those are different optimization problems, and the gap between them is exactly what beam search tries to close.
 
@@ -108,6 +108,8 @@ The algorithm, step by step:
 5. **Repeat** until each beam hits an end-of-sequence token or the length limit; return the best completed beam.
 
 Run that on the tree above with $B=2$: after step 1 we keep **both** A (0.55) and B (0.45). After step 2 we expand both and the best candidate is **BP** at $0.4275$ — beam search **recovers the sequence greedy missed**. That is the whole value proposition: a wider beam explores more of the tree and finds higher-probability sequences greedy's tunnel vision skips.
+
+> **Source / derivation:** the beam score is the sum of per-token log-probs, $\text{score}(x_{1:t}) = \sum_{i=1}^{t} \log p_\theta(x_i \mid x_{<i})$ — the log of the chain-rule product $\prod_i p_\theta(x_i\mid x_{<i})$. Logs turn the underflow-prone product into a numerically stable sum (and log is monotonic, so the ranking is unchanged). Beam search as a decoding algorithm is standard since the NMT era; see [Speech and Language Processing, 3rd ed., Ch. 13 (Machine Translation)](https://web.stanford.edu/~jurafsky/slp3/13.pdf) (Jurafsky & Martin) — in the references.
 
 ```mermaid
 graph LR
@@ -131,7 +133,9 @@ The standard fix is **length normalization**: divide the score by a function of 
 
 $$\text{score}(y) = \frac{1}{\text{lp}(y)} \sum_{i=1}^{|y|} \log p_\theta(y_i \mid y_{<i}), \qquad \text{lp}(y) = \frac{(5 + |y|)^\alpha}{(5 + 1)^\alpha},$$
 
-with $\alpha \in [0.6, 0.7]$ typically. At $\alpha = 0$ there's no normalization; at $\alpha = 1$ it's plain mean log-prob per token. The denominator grows with length, offsetting the accumulating negative log-probs so the search stops preferring short outputs.
+with $\alpha \in [0.6, 0.7]$ typically. At $\alpha = 0$ there's no normalization; the denominator grows with length, offsetting the accumulating negative log-probs so the search stops preferring short outputs. (Note the $+5$ smoothing constant: it deliberately keeps even $\alpha=1$ from becoming an *exact* per-token mean, so length isn't fully divided out — which is why $\alpha$ is tuned to ~0.6–0.7 rather than 1. The truly length-fair score is the plain mean log-prob $\frac{1}{|y|}\sum_i \log p_\theta(y_i\mid y_{<i})$, and the demo in the Code section compares both.)
+
+> **Source / derivation:** this length-penalty form $\text{lp}(y) = \frac{(5+|y|)^\alpha}{(5+1)^\alpha}$ is from [Google's Neural Machine Translation System](https://arxiv.org/abs/1609.08144) (Wu et al. 2016, Eq. 14) — in the references. Its motivation: raw beam search sums **negative** log-probs, so every extra token lowers the score and short hypotheses win unfairly; dividing by a growing $\text{lp}(|y|)$ restores a fair comparison.
 
 > **Note:** beam search is the default for **machine translation** and **abstractive summarization** (see [12 Machine Translation](../12-Machine-Translation/12-Machine-Translation.md) and [13 Text Summarization](../13-Text-Summarization/13-Text-Summarization.md)). These are *closed-ended*, faithfulness-first tasks: there's a fairly narrow set of correct outputs, and you want the high-probability one. Beam (with length norm, $B$ typically 4–8) reliably finds it and beats greedy on BLEU/ROUGE.
 
@@ -141,7 +145,7 @@ with $\alpha \in [0.6, 0.7]$ typically. At $\alpha = 0$ there's no normalization
 
 Vanilla beams tend to be near-duplicates of each other (all variations on the single best path), which wastes the width. **Diverse Beam Search** (Vijayakumar et al., 2018) partitions the beams into groups and adds a dissimilarity penalty so groups explore *different* regions of the tree — useful when you want several genuinely distinct candidates (e.g. caption diversity, n-best lists for reranking).
 
-> *Provenance: length normalization is from **Wu et al. 2016** (Google NMT); the large-beam degradation is documented in **Koehn & Knowles 2017** ("Six Challenges for NMT"); diverse beams are **Vijayakumar et al. 2018** — all in the references.*
+> **Source / derivation:** length normalization is from [Wu et al. 2016](https://arxiv.org/abs/1609.08144) (Google NMT); the large-beam degradation ("beam search curse") is documented in [Koehn & Knowles 2017](https://arxiv.org/abs/1706.03872) ("Six Challenges for NMT"); diverse beam search is [Vijayakumar et al. 2018](https://arxiv.org/abs/1610.02424) — all in the references.
 
 ### Worked example: a three-step beam trace in log-space
 
@@ -162,6 +166,8 @@ To make the prune step concrete — and to show why we work in log-space — her
 
 Sort all six and keep the top 2: $\{ab: -0.9,\; ba: -1.0\}$. Notice the pruning is *global across all expansions* — we compare $ab$ (a continuation of $a$) against $ba$ (a continuation of $b$) on the same score scale, and both survivors happen to come from different parents. Notice too that $aa$ (score $-1.7$) was beaten by $ba$ even though $a$ was the better *first* token — the chain rule lets a weaker prefix win once its continuation is strong enough. This is exactly the mechanism that recovers BP in the earlier tree.
 
+![Beam search (width 2) scoring in log-space across two steps on the {a,b,c} tree. Left: step 1 keeps the top-2 first tokens (a, b in green) and prunes c (slate). Right: step 2 expands both survivors into six candidates, scores each by adding the next log-prob, and keeps ab (−0.9) and ba (−1.0) — note ba beats aa (−1.7) even though 'a' was the better first token, because pruning is global across all expansions. Numbers from `code/decoding_strategies.py`.](../images/decode_beam_trace.png)
+
 **Step 3** would repeat: expand $ab$ and $ba$ each by all tokens, score by adding the next $\log p$, prune to 2. A beam that emits the end-of-sequence token is set aside as a *finished* candidate (scored with length normalization) and the search continues with the rest until $B$ finished candidates exist or the length cap hits; the best finished candidate is returned.
 
 > **Note:** the reason we never multiply the raw probabilities is underflow. After 50 tokens, a product like $0.3^{50} \approx 10^{-26}$ is already near the edge of float32's range; after a few hundred it rounds to exactly 0.0 and *every* hypothesis ties at zero, breaking the comparison. Summing logs ($\log 0.3 \times 50 = -60.2$) is numerically stable and preserves the ranking (log is monotonic), which is why every real implementation scores in log-space.
@@ -181,11 +187,13 @@ You can watch this happen in three lines. Feed GPT-2 a repetitive prompt and dec
 
 The same model with **nucleus sampling (top-p = 0.92)** on an open prompt produces fluent, varied, non-looping prose with **distinct-2 = 1.0** (every bigram unique). Same weights, same distribution — the *decoding strategy alone* is the difference between a broken loop and human-like text.
 
+![Neural text degeneration on a toy self-reinforcing model (the mechanism behind the GPT-2 demo, with no model download needed). distinct-2 — the fraction of unique bigrams — collapses to 0.125 under greedy (which falls into the 'I love pizza .' loop), rises slightly to 0.175 at temperature 0.3, and reaches 0.450 at temperature 1.0. The model is identical across all three bars; only the decoding changes. Numbers from `code/decoding_strategies.py`.](../images/decode_degeneration.png)
+
 > **Note — the degeneration loop, mechanically.** Once the model emits a phrase, that phrase is now in its own context, which *raises* the probability it predicts the phrase again (LMs are trained to continue patterns, and a just-seen phrase is a very strong pattern). Greedy dutifully takes that now-highest-probability token, which strengthens the pattern further — a self-reinforcing feedback loop. Sampling breaks the loop by occasionally *not* taking the top token, denying the feedback.
 
 This is the entire motivation for the sampling family. We don't want the *most probable* token every time — we want to **sample from the model's distribution**, but in a controlled way that keeps us in the high-quality region without either collapsing to greedy (dull) or sampling the long, noisy tail (incoherent). The next sections build exactly those controls.
 
-> *Provenance: the degeneration result, the "human text isn't most-probable" finding, and nucleus sampling are all from **Holtzman et al. 2020** (in the references). The measured distinct-n numbers above were produced with GPT-2 in Python 3.12 — the script is in the Code section.*
+> **Source / derivation:** the degeneration result, the "human text isn't the most-probable text" finding, and nucleus sampling itself are all from [The Curious Case of Neural Text Degeneration](https://arxiv.org/abs/1904.09751) (Holtzman et al. 2020) — in the references. The toy-model distinct-2 numbers above (0.125 greedy → 0.450 sampled) are computed in `code/decoding_strategies.py`; the GPT-2 reproduction is in the notebook.
 
 ---
 
@@ -194,6 +202,8 @@ This is the entire motivation for the sampling family. We don't want the *most p
 The first and most fundamental sampling control is **temperature**. It's a single scalar $T > 0$ that you **divide the logits by before applying softmax**, reshaping how peaked or flat the distribution is:
 
 $$p_i = \frac{\exp(z_i / T)}{\sum_j \exp(z_j / T)}.$$
+
+> **Source / derivation:** temperature scaling of a softmax originates in the Boltzmann/Gibbs distribution in statistical mechanics and entered modern deep learning via [Distilling the Knowledge in a Neural Network](https://arxiv.org/abs/1503.02531) (Hinton, Vinyals & Dean 2015, §2), which uses exactly $p_i = \mathrm{softmax}(z_i/T)$ to "soften" a teacher's distribution. Dividing every logit by $T$ rescales all pairwise gaps $z_i - z_j$ by $1/T$ — so $T<1$ widens gaps (sharper) and $T>1$ shrinks them (flatter), with $T\to 0$ the one-hot argmax (greedy) and $T\to\infty$ the uniform distribution. Worked numerically in `code/decoding_strategies.py`.
 
 The intuition: dividing logits by a small $T$ *amplifies* the gaps between them (the biggest logit pulls even further ahead → distribution sharpens toward a spike on the top token); dividing by a large $T$ *shrinks* the gaps (all logits move toward equal → distribution flattens toward uniform). Concretely:
 
@@ -222,7 +232,7 @@ $$p = [0.455,\; 0.276,\; 0.167,\; 0.102].$$
 
 The distribution spread out — the top token fell from 0.64 to **0.46**, and the long-tail token D rose from 0.03 to 0.10 (a 3× higher chance of an unlikely choice). These exact numbers are computed in the Code section and drawn below.
 
-![The same 4-logit vector [3,2,1,0] pushed through softmax at T=0.5, 1.0, and 2.0. Lower temperature sharpens the distribution toward the top token (greedy in the limit); higher temperature flattens it toward the uniform 0.25 line, raising the probability of unlikely tokens.](../images/dec_temperature_softmax.png)
+![The same 4-logit vector [3,2,1,0] pushed through softmax at T=0.5, 1.0, and 2.0. Lower temperature sharpens the distribution toward the top token (greedy in the limit); higher temperature flattens it toward the uniform 0.25 line, raising the probability of unlikely tokens. Entropy rises 0.66 → 1.37 → 1.80 bits. Numbers from `code/decoding_strategies.py`.](../images/decode_temperature_softmax.png)
 
 > **Note:** temperature is **monotonic in entropy** — lower $T$ lowers the entropy (less uncertainty) of the sampling distribution, higher $T$ raises it. It never changes the *ranking* of tokens (the top token stays the top token at any $T$); it only changes *how much* probability the ranking concentrates. That's why $T \to 0$ is exactly greedy: the ranking's winner takes all.
 
@@ -232,7 +242,11 @@ We can put a number on that. Entropy $H = -\sum_i p_i \log_2 p_i$ measures the d
 - $T = 1.0$: $H \approx 1.37$ bits — the raw model's uncertainty.
 - $T = 2.0$: $H \approx 1.80$ bits — approaching the $\log_2 4 = 2$ bits of a uniform 4-way distribution.
 
+> **Source / derivation:** Shannon entropy $H(p) = -\sum_i p_i \log_2 p_i$ (in bits) is from [A Mathematical Theory of Communication](https://people.math.harvard.edu/~ctm/home/text/others/shannon/entropy/entropy.pdf) (Shannon 1948). It is maximized ($\log_2 n$) by the uniform distribution and zero for a one-hot — so it is precisely the "peakiness" knob temperature turns: lower $T$ ⇒ peakier ⇒ lower $H$. Computed in `entropy_bits()` in `code/decoding_strategies.py`.
+
 So raising temperature from 0.5 to 2.0 nearly *triples* the entropy here — a quantitative handle on "how random is each step." A useful sanity check when you're choosing settings: ask what entropy (in bits) you actually want per token. Factual answers want near-zero; creative writing wants a healthy positive value, but not all the way to the uniform ceiling, which is just noise.
+
+![Entropy of the softmax of logits [3,2,1,0] as a continuous function of temperature T. The curve rises monotonically from near-zero (T→0, all mass on the top token, = greedy) toward the uniform ceiling log₂(4) = 2 bits (T→∞). The three temperatures quoted above are marked at their exact entropies (0.66, 1.37, 1.80 bits). Generated by `code/make_figures_17.py`.](../images/decode_entropy_vs_temperature.png)
 
 > **Gotcha:** temperature alone, at $T \ge 1$, still samples from the **full** vocabulary — including the enormous, noisy tail of tens of thousands of tokens that each have tiny but nonzero probability. Summed, that tail carries real mass, and sampling from it is a major source of incoherence ("where does this random word come from?"). Temperature reshapes the distribution but doesn't *truncate* it. That's the job of top-k and top-p, which is why temperature is almost always paired with one of them.
 
@@ -251,7 +265,7 @@ But top-k has a structural weakness that motivates nucleus sampling: **$k$ is a 
 
 The same $k$ is too permissive in one context and too restrictive in the other. You'd like the cutoff to **adapt to the distribution's shape** — keep few tokens when the model is confident, many when it's uncertain. That is precisely top-p.
 
-> *Provenance: top-k sampling for neural text is **Fan, Lewis & Dauphin 2018** (in the references).*
+> **Source / derivation:** top-k sampling for neural text generation is from [Hierarchical Neural Story Generation](https://arxiv.org/abs/1805.04833) (Fan, Lewis & Dauphin 2018, §4.2) — in the references. The operation is: keep the $k$ highest-probability tokens, mask the rest, renormalize, sample. Implemented as `top_k_keep()` in `code/decoding_strategies.py`.
 
 ---
 
@@ -260,6 +274,8 @@ The same $k$ is too permissive in one context and too restrictive in the other. 
 **Top-p sampling**, also called **nucleus sampling** (Holtzman et al., 2020), fixes top-k's rigidity by truncating on **cumulative probability mass** instead of token count. The rule: sort tokens by probability descending, then keep the **smallest set of top tokens whose cumulative probability is $\ge p$** (the "nucleus"), zero the rest, renormalize, and sample. Formally, the nucleus $V^{(p)}$ is the smallest set such that
 
 $$\sum_{w \in V^{(p)}} p_\theta(w \mid x_{<t}) \;\ge\; p.$$
+
+> **Source / derivation:** top-p / nucleus sampling, including this exact definition of the nucleus $V^{(p)}$ as the *smallest* set of top tokens whose cumulative probability is $\ge p$, is from [The Curious Case of Neural Text Degeneration](https://arxiv.org/abs/1904.09751) (Holtzman et al. 2020, §3.1) — in the references. The "smallest such set" requirement is what makes the cutoff adaptive: you sort by probability and grow the set just until it crosses $p$. Implemented as `top_p_keep()` in `code/decoding_strategies.py`.
 
 The cutoff $|V^{(p)}|$ — *how many* tokens survive — is now **data-dependent**: it shrinks when the model is confident (a few tokens already cover mass $p$) and grows when the model is uncertain (it takes many tokens to reach $p$). That single property is why nucleus sampling beats fixed-$k$: it self-adjusts to the shape of every distribution. Holtzman et al. found $p \approx 0.9$–$0.95$ gives the most human-like text on their open-ended benchmarks, and it remains the most widely used open-ended setting today.
 
@@ -271,9 +287,11 @@ Take a realistic 8-token distribution (already sorted): $p = [0.40, 0.25, 0.13, 
 
 **Top-p with $p = 0.9$**: walk the cumulative sum — $0.40,\; 0.65,\; 0.78,\; 0.86,\; \mathbf{0.92},\; 0.96, \dots$ The cumulative mass first reaches $\ge 0.9$ at the **5th** token. So the nucleus is $\{t_1, \dots, t_5\}$, kept mass $= 0.92$, and we sample among **5** tokens. (After this, both sets are renormalized to sum to 1.)
 
-![The same 8-token distribution under two truncations. Left: top-k=2 keeps a fixed 2 tokens (mass 0.65), ignoring the distribution's shape. Right: top-p=0.9 keeps the smallest set whose cumulative mass reaches 0.9 — here 5 tokens (mass 0.92) — adapting to the shape. On a flatter distribution top-p would keep more; on a peaked one, fewer.](../images/dec_topk_vs_topp.png)
+![The same 8-token distribution under two truncations. Left: top-k=2 keeps a fixed 2 tokens (mass 0.65), ignoring the distribution's shape (kept tokens blue, dropped tokens greyed). Right: top-p=0.9 keeps the smallest set whose cumulative mass reaches 0.9 — here 5 tokens (mass 0.92) — adapting to the shape. On a flatter distribution top-p would keep more; on a peaked one, fewer. Numbers from `code/decoding_strategies.py`.](../images/decode_topk_vs_topp.png)
 
 On *this* distribution top-p kept more tokens than top-k=2. But the real point is **adaptivity**: had the distribution been spiky (say $p_1 = 0.95$), top-p=0.9 would have kept just **one** token — collapsing to greedy exactly when the model is certain — while top-k=2 would still force in a second, possibly-wrong token. And on a very flat distribution top-p would keep many tokens, while top-k=2 would over-truncate. **Top-p matches the truncation to the model's confidence; top-k cannot.**
+
+![Nucleus size as a function of distribution shape. The same peaked logits are blended toward uniform, sweeping the distribution's entropy from low (peaked, left) to high (flat, right). The top-p (p=0.9) nucleus widens smoothly from 1 token to 10 as the model becomes less certain (green), while top-k (k=2) is a flat dashed line — it keeps exactly 2 tokens no matter the shape. The rightmost point reaches 10 only at the *fully uniform* limit (all 10 tokens equal); the peaked/flat demo pair quoted in the text gives 1 and 9, which are two specific points on this same curve. This is the single picture of why nucleus sampling beats fixed-k. Generated by `code/make_figures_17.py`.](../images/decode_nucleus_adapts.png)
 
 > **Tip:** temperature and top-p **compose**, and the standard open-ended recipe combines them: `temperature` reshapes the distribution, then `top-p` truncates the reshaped tail. Order matters in implementations (temperature is applied to logits, then top-p truncation on the resulting probabilities). A very common production default is `temperature=0.7–0.9, top_p=0.9` — reshape mildly toward diversity, then cut the noise tail.
 
@@ -303,7 +321,7 @@ Nucleus sampling isn't the end of the story. A few newer truncation schemes refi
 
 You won't tune these every day, but knowing they exist — and that they all attack the same "truncate the tail well" problem from different angles — is exactly the kind of depth that separates a strong answer from a textbook one.
 
-> *Provenance: typical sampling is **Meister et al. 2023**; epsilon/eta sampling is **Hewitt et al. 2022**; min-p is **Nguyen et al. 2024** — see references.*
+> **Source / derivation:** typical sampling is [Locally Typical Sampling](https://arxiv.org/abs/2202.00666) (Meister et al. 2023) — it keeps tokens whose information content $-\log p$ is close to the distribution's entropy $H$; epsilon/eta sampling is [Truncation Sampling as Language Model Desmoothing](https://arxiv.org/abs/2210.15191) (Hewitt et al. 2022); min-p is [Turning Up the Heat: Min-p Sampling](https://arxiv.org/abs/2407.01082) (Nguyen et al. 2024) — all in the references.
 
 ---
 
@@ -311,10 +329,10 @@ You won't tune these every day, but knowing they exist — and that they all att
 
 Even with sampling, models drift into repetition (the degeneration feedback loop never fully disappears, especially at lower temperatures). A family of *direct* controls suppresses it by editing the logits or the search before you pick a token:
 
-- **Repetition penalty** (Keskar et al., CTRL, 2019): divide (or for negative logits, multiply) the logits of *already-generated* tokens by a factor $r > 1$ before softmax, lowering their probability. A penalty of $r \approx 1.1$–$1.3$ noticeably reduces loops; too high and the text avoids necessary words ("the", "is") and turns stilted.
+- **Repetition penalty** ([Keskar et al., CTRL, 2019](https://arxiv.org/abs/1909.05858)): divide (or for negative logits, multiply) the logits of *already-generated* tokens by a factor $r > 1$ before softmax, lowering their probability. A penalty of $r \approx 1.1$–$1.3$ noticeably reduces loops; too high and the text avoids necessary words ("the", "is") and turns stilted.
 - **Frequency and presence penalties** (the OpenAI API knobs): **frequency penalty** subtracts an amount *proportional to how many times* a token has already appeared (escalating discouragement of overused words); **presence penalty** subtracts a flat amount once a token has appeared *at all* (encouraging new topics). They're additive adjustments to the logits, tunable independently.
 - **No-repeat n-gram blocking** (`no_repeat_ngram_size = n`): a hard constraint that forbids emitting any n-gram that has already occurred — set $n = 3$ and the model can never repeat a trigram. Blunt but effective; risk is blocking *legitimately* recurring phrases (names, technical terms).
-- **Contrastive search** (Su et al., 2022, *A Contrastive Framework for Neural Text Generation*): a more principled, *deterministic* method. At each step it scores candidates by a **contrastive objective**: reward high model confidence (model probability) **minus** a **degeneration penalty** equal to the candidate's maximum cosine similarity to the representations of already-generated tokens. The penalty pushes the model away from tokens whose hidden state looks like something it just said — directly attacking repetition at the representation level. With a small candidate set ($k = 4$–$8$) and penalty weight $\alpha \approx 0.6$, contrastive search produces coherent, non-repetitive, deterministic text — often the best quality without sampling.
+- **Contrastive search** ([Su et al., 2022](https://arxiv.org/abs/2202.06417), *A Contrastive Framework for Neural Text Generation*): a more principled, *deterministic* method. At each step it scores candidates by a **contrastive objective**: reward high model confidence (model probability) **minus** a **degeneration penalty** equal to the candidate's maximum cosine similarity to the representations of already-generated tokens. The penalty pushes the model away from tokens whose hidden state looks like something it just said — directly attacking repetition at the representation level. With a small candidate set ($k = 4$–$8$) and penalty weight $\alpha \approx 0.6$, contrastive search produces coherent, non-repetitive, deterministic text — often the best quality without sampling.
 
 > **Tip:** these controls stack with the sampling knobs. A robust chat default is `temperature ≈ 0.7, top_p ≈ 0.9, repetition_penalty ≈ 1.1` — sample for variety, lightly discourage exact repeats. Don't pile on all of them at full strength; each one removes probability mass, and over-penalizing produces unnatural, word-avoiding text.
 
@@ -324,7 +342,7 @@ Even with sampling, models drift into repetition (the degeneration feedback loop
 
 Every method above is navigating a single two-axis trade-off — **quality** (coherence, factuality, staying on-topic) versus **diversity** (variety, surprise, distinct n-grams). The two pull against each other, and each decoding setting is a point in that plane:
 
-![The quality-diversity plane. Greedy and beam sit at low diversity (repetitive, dull). Pure unrestricted sampling sits at high diversity but low quality (incoherent, off-topic). Low-temperature top-p and nucleus sampling near p=0.9 land in the human-like band — high quality with enough diversity. Raising temperature trades quality for diversity along the curve.](../images/dec_quality_diversity.png)
+![The quality-diversity plane (illustrative placement — axes are conceptual, not measured). Greedy and beam sit at low diversity (repetitive, dull). Pure unrestricted sampling at T=1 sits at high diversity but low quality (incoherent, off-topic). Low-temperature top-p and nucleus sampling near p=0.9 land in the shaded human-like band — high quality with enough diversity. Raising temperature trades quality for diversity along the curve. Generated by `code/make_figures_17.py`.](../images/decode_quality_diversity.png)
 
 Reading the picture:
 
@@ -372,11 +390,26 @@ The idea exploits the fact that autoregressive **decode is memory-bandwidth-boun
 2. The big **target model** verifies all $\gamma$ proposals **in a single parallel forward pass** (a mini-prefill).
 3. A **rejection-sampling** acceptance rule accepts the longest prefix of proposed tokens that's consistent with the target model's distribution, and resamples the first rejected token from a corrected distribution.
 
-The acceptance rule is constructed so the *accepted* tokens are distributed **exactly** as if they'd been sampled from the target model directly — speculative decoding is **provably lossless**: identical output distribution, typically **2–3× fewer** expensive target-model steps. Because the target model's KV cache must tentatively hold the speculated tokens and **roll back** rejected ones, a block-addressable (paged) KV cache makes this clean.
+```mermaid
+graph LR
+    DRAFT["small DRAFT model<br/>proposes γ tokens<br/>(autoregressive, cheap)"]:::data --> VERIFY["big TARGET model<br/>verifies all γ in ONE<br/>parallel forward pass"]:::process
+    VERIFY --> ACCEPT["rejection-sampling rule:<br/>accept longest VALID prefix"]:::out
+    ACCEPT --> RESAMPLE["resample the first rejected token<br/>from the corrected distribution;<br/>roll back the rest of the cache"]:::amber
+    RESAMPLE -->|"next round"| DRAFT
+
+    classDef data fill:#3A6B96,stroke:#2A5B86,color:#fff
+    classDef process fill:#5D4A8A,stroke:#4D3A7A,color:#fff
+    classDef out fill:#2E7A5A,stroke:#1E6A4A,color:#fff
+    classDef amber fill:#7A6528,stroke:#6A5518,color:#fff
+```
+
+*Draft proposes γ tokens cheaply; the target verifies them all in one pass; the rejection-sampling rule keeps the longest valid prefix and resamples the first rejection — provably the target model's own distribution, just with fewer expensive target steps.*
+
+The acceptance rule is constructed so the *accepted* tokens are distributed **exactly** as if they'd been sampled from the target model directly — speculative decoding is **provably lossless**: identical output distribution, typically **2–3× fewer** expensive target-model steps. Because the target model's KV cache must tentatively hold the speculated tokens and **roll back** rejected ones, a block-addressable (paged) KV cache makes this clean. The **LLM-systems view** of this — how the KV cache, prefill/decode phases, and throughput interact with decoding — is developed in the sibling chapter [09 LLMs · 18 Decoding & Sampling](../../09.%20LLMs/18-Decoding-and-Sampling/18-Decoding-and-Sampling.md); this page stays on the general sequence-generation view.
 
 > **Tip:** variants drop the separate draft model — **self-speculative** / **Medusa** add lightweight extra heads to the target model to propose tokens; **lookahead decoding** guesses n-grams from the model's own history. All share the same contract: *verify cheaply in parallel, keep only what matches, never change the output distribution.*
 
-> *Provenance: speculative decoding is **Leviathan et al. 2023** and **Chen et al. 2023** (concurrent); the bandwidth-bound decode insight is the same one that motivates the KV cache — cross-linked above.*
+> **Source / derivation:** speculative decoding is [Fast Inference from Transformers via Speculative Decoding](https://arxiv.org/abs/2211.17192) (Leviathan et al. 2023) and the concurrent [Accelerating LLM Decoding with Speculative Sampling](https://arxiv.org/abs/2302.01318) (Chen et al. 2023); the bandwidth-bound decode insight is the same one that motivates the KV cache — cross-linked above. The acceptance rule is a rejection-sampling correction that makes the accepted tokens distributed *exactly* as the target model's own samples (provably lossless).
 
 ---
 
@@ -447,6 +480,8 @@ Decoding is where a lot of "the model is broken" tickets actually originate. Kno
 
 Two runnable blocks. The first derives every numeric claim in the page from scratch (no model needed). The second measures the degeneration-vs-nucleus effect on a real model (GPT-2).
 
+> **Runnable project and a step-by-step notebook:** every number on this page — the greedy/beam joint probabilities, the temperature entropies, the top-k/top-p truncation, the degeneration distinct-2 rates — is computed in one seeded source of truth next to this page, and the figures are regenerated from the *same* functions. See the [step-by-step teaching notebook](code/17-Decoding-Strategies.ipynb), the [canonical demo script](code/decoding_strategies.py) (run it with `python decoding_strategies.py` — every claim is asserted before it prints), and the [figure generator](code/make_figures_17.py). The condensed block below is the heart of that script.
+
 ```python
 """Decoding strategies from scratch — verifies every number in the page.
 Runs on CPU in well under a second (Python 3.12, numpy)."""
@@ -499,7 +534,7 @@ greedy: AX p = 0.22
 true best (beam B=2 finds it): ('BP', 0.4275)
 ```
 
-Every number in the worked examples and diagrams comes straight from this block. Now the real-model demonstration of degeneration:
+Every number in the worked examples and diagrams comes straight from this block (the full version, with an assertion behind every claim, is `code/decoding_strategies.py`; the `code/17-Decoding-Strategies.ipynb` notebook walks each step). Now the real-model demonstration of degeneration — run end-to-end in the notebook:
 
 ```python
 """Measured: greedy degenerates, nucleus stays diverse (GPT-2, Python 3.12).
@@ -529,14 +564,16 @@ print("GREEDY  distinct-2 =", round(distinct_2(g), 3), "->", g[:80])
 print("NUCLEUS distinct-2 =", round(distinct_2(n), 3), "->", n[:80])
 ```
 
-Representative output:
+Output from this notebook run (the GPT-2 nucleus continuation varies by seed/library version; the distinct-2 numbers are the stable headline):
 
 ```
-GREEDY  distinct-2 = 0.103 ->  I love pizza. I love pizza. I love pizza. I love pizza. I love pizza.
-NUCLEUS distinct-2 = 1.0   ->  I love pizza. But I'm not sure how I feel about the rest of the menu...
+GREEDY  distinct-2 = 0.103 ->  I love pizza. I love pizza. I love pizza. I love pizza. I love pizza. I love pi
+NUCLEUS distinct-2 = 1.000 ->  I love pizza.
+
+...
 ```
 
-> **Note:** the headline is the **distinct-2 gap (0.10 vs 1.0)** from the *same model and prompt* — the decoding strategy alone is the difference between a broken loop and varied text. This is Holtzman's degeneration result, reproduced in ten lines. Flip `do_sample`, `top_p`, and `temperature` and watch the trade-off move along the quality–diversity curve.
+> **Note:** the headline is the **distinct-2 gap (0.103 vs 1.0)** from the *same model and prompt* — the decoding strategy alone is the difference between a broken loop and varied text. Greedy loops the prompt verbatim (only ~10% of bigrams unique); nucleus sampling never repeats a bigram (distinct-2 = 1.0), though the exact continuation it picks depends on the seed and the `transformers` version. This is Holtzman's degeneration result, reproduced in a dozen lines. Flip `do_sample`, `top_p`, and `temperature` and watch the trade-off move along the quality–diversity curve.
 
 ---
 
