@@ -12,12 +12,12 @@ Figures produced:
   rag05_bm25_saturation.png  -- BM25 term-frequency saturation: score vs tf for several k1 (the
                                 ceiling that stops keyword-stuffing).
   rag05_bm25_length_norm.png -- BM25 length-normalization: score vs doc length / avgdl for several b.
-  rag05_scale_mismatch.png   -- raw cosine vs raw BM25 score ranges on one query: incomparable
-                                scales, the reason naive addition fails.
+  rag05_scale_mismatch.png   -- raw cosine vs raw BM25 score ranges on the PARAPHRASE probe (same
+                                probe as the prose): incomparable scales, the reason naive addition fails.
   rag05_alpha_sweep.png      -- weighted-sum MRR & recall vs alpha: the optimum is interior, and
                                 alpha=0.5 is not automatically best.
-  rag05_rrf_heatmap.png      -- RRF contribution 1/(k+rank) as a function of rank for two lists, and
-                                the fused ordering -- how a rank-based fusion combines lists.
+  rag05_rrf_weights.png      -- RRF contribution 1/(k+rank) as a function of rank, and a worked
+                                two-list fusion -- how a rank-based fusion combines lists.
 
 Verified on Python 3.12 / matplotlib 3.x / numpy 2.x / sentence-transformers (CPU). Headless (Agg).
 """
@@ -134,7 +134,7 @@ def fig_lens_miss_catch(dense: DenseRetriever, bm25: BM25, probes) -> None:
     ax.set_xticks(x)
     ax.set_xticklabels(methods, fontsize=9)
     ax.set_ylabel("rank of the correct passage  (1 = best, lower is better)")
-    ax.set_title("Each lens misses one query type; hybrid catches both", fontsize=12, pad=12)
+    ax.set_title("Each lens misses one query type; hybrid never whiffs (weighted→#1, RRF→#2)", fontsize=11, pad=12)
     ax.set_ylim(0, miss_rank + 1)
     ax.invert_yaxis()  # rank 1 at the top so "better" is visually up
     ax.legend(loc="lower right", framealpha=0.95, fontsize=9)
@@ -200,13 +200,14 @@ def fig_bm25_length_norm() -> None:
 
 
 def fig_scale_mismatch(dense: DenseRetriever, bm25: BM25, probes) -> None:
-    """Raw cosine vs raw BM25 score ranges on one query — incomparable scales (the naive-sum trap).
+    """Raw cosine vs raw BM25 score ranges on the PARAPHRASE query — incomparable scales.
 
-    Two horizontal score axes for the SAME query: cosine sits inside [-1, 1]; BM25 ranges over
-    [0, ~5+]. Because the BM25 numbers are several times larger, a naive sum is decided almost
-    entirely by BM25 — so the dense signal is effectively ignored until both are normalized.
+    Two horizontal score axes for the SAME query (probes[1], the paraphrase probe, so the figure's
+    ranges match the page/notebook prose for that probe): cosine sits inside [-1, 1]; BM25 is
+    unbounded and several times larger, so a naive sum is decided almost entirely by BM25 — the
+    dense signal is effectively ignored until both are normalized.
     """
-    probe = probes[0]  # exact-code probe: BM25 magnitudes are large here
+    probe = probes[1]  # paraphrase probe -- SAME probe the prose's 0.325/1.039/87% numbers use
     ds = dense.all_scores(probe.query)
     ss = bm25.all_scores(probe.query)
 
@@ -265,7 +266,7 @@ def fig_alpha_sweep(dense: DenseRetriever, bm25: BM25, probes) -> None:
     _save(fig, "rag05_alpha_sweep.png")
 
 
-def fig_rrf_heatmap() -> None:
+def fig_rrf_weights() -> None:
     """RRF contribution 1/(k+rank) vs rank, plus a worked two-list fusion — how rank fusion combines.
 
     Left: the RRF weight curve for a few k_rrf values — being #1 is worth far more than #10, and a
@@ -319,7 +320,7 @@ def fig_rrf_heatmap() -> None:
     ax_demo.text(0.5, 0.02, "A is #2/#1 → wins; C is #1/#2 → close behind. Strong-in-both beats strong-in-one.",
                  ha="center", fontsize=8.8, style="italic", color=INK)
     ax_demo.set_title("Worked RRF fusion of two lists (illustrative)", fontsize=11.5, pad=10)
-    _save(fig, "rag05_rrf_heatmap.png")
+    _save(fig, "rag05_rrf_weights.png")
 
 
 def main() -> None:
@@ -333,7 +334,7 @@ def main() -> None:
     fig_bm25_length_norm()
     fig_scale_mismatch(dense, bm25, probes)
     fig_alpha_sweep(dense, bm25, probes)
-    fig_rrf_heatmap()
+    fig_rrf_weights()
     print("all figures written to", OUT_DIR)
 
 
