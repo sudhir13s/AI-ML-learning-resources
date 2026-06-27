@@ -6,14 +6,14 @@ level: intermediate
 prereqs: ["probability", "text-preprocessing", "bag-of-words-and-tf-idf"]
 interview_frequency: high
 template: concept-deep
-updated: 2026-06-22
+updated: 2026-06-27
 ---
 
 # N-gram Language Models and Smoothing: counting your way to probability
 
 Suppose I hand you the fragment *"I'd like to make a collect …"* and ask you to bet on the next word. You'll say **call** without hesitating — not because you parsed the grammar, but because in all the English you've ever heard, *collect* is followed by *call* far more often than by *banana*. A **language model** is just that instinct made into arithmetic: a function that assigns a **probability to a sequence of words**, and equivalently predicts **how likely each next word is given the words so far**. The **N-gram** model is the oldest, simplest, and most instructive way to build one — you literally **count** which words follow which, and turn those counts into probabilities.
 
-This page is the *complete* tour I'd give a teammate before an interview or before they touch a modern LLM, because every idea here — the **chain rule**, the **Markov assumption**, **maximum-likelihood counts**, the **sparsity catastrophe**, the whole **smoothing** family, and **perplexity** — survives, unchanged in spirit, into the neural and transformer models that replaced n-grams. We'll *derive* each result rather than state it, work **five+ numeric examples by hand**, and finish with a from-scratch model you can run. By the end you'll be able to:
+This page is the *complete* tour I'd give a teammate before an interview or before they touch a modern LLM, because every idea here — the **chain rule**, the **Markov assumption**, **maximum-likelihood counts**, the **sparsity catastrophe**, the whole **smoothing** family, and **perplexity** — survives, unchanged in spirit, into the neural and transformer models that replaced n-grams. We'll *derive* each result rather than state it, work **six numeric examples by hand** (all reproduced by the runnable code), and finish with a from-scratch model you can run. By the end you'll be able to:
 
 - write the **chain-rule** factorization of a sentence's probability and explain the **Markov assumption** that turns it into an n-gram;
 - **derive** the maximum-likelihood estimate $p(w_i \mid w_{i-1}) = c(w_{i-1}, w_i)/c(w_{i-1})$ and compute it by hand;
@@ -23,6 +23,8 @@ This page is the *complete* tour I'd give a teammate before an interview or befo
 - state precisely **why** n-grams hit a wall, and how that wall motivated word embeddings and neural language models.
 
 > **Note:** "n-gram" means a contiguous run of $n$ tokens. A **unigram** is one word ($n{=}1$), a **bigram** two ($n{=}2$, "machine learning"), a **trigram** three ($n{=}3$, "the cat sat"). An **n-gram language model** uses (n−1)-word context to predict the next word. The whole field is built on choosing $n$ and dealing with the consequences.
+
+> **Runnable project and a step-by-step notebook:** every number, table, and figure on this page is produced by the verified code next to it — see the [step-by-step teaching notebook](code/04-N-gram-Language-Models-and-Smoothing.ipynb), the [single source-of-truth module](code/ngram_lm.py) (`python ngram_lm.py`), and the [figure generator](code/make_figures_04.py) (`python make_figures_04.py`). The page, the notebook, and the figures all import the *same* functions from `ngram_lm.py`, so they cannot drift apart.
 
 ---
 
@@ -59,6 +61,8 @@ $$
 
 Read it aloud: **the probability of a sentence is the product, over each position, of the probability of that word given every word before it.** No approximation yet — this is *exact*. The chain rule converts one impossible estimation (the whole joint) into a sequence of next-word predictions.
 
+> **Source / derivation:** the chain-rule factorization of $P(W)$ and its role as the foundation of language modeling is [Jurafsky & Martin, *Speech and Language Processing* (3rd ed.), Ch. 3 "N-gram Language Models", §3.1](https://web.stanford.edu/~jurafsky/slp3/3.pdf) — it follows by induction from the product rule $P(A,B)=P(A)P(B\mid A)$.
+
 > **Note:** this factorization is the heart of **autoregressive** modeling — predict each token from its left context, multiply the conditionals. GPT does *exactly* this; it only replaces the estimator of $P(w_i \mid w_1 \dots w_{i-1})$ with a transformer instead of a count table. Learn the n-gram version and you understand the skeleton of every modern LLM.
 
 But we have only moved the problem, not solved it. The last factor, $P(w_n \mid w_1, \dots, w_{n-1})$, still conditions on the *entire* preceding sentence — a context so long we'll essentially never have seen it before. We need to shorten the history. Enter the Markov assumption.
@@ -70,6 +74,8 @@ But we have only moved the problem, not solved it. The last factor, $P(w_n \mid 
 The **Markov assumption** says: the future depends on only a *bounded* slice of the past. For language: *the probability of the next word depends only on the previous $n-1$ words*, not the whole history.
 
 $$P(w_i \mid w_1, \dots, w_{i-1}) \;\approx\; P(w_i \mid w_{i-n+1}, \dots, w_{i-1}).$$
+
+> **Source / derivation:** the Markov (limited-horizon) approximation and the resulting unigram/bigram/trigram family are [Jurafsky & Martin, SLP3 Ch. 3, §3.1](https://web.stanford.edu/~jurafsky/slp3/3.pdf); the framing of language as a finite-order Markov source traces to [Shannon, *A Mathematical Theory of Communication* (1948), §2–3](https://people.math.harvard.edu/~ctm/home/text/others/shannon/entropy/entropy.pdf).
 
 Plugging different $n$ gives the model family:
 
@@ -83,7 +89,7 @@ $$
 
 The bigram model is the workhorse for teaching: it approximates "given everything so far" by "given just the last word." It's crude — *"the"* surely depends on more than one prior word — but it's *estimable*, because pairs of words recur, whereas whole sentences do not. That is the entire trade: **shorter context = more reliable counts but weaker memory; longer context = sharper predictions but exploding sparsity.** Choosing $n$ is choosing where to sit on that curve.
 
-![A trigram model conditions each word on only the previous two — the Markov window. As the window slides right, each prediction P(word | previous two words) ignores everything further back, which is what makes the counts estimable.](../images/ngram_window.png)
+![A trigram model conditions each word on only the previous two — the Markov window. Here the window (the, cat) predicts "sat"; everything to the left of the window is ignored, which is exactly what makes the counts estimable. As the window slides right, each prediction P(word | previous two) forgets the deeper history.](../images/ng_markov_window.png)
 
 > **Tip:** to handle sentence boundaries we pad with special tokens: a start symbol `<s>` (one per order below $n$) and an end symbol `</s>`. The `</s>` is not optional bookkeeping — it lets the model assign probability to *where sentences end*, so that $\sum_W P(W) = 1$ over sequences of *all lengths*. Without `</s>` the distribution wouldn't be normalized across lengths, and the model couldn't prefer "the cat sat ." over the run-on "the cat sat on the …".
 
@@ -108,7 +114,9 @@ $$P(w_i \mid w_{i-n+1}^{\,i-1}) = \frac{c(w_{i-n+1}^{\,i-1},\, w_i)}{c(w_{i-n+1}
 
 using the shorthand $w_a^b = w_a \dots w_b$. **In words: count how often the full n-gram appeared, divide by how often its (n−1)-word prefix appeared.** The denominator $c(w_{i-1})$ equals $\sum_{w} c(w_{i-1}, w)$, so the conditional distribution over the next word sums to 1, as a probability must.
 
-> **Note:** the formal MLE derivation maximizes the corpus log-likelihood $\sum c(w_{i-1}, w_i) \log p_{w_i \mid w_{i-1}}$ subject to $\sum_{w} p_{w \mid w_{i-1}} = 1$. A Lagrange multiplier gives $p_{w \mid w_{i-1}} \propto c(w_{i-1}, w)$, and normalizing recovers the count ratio. Relative frequency *is* the maximum-likelihood estimate — it's not a heuristic.
+> **Source / derivation:** the bigram/n-gram MLE as a count ratio is [Jurafsky & Martin, SLP3 Ch. 3, §3.1.1](https://web.stanford.edu/~jurafsky/slp3/3.pdf). That relative frequency *is* the constrained MLE (not a heuristic) is the standard multinomial result, proved by Lagrange multipliers in [Manning & Schütze, *Foundations of Statistical NLP*, Ch. 6](https://nlp.stanford.edu/fsnlp/).
+
+> **Note:** the formal MLE derivation maximizes the corpus log-likelihood $\sum c(w_{i-1}, w_i) \log p_{w_i \mid w_{i-1}}$ subject to $\sum_{w} p_{w \mid w_{i-1}} = 1$. A Lagrange multiplier gives $p_{w \mid w_{i-1}} \propto c(w_{i-1}, w)$, and normalizing recovers the count ratio. Relative frequency *is* the maximum-likelihood estimate.
 
 > **Note (provenance):** the whole enterprise is older than it looks. **Claude Shannon** (1948, 1951) framed English as a stochastic source and literally played the *"guess the next letter"* game to *measure the entropy of English* — that experiment is the direct ancestor of perplexity. **Fred Jelinek** and the IBM speech group turned n-grams into the engine of statistical speech recognition in the 1970s–80s (his oft-quoted line: *"every time I fire a linguist, the performance of the recognizer goes up"* — counts beat hand-written rules). The smoothing methods below each have a named inventor and year — **Good** (1953), **Katz** (1987), **Kneser & Ney** (1995), with **Chen & Goodman** (1999) running the definitive bake-off — and all are in the references. Knowing *who* introduced *which* fix, and *why*, is exactly the kind of thing a strong interview answer threads through.
 
@@ -139,7 +147,7 @@ P(\text{I am Sam}) &= P(\text{I}\mid\texttt{<s>}) \cdot P(\text{am}\mid\text{I})
 \end{aligned}
 $$
 
-(All five numbers are reproduced by the verification script at the bottom — `P(am|i)=0.667`, `product=0.111`.) That is a *complete* n-gram language model evaluation: tokenize, pad, look up each conditional, multiply.
+(Both numbers are reproduced by `ngram_lm.py` — `P(am|I)=0.667`, `P(<s> I am Sam </s>)=0.111`.) That is a *complete* n-gram language model evaluation: tokenize, pad, look up each conditional, multiply.
 
 > **Gotcha:** multiplying many probabilities (each $<1$) **underflows** to zero on real-length sentences. Always work in **log space**: $\log P(W) = \sum_i \log P(w_i \mid \text{context})$ — a sum of logs instead of a product of tiny numbers. Every production n-gram (and neural) LM accumulates log-probabilities for exactly this reason.
 
@@ -151,18 +159,24 @@ Here is the flaw that makes raw MLE counts unusable, and the reason half this pa
 
 ### Worked example 3 — watch a zero destroy a sentence
 
-Using the same toy corpus, score `<s> Sam do not …`. The bigram `(Sam, do)` never occurred in training, so:
+Using the same toy corpus, score `<s> Sam do not </s>`. The bigram `(Sam, do)` never occurred in training, so:
 
 $$P(\text{do} \mid \text{Sam}) = \frac{c(\text{Sam}, \text{do})}{c(\text{Sam})} = \frac{0}{2} = 0 \;\Longrightarrow\; P(\text{whole sentence}) = 0.$$
 
-The model declares a perfectly grammatical sentence *impossible* purely because one word pair was absent from a small corpus. This is the **sparsity / zero-probability problem**, and it is not a small corner case — it's the *typical* case. Language is **Zipfian**: a few words are extremely common and a long tail of words (and most word *pairs*) are rare. Even a billion-word corpus is missing the overwhelming majority of plausible bigrams and trigrams. Two consequences:
+The model declares a perfectly grammatical sentence *impossible* purely because one word pair was absent from a small corpus.
+
+![Two sentences scored bigram by bigram. Left: every bigram of "I am Sam" was seen, so the product is a healthy 0.111. Right: "Sam do not" contains the unseen pair (Sam, do) with probability 0 — and because the sentence score is a PRODUCT, that single zero collapses the whole thing to 0. A product is only as strong as its weakest factor.](../images/ng_zero_catastrophe.png)
+
+This is the **sparsity / zero-probability problem**, and it is not a small corner case — it's the *typical* case. Language is **Zipfian**: a few words are extremely common and a long tail of words (and most word *pairs*) are rare. Even a billion-word corpus is missing the overwhelming majority of plausible bigrams and trigrams.
+
+![Word frequencies on a corpus follow Zipf's law: ranked by frequency, the curve is a near-straight line on log-log axes (frequency ∝ 1/rank). A handful of words ("the", "cat") dominate; a long tail occurs once or twice. Because rare words are common, rare PAIRS of them are overwhelmingly common — which is why most grammatical n-grams are simply never observed, and why smoothing is mandatory, not optional.](../images/ng_zipf.png)
+
+Two consequences:
 
 1. **Zeros everywhere.** Unseen n-grams get $P = 0$, so any test sentence containing one is assigned zero probability — and you can't take $\log 0 = -\infty$, so **perplexity blows up to infinity.** The model is unusable for evaluation.
 2. **Overconfidence on what *was* seen.** Because the unseen mass is wrongly assigned to seen events, the seen estimates are systematically too high.
 
-![Frequency of frequencies on this corpus's bigrams: a huge spike at count 1 (most bigram types occur exactly once) and a fast-decaying tail. Good-Turing's estimate of the total probability mass that should go to unseen bigrams is N₁/N — here about 0.21, over a fifth of the mass. The left panel previews the discounting curves we derive below.](../images/ngram_discount.png)
-
-The right panel above is the key empirical fact behind every fix: **$N_1$ (the number of n-grams seen exactly once) dominates** — and the *count of singletons* turns out to be the best estimate of how much probability mass we should reserve for things we've **never** seen. The cure is **smoothing**: take a little probability mass away from the events we *did* see (discounting) and redistribute it to the events we *didn't*. The rest of the page is a ladder of increasingly clever ways to do exactly that.
+The cure is **smoothing**: take a little probability mass away from the events we *did* see (discounting) and redistribute it to the events we *didn't*. The rest of the page is a ladder of increasingly clever ways to do exactly that.
 
 ```mermaid
 graph LR
@@ -187,23 +201,25 @@ The simplest possible fix, due to Laplace: **pretend you saw every possible n-gr
 
 $$P_{\text{Laplace}}(w_i \mid w_{i-1}) = \frac{c(w_{i-1}, w_i) + 1}{c(w_{i-1}) + V}.$$
 
+> **Source / derivation:** add-one (Laplace) smoothing for n-grams, including why $V$ enters the denominator, is [Jurafsky & Martin, SLP3 Ch. 3, §3.5.1](https://web.stanford.edu/~jurafsky/slp3/3.pdf). It is the Bayesian posterior mean under a symmetric Dirichlet/Beta prior with pseudo-count 1, treated as a baseline in [Chen & Goodman (1999)](https://aclanthology.org/J99-1004/).
+
 **Why does $V$ appear in the denominator?** Because the distribution must still sum to 1. We added 1 to the count of *each* of the $V$ possible next words, so we added $V$ in total to the numerator-sum — and the denominator must grow by the same $V$ to keep $\sum_{w} P_{\text{Laplace}}(w \mid w_{i-1}) = 1$. The denominator is the *original* context count $c(w_{i-1})$ plus the $V$ pseudo-counts we sprinkled across the vocabulary. Derive it once and you'll never misremember it:
 
 $$\sum_{w \in V} \frac{c(w_{i-1}, w) + 1}{c(w_{i-1}) + V} = \frac{\sum_w c(w_{i-1}, w) + V}{c(w_{i-1}) + V} = \frac{c(w_{i-1}) + V}{c(w_{i-1}) + V} = 1. \;\checkmark$$
 
 ### Worked example 4 — Laplace rescues the zero
 
-Back to the unseen `(Sam, do)`. The toy vocabulary has $V = 12$ types and $c(\text{Sam}) = 2$. MLE gave 0; Laplace gives:
+Back to the unseen `(Sam, do)`. The toy vocabulary has $V = 12$ types (10 content words + `<s>` + `</s>`, the SLP3 convention) and $c(\text{Sam}) = 2$. MLE gave 0; Laplace gives:
 
 $$P_{\text{Laplace}}(\text{do} \mid \text{Sam}) = \frac{0 + 1}{2 + 12} = \frac{1}{14} \approx \mathbf{0.071}.$$
 
-Nonzero — the sentence is no longer impossible. (Verified: `Laplace add-1 = 0.0714`.) The same formula *discounts* the seen events: $P_{\text{Laplace}}(\text{am}\mid\text{I}) = \frac{2+1}{3+12} = \frac{3}{15} = 0.2$, down from the MLE's 0.667. That collapse is the problem.
+Nonzero — the sentence is no longer impossible. (Verified: `P(do | Sam) Laplace = 0.0714`.) The same formula *discounts* the seen events: $P_{\text{Laplace}}(\text{am}\mid\text{I}) = \frac{2+1}{3+12} = \frac{3}{15} = 0.2$, down from the MLE's 0.667. That collapse is the problem.
 
 > **Gotcha:** Laplace is **far too aggressive** for language. With a realistic $V$ of tens of thousands, the "$+V$" in the denominator dwarfs $c(w_{i-1})$ for most contexts, so almost all the probability mass is shoved onto the (enormous) set of unseen events, and the seen, *informative* bigrams are starved. It's a fine teaching device and a fine prior for small, dense problems — but a poor smoother for sparse text. Real systems need methods that move only the *right amount* of mass.
 
-The image below shows this concretely on our corpus: for the context "the", MLE (red) gives zero to genuinely-unseen continuations (the zero cliff, arrow), Laplace (amber) lifts them off zero but flattens the seen estimates, and Kneser-Ney (green) — the rung we're climbing toward — keeps the seen distribution sharp while still reserving sensible mass for the unseen.
+The figure below shows this concretely on our measured corpus: for the context "the", MLE (red) gives zero to genuinely-unseen continuations like "the rabbit" (the zero cliff, arrow), Laplace (amber) lifts them off zero but flattens the seen estimates, and Kneser-Ney (green) — the rung we're climbing toward — keeps the seen distribution sharp while still reserving sensible mass for the unseen.
 
-![Next-word probability after "the" under MLE vs Laplace vs Kneser-Ney. MLE assigns exactly zero to unseen continuations (the zero cliff). Laplace lifts them but over-flattens the seen words. Kneser-Ney keeps the seen distribution sharp while reserving sensible mass for the unseen.](../images/ngram_smoothing_mass.png)
+![Next-word probability after "the" under MLE vs Laplace vs Kneser-Ney on the measured corpus. MLE assigns exactly zero to the unseen continuation "the rabbit" (the zero cliff, arrowed). Laplace lifts the unseen off zero but flattens the seen words ("the cat"/"the dog" drop from ~0.27 to ~0.16). Kneser-Ney keeps the seen distribution sharp (cat/dog stay near 0.24) while still reserving sensible mass for the unseen.](../images/ng_smoothing_mass.png)
 
 ---
 
@@ -212,6 +228,8 @@ The image below shows this concretely on our corpus: for the context "the", MLE 
 The obvious patch to Laplace's over-smoothing is to add a *fraction* $k$ (e.g. $k = 0.05$) instead of a whole count:
 
 $$P_{\text{add-}k}(w_i \mid w_{i-1}) = \frac{c(w_{i-1}, w_i) + k}{c(w_{i-1}) + kV}.$$
+
+> **Source / derivation:** add-k (Lidstone) smoothing and the practice of tuning $k$ on a held-out set are [Jurafsky & Martin, SLP3 Ch. 3, §3.5.2](https://web.stanford.edu/~jurafsky/slp3/3.pdf); its weakness relative to discounting methods is documented in [Chen & Goodman (1999)](https://aclanthology.org/J99-1004/).
 
 With $k < 1$ you move less mass to the unseen events. You can even tune $k$ on a held-out set. But add-k inherits Laplace's fundamental defect: it spreads mass **uniformly** over all unseen n-grams, treating "I am Francisco" and "I am happy" as equally plausible unseen continuations. Language isn't uniform — some unseen events are far likelier than others. To do better we must look at *which kinds* of events go unseen, which is what Good-Turing and Kneser-Ney exploit.
 
@@ -223,25 +241,31 @@ Good-Turing (Alan Turing & I.J. Good, WWII codebreaking) introduces a beautiful 
 
 $$c^{*} = (c + 1)\,\frac{N_{c+1}}{N_c}.$$
 
+> **Source / derivation:** the Good-Turing estimator and the $N_1/N$ missing-mass result originate with [I. J. Good, *The Population Frequencies of Species and the Estimation of Population Parameters* (1953)](https://www.jstor.org/stable/2333344); the LM-facing treatment used here is [Jurafsky & Martin, SLP3 Ch. 3, §3.5.3 (and the "Advanced: Good-Turing" section)](https://web.stanford.edu/~jurafsky/slp3/3.pdf).
+
 **The idea, derived intuitively.** How much total probability should we have reserved for events we saw $r{+}1$ times? In a held-out sample, the events we'll see $r{+}1$ times are well-modeled by the events we saw $r$ times in training — Good-Turing borrows that bridge to *discount* each count toward the next-lower frequency band. The most important special case is $r = 0$: the events we've **never** seen.
 
 **The missing mass for unseen events.** Set the reestimated count for unseen events ($r = 0$): the total probability mass that should be reserved for *all* zero-count events is
 
 $$P_{\text{GT}}(\text{unseen}) = \frac{N_1}{N},$$
 
-where $N_1$ is the number of n-grams seen **exactly once** and $N$ is the total number of n-gram tokens. **Read that:** the fraction of probability you should hold back for things you've never seen is estimated by the fraction of your data that occurred *just once*. It's intuitive — a corpus full of singletons is a corpus still discovering new events, so reserve a lot; a corpus where everything repeats has likely seen most of its vocabulary, so reserve little. On our toy corpus $N_1/N \approx \mathbf{0.21}$ (verified) — over a fifth of the mass belongs to the unseen.
+where $N_1$ is the number of n-grams seen **exactly once** and $N$ is the total number of n-gram tokens. **Read that:** the fraction of probability you should hold back for things you've never seen is estimated by the fraction of your data that occurred *just once*. It's intuitive — a corpus full of singletons is a corpus still discovering new events, so reserve a lot; a corpus where everything repeats has likely seen most of its vocabulary, so reserve little.
 
-![Discounting curves: the dashed line is the raw count c (no discount); absolute discounting subtracts a fixed d (the clean green line, c−d); Good-Turing c* (amber) tracks below the diagonal too but is jagged because N_r is noisy at higher counts — exactly why raw Good-Turing needs smoothing of the N_r and why absolute discounting became the practical favorite.](../images/ngram_discount.png)
+![Frequency of frequencies N_r on the measured corpus's bigrams: a tall spike at count 1 (most bigram types occur exactly once) decaying fast. Good-Turing's estimate of the probability mass to reserve for unseen bigrams is N₁/N — here 14/78 ≈ 0.18, almost a fifth of the mass — read straight off the height of the N₁ bar.](../images/ng_freq_of_freqs.png)
+
+On this corpus the singleton band $N_1 = 14$ dominates, and $N_1/N = 14/78 \approx \mathbf{0.18}$ — almost a fifth of the mass belongs to the unseen. The *count of singletons* turns out to be the best estimate of how much probability mass we should reserve for things we've **never** seen; that single insight is what every later method inherits.
 
 ### A Good-Turing reestimate by hand
 
-Read the frequency-of-frequencies straight off the bar chart's right panel: on this corpus $N_1 = 33$ (33 bigram types seen exactly once), $N_2 = 10$, $N_3 = 7$. The Good-Turing reestimated count for a bigram we saw **once** is
+Read the frequency-of-frequencies straight off the bar chart: on this corpus $N_1 = 14$ (14 bigram types seen exactly once), $N_2 = 12$, $N_3 = 5$. The Good-Turing reestimated count for a bigram we saw **once** is
 
-$$c^{*}(1) = (1 + 1)\,\frac{N_2}{N_1} = 2 \cdot \frac{10}{33} \approx \mathbf{0.61}.$$
+$$c^{*}(1) = (1 + 1)\,\frac{N_2}{N_1} = 2 \cdot \frac{12}{14} \approx \mathbf{1.71}.$$
 
-So a singleton bigram, which raw MLE would treat as a full count of 1, is *discounted to ~0.61* — and the **0.39 of mass shaved off each singleton, summed across all 33 of them, is exactly what funds the unseen events.** That is discounting and redistribution in a single line of arithmetic. (You can read the same $c^{*}$ values off the amber curve in the left panel — note how jagged it is, foreshadowing the next gotcha.)
+(Verified: `c*(1)=1.71`.) The reestimated count for a bigram we saw **twice** drops below 2 as well, $c^{*}(2) = 3 \cdot N_3/N_2 = 3 \cdot 5/12 = 1.25$ — every seen count is shaved downward, and the **mass shaved off, summed across all those events, is exactly what funds the unseen.** That is discounting and redistribution in a single line of arithmetic.
 
-> **Gotcha:** raw Good-Turing is unstable for large $r$ because $N_r$ becomes 0 or tiny in the tail (you might have *no* n-gram seen exactly 11 times, making $N_{11}/N_{10}$ undefined). Practical Good-Turing **smooths the $N_r$** (e.g. fits a log-log line) before applying the formula — visible as the jagged amber curve above. Its conceptual gift, $N_1/N$ for the missing mass, is what later methods inherit.
+![Three ways to reestimate a seen count, on the measured corpus's bigrams: the dashed slate line is the raw count c (no discount); absolute discounting subtracts a fixed d=0.75 (the clean green line, c−d, parallel below the diagonal); Good-Turing c* (amber) is JAGGED — on this tiny corpus it can sit ABOVE the raw count at r=1 (here c*(1)=1.71, because N₂≈N₁ so the band is unusually full), and where a frequency band is empty (N_r undefined) it falls back to the raw c. N_r is noisy at low and high counts. That jaggedness is exactly why raw Good-Turing needs the N_r smoothed first, and why absolute discounting became the practical favorite.](../images/ng_discount_curves.png)
+
+> **Gotcha:** raw Good-Turing is unstable for large $r$ because $N_r$ becomes 0 or tiny in the tail (you might have *no* n-gram seen exactly 7 times, making $N_7$ zero and $N_8/N_7$ undefined). Practical Good-Turing **smooths the $N_r$** (e.g. fits a log-log line) before applying the formula — the jaggedness is visible as the amber curve above. Its conceptual gift, $N_1/N$ for the missing mass, is what later methods inherit.
 
 ---
 
@@ -256,6 +280,8 @@ P^{*}(w_i \mid w_{i-n+1}^{\,i-1}) & \text{if } c(w_{i-n+1}^{\,i}) > 0 \\[6pt]
 \alpha(w_{i-n+1}^{\,i-1})\; P_{\text{katz}}(w_i \mid w_{i-n+2}^{\,i-1}) & \text{otherwise.}
 \end{cases}
 $$
+
+> **Source / derivation:** Katz backoff with Good-Turing discounting and the normalizing back-off weight $\alpha$ is [Slava Katz, *Estimation of Probabilities from Sparse Data for the Language Model Component of a Speech Recognizer* (1987)](https://web.archive.org/web/20170825210849/http://l2r.cs.uiuc.edu/~danr/Teaching/CS546-09/Papers/Katz87.pdf); textbook treatment in [Jurafsky & Martin, SLP3 Ch. 3, §3.6](https://web.stanford.edu/~jurafsky/slp3/3.pdf).
 
 In words: **if the trigram was seen, use a discounted trigram estimate $P^{*}$; if not, *back off* to the bigram (and the bigram to the unigram), scaled by a context-specific weight $\alpha$.** Two pieces make it valid:
 
@@ -299,7 +325,11 @@ $$
 + \lambda_1\, P(w_i),
 $$
 
-with $\lambda_1 + \lambda_2 + \lambda_3 = 1$ and each $\lambda \ge 0$ (so the result is a valid distribution). The intuition: **every prediction is a weighted vote between the sharp-but-sparse trigram, the steadier bigram, and the always-available unigram.** When the trigram has plenty of evidence, you want $\lambda_3$ large; when it's data-starved, lean on the lower orders.
+with $\lambda_1 + \lambda_2 + \lambda_3 = 1$ and each $\lambda \ge 0$ (so the result is a valid distribution).
+
+> **Source / derivation:** linear (deleted) interpolation and fitting the $\lambda$'s on held-out data via EM are [Jurafsky & Martin, SLP3 Ch. 3, §3.6](https://web.stanford.edu/~jurafsky/slp3/3.pdf); the held-out interpolation idea traces to the IBM line, [Brown et al. (1992)](https://aclanthology.org/J92-4003/) and the references therein.
+
+The intuition: **every prediction is a weighted vote between the sharp-but-sparse trigram, the steadier bigram, and the always-available unigram.** When the trigram has plenty of evidence, you want $\lambda_3$ large; when it's data-starved, lean on the lower orders.
 
 **Where do the $\lambda$'s come from?** You *cannot* fit them on the training data (the trigram would always win there — it overfits). You fit them on a **held-out** set: freeze the n-gram counts from training, then choose the $\lambda$'s that **maximize the likelihood of the held-out data** (typically via the EM algorithm, or context-dependent $\lambda$'s bucketed by how much evidence each context has). This held-out fitting is the same "use a separate set to tune the thing that controls generalization" idea you'll see in every regularization method.
 
@@ -317,6 +347,8 @@ Notice the unigram term is small but **nonzero** — so even a context the trigr
 
 Kneser-Ney (Kneser & Ney 1995, refined by Chen & Goodman 1998) is the **best-performing classical n-gram smoother**, and the empirical winner of Chen & Goodman's exhaustive study. It combines two ideas: **absolute discounting** and a clever **continuation probability** for the lower-order model.
 
+> **Source / derivation:** Kneser-Ney smoothing — absolute discounting plus the continuation (lower-order) distribution based on distinct preceding contexts — is [Reinhard Kneser & Hermann Ney, *Improved Backing-off for M-gram Language Modeling* (1995)](https://ieeexplore.ieee.org/document/479394). *Modified* Kneser-Ney (the three-discount refinement) and the bake-off that crowned it are [Stanley Chen & Joshua Goodman, *An Empirical Study of Smoothing Techniques for Language Modeling* (1999)](https://aclanthology.org/J99-1004/); the worked formulae here follow [Jurafsky & Martin, SLP3 Ch. 3, §3.7](https://web.stanford.edu/~jurafsky/slp3/3.pdf).
+
 ### Part A — absolute discounting
 
 Instead of multiplying counts down, just **subtract a fixed discount $d$** (typically $0 < d < 1$, often $\approx 0.75$) from every nonzero count, and hand the freed mass to a lower-order model:
@@ -327,7 +359,7 @@ P_{\text{AD}}(w_i \mid w_{i-1}) =
 \;+\; \lambda(w_{i-1})\, P_{\text{lower}}(w_i).
 $$
 
-Why subtract a *constant*? Chen & Goodman observed empirically that a bigram seen $c$ times in training tends to appear about $c - 0.75$ times in held-out data — the "held-out count" is consistently a hair below the training count, and that gap is roughly constant across $c$. So absolute discounting is the empirically-calibrated discount, not an arbitrary one. The freed mass per context is $\lambda(w_{i-1}) = \frac{d}{c(w_{i-1})} \cdot |\{w : c(w_{i-1}, w) > 0\}|$ — the discount $d$ times the number of distinct words that followed $w_{i-1}$, normalized — which is exactly the total mass we shaved off, so the distribution still sums to 1.
+Why subtract a *constant*? Chen & Goodman observed empirically that a bigram seen $c$ times in training tends to appear about $c - 0.75$ times in held-out data — the "held-out count" is consistently a hair below the training count, and that gap is roughly constant across $c$ (you can see this in the discounting figure above: the green absolute-discount line runs *parallel* to the raw-count diagonal). So absolute discounting is the empirically-calibrated discount, not an arbitrary one. The freed mass per context is $\lambda(w_{i-1}) = \frac{d}{c(w_{i-1})} \cdot |\{w : c(w_{i-1}, w) > 0\}|$ — the discount $d$ times the number of distinct words that followed $w_{i-1}$, normalized — which is exactly the total mass we shaved off, so the distribution still sums to 1.
 
 ### Part B — the continuation probability (the real insight)
 
@@ -343,7 +375,7 @@ The numerator counts the **distinct preceding words** (distinct contexts $w$ can
 
 ### Worked example 5 — continuation probabilities by hand
 
-On the toy corpus, count distinct preceders (there are 15 distinct bigram types):
+On the toy corpus, count distinct preceders (there are 15 distinct bigram types at bigram order):
 
 $$
 \begin{aligned}
@@ -353,13 +385,13 @@ P_{\text{cont}}(\texttt{</s>}) &= \tfrac{3}{15} = 0.200 \quad(\text{"am", "ham",
 \end{aligned}
 $$
 
-(All three verified by the script.) Even on three sentences, the *versatile* sentence-ender `</s>` (preceded by three different words) outscores the *narrow* "am" (preceded by only one) — exactly the "Francisco" effect in miniature.
+(All three verified by `continuation_counts_bigram` in `ngram_lm.py`.) Even on three sentences, the *versatile* sentence-ender `</s>` (preceded by three different words) outscores the *narrow* "am" (preceded by only one) — exactly the "Francisco" effect in miniature.
 
 ### Interpolated and modified Kneser-Ney
 
 The standard form is **interpolated** Kneser-Ney (mix, don't switch): the absolute-discounting equation above *always* adds the continuation term. **Modified Kneser-Ney** (Chen & Goodman) refines it further by using **three** different discounts — $d_1, d_2, d_{3+}$ for n-grams seen once, twice, and three-or-more times — because the optimal discount isn't quite constant across low counts. Modified KN is the version you'll see in toolkits (SRILM, KenLM) and the one that held the language-modeling crown until neural LMs.
 
-> **Note:** the recursion is the same at every order: a trigram absolute-discounts to an interpolated *bigram* KN model, which discounts to a *unigram* continuation model. Continuation counts replace raw counts at **every** lower order, not just the unigram floor.
+> **Note:** the recursion is the same at every order: a trigram absolute-discounts to an interpolated *bigram* KN model, which discounts to a *unigram* continuation model. Continuation counts replace raw counts at **every** lower order, not just the unigram floor. (This is exactly what `KneserNeyOrderN` in the code does — one recursive `prob(w, ctx)` that drops the oldest word and recurses until it hits the unigram continuation floor.)
 
 ---
 
@@ -386,6 +418,8 @@ $$
 
 where $H(W) = -\frac{1}{N}\sum_i \log_2 P(w_i \mid \text{context})$ is the **cross-entropy** (in bits per word) of the held-out text under the model. **So perplexity is just two-to-the-cross-entropy** — the two metrics are the same information, one in bits and one as a "branching factor."
 
+> **Source / derivation:** perplexity as the inverse-geometric-mean probability and its identity with $2^{\text{cross-entropy}}$ are [Jurafsky & Martin, SLP3 Ch. 3, §3.2–3.3](https://web.stanford.edu/~jurafsky/slp3/3.pdf); the entropy/cross-entropy foundation and the "branching factor" reading trace to [Shannon (1948), §1 (entropy) and the *Prediction and Entropy of Printed English* follow-up (1951)](https://people.math.harvard.edu/~ctm/home/text/others/shannon/entropy/entropy.pdf).
+
 > **Note:** the **branching-factor** reading is the one to say out loud. A perplexity of $k$ means the model is, on average, as confused as if it had to choose **uniformly among $k$ equally-likely words** at each step. Perplexity 1 = perfect (it always knew the next word); perplexity = $V$ = no better than uniform random guessing over the whole vocabulary. A bigram model on English news might score ~150; a good neural LM far lower. **Lower is better, always.**
 
 ### Worked example 6 — perplexity by hand
@@ -394,7 +428,7 @@ Score the held-out `<s> I am Sam </s>` under the Laplace bigram model ($V = 12$)
 
 $$\mathrm{PP} = 2^{-\frac14 \sum_{i=1}^{4} \log_2 P(w_i \mid w_{i-1})} \approx \mathbf{5.92}.$$
 
-(Verified: `Laplace perplexity = 5.916` over 4 bigrams.) Interpreted: on this tiny vocabulary the smoothed model is about as uncertain as a uniform choice among ~6 words at each step — reasonable for so little data.
+(Verified: `Laplace PP (toy sentence) = 5.916` over 4 bigrams.) Interpreted: on this tiny vocabulary the smoothed model is about as uncertain as a uniform choice among ~6 words at each step — reasonable for so little data.
 
 > **Gotcha:** perplexity is **only comparable across models with the same vocabulary and the same tokenization.** Change the vocab (e.g. add `<UNK>`, or switch to subword tokens) and the per-word denominator changes, so the numbers aren't comparable. This is exactly why modern LLM papers report perplexity *per the same tokenizer*, or switch to **bits-per-byte** to compare across tokenizations.
 
@@ -414,104 +448,105 @@ Real test text contains words that never appeared in training — **out-of-vocab
 
 ## A measured n-gram model: train, evaluate, generate
 
-Time to make all of this real. The measured plots on this page come from a from-scratch interpolated-Kneser-Ney model trained on a small corpus. Two findings, both visible above:
+Time to make all of this real. The measured plots on this page come from a from-scratch interpolated-Kneser-Ney model trained on a small corpus. Two findings, both visible below.
 
-- **Perplexity vs $n$** (left panel of the figure below): going from unigram → bigram **slashes** perplexity (from ~17.7 to ~10.1) as soon as the model can use *any* context; pushing to trigram/4-gram barely helps and even ticks *up* on this tiny corpus, because higher orders are starved for counts. On a *large* corpus the curve keeps descending with $n$ (up to a point) — the trade-off between context length and sparsity, made visible.
-- **Perplexity vs training size and smoother** (right panel): with the full training set, **Kneser-Ney (9.4) beats Laplace (10.7)** — and the KN curve descends faster as data grows, because its continuation-probability backoff makes better use of scarce counts. (At the smallest data slice the curves cross — a small-corpus artifact where add-one's heavy uniform prior briefly helps; on real corpora KN dominates throughout.)
+**Perplexity vs $n$.** Going from unigram → bigram **slashes** perplexity (from ~12.9 to ~5.9) as soon as the model can use *any* context; pushing to trigram barely helps (5.74) and 4-gram even ticks *up* (5.99) on this tiny corpus, because higher orders are starved for counts. On a *large* corpus the curve keeps descending with $n$ (up to a point) — this is the **bias–variance turn** of context length, made visible.
 
-![Left: perplexity vs n on held-out text under interpolated Kneser-Ney — a sharp drop from unigram to bigram, then diminishing (here slightly negative) returns as higher orders run out of counts. Right: bigram perplexity vs training-data fraction for Laplace vs Kneser-Ney — KN ends below Laplace and improves faster with more data.](../images/ngram_perplexity.png)
+![Held-out perplexity vs model order n under interpolated Kneser-Ney. A sharp drop from unigram (12.92) to bigram (5.87) as the model gains context, a marginal further drop to the trigram minimum (5.74), then a tick UP at 4-gram (5.99) as higher orders run out of counts on this small corpus. The dip-then-rise is the bias–variance trade-off of context length: more context lowers bias but raises variance once the counts go sparse.](../images/ng_perplexity_vs_n.png)
 
-Here is a compact, runnable interpolated-Kneser-Ney **trigram** model — it trains on a tiny built-in corpus (no downloads), reports held-out **perplexity**, and **generates** text by sampling from its own next-word distribution:
+> **Note:** this curve uses the general arbitrary-order `KneserNeyOrderN` so all four points come from one consistent smoother; its $n{=}3$ point (5.74) differs by a hair from the standalone `KneserNeyTrigram` headline above (5.78) only because the two count sentence-boundary `<s>` markers slightly differently — the same model, two boundary conventions, both ≈ 5.8. Tiny boundary choices like this are exactly why perplexity is only comparable *within* one fixed setup.
+
+**Perplexity vs training size and smoother.** With the full training set, **Kneser-Ney (5.87) beats Laplace (8.22)** — and the KN curve sits below Laplace and descends faster as data grows, because its continuation-probability backoff makes better use of scarce counts. (At the smallest data slice the curves cross — a small-corpus artifact where add-one's heavy uniform prior briefly helps; on real corpora KN dominates throughout.)
+
+![Held-out bigram perplexity vs the fraction of training data used, for Laplace (add-1) vs Kneser-Ney. KN (green) ends well below Laplace (amber) at full data (5.87 vs 8.22) and falls faster as data grows. At the smallest 30% slice the curves cross — a small-corpus artifact where add-one's heavy uniform prior briefly helps — but KN dominates everywhere there is real data.](../images/ng_perplexity_vs_data.png)
+
+Here is the compact, runnable interpolated-Kneser-Ney **trigram** model — it trains on a tiny built-in corpus (no downloads), reports held-out **perplexity**, and **generates** text by sampling from its own next-word distribution. The full class lives in [`ngram_lm.py`](code/ngram_lm.py); this is its core:
 
 ```python
-"""From-scratch interpolated Kneser-Ney trigram LM: train, score, generate.
-Verified on Python 3.12, standard library only (no downloads)."""
-import math, random, re
+"""Interpolated Kneser-Ney trigram LM: absolute discount + continuation backoff.
+Pure standard library; deterministic given the seed. Full version in ngram_lm.py."""
+import math
 from collections import Counter, defaultdict
 
-random.seed(0)
-text = """
-the cat sat on the mat . the cat saw the dog . the dog sat on the log .
-a dog ran on the grass . the cat ran on the mat . the dog saw the cat .
-the cat chased the dog . the dog chased the cat . a cat sat on a log .
-the kitten saw the puppy . the puppy ran on the grass . a cat saw a dog .
-"""
-sents = [re.findall(r"[a-z]+", line) for line in text.strip().split(".") if line.strip()]
-random.shuffle(sents)
-split = int(len(sents) * 0.8)
-train, test = sents[:split], sents[split:]
-pad = lambda s, n: ["<s>"] * (n - 1) + s + ["</s>"]
+BOS, EOS, DEFAULT_D = "<s>", "</s>", 0.75
+pad = lambda s, n: [BOS] * (n - 1) + list(s) + [EOS]
 
-class KNTrigram:
-    """Interpolated Kneser-Ney: absolute discount d, continuation backoff."""
-    def __init__(self, train, d=0.75):
+class KneserNeyTrigram:
+    def __init__(self, train, d=DEFAULT_D):
         self.d = d
         self.uni, self.bi, self.tri = Counter(), Counter(), Counter()
         self.ctx_bi, self.ctx_tri = Counter(), Counter()
-        self.pre1 = defaultdict(set)                 # distinct left-context per word
-        self.fol1, self.fol2 = defaultdict(set), defaultdict(set)
+        self.preceders = defaultdict(set)               # distinct words preceding w (for P_cont)
+        self.fol1, self.fol2 = defaultdict(set), defaultdict(set)  # distinct followers (for lambda)
         for s in train:
-            p3 = pad(s, 3)
-            for w in p3: self.uni[w] += 1
-            for a, b in zip(p3, p3[1:]):
+            p2, p3 = pad(s, 2), pad(s, 3)   # bigram stats use bigram padding (one <s>); trigram counts use two
+            for w in p2:
+                self.uni[w] += 1
+            for a, b in zip(p2, p2[1:]):
                 self.bi[(a, b)] += 1; self.ctx_bi[(a,)] += 1
-                self.pre1[b].add(a); self.fol1[a].add(b)
+                self.preceders[b].add(a); self.fol1[a].add(b)
             for a, b, c in zip(p3, p3[1:], p3[2:]):
                 self.tri[(a, b, c)] += 1; self.ctx_tri[(a, b)] += 1
                 self.fol2[(a, b)].add(c)
         self.V, self.n_bi_types = len(self.uni), len(self.bi)
 
-    def p_uni(self, w):                              # continuation prob (+1 OOV floor)
-        return (len(self.pre1.get(w, ())) + 1) / (self.n_bi_types + self.V)
+    def p_cont(self, w):                                # versatility, not frequency (+1 OOV floor)
+        return (len(self.preceders.get(w, ())) + 1) / (self.n_bi_types + self.V)
 
-    def p_bi(self, w, a):
+    def p_bigram(self, w, a):
         c, cc = self.bi.get((a, w), 0), self.ctx_bi.get((a,), 0)
-        if cc == 0: return self.p_uni(w)
-        lam = self.d * len(self.fol1[a]) / cc
-        return max(c - self.d, 0) / cc + lam * self.p_uni(w)
+        if cc == 0:
+            return self.p_cont(w)
+        lam = self.d * len(self.fol1[a]) / cc           # mass freed by discounting, normalized
+        return max(c - self.d, 0) / cc + lam * self.p_cont(w)
 
-    def p_tri(self, w, a, b):
+    def p_trigram(self, w, a, b):
         c, cc = self.tri.get((a, b, w), 0), self.ctx_tri.get((a, b), 0)
-        if cc == 0: return self.p_bi(w, b)           # back off to bigram KN
+        if cc == 0:
+            return self.p_bigram(w, b)                  # unseen context → back off to KN bigram
         lam = self.d * len(self.fol2[(a, b)]) / cc
-        return max(c - self.d, 0) / cc + lam * self.p_bi(w, b)
+        return max(c - self.d, 0) / cc + lam * self.p_bigram(w, b)
 
     def perplexity(self, sents):
-        log2sum, N = 0.0, 0
+        log2_sum, n = 0.0, 0
         for s in sents:
             p3 = pad(s, 3)
             for a, b, c in zip(p3, p3[1:], p3[2:]):
-                log2sum += math.log2(max(self.p_tri(c, a, b), 1e-12)); N += 1
-        return 2 ** (-log2sum / N)
-
-    def generate(self, max_len=12):
-        a, b, out = "<s>", "<s>", []
-        vocab = [w for w in self.uni if w != "<s>"]
-        for _ in range(max_len):
-            probs = [(w, self.p_tri(w, a, b)) for w in vocab]
-            r, cum = random.random() * sum(p for _, p in probs), 0.0
-            for w, p in probs:
-                cum += p
-                if cum >= r: break
-            if w == "</s>": break
-            out.append(w); a, b = b, w
-        return " ".join(out)
-
-lm = KNTrigram(train)
-print(f"vocab={lm.V}  test perplexity (KN trigram) = {lm.perplexity(test):.2f}")
-print("generated:", lm.generate())
-print("generated:", lm.generate())
+                log2_sum += math.log2(max(self.p_trigram(c, a, b), 1e-12)); n += 1
+        return 2 ** (-log2_sum / n)
 ```
 
-Output:
+Running the full module (`python ngram_lm.py`) trains this on the built-in animal corpus, reports perplexity, and samples sentences. Its real output (CPU, deterministic):
 
 ```
-vocab=16  test perplexity (KN trigram) = 5.88
-generated: the cat sat on the grass ran on the
-generated: the sat on the cat
+device: cpu (pure-Python/numpy)
+numpy: 2.4.6
+torch: 2.12.0 (not used; n-grams are count-based)
+
+animal corpus: 9 train / 3 test sentences, vocab=16
+KN trigram held-out perplexity = 5.78
+generated: a on the dog a
+generated: the saw the
 ```
 
-> **Note:** the generated text is locally fluent ("the cat sat on the grass …") but globally aimless — it never plans past two words. That is the n-gram model's signature: **plausible local transitions, no long-range coherence.** Watching it generate is the fastest way to *feel* the Markov assumption's ceiling. (For a production-grade build, the same logic trained with `nltk.lm.KneserNeyInterpolated` or **KenLM** on a real corpus gives much lower perplexity — but identical structure.)
+> **Note:** the generated text is locally plausible (each transition is a real bigram/trigram the model saw) but globally aimless — it never plans past two words. That is the n-gram model's signature: **plausible local transitions, no long-range coherence.** Watching it generate is the fastest way to *feel* the Markov assumption's ceiling. (For a production-grade build, the same logic trained with `nltk.lm.KneserNeyInterpolated` or **KenLM** on a real corpus gives much lower perplexity — but identical structure.)
+
+> **Try it:** before you change anything, **predict**: if you raise the discount `d` from 0.75 toward 0.95, does held-out perplexity go up, down, or stay flat? (Hint: a larger `d` shaves *more* mass off every seen count and hands it to the continuation model — good when the seen counts are noisy, bad when they're reliable. On this tiny, repetitive corpus the seen trigrams are fairly trustworthy, so over-discounting should *hurt*.) Change `DEFAULT_DISCOUNT` in `ngram_lm.py` and re-run to check.
+
+---
+
+## Pitfalls and failure modes
+
+The things that actually bite when you build or evaluate an n-gram LM:
+
+- **Multiplying probabilities underflows.** A 30-word sentence multiplies 30 numbers each $\ll 1$; in float64 the product underflows to exactly 0 and you lose the score. **Fix:** accumulate $\sum_i \log_2 P$ and exponentiate at the end (every `perplexity()` here does this). Forgetting it silently reports perplexity $\infty$ on long sentences.
+- **The off-by-one in padding.** An order-$n$ model needs **$n-1$** `<s>` markers, not $n$ and not 1. Pad with one `<s>` for a trigram and the first real word has only a one-word context — a different model. **Fix:** `pad(s, n) = [BOS]*(n-1) + s + [EOS]`, and the EOS is mandatory (it's what normalizes across lengths).
+- **Fitting interpolation weights on the training set.** The trigram always wins on training data (it memorizes), so training-fit $\lambda$'s overfit catastrophically. **Fix:** fit $\lambda$ (and tune $k$, $d$) on a *separate held-out* set — the same discipline as any hyperparameter.
+- **Comparing perplexities across different vocabularies/tokenizers.** A smaller vocab or a coarser tokenizer mechanically lowers perplexity without the model being better, because the per-word denominator changed. **Fix:** only compare under an identical vocab + UNK policy, or report **bits-per-byte**.
+- **Raw Good-Turing in the tail.** $N_{r+1}/N_r$ is undefined when a frequency band is empty (no n-gram seen exactly $r{+}1$ times) — common at higher $r$. **Fix:** smooth the $N_r$ (fit a log-log line) before applying the formula, or use absolute discounting, which sidesteps the issue.
+- **Treating the continuation probability as a frequency.** The single most common Kneser-Ney bug is backing off to raw unigram $P(w)$ instead of $P_{\text{cont}}(w)$ — this is precisely the "Francisco" mistake and it quietly costs most of KN's advantage. **Fix:** the lower-order model counts *distinct preceding contexts*, not occurrences.
+
+> **Gotcha:** the math says "subtract $d$ then add $\lambda\,P_{\text{lower}}$"; the code must also handle the *unseen-context* case ($c(\text{context})=0$), where there's nothing to discount and you back off entirely. Miss that branch and you divide by zero. Both `p_bigram` and `p_trigram` above guard it with the `if cc == 0` early return.
 
 ---
 
@@ -526,6 +561,18 @@ It would be a mistake to file n-grams under "obsolete." They are tiny, transpare
 - **Teaching the objective** — as this page argues, they're the clearest place to *see* the chain rule, smoothing, and perplexity before those ideas hide inside a transformer.
 
 > **Tip:** **KenLM** is the workhorse you'll meet in practice — it trains modified-Kneser-Ney n-gram models over billions of tokens in minutes and serves them with a memory-mapped, quantized data structure. Reach for it (not a from-scratch dict) the moment you need a *real* n-gram LM.
+
+---
+
+## In production: how real n-gram LMs are built and served
+
+The from-scratch model above is for understanding; a production n-gram LM looks different in three ways worth knowing:
+
+- **Toolkits, not dicts.** **KenLM** (Heafield) and **SRILM** (Stolcke) are the standard trainers. KenLM estimates **modified Kneser-Ney** in a streaming pass over the corpus (it never holds all counts in RAM), then serves the model from a **memory-mapped trie** so a multi-gigabyte LM loads instantly and is shared across processes. SRILM is the research-flexible counterpart (more smoothers, more knobs).
+- **Quantization and pruning for scale.** A 5-gram LM over web text has billions of entries. Production builds **prune** low-count n-grams (entropy- or count-thresholded) and **quantize** the stored probabilities/back-off weights to 8–10 bits, trading a sliver of perplexity for an order-of-magnitude smaller, faster model — the same bytes-vs-quality tradeoff you meet again in LLM quantization.
+- **As a component, not the whole system.** In modern ASR/MT the n-gram LM is one **rescoring** stage: a first-pass decoder produces a lattice or n-best list, and the big Kneser-Ney LM (often *interpolated* with a neural LM) reranks it. The n-gram model contributes fluency cheaply; the neural model contributes long-range coherence. Knowing the n-gram half is what lets you reason about the combined score.
+
+> **Tip:** if an interviewer asks "how would you add a language model to a speech recognizer on a tight latency budget," the strong answer is: *train a pruned, quantized modified-Kneser-Ney n-gram LM with KenLM, memory-map it, and use it to rescore the decoder's n-best list — optionally interpolated with a small neural LM.* Every clause is a concept from this page.
 
 ---
 
