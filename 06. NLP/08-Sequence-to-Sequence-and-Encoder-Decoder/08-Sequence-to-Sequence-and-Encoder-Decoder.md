@@ -6,7 +6,7 @@ level: intermediate
 prereqs: ["rnn-lstm-gru", "attention", "word-embeddings", "softmax"]
 interview_frequency: high
 template: concept-deep
-updated: 2026-06-22
+updated: 2026-06-27
 ---
 
 # Sequence-to-Sequence: turning one sequence into another
@@ -52,7 +52,7 @@ The structure is two recurrent networks ([RNN/LSTM/GRU](../../05.%20Deep_Learnin
 - The **encoder** reads the source sequence $x_1, \dots, x_S$ one token at a time, updating a hidden state. After the last token its final hidden state is a fixed-length summary of the *entire* source — the **context vector** $c$.
 - The **decoder** is a second RNN that *generates* the target $y_1, \dots, y_T$ **autoregressively**: it is initialized from $c$, and at each step it takes the previous target token and its own hidden state and produces a probability distribution over the vocabulary for the next token. It keeps going until it emits `<eos>`.
 
-![Encoder–decoder unrolled: the encoder reads the source (le chat noir) into a single context vector c, which conditions a decoder that generates the target (the black cat) one token at a time, each output feeding the next step.](../images/seq2seq_unrolled.png)
+![Encoder–decoder unrolled: the encoder reads the source (le chat noir) into a single context vector c, which conditions a decoder that generates the target (the black cat) one token at a time, each output feeding the next step. The lone vector c bridging the two halves is the bottleneck this whole page is about.](../images/s2s_unrolled.png)
 
 That picture *is* the architecture. The encoder compresses; the context vector carries; the decoder unrolls. Three moving parts, one bottleneck (we'll get there). Here is the same flow as a graph, foreshadowing the two ways the decoder can consume the encoder — the single context vector (the bottleneck) versus attention over all states:
 
@@ -92,6 +92,8 @@ Here $E_{\text{src}} \in \mathbb{R}^{|V_{\text{src}}| \times d}$ is the source e
 
 $$c = h_S \in \mathbb{R}^{H}.$$
 
+> **Source / derivation:** the RNN encoder-decoder — read a variable-length source into a single fixed-length representation $c$, then decode from it — is **Cho et al. (2014), [*Learning Phrase Representations using RNN Encoder–Decoder*](https://arxiv.org/abs/1406.1078)** (§2, Eq. 1–4, which also introduces the GRU) and **Sutskever, Vinyals & Le (2014), [*Sequence to Sequence Learning with Neural Networks*](https://arxiv.org/abs/1409.3215)** (§2, the LSTM version with the source-reversal trick). The GRU recurrence $\text{GRU}(\cdot)$ itself is detailed on the [RNN/LSTM/GRU](../../05.%20Deep_Learning/concepts/14-RNN-LSTM-GRU.md) page.
+
 A **bidirectional** encoder runs a second GRU right-to-left and concatenates, $h_j = [\overrightarrow{h_j}; \overleftarrow{h_j}] \in \mathbb{R}^{2H}$, so each state sees both left and right context — important because word $j$'s meaning often depends on words *after* it. (Our code uses a bidirectional encoder for exactly this reason.)
 
 **Decoder.** A second GRU, initialized from the context, generates the target. Writing its hidden state $s_t$:
@@ -106,11 +108,15 @@ The whole model defines a conditional language model over the target, factorized
 
 $$P(y_1, \dots, y_T \mid x) \;=\; \prod_{t=1}^{T} P\big(y_t \mid y_1, \dots, y_{t-1},\; x\big).$$
 
+> **Source / derivation:** the autoregressive factorization of the target and the softmax-over-vocabulary output are **Sutskever, Vinyals & Le (2014), [*Sequence to Sequence Learning with Neural Networks*](https://arxiv.org/abs/1409.3215)** (§2, Eq. 1) and **Cho et al. (2014), [*RNN Encoder–Decoder*](https://arxiv.org/abs/1406.1078)** (§2, Eq. 3) — the chain rule of probability applied left-to-right, exactly the conditional-language-model objective. A textbook treatment is **Jurafsky & Martin, *SLP3* Ch. 13 (Machine Translation)**, [PDF](https://web.stanford.edu/~jurafsky/slp3/13.pdf).
+
 **Training objective.** Maximize the log-likelihood of the gold target — equivalently, minimize the per-token cross-entropy averaged over the corpus:
 
 $$\mathcal{L} \;=\; -\sum_{t=1}^{T} \log P\big(y_t^{\star} \mid y_{<t}^{\star},\, x\big),$$
 
 where $y^\star$ is the ground-truth target. (Note the $y_{<t}^\star$ — the *gold* prefix. Feeding the gold prefix during training is **teacher forcing**, a deceptively important choice we dissect below.)
+
+> **Source / derivation:** the per-token cross-entropy (negative log-likelihood) trained with the *gold* prefix $y_{<t}^\star$ is the maximum-likelihood objective of **Sutskever et al. (2014)** (§2) and **Cho et al. (2014)** (§2); feeding the gold prefix is **teacher forcing**, **Williams & Zipser (1989), [*A Learning Algorithm for Continually Running Fully Recurrent Neural Networks*](https://ieeexplore.ieee.org/document/6795228)** (Neural Computation 1(2)).
 
 > **Worked example 0 — trace the shapes through one forward pass.** Concrete numbers make the tensors stick. Take source length $S=4$, target length $T=3$, embedding $d=256$, hidden $H=512$, target vocab $|V_{\text{tgt}}|=30{,}000$, batch $B=1$.
 > - **Encoder.** Embed: $(B, S) \to (B, S, d) = (1, 4, 256)$. Run the GRU: the state sequence is $(1, 4, 512)$ and the final state $c = h_S$ is $(1, 512)$. (Bidirectional would give $(1, 4, 1024)$ and a $(1, 1024)$ final, projected back to $512$.)
@@ -130,13 +136,19 @@ Here is the crux, and the single most-asked seq2seq interview question. Look har
 
 Think about the information accounting. A vector of $H = 512$ FP32 numbers holds a bounded amount of information. A short sentence fits comfortably. But as the source grows, you are asking that *same fixed bucket* to retain more and more — and something has to give. Early words get overwritten by later ones as the RNN rolls forward (the **recency bias** of a recurrent state), long-range dependencies decay (the very [vanishing-gradient](../../05.%20Deep_Learning/concepts/06-Vanishing-Exploding-Gradients.md) problem RNNs suffer), and the decoder, staring at one blurry summary, starts dropping or duplicating content. The classic symptom: **translation quality (BLEU) is fine for short sentences and falls off a cliff as length grows.** [Bahdanau et al. (2015)](https://arxiv.org/abs/1409.0473) showed exactly this curve — a vanilla encoder–decoder's BLEU drops steeply past ~20–30 words, while their attention model **stays flat**. That divergence is the empirical fingerprint of the bottleneck.
 
+The picture below makes the *reason* concrete before we measure it: the information a length-$S$ digit string carries grows **linearly** with $S$, but a fixed vector's *reliably recoverable* capacity is **bounded** — where the rising line crosses the flat ceiling is the length past which lossless copy becomes impossible.
+
+![Illustrative information-capacity argument: bits to store a length-S digit string (3.32·S, rising) versus a fixed context vector's bounded reliable capacity B (flat). They cross at S* — beyond it the bucket overflows and copy accuracy must fall.](../images/s2s_context_capacity.png)
+
 We can reproduce the phenomenon ourselves on a clean toy task — **copying a digit string** (output = input). Copying is the *easiest possible* seq2seq task (no reordering, no vocabulary change), so any failure is purely about *capacity to carry information through $c$*. I trained two tiny GRU encoder–decoders on copying digit strings of length 1–16, identical except that one is conditioned only on the single context vector $c$ and the other uses attention (next section). Then I measured free-running, exact-match accuracy at increasing lengths:
 
-![Measured exact-match accuracy vs source length on a copy task. The no-attention model (single context vector) collapses almost immediately — 23% at length 2, ~0% by length 6 — while the attention model holds at ~99–100% across the whole training range and only degrades when extrapolating well beyond it (length 20+).](../images/seq2seq_bottleneck.png)
+![Measured exact-match accuracy vs source length on a copy task. The no-attention model (single context vector) collapses almost immediately — 16% at length 2, ~0% by length 6 — while the attention model holds at ~97–100% across the whole training range and only degrades when extrapolating well beyond it (length 20+).](../images/s2s_bottleneck.png)
 
-The numbers are stark. The **no-attention** model — forced to push the whole source through $c$ — scores only **22.8%** exact-match at length 2 and is essentially **0%** by length 6. It literally cannot reconstruct a 6-digit string from one vector. The **attention** model (same size, same training) sits at **~99–100%** across the entire 1–16 training range. This is the bottleneck, measured, on the simplest task imaginable.
+The numbers are stark. The **no-attention** model — forced to push the whole source through $c$ — scores only **16.3%** exact-match at length 2 and is essentially **0%** by length 6. It literally cannot reconstruct a 6-digit string from one vector. The **attention** model (same size, same training) sits at **~97–100%** across the entire 1–16 training range. This is the bottleneck, measured, on the simplest task imaginable. (These are the exact numbers the [companion notebook](code/08-Sequence-to-Sequence-and-Encoder-Decoder.ipynb) prints on CPU; the figure is generated from the *same* trained models by [`make_figures_08.py`](code/make_figures_08.py).)
 
-> **Worked example 1 — the bottleneck as an information-capacity argument.** Suppose the encoder must distinguish among all length-$S$ digit strings to copy them. There are $10^{S}$ such strings, so $c$ must encode $\log_2(10^{S}) = S \log_2 10 \approx 3.32\,S$ bits *losslessly*. A real $\mathbb{R}^{H}$ vector under a trained, noisy, finite-precision RNN carries only a bounded, roughly constant number of *reliably recoverable* bits — call it $B$. The model can copy losslessly only while $3.32\,S \lesssim B$, i.e. up to some length $S^\star \approx B / 3.32$; beyond that, accuracy must fall. The shape we measured — flat-then-collapse — is exactly this: a fixed-capacity channel saturating. Attention sidesteps it by giving the decoder a *fresh* read of the source at every step, so the bottleneck channel is never asked to hold the whole thing at once.
+> **Worked example 1 — the bottleneck as an information-capacity argument.** Suppose the encoder must distinguish among all length-$S$ digit strings to copy them. There are $10^{S}$ such strings, so $c$ must encode $\log_2(10^{S}) = S \log_2 10 \approx 3.32\,S$ bits *losslessly*. A real $\mathbb{R}^{H}$ vector under a trained, noisy, finite-precision RNN carries only a bounded, roughly constant number of *reliably recoverable* bits — call it $B$. The model can copy losslessly only while $3.32\,S \lesssim B$, i.e. up to some length $S^\star \approx B / 3.32$; beyond that, accuracy must fall (the figure above plots exactly this crossing). The shape we measured — flat-then-collapse — is exactly this: a fixed-capacity channel saturating. Strikingly, the illustrative $S^\star \approx 6$ in the capacity figure lines up with the *measured* collapse — the no-attention model hits ~0% right around length 6. Attention sidesteps it by giving the decoder a *fresh* read of the source at every step, so the bottleneck channel is never asked to hold the whole thing at once.
+>
+> **Source / derivation:** the counting argument is a direct application of **Shannon's source-coding bound** (a uniform distribution over $10^S$ outcomes has entropy $S\log_2 10$ bits) — see **Shannon (1948), [*A Mathematical Theory of Communication*](https://people.math.harvard.edu/~ctm/home/text/others/shannon/entropy/entropy.pdf)** (§1, the channel-capacity framing). The empirical BLEU-vs-length collapse it explains is **Bahdanau, Cho & Bengio (2015), [*Neural Machine Translation by Jointly Learning to Align and Translate*](https://arxiv.org/abs/1409.0473)** (§5, Fig. 2).
 
 > **Gotcha:** people sometimes say "just make $H$ bigger." That raises $B$ and pushes $S^\star$ out, but it doesn't change the *shape* — there's still a fixed cliff, now at a longer length, and you pay quadratic-ish parameter cost for a linear-ish gain. Worse, a bigger $c$ doesn't help with **reordering** or **selective focus**: even a huge vector is a *blurred average* of the source, with no way for the decoder to spotlight "the word I need right now." Attention fixes the *structural* problem, not just the *capacity* one.
 
@@ -157,6 +169,12 @@ Concretely, at decoder step $t$ with current decoder state $s_{t-1}$:
 4. **Decode** using $c_t$ alongside the previous token:
    $$s_t = \text{GRU}_{\text{dec}}\big([E_{\text{tgt}}[y_{t-1}];\, c_t],\; s_{t-1}\big), \qquad P(y_t \mid \cdot) = \text{softmax}(W_o[s_t; c_t]).$$
 
+> **Source / derivation:** the per-step context $c_t = \sum_j \alpha_{tj} h_j$ with softmax-normalized alignment weights $\alpha_{tj}$ is **Bahdanau, Cho & Bengio (2015), [*Neural Machine Translation by Jointly Learning to Align and Translate*](https://arxiv.org/abs/1409.0473)** (§3.1, Eq. 5–7 — the context vector as an *expected* annotation under the alignment distribution). The softmax over source positions is the same normalization as everywhere else; here it makes the selection **soft and differentiable** so gradients reach every encoder state.
+
+The figure below isolates the arithmetic of step 2–3 on a tiny by-hand example (three encoder states, one query): score → softmax → weighted blend. The blended context is literally a query-weighted average of the source states.
+
+![One attention step, measured: left, the softmax alignment weights over three toy encoder states (0.212, 0.212, 0.576); right, the context vector built as a weighted sum of those states, landing at c = [0.788, 0.788].](../images/s2s_attention_step.png)
+
 The only design choice is the **score function**. The two classics:
 
 - **Bahdanau (additive) attention** — a tiny one-hidden-layer network scores each pair:
@@ -165,6 +183,12 @@ The only design choice is the **score function**. The two classics:
 - **Luong (multiplicative / dot-product) attention** — [Luong et al. (2015)](https://arxiv.org/abs/1508.04025) — just a (scaled) dot product, optionally with a learned matrix:
   $$e_{tj} = s_{t}^{\top} h_j \quad(\text{dot}) \qquad\text{or}\qquad e_{tj} = s_{t}^{\top} W_a\, h_j \quad(\text{general}).$$
   Cheaper (a matmul, no extra MLP) and the direct ancestor of the Transformer's **scaled dot-product attention**, $\text{softmax}(QK^\top/\sqrt{d_k})V$. The $\sqrt{d_k}$ scaling and the Q/K/V framing are covered in depth in the [Attention Mechanism](../../05.%20Deep_Learning/concepts/15-Attention-Mechanism.md) page — this is cross-attention, where the **query** comes from the decoder and the **keys/values** from the encoder.
+
+> **Source / derivation:** the **additive** score $v_a^\top \tanh(W_a s + U_a h)$ is **Bahdanau, Cho & Bengio (2015), [*NMT by Jointly Learning to Align and Translate*](https://arxiv.org/abs/1409.0473)** (§A.1.2, Eq. A.7). The **multiplicative / dot-product** scores ($s^\top h$ and $s^\top W_a h$) and the *global vs local* distinction are **Luong, Pham & Manning (2015), [*Effective Approaches to Attention-based Neural Machine Translation*](https://arxiv.org/abs/1508.04025)** (§3.1, Eq. 8). The scaled form $QK^\top/\sqrt{d_k}$ they led to is **Vaswani et al. (2017), [*Attention Is All You Need*](https://arxiv.org/abs/1706.03762)** (§3.2.1, Eq. 1).
+
+Both score functions feed the *same* softmax-and-blend; only the scoring box differs:
+
+![Bahdanau (additive) versus Luong (multiplicative) score functions: the additive score is a one-hidden-layer MLP v^T tanh(W s + U h); the multiplicative score is a dot product s^T W h. Both feed the same softmax over source positions and the same weighted-sum context — only the score box changes.](../images/s2s_bahdanau_vs_luong.png)
 
 > **Note:** in attention's language, $s_{t-1}$ is the **query** ("what do I need to write next?"), each $h_j$ acts as both a **key** (to be matched against the query) and a **value** (to be averaged into the context). The decoder *queries* the source. This is precisely **cross-attention**, and naming it that way is the bridge to the Transformer.
 
@@ -178,6 +202,8 @@ The only design choice is the **score function**. The two classics:
 
 > **Tip — attention's cost.** Per decode step, attention scores the query against all $S$ encoder states: that's $O(S \cdot H)$ work and $O(S)$ memory for the weights, every step, so a full decode is $O(T \cdot S \cdot H)$ versus the no-attention decoder's $O(T \cdot H)$. You pay an extra factor of $S$ — but $S$ is the *source length*, not the (much larger) vocabulary, and the quality win is enormous, so the trade is almost always worth it. This $O(T \cdot S)$ is also exactly the cross-attention cost in a Transformer decoder, which is why the cross-attention KV cache (compute encoder K/V once, reuse for all $T$ steps) is such a clean win.
 
+![Per-decode-step cost as source length grows: the no-attention decoder is flat in S (one fixed context), while attention grows linearly (it blends over all S encoder states each step). The shaded gap is the extra factor of S you pay for reading the whole source — almost always worth it, given the quality figures above.](../images/s2s_attention_cost.png)
+
 ---
 
 ## The alignment matrix: attention as soft word-alignment
@@ -186,9 +212,11 @@ The most beautiful by-product of attention is that the weights $\alpha_{tj}$ —
 
 Here is a **measured** alignment from the attention model I trained, generating a copy of the source `3 1 4 1 5 9 2`:
 
-![Measured attention alignment heatmap (target × source) on the copy task. A clean bright diagonal shows the model learned that target position t attends to source position t (weights ~0.8–0.92 on the diagonal), with the final <eos> attending to the source <eos>.](../images/seq2seq_alignment.png)
+![Measured attention alignment heatmap (target × source) on the copy task. A clean bright diagonal band shows the model learned that target step t attends to source position ~t (peak weights 0.88–0.93 on the band), with the final <eos> step attending to the source <eos>.](../images/s2s_alignment.png)
 
-The bright **diagonal** is the model saying "to emit the $t$-th output digit, look at the $t$-th input digit" — exactly the copy mapping, learned from scratch, with diagonal weights of **0.92, 0.88, 0.88, 0.80**. On a *translation* task the diagonal would **bend and break** wherever the languages reorder — and that bent diagonal is literally a picture of the grammar difference between the two languages. (Bahdanau's paper showed this for English↔French, with the alignment going off-diagonal exactly at the noun–adjective swaps.)
+The bright **diagonal band** is the model saying "to emit the $t$-th output digit, look at the $t$-th input digit" — exactly the copy mapping, learned from scratch. The brightest cell in each row marches one position to the right per step — a clean staircase `[0, 0, 1, 2, 3, 4, 5, 6]` (the measured `argmax` per target step) — with peak weights of **0.88, 0.91, 0.89, 0.93** on the band, and **91% of the total attention mass** falling within ±1 of the diagonal. On a *translation* task the diagonal would **bend and break** wherever the languages reorder — and that bent diagonal is literally a picture of the grammar difference between the two languages. (Bahdanau's paper showed this for English↔French, with the alignment going off-diagonal exactly at the noun–adjective swaps.)
+
+> **Note — why the band sits *just below* the main diagonal.** The Bahdanau query that produces target token $t$ is the *previous* decoder state $s_{t-1}$ — so the brightest cells lie on a narrow band around the diagonal, offset by about one step, not exactly on it. That's the staircase `[0, 0, 1, 2, …]` above: the early rows lag by one because the query is one step behind the output. It's the same alignment story, just read with the off-by-one the recurrence imposes.
 
 > **Worked example 2 — compute one attention step by hand.** Take a 3-token source and compute the context for one decoder step, fully by hand. Let the (toy, 2-D) encoder states and the current decoder query be
 > $$h_1 = \begin{bmatrix}1\\0\end{bmatrix},\; h_2 = \begin{bmatrix}0\\1\end{bmatrix},\; h_3 = \begin{bmatrix}1\\1\end{bmatrix}, \qquad s = \begin{bmatrix}1\\1\end{bmatrix}.$$
@@ -238,7 +266,13 @@ graph LR
     classDef danger fill:#8B3B4A,stroke:#7B2B3A,color:#fff
 ```
 
+The same two regimes, drawn — gold prefix vs the model's own, and where the error compounds:
+
+![Teacher forcing versus free-running: the training track feeds the gold previous token each step, so a wrong prediction does not propagate; the inference track feeds the model's own token, so a step-3 slip ('dog') lands on an unfamiliar prefix and the errors compound ('barked'). The gap between the tracks is exposure bias.](../images/s2s_teacher_forcing.png)
+
 **Scheduled sampling** ([Bengio et al., 2015](https://arxiv.org/abs/1506.03099)) is the classic remedy: during training, **flip a coin each step** — with probability $\epsilon$ feed the gold token, with probability $1-\epsilon$ feed the model's *own* sampled token — and **anneal $\epsilon$ from 1 toward 0** over training. Early on it's pure teacher forcing (stable); later the model practices recovering from its own mistakes (robust). Other remedies: **sequence-level training** that optimizes the actual metric (BLEU) with RL or minimum-risk training so the model is scored on its *own* generations ([Ranzato et al., 2016](https://arxiv.org/abs/1511.06732)); and, in the Transformer era, large-scale pretraining largely *masks* the symptom because the model has seen so much text that off-distribution prefixes are rarer.
+
+> **Source / derivation:** **teacher forcing** is **Williams & Zipser (1989), [*A Learning Algorithm for Continually Running Fully Recurrent Neural Networks*](https://ieeexplore.ieee.org/document/6795228)**; **exposure bias** is named and analyzed in **Ranzato et al. (2016), [*Sequence Level Training with Recurrent Neural Networks*](https://arxiv.org/abs/1511.06732)** (§3); **scheduled sampling** (annealing $\epsilon$ from teacher-forced toward free-running) is **Bengio et al. (2015), [*Scheduled Sampling for Sequence Prediction with RNNs*](https://arxiv.org/abs/1506.03099)** (§2.4).
 
 > **Worked example 3 — teacher forcing vs free-running, traced.** Suppose the gold target is `the black cat <eos>` and at step 3 the model wrongly assigns highest probability to "dog". Trace both regimes:
 > - **Teacher forcing (training):** step 4's input is the **gold** token "cat" regardless of the step-3 slip. The model's step-4 prediction is computed from a *correct* prefix `the black cat`, so the error doesn't propagate; the loss simply penalizes the bad step-3 distribution. Clean gradients, but the model never *practices* the situation it'll actually face.
@@ -258,11 +292,15 @@ At inference the decoder runs the **autoregressive loop**: emit a token, append 
 
 These — and the crucial subtleties (length penalties, repetition, why beam helps MT but hurts open-ended generation) — are the whole subject of the [Decoding Strategies](../17-Decoding-Strategies/17-Decoding-Strategies.md) page; I won't re-derive them here. The seq2seq-specific point is just that **decoding is autoregressive and length-determining**: the model must *learn when to stop* (emit `<eos>`), and the search strategy trades compute for closeness to the true MAP sequence.
 
-> **Worked example 4 — greedy can lose to beam, by the numbers.** Suppose the decoder must emit a 2-token output and the per-step probabilities are:
+![Greedy versus beam search on a 2-step probability tree: greedy's tied first choice (A) then its best continuation gives 'A Y' at p=0.30; beam width 2 keeps both A and B, expands all four, and finds 'B X' at p=0.45 — a 50% more probable sequence greedy never reached.](../images/s2s_beam_vs_greedy.png)
+
+> **Worked example 4 — greedy can lose to beam, by the numbers.** Suppose the decoder must emit a 2-token output and the per-step probabilities are (these are the exact values the [companion notebook](code/08-Sequence-to-Sequence-and-Encoder-Decoder.ipynb) and the figure above use):
 > - Step 1: $P(\text{A})=0.5,\; P(\text{B})=0.5$.
 > - After A: $P(\text{X}\mid \text{A})=0.4,\; P(\text{Y}\mid \text{A})=0.6$.
 > - After B: $P(\text{X}\mid \text{B})=0.9,\; P(\text{Y}\mid \text{B})=0.1$.
 > **Greedy** ties at step 1 (say it takes A), then takes Y: sequence "A Y" with probability $0.5 \times 0.6 = 0.30$. **Beam search** with width $k=2$ keeps both A and B after step 1, expands all four continuations, and ranks them: $P(\text{B X}) = 0.5 \times 0.9 = \mathbf{0.45}$, $P(\text{A Y}) = 0.30$, $P(\text{A X}) = 0.20$, $P(\text{B Y}) = 0.05$. Beam returns "B X" at 0.45 — a **50% more probable** sequence that greedy never found, because greedy's locally-tied first choice (A) shut the door on B's much better continuation. This is the whole argument for beam search in translation: maximize $P(y \mid x)$ over the *sequence*, not greedily per token.
+>
+> **Source / derivation:** beam search as approximate sequence-MAP decoding for neural seq2seq is **Sutskever, Vinyals & Le (2014), [*Sequence to Sequence Learning with Neural Networks*](https://arxiv.org/abs/1409.3215)** (§3.3, "a simple left-to-right beam search decoder"); **length normalization** to counter the short-sequence bias is **Wu et al. (2016), [*Google's Neural Machine Translation System*](https://arxiv.org/abs/1609.08144)** (§7, Eq. 14). The full treatment of decoding strategies is the [Decoding Strategies](../17-Decoding-Strategies/17-Decoding-Strategies.md) page.
 
 > **Gotcha — beam search and length bias.** Longer sequences multiply more (sub-1) probabilities, so raw sequence probability is biased toward *short* outputs — beam search left unchecked will favor truncated, generic translations and may even emit `<eos>` too early. The fix is **length normalization**: divide the log-probability by (a function of) the length, $\frac{1}{T^\lambda}\sum_t \log P(y_t\mid\cdot)$ with $\lambda \approx 0.6$–$1.0$. Forgetting this is a classic "my translations are too short" bug.
 
@@ -276,8 +314,6 @@ Everything so far is the RNN-era encoder–decoder. The [Transformer](../../05.%
 
 - **Self-attention replaces the encoder's recurrence.** Instead of rolling a hidden state left-to-right, each source token attends to *all* source tokens directly, in parallel — no sequential dependency, no vanishing gradient over distance.
 - **Cross-attention replaces the Bahdanau attention.** The decoder still attends to the encoder, but now with scaled dot-product cross-attention (decoder query, encoder key/value) — the *exact* mechanism we derived above, just generalized to multi-head and stacked. The decoder *also* gets **masked (causal) self-attention** over its own generated prefix, replacing the decoder's recurrence.
-
-![The Transformer encoder–decoder. The encoder stack uses bidirectional self-attention; the decoder stack uses masked (causal) self-attention, then cross-attention into the encoder states (K, V), then a feed-forward block and a softmax over the vocabulary. Self-attention replaces the recurrence; cross-attention replaces Bahdanau attention.](../images/seq2seq_transformer.png)
 
 ```mermaid
 graph LR
@@ -391,112 +427,69 @@ Seq2seq generation is where a recognizable set of bugs lives — worth knowing b
 
 ## Code: attention holds, a single context vector collapses
 
-Here's a compact, from-scratch experiment: two tiny GRU encoder–decoders trained to **copy** digit strings (output = input), identical except one is conditioned only on the single context vector and the other uses Bahdanau attention. We then measure free-running, exact-match accuracy at a short length (in-distribution) and a long one (stress). It runs on CPU in well under a minute — no GPU needed.
+The whole argument of this page reduces to a controlled experiment: two tiny GRU encoder–decoders trained to **copy** digit strings (output = input), *identical* except one is conditioned only on the single context vector and the other uses Bahdanau attention. Then we measure **free-running, exact-match** accuracy — the honest test, where the decoder feeds on its own previous output, exactly as at inference. It runs on CPU in well under a minute, no GPU needed.
+
+> **Runnable source and an executed notebook.** The verified, device-agnostic source of truth lives next to this page as [`code/seq2seq.py`](code/seq2seq.py) — the encoder, both decoders, training, free-running accuracy, the alignment-matrix extractor, and the greedy/beam demo, all seeded — with a step-by-step [teaching notebook](code/08-Sequence-to-Sequence-and-Encoder-Decoder.ipynb) that runs each idea cell by cell (assert-before-print), and a figure generator [`code/make_figures_08.py`](code/make_figures_08.py) that produces *every* figure on this page from those same functions. Run the script with `python seq2seq.py`. The code below is the heart of it — the Bahdanau decoder — copied verbatim from the source.
 
 ```python
-"""Seq2seq with vs without attention on a COPY task, from scratch.
-Verified on Python 3.12 (torch 2.12), CPU."""
-import numpy as np, torch, torch.nn as nn
+class DecoderBahdanau(nn.Module):
+    """Bahdanau (additive) attention decoder: a FRESH context c_t over all encoder states, per step."""
 
-torch.manual_seed(0); np.random.seed(0)
-V, PAD, BOS, EOS, NV, H = 10, 10, 11, 12, 13, 128
-LTRAIN = 16
-
-def batch(bs, lo, hi):                                  # random digit strings to COPY
-    L = np.random.randint(lo, hi + 1, bs); Lm = int(L.max())
-    src = np.full((bs, Lm + 1), PAD); tgt = np.full((bs, Lm + 2), PAD)
-    for b in range(bs):
-        s = np.random.randint(0, V, L[b])
-        src[b, :L[b]] = s; src[b, L[b]] = EOS
-        tgt[b, 0] = BOS; tgt[b, 1:1 + L[b]] = s; tgt[b, 1 + L[b]] = EOS
-    return torch.tensor(src), torch.tensor(tgt)
-
-class Enc(nn.Module):                                   # bidirectional GRU encoder
-    def __init__(self):
+    def __init__(self, hidden: int = HIDDEN) -> None:
         super().__init__()
-        self.emb = nn.Embedding(NV, H, padding_idx=PAD)
-        self.rnn = nn.GRU(H, H, batch_first=True, bidirectional=True)
-        self.bridge = nn.Linear(2 * H, H)
-    def forward(self, src):
-        out, h = self.rnn(self.emb(src))
-        states = self.bridge(out)                                    # (B,S,H) all states
-        ctx = self.bridge(torch.cat([h[0], h[1]], -1)).unsqueeze(0)  # (1,B,H) one vector
-        return states, ctx
+        self.embedding = nn.Embedding(VOCAB_SIZE, hidden, padding_idx=PAD)
+        self.rnn = nn.GRU(2 * hidden, hidden, batch_first=True)   # input = [embed; context]
+        # Additive score e_tj = v^T tanh(W s_{t-1} + U h_j): W on the query, U on each key, v scores.
+        self.attn_query = nn.Linear(hidden, hidden, bias=False)   # W_a
+        self.attn_keys = nn.Linear(hidden, hidden, bias=False)    # U_a
+        self.attn_v = nn.Linear(hidden, 1, bias=False)           # v_a
+        self.out = nn.Linear(hidden, VOCAB_SIZE)
 
-class DecNoAttn(nn.Module):                             # conditioned ONLY on ctx (bottleneck)
-    def __init__(self):
-        super().__init__()
-        self.emb = nn.Embedding(NV, H, padding_idx=PAD)
-        self.rnn = nn.GRU(H, H, batch_first=True); self.out = nn.Linear(H, NV)
-    def forward(self, ti, states, ctx):
-        o, _ = self.rnn(self.emb(ti), ctx); return self.out(o)
-
-class DecAttn(nn.Module):                               # Bahdanau attention over all states
-    def __init__(self):
-        super().__init__()
-        self.emb = nn.Embedding(NV, H, padding_idx=PAD)
-        self.rnn = nn.GRU(H + H, H, batch_first=True)
-        self.Wa = nn.Linear(H, H, bias=False); self.Ua = nn.Linear(H, H, bias=False)
-        self.va = nn.Linear(H, 1, bias=False); self.out = nn.Linear(H, NV)
-    def forward(self, ti, states, ctx):
-        e = self.emb(ti); s = ctx; logits = []
-        for t in range(e.shape[1]):
-            score = self.va(torch.tanh(self.Wa(s[-1].unsqueeze(1)) + self.Ua(states)))
-            a = torch.softmax(score, 1)                 # alignment over source
-            cvec = (a * states).sum(1, keepdim=True)    # per-step context c_t
-            o, s = self.rnn(torch.cat([e[:, t:t + 1], cvec], -1), s)
-            logits.append(self.out(o))
-        return torch.cat(logits, 1)
-
-def train(dec, steps=4000):
-    enc = Enc(); params = list(enc.parameters()) + list(dec.parameters())
-    opt = torch.optim.Adam(params, lr=1e-3); lf = nn.CrossEntropyLoss(ignore_index=PAD)
-    for _ in range(steps):
-        src, tgt = batch(96, 1, LTRAIN)
-        states, ctx = enc(src)
-        logits = dec(tgt[:, :-1], states, ctx)          # teacher forcing
-        loss = lf(logits.reshape(-1, NV), tgt[:, 1:].reshape(-1))
-        opt.zero_grad(); loss.backward()
-        torch.nn.utils.clip_grad_norm_(params, 1.0); opt.step()
-    return enc, dec
-
-@torch.no_grad()
-def acc(enc, dec, L, n=300):                            # free-running exact-match accuracy
-    src = np.full((n, L + 1), PAD); gold = []
-    for b in range(n):
-        s = np.random.randint(0, V, L); src[b, :L] = s; src[b, L] = EOS; gold.append(s)
-    src = torch.tensor(src); states, ctx = enc(src); ys = torch.full((n, 1), BOS)
-    for _ in range(L):
-        nxt = dec(ys, states, ctx)[:, -1].argmax(-1, keepdim=True)
-        ys = torch.cat([ys, nxt], 1)
-    pred = ys[:, 1:].numpy()
-    return sum(np.array_equal(pred[b], gold[b]) for b in range(n)) / n
-
-enc_n, dec_n = train(DecNoAttn()); enc_a, dec_a = train(DecAttn())
-print(f"{'task':>23} | {'short (L=6)':>11} | {'long (L=18)':>11}")
-print("-" * 53)
-print(f"{'no attention (1 vector)':>23} | {acc(enc_n, dec_n, 6)*100:9.1f}% | {acc(enc_n, dec_n, 18)*100:9.1f}%")
-print(f"{'Bahdanau attention':>23} | {acc(enc_a, dec_a, 6)*100:9.1f}% | {acc(enc_a, dec_a, 18)*100:9.1f}%")
+    def forward(self, tgt_in, states, context, *, return_attention=False):
+        embedded = self.embedding(tgt_in)                    # (B, T, H)
+        hidden = context                                     # (1, B, H) decoder state, s_0 = c
+        projected_keys = self.attn_keys(states)              # (B, S, H) U_a h_j, computed once
+        logits_steps, attn_steps = [], []
+        for t in range(embedded.shape[1]):
+            query = hidden[-1].unsqueeze(1)                  # (B, 1, H) -- s_{t-1}
+            # e_tj = v^T tanh(W s_{t-1} + U h_j): broadcast query over the keys.
+            scores = self.attn_v(torch.tanh(self.attn_query(query) + projected_keys))  # (B, S, 1)
+            alpha = torch.softmax(scores, dim=1)             # (B, S, 1) alignment over source
+            step_context = (alpha * states).sum(dim=1, keepdim=True)  # (B, 1, H) -- c_t
+            rnn_in = torch.cat([embedded[:, t : t + 1], step_context], dim=-1)  # (B,1,2H)
+            output, hidden = self.rnn(rnn_in, hidden)        # advance one step
+            logits_steps.append(self.out(output))
+            attn_steps.append(alpha.squeeze(-1))             # (B, S)
+        logits = torch.cat(logits_steps, dim=1)              # (B, T, VOCAB_SIZE)
+        if return_attention:
+            return logits, torch.stack(attn_steps, dim=1)    # (B, T, S) -- the alignment matrix
+        return logits
 ```
 
-Output on a laptop CPU (`tools/seq2seq_attention_demo.py`):
+The loop **is** the math: `scores` is $e_{tj} = v_a^\top\tanh(W_a s_{t-1} + U_a h_j)$, `alpha` is the softmax over source positions, `step_context` is $c_t = \sum_j \alpha_{tj} h_j$, and the decoder consumes `[embed(y_{t-1}); c_t]`. Swap that whole block for `nn.GRU(embedded, context)` and you have the bottleneck decoder — same everything, minus the per-step read of the source.
+
+Running the full script (`python seq2seq.py`) prints the headline table — **real CPU output, not fabricated**:
 
 ```
-                   task | short (L=6) | long (L=18)
+detected device (DEVICE): mps   |   running this table on: cpu
+torch: 2.12.0  numpy: 2.4.6
+
+--- exact-match accuracy (free-running) ---
+                  model | short (L=6) | long (L=18)
 -----------------------------------------------------
-no attention (1 vector) |       0.3% |       0.0%
-     Bahdanau attention |      95.3% |      89.3%
+no attention (1 vector) |       0.7% |       0.0%
+     Bahdanau attention |      97.3% |      95.0%
 ```
 
-> **Note:** the headline is the gap. The **single context vector essentially cannot copy a 6-digit string** — 0.3% exact match — because it must squeeze the whole source through one fixed bucket. The **attention** model nails ~95% at length 6 and still ~89% at length 18 (*longer than it ever trained on*), because it reads the source afresh each step. This is the bottleneck, reproduced in ~90 lines: not a modeling subtlety but a structural wall, and attention is the way through it. (The full diagram-generating version, with the alignment heatmap, is in `tools/gen_seq2seq_diagrams.py`.)
+> **Note:** the headline is the gap. The **single context vector essentially cannot copy a 6-digit string** — 0.7% exact match — because it must squeeze the whole source through one fixed bucket. The **attention** model nails ~97% at length 6 and still ~95% at length 18 (*longer than it ever trained on*), because it reads the source afresh each step. This is the bottleneck, measured: not a modeling subtlety but a structural wall, and attention is the way through it. The script also prints the full accuracy-vs-length sweep (the curve in `s2s_bottleneck.png`), the alignment matrix (`s2s_alignment.png`), the by-hand attention step, and the greedy-vs-beam comparison — every number on this page comes from that one seeded run.
 
-> **Tip:** to see it on a *real* task, the [PyTorch seq2seq-with-attention tutorial](https://docs.pytorch.org/tutorials/intermediate/seq2seq_translation_tutorial.html) and the [TensorFlow NMT-with-attention tutorial](https://www.tensorflow.org/text/tutorials/nmt_with_attention) both build a translating encoder–decoder end to end and plot the alignment matrices — the same picture, on French↔English.
+> **Tip:** to *internalize* it, change `make_batch` so the target is the **reverse** of the source (a one-line edit) and re-run: the model still learns it, but the alignment heatmap turns from a diagonal into an *anti*-diagonal — proof attention is learning the structure you built into the data, not memorizing. To see it on a *real* task, the [PyTorch seq2seq-with-attention tutorial](https://docs.pytorch.org/tutorials/intermediate/seq2seq_translation_tutorial.html) and the [TensorFlow NMT-with-attention tutorial](https://www.tensorflow.org/text/tutorials/nmt_with_attention) both build a translating encoder–decoder end to end and plot the alignment matrices — the same picture, on French↔English.
 
 ---
 
 ## Recap and rapid-fire
 
-**If you remember nothing else:** seq2seq maps a variable-length input to a variable-length, self-terminating output via an **encoder** (reads source → representation) and an **autoregressive decoder** (generates target token-by-token). The vanilla design funnels the whole source through **one fixed context vector**, which **collapses with length** (we measured 0% copy accuracy at length 6 without attention). **Attention** removes that bottleneck by letting the decoder compute a **fresh, query-weighted context** over *all* encoder states each step — yielding a soft **alignment** as a free by-product. Training uses **teacher forcing** (gold prefix), which causes **exposure bias** (the model never practices its own mistakes), patched by **scheduled sampling**. The Transformer keeps the encoder–decoder *shape* but swaps recurrence for **self-attention** and Bahdanau attention for **cross-attention** — giving T5 and BART.
+**If you remember nothing else:** seq2seq maps a variable-length input to a variable-length, self-terminating output via an **encoder** (reads source → representation) and an **autoregressive decoder** (generates target token-by-token). The vanilla design funnels the whole source through **one fixed context vector**, which **collapses with length** (we measured ~0% copy accuracy at length 6 without attention, vs ~97% with). **Attention** removes that bottleneck by letting the decoder compute a **fresh, query-weighted context** over *all* encoder states each step — yielding a soft **alignment** as a free by-product. Training uses **teacher forcing** (gold prefix), which causes **exposure bias** (the model never practices its own mistakes), patched by **scheduled sampling**. The Transformer keeps the encoder–decoder *shape* but swaps recurrence for **self-attention** and Bahdanau attention for **cross-attention** — giving T5 and BART.
 
 **Quick-fire — say these out loud:**
 
