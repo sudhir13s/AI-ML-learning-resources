@@ -86,6 +86,8 @@ That sticky note is a running softmax, and making it correct is the whole techni
 
 Here is the dataflow. Standard attention round-trips the score matrix through HBM three times; FlashAttention loads tiles into SRAM, does *all* the work there, and writes back only the final output.
 
+> **Watch it (external animation):** the clearest moving picture of this is the official FlashAttention tiling animation — Q, K, V tiles streamed through fast SRAM block by block while a running softmax accumulates, never materializing the full N×N matrix. See the animated banner in the [Dao-AILab/flash-attention repository](https://github.com/Dao-AILab/flash-attention) (animation © Tri Dao et al., [*FlashAttention*, 2022](https://arxiv.org/abs/2205.14135) — linked, not reproduced here). The mermaid dataflow below is the same idea as a static schematic.
+
 ```mermaid
 graph TD
     subgraph HBM["HBM — slow, large (the warehouse)"]
