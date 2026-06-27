@@ -53,4 +53,4 @@ for RAG, fine-tuning, and inference.
 ## 🔗 In this platform
 - Related domain: [09. LLMs](../../09.%20LLMs/README.md) · [06. NLP](../../06.%20NLP/README.md) · [10. GenAI](../../10.%20GenAI/concepts/README.md)
 - Pairs with: [05 PyTorch](05-PyTorch.md) · [13 Gradio & Streamlit](13-Gradio-and-Streamlit.md)
-- Deeper concept (the *why*): transformers & LLM internals → [Deep Learning](../../05.%20Deep_Learning/concepts/README.md); RAG pipelines → [RAG & LLM Applications](../../11.%20RAG_and_LLM_Applications/concepts/README.md)
+- Deeper concept (the *why*): transformers & LLM internals → [Deep Learning](../../05.%20Deep_Learning/concepts/README.md); RAG pipelines → [RAG & LLM Applications](../../11.%20RAG_and_LLM_Applications/README.md)

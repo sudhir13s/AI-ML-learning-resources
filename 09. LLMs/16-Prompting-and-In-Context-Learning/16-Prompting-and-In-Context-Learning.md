@@ -320,7 +320,7 @@ The things that actually bite when you ship a prompt:
 **Why this is a crux capability.** In-context learning is *the* reason a single frozen model is a general-purpose tool rather than a fixed-function appliance. It's the foundation under nearly everything you build on top of an LLM:
 
 - **The default first move for any new task** — cheaper and faster than fine-tuning, and often enough.
-- **RAG** ([retrieval-augmented generation](../../11.%20RAG_and_LLM_Applications/concepts/README.md)) is ICL with *retrieved* context: the retrieved documents are in-context information the model conditions on at inference time, no weights touched.
+- **RAG** ([retrieval-augmented generation](../../11.%20RAG_and_LLM_Applications/README.md)) is ICL with *retrieved* context: the retrieved documents are in-context information the model conditions on at inference time, no weights touched.
 - **Agents and tool use** prompt the model with tool descriptions and examples; the model learns *which tool to call when* in-context.
 - **Chain-of-thought** ([next chapter](../17-Chain-of-Thought-Reasoning/17-Chain-of-Thought-Reasoning.md)) is a *specific prompting technique* — prompt the model to emit reasoning steps before the answer. It's an ICL pattern, which is why it belongs adjacent to this page, not inside it.
 

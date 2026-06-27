@@ -53,4 +53,4 @@ write, when to summarize/compact, and how to avoid stale or contradictory memori
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 8.03 Agents & Tool Use](../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.03_Agents_and_Tool_Use.md)
 - Prev / next: [05 Reflection & Self-Critique](05-Reflection-and-Self-Critique.md) · [07 Multi-Agent Systems](07-Multi-Agent-Systems-and-Orchestration.md)
-- Related (canonical home): long-term memory is retrieval — see [RAG & LLM Applications](../../11.%20RAG_and_LLM_Applications/concepts/README.md)
+- Related (canonical home): long-term memory is retrieval — see [RAG & LLM Applications](../../11.%20RAG_and_LLM_Applications/README.md)
