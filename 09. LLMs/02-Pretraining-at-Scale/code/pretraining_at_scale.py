@@ -244,6 +244,144 @@ def demo_mfu(model: nn.Module) -> float:
     return mfu
 
 
+# =============================================================================
+# Seeded trace + table helpers for the figure/animation generators.
+#
+# These are PURE, additive helpers: they reproduce the exact same seeded runs as the demos above
+# (same SEED, same recipe, same construction order) but RETURN the full per-step traces instead of
+# only printing every REPORT_EVERY-th row -- so make_figures_02.py / make_animation_02.py can plot
+# the real numbers the page reports, never orphan values. They do not change any existing behavior.
+# =============================================================================
+
+
+def lr_schedule_trace(
+    peak: float = LR_PEAK,
+    floor: float = LR_FLOOR,
+    warmup: int = WARMUP_STEPS,
+    total: int = TOTAL_STEPS_SCHEDULE,
+) -> tuple[list[int], list[float]]:
+    """Return (steps, lr) for the standalone schedule demo, step 0 .. total inclusive."""
+    steps = list(range(total + 1))
+    return steps, [lr_at_step(t, peak, floor, warmup, total) for t in steps]
+
+
+def training_loop_trace() -> tuple[list[int], list[float], list[float], list[float]]:
+    """Re-run demo_training_loop's EXACT seeded recipe and return per-step traces.
+
+    Returns (steps, losses, lrs, grad_norms) for every one of TRAIN_STEPS steps -- the same numbers
+    demo_training_loop prints every REPORT_EVERY rows, but complete, so the figure shows the real
+    descent (start ~2.84 -> end ~0.75) the page quotes. grad_norms is the TOTAL grad norm measured
+    BEFORE clipping (what the stability dashboard watches).
+    """
+    torch.manual_seed(SEED)
+    cycle = torch.arange(PATTERN_PERIOD, device=TRACE_DEVICE)
+    corpus = cycle.repeat(CORPUS_TOKENS // PATTERN_PERIOD)
+    model = TinyGPT(VOCAB_SIZE, EMBED_DIM).to(TRACE_DEVICE)
+    optimizer = torch.optim.AdamW(
+        model.parameters(), lr=LR_PEAK, betas=ADAM_BETAS, weight_decay=WEIGHT_DECAY
+    )
+    steps: list[int] = []
+    losses: list[float] = []
+    lrs: list[float] = []
+    grad_norms: list[float] = []
+    for step in range(TRAIN_STEPS):
+        start = torch.randint(0, len(corpus) - CONTEXT_LEN - 1, (1,)).item()
+        inputs = corpus[start : start + CONTEXT_LEN].unsqueeze(0)
+        targets = corpus[start + 1 : start + CONTEXT_LEN + 1].unsqueeze(0)
+        lr = lr_at_step(step, LR_PEAK, LR_FLOOR, WARMUP_STEPS_TRAIN, TRAIN_STEPS)
+        for group in optimizer.param_groups:
+            group["lr"] = lr
+        logits = model(inputs)
+        loss = F.cross_entropy(logits.reshape(-1, VOCAB_SIZE), targets.reshape(-1))
+        optimizer.zero_grad()
+        loss.backward()
+        # measure the total grad norm BEFORE clipping (clip_grad_norm_ returns exactly this)
+        grad_norm = torch.nn.utils.clip_grad_norm_(model.parameters(), GRAD_CLIP_NORM).item()
+        optimizer.step()
+        steps.append(step)
+        losses.append(loss.item())
+        lrs.append(lr)
+        grad_norms.append(grad_norm)
+    return steps, losses, lrs, grad_norms
+
+
+def grad_accum_norms() -> tuple[float, float, float, float]:
+    """Reproduce the grad-accum demo and return (big_norm, accum_norm, buggy_norm, max_diff).
+
+    big_norm: |grad| of one batch of size m*K. accum_norm: |grad| of K correctly-averaged
+    micro-batches (==big_norm to float noise). buggy_norm: |grad| when the /K is dropped (the
+    classic bug -- accum_steps-times too large). max_diff: max|big - accumulated| (float noise).
+    """
+    torch.manual_seed(1)
+    n_examples = MICRO_BATCH * ACCUM_STEPS
+    features = torch.randn(n_examples, FEATURE_DIM)
+    targets = torch.randn(n_examples, 1)
+
+    big_model = make_linear(seed=2, in_dim=FEATURE_DIM)
+    big_grad = big_batch_grad(big_model, features, targets)
+
+    accum_model = make_linear(seed=2, in_dim=FEATURE_DIM)
+    accum_grad = accumulated_grad(accum_model, features, targets, MICRO_BATCH, ACCUM_STEPS)
+
+    buggy_model = make_linear(seed=2, in_dim=FEATURE_DIM)  # same init; drop the /K
+    for k in range(ACCUM_STEPS):
+        start = k * MICRO_BATCH
+        chunk_x = features[start : start + MICRO_BATCH]
+        chunk_y = targets[start : start + MICRO_BATCH]
+        F.mse_loss(buggy_model(chunk_x), chunk_y).backward()  # BUG: no /ACCUM_STEPS -> grads SUM
+    assert buggy_model.weight.grad is not None
+    buggy_grad = buggy_model.weight.grad
+
+    max_diff = (big_grad - accum_grad).abs().max().item()
+    return (
+        big_grad.norm().item(),
+        accum_grad.norm().item(),
+        buggy_grad.norm().item(),
+        max_diff,
+    )
+
+
+# --- Production / budgeting numbers (the 6ND rule applied to real models) ------
+# (label, params N, train tokens D) for the production table; compute is computed, not hardcoded.
+PRODUCTION_MODELS: tuple[tuple[str, float, float], ...] = (
+    ("GPT-3", 175e9, 300e9),
+    ("Chinchilla", 70e9, 1.4e12),
+    ("Llama-2-70B", 70e9, 2.0e12),
+    ("Llama-3-8B", 8e9, 15e12),
+    ("Llama-3-70B", 70e9, 15e12),
+)
+# Adam mixed-precision memory tax, per parameter, in bytes (the optimizer-state tax from the page).
+# The canonical "~16 bytes/param" = 2 (bf16 weight) + 2 (bf16 gradient) + 4 (fp32 master weight)
+# + 4 (fp32 momentum) + 4 (fp32 variance). The bf16 gradient is easy to forget but real: the
+# backward pass materializes a 2-byte gradient per parameter before the fp32 optimizer update.
+ADAM_BYTES_BREAKDOWN: tuple[tuple[str, int], ...] = (
+    ("bf16 weight", 2),
+    ("bf16 gradient", 2),
+    ("fp32 master weight", 4),
+    ("Adam momentum (fp32)", 4),
+    ("Adam variance (fp32)", 4),
+)
+
+
+def compute_6nd(n_params: float, n_tokens: float) -> float:
+    """Training FLOPs estimate C = 6ND."""
+    return FLOPS_PER_PARAM_PER_TOKEN * n_params * n_tokens
+
+
+def production_table() -> list[tuple[str, float, float, float, float]]:
+    """Return (label, N, D, tokens_per_param, compute_6ND) for each production model."""
+    return [
+        (label, n, d, d / n, compute_6nd(n, d)) for (label, n, d) in PRODUCTION_MODELS
+    ]
+
+
+def adam_memory_tax(n_params: float) -> tuple[list[tuple[str, int]], float]:
+    """Return (per-param byte breakdown, total GiB) for Adam mixed-precision state at n_params."""
+    total_bytes_per_param = sum(b for _, b in ADAM_BYTES_BREAKDOWN)
+    total_gib = n_params * total_bytes_per_param / (1024**3)
+    return list(ADAM_BYTES_BREAKDOWN), total_gib
+
+
 def main() -> None:
     print(
         f"compute device available: {DEVICE} "
