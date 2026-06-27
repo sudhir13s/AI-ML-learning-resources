@@ -157,6 +157,105 @@ def demo_training() -> float:
     return loss.item()
 
 
+# --- Figure-support helpers (seeded; imported by make_figures_01.py / make_animation_01.py) ---
+# These produce the SAME numbers the page and notebook show, so every figure is reproducible
+# from this one source of truth and can never silently drift from the prose. They add no new
+# behaviour to the demos above -- they only expose the existing quantities as return values.
+
+# A second sentence that shares the prefix "the cat sat on" but diverges at the last token,
+# matching the notebook's "Try it yourself" experiment (vocab extended to 6 with "rug").
+DIVERGENT_VOCAB = ["the", "cat", "sat", "on", "mat", "rug"]
+DIVERGENT_SENTENCE_IDS = [[0, 1, 2, 3, 4], [0, 1, 2, 3, 5]]  # "...on mat" and "...on rug"
+DIVERGENT_TOTAL_STEPS = 400  # matches the notebook's "Try it yourself" cell
+
+
+def predicted_next_token_probs() -> tuple[list[str], list[float], int]:
+    """The by-hand next-token distribution: (vocab, probs, true_id).
+
+    This is the exact PREDICTED_PROBS the page scores by hand -- 0.50 on the true token "sat".
+    Returned as plain lists so a figure can bar-plot it without re-deriving anything.
+    """
+    return list(VOCAB), list(PREDICTED_PROBS), TRUE_NEXT_TOKEN_ID
+
+
+def cross_entropy_curve(num_points: int = 200) -> tuple[list[float], list[float]]:
+    """The cross-entropy curve -log(p) over p in (0, 1]: (probs, losses_in_nats).
+
+    This is the function the by-hand demo evaluates at two points (p=0.50 -> 0.6931 and the
+    confident-wrong p=0.05 -> 2.9957); plotting the whole curve shows why confident-and-wrong is
+    punished so steeply.
+    """
+    # avoid p=0 (log diverges); start just above zero
+    probs = [(i + 1) / num_points for i in range(num_points)]
+    losses = [-math.log(p) for p in probs]
+    return probs, losses
+
+
+def training_trace() -> tuple[list[int], list[float], list[float]]:
+    """Re-run the seeded tiny-LM training and return (steps, losses, perplexities).
+
+    Identical seed/model/optimizer to demo_training(), so the returned curve is bit-for-bit the
+    numbers printed on the page (step 0: loss 1.7148 / ppl 5.5554 -> ~1.0001). Runs on CPU.
+    """
+    torch.manual_seed(SEED)
+    sentence = torch.tensor(TRAIN_SENTENCE_IDS, device=TRACE_DEVICE)
+    model = TinyCausalLM(VOCAB_SIZE, EMBED_DIM).to(TRACE_DEVICE)
+    optimizer = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
+    steps: list[int] = []
+    losses: list[float] = []
+    perplexities: list[float] = []
+    for step in range(0, TOTAL_STEPS + 1, STEPS_PER_REPORT):
+        steps_this_chunk = STEPS_PER_REPORT if step else 1
+        loss = torch.tensor(float("nan"))
+        for _ in range(steps_this_chunk):
+            logits = model(sentence)
+            loss = causal_lm_loss(logits, sentence)
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+        steps.append(step)
+        losses.append(loss.item())
+        perplexities.append(math.exp(loss.item()))
+    return steps, losses, perplexities
+
+
+def divergent_training_perplexity() -> float:
+    """Re-run the seeded "two divergent sentences" experiment; return its final perplexity.
+
+    Reproduces the notebook's "Try it yourself" floor: the last token is genuinely ambiguous
+    ("mat" vs "rug"), so perplexity settles ABOVE 1.0 (~1.19) -- the irreducible entropy of the
+    data. Used to mark the realistic floor on the training-curve figure.
+    """
+    torch.manual_seed(SEED)
+    vocab_size = len(DIVERGENT_VOCAB)
+    batch = torch.tensor(DIVERGENT_SENTENCE_IDS, device=TRACE_DEVICE)
+    model = TinyCausalLM(vocab_size, EMBED_DIM).to(TRACE_DEVICE)
+    optimizer = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
+    loss = torch.tensor(float("nan"))
+    for _ in range(DIVERGENT_TOTAL_STEPS):
+        logits = model(batch)
+        # SHIFT applied inline here because causal_lm_loss is hard-wired to the 5-token VOCAB_SIZE
+        shifted_logits = logits[:, :-1].reshape(-1, vocab_size)
+        shifted_labels = batch[:, 1:].reshape(-1)
+        loss = F.cross_entropy(shifted_logits, shifted_labels)
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+    return math.exp(loss.item())
+
+
+def causal_and_bidirectional_masks(seq_len: int) -> tuple[torch.Tensor, torch.Tensor]:
+    """Return (causal_mask, bidirectional_mask) for a seq_len x seq_len attention grid.
+
+    Causal = lower-triangular (causal LM / GPT: see only the past). Bidirectional = all-ones
+    (masked LM / BERT: every position sees every other). The single structural difference
+    between the two objectives, as two matrices.
+    """
+    causal = torch.tril(torch.ones(seq_len, seq_len))
+    bidirectional = torch.ones(seq_len, seq_len)
+    return causal, bidirectional
+
+
 def main() -> None:
     print(f"compute device available: {DEVICE} (the tiny training trace runs on CPU for a reproducible curve)")
     print("torch:", torch.__version__, "\n")
