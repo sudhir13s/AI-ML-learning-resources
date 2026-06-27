@@ -61,7 +61,10 @@ def build_animation() -> None:
     true_nn = brute_force_topk(query, corpus, k=10)
     cell_dist = ((index.centroids - query) ** 2).sum(axis=1)
     cell_order = np.argsort(cell_dist)  # cells in probe order (nearest first)
-    cmap = plt.cm.hsv(np.linspace(0, 1, n_cells))  # distinct hues for many (30) cells
+    # muted qualitative palette consistent with the chapter (tab20b/tab20c, like the static Voronoi
+    # figure) — desaturated toward the chapter's muted tone rather than a clashing HSV rainbow
+    base = np.vstack([plt.cm.tab20b(np.linspace(0, 1, 20)), plt.cm.tab20c(np.linspace(0, 1, 20))])
+    cmap = base[:n_cells]
 
     plan = list(NPROBE_FRAMES) + [NPROBE_FRAMES[-1]] * HOLD_FRAMES
 

@@ -191,7 +191,7 @@ def fig_bruteforce_growth() -> None:
     ax.set_ylabel("multiply-adds per query (log scale)")
     ax.annotate("at 10M×768:\n~7.7B per query", (1e7, 1e7 * dim), color=RED, fontsize=8.5,
                 ha="right", va="bottom", xytext=(-6, 8), textcoords="offset points")
-    ax.set_title("Brute force grows linearly with N; IVF stays far below (illustrative O())",
+    ax.set_title("Brute force grows linearly with N; IVF stays far below (illustrative asymptotic shapes)",
                  fontsize=11.5, pad=12)
     ax.legend(loc="upper left", framealpha=0.95, fontsize=9)
     _save(fig, "rag04_bruteforce_growth.png")
