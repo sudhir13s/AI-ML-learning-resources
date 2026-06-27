@@ -18,12 +18,17 @@ Animations produced:
                             the cumulative O(n^2)-vs-O(n) total, the redundant area filling in.
   kv_memory_growth.gif   -- KV-cache size climbing linearly with context for 7B/13B/70B until it
                             rivals and then exceeds the model weights.
+  kv_attention_cache.gif -- the decode loop as a causal attention matrix: each step a new query
+                            row lights up and reads the cached K/V columns, while past query rows
+                            grey out (never recomputed) -- why K,V are cached but Q is not. The
+                            animated twin of kv_attention_cache.png; final frame == the PNG.
 
-Verified on Python 3.12 / matplotlib 3.x / Pillow (PillowWriter).
+Verified on Python 3.12 / matplotlib 3.x / Pillow (PillowWriter + Image).
 """
 
 from __future__ import annotations
 
+import io
 from pathlib import Path
 
 import matplotlib
@@ -32,6 +37,8 @@ matplotlib.use("Agg")  # headless: render frames to a file, never open a window
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.animation import FuncAnimation, PillowWriter
+from matplotlib.patches import Rectangle
+from PIL import Image
 
 # ---- Palette (matches the chapter's muted Mermaid classDefs) -------------------------
 BLUE = "#3A6B96"
@@ -218,9 +225,89 @@ def make_memory_growth_gif() -> None:
     print(f"wrote {out}")
 
 
+def make_attention_cache_gif() -> None:
+    """Animate the decode loop as a causal attention matrix -- the animated twin of
+    kv_attention_cache.png. At each step the model generates ONE new token: its query row lights
+    up (green) and reads the keys/values of all positions so far straight from the cache (the
+    columns, reused); every earlier query row greys out, never recomputed -- which is exactly why
+    K and V are cached but Q is not. The final frame is the static figure.
+
+    Frames are assembled directly with Pillow (one image per decode step, with a longer hold on the
+    final state) -- FuncAnimation collapses repeated identical frames, which would drop the holds.
+    """
+    n = 6  # tokens in the sequence; we generate q0, q1, ... q5 one per decode step
+
+    def render_step(t: int) -> Image.Image:
+        """Render the matrix after generating query q_t (rows 0..t present, row t active)."""
+        fig, ax = plt.subplots(figsize=(7.8, 5.4))
+        for i in range(t + 1):            # query rows generated so far
+            for j in range(i + 1):        # causal: query i attends to keys 0..i
+                if i == t:
+                    fc, alpha = GREEN, 0.85   # the current query row (computed this step)
+                else:
+                    fc, alpha = SLATE, 0.18   # past query rows: kept only for the picture, never recomputed
+                ax.add_patch(Rectangle((j, n - 1 - i), 0.92, 0.92, facecolor=fc,
+                                       alpha=alpha, edgecolor="white", zorder=2))
+        cur_y = n - 1 - t
+        # Outline the cached K/V the active row reads (the whole row, reused from cache).
+        ax.add_patch(Rectangle((0, cur_y), t + 0.92, 0.92, fill=False,
+                               edgecolor=BLUE, linewidth=2.0, zorder=3))
+        # Active-query label: placed to the RIGHT of the row end (always empty, causal) so it
+        # never collides with the grid or the other annotations.
+        ax.annotate(f"q{_sub(t)} computed now", xy=(t + 0.46, cur_y + 0.5),
+                    xytext=(t + 1.35, cur_y + 0.5), textcoords="data", ha="left", va="center",
+                    fontsize=9.5, color=GREEN, fontweight="bold",
+                    arrowprops=dict(arrowstyle="->", color=GREEN))
+        ax.annotate("K,V for all tokens so far:\nread straight from the cache",
+                    xy=(t / 2 + 0.2, cur_y + 0.95), xytext=(0.2, n + 0.7), textcoords="data",
+                    fontsize=9.5, color=BLUE, fontweight="bold",
+                    arrowprops=dict(arrowstyle="->", color=BLUE))
+        if t >= 1:
+            ax.annotate("past query rows:\nnever needed again\n(Q is not cached)",
+                        xy=(0.5, n - 0.5), xytext=(n + 0.2, n - 1.7), textcoords="data",
+                        fontsize=9, color=SLATE, fontweight="bold",
+                        arrowprops=dict(arrowstyle="->", color=SLATE))
+
+        ax.set_xlim(-0.3, n + 3.2)
+        ax.set_ylim(-0.3, n + 1.2)
+        ax.set_xticks(np.arange(n) + 0.46)
+        ax.set_xticklabels([f"k/v{_sub(j)}" for j in range(n)], fontsize=9)
+        ax.set_yticks(np.arange(n) + 0.46)
+        ax.set_yticklabels([f"q{_sub(n - 1 - i)}" for i in range(n)], fontsize=9)
+        ax.set_title(f"Why cache K and V but not Q — decode step {t + 1} of {n}",
+                     fontsize=13, fontweight="bold", color=INK)
+        ax.set_aspect("equal")
+        for side in ("top", "right", "left", "bottom"):
+            ax.spines[side].set_visible(False)
+        ax.tick_params(length=0, colors=INK)
+
+        buf = io.BytesIO()
+        # Fixed figsize, NO bbox_inches="tight" -> every frame is the same pixel size (a GIF
+        # requirement); facecolor white so frames composite cleanly.
+        fig.savefig(buf, format="png", dpi=DPI, facecolor="white")
+        plt.close(fig)
+        buf.seek(0)
+        return Image.open(buf).convert("RGB")
+
+    images = [render_step(t) for t in range(n)]
+    durations = [750] * n  # ms per step
+    durations[-1] = 2600   # hold the final state (= the static figure) so it's readable
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
+    out = OUT_DIR / "kv_attention_cache.gif"
+    images[0].save(out, save_all=True, append_images=images[1:], duration=durations,
+                   loop=0, disposal=2, optimize=True)
+    print(f"wrote {out}")
+
+
+def _sub(i: int) -> str:
+    """Unicode subscript digits for a small non-negative int (q0 -> q₀)."""
+    return str(i).translate(str.maketrans("0123456789", "₀₁₂₃₄₅₆₇₈₉"))
+
+
 def main() -> None:
     make_recompute_waste_gif()
     make_memory_growth_gif()
+    make_attention_cache_gif()
     print("all animations written to", OUT_DIR)
 
 
