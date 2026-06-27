@@ -44,7 +44,7 @@ Every chapter is a self-contained folder (`NN-Concept/NN-Concept.md`) with its p
 > These topics are used across many areas, so they're kept in one place to avoid repetition.
 - **Architectures & mechanisms** — Attention · Transformers · Positional Encodings · RNN / LSTM / GRU → [Deep Learning](../05.%20Deep_Learning/concepts/README.md)
 - **Large language models** — BERT · GPT · T5 / BART · Fine-tuning · Prompting · RLHF → [LLMs](../09.%20LLMs/README.md)
-- **Retrieval-augmented generation** → [RAG & LLM Applications](../11.%20RAG_and_LLM_Applications/concepts/README.md)
+- **Retrieval-augmented generation** → [RAG & LLM Applications](../11.%20RAG_and_LLM_Applications/README.md)
 
 ## 🎓 Courses (free)
 - [CS224N: NLP with Deep Learning](https://web.stanford.edu/class/cs224n/) — **Stanford (Manning)** — the definitive university NLP course; lectures on YouTube.

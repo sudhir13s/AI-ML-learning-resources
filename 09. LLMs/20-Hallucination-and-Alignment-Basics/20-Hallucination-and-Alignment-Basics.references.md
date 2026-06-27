@@ -15,7 +15,7 @@ updated: 2026-06-27
 2. **Get the incentive argument** — read [Why Language Models Hallucinate](https://arxiv.org/abs/2509.04664) (**Kalai et al. 2025**). *Hallucination is the optimal response to a train/eval rule that punishes "I don't know."*
 3. **Get the taxonomy & survey** — read [Extrinsic Hallucinations in LLMs](https://lilianweng.github.io/posts/2024-07-07-hallucination/) (**Lilian Weng**). *The definitive free survey: taxonomy, detection, mitigation.*
 4. **See the alignment mechanism** — watch [RLHF, Clearly Explained](https://www.youtube.com/watch?v=qPN_XZcJf_s) (**StatQuest**) then read [InstructGPT](https://arxiv.org/abs/2203.02155) (**Ouyang et al. 2022**). *What preference tuning actually optimizes.*
-5. **Connect the fixes** — [RLHF & DPO](../15-RLHF-and-DPO/15-RLHF-and-DPO.md) (preference tuning) + [RAG](../../11.%20RAG_and_LLM_Applications/concepts/README.md) (grounding) + [Decoding & Sampling](../18-Decoding-and-Sampling/18-Decoding-and-Sampling.md) (temperature). *The main levers, each its own chapter.*
+5. **Connect the fixes** — [RLHF & DPO](../15-RLHF-and-DPO/15-RLHF-and-DPO.md) (preference tuning) + [RAG](../../11.%20RAG_and_LLM_Applications/README.md) (grounding) + [Decoding & Sampling](../18-Decoding-and-Sampling/18-Decoding-and-Sampling.md) (temperature). *The main levers, each its own chapter.*
 
 **Videos**:
 - [Why Large Language Models Hallucinate](https://www.youtube.com/watch?v=cfqtFvWOfg0) — **IBM Technology** — the clearest concise explainer of causes and mitigations; the best first watch.
@@ -68,7 +68,7 @@ updated: 2026-06-27
 
 **In this platform**:
 - Concept page (full explanation): [Hallucination & Alignment Basics](20-Hallucination-and-Alignment-Basics.md)
-- The mechanism of the fixes: [RLHF & DPO](../15-RLHF-and-DPO/15-RLHF-and-DPO.md) · [RAG & LLM Applications](../../11.%20RAG_and_LLM_Applications/concepts/README.md) · [Decoding & Sampling](../18-Decoding-and-Sampling/18-Decoding-and-Sampling.md) · [Chain-of-Thought Reasoning](../17-Chain-of-Thought-Reasoning/17-Chain-of-Thought-Reasoning.md)
+- The mechanism of the fixes: [RLHF & DPO](../15-RLHF-and-DPO/15-RLHF-and-DPO.md) · [RAG & LLM Applications](../../11.%20RAG_and_LLM_Applications/README.md) · [Decoding & Sampling](../18-Decoding-and-Sampling/18-Decoding-and-Sampling.md) · [Chain-of-Thought Reasoning](../17-Chain-of-Thought-Reasoning/17-Chain-of-Thought-Reasoning.md)
 - How it's measured: [LLM Evaluation & Benchmarks](../19-LLM-Evaluation-and-Benchmarks/19-LLM-Evaluation-and-Benchmarks.md)
 - Where the disease starts: [Language Modeling Objectives](../01-Language-Modeling-Objectives/01-Language-Modeling-Objectives.md) · [Supervised Fine-Tuning](../13-Supervised-Fine-Tuning/13-Supervised-Fine-Tuning.md) · [Instruction Tuning](../14-Instruction-Tuning/14-Instruction-Tuning.md)
 - Capstone context (the full arc): [KV Cache](../05-KV-Cache/05-KV-Cache.md) · [Quantization](../10-Quantization/10-Quantization.md) · [LoRA & PEFT](../12-LoRA-and-PEFT/12-LoRA-and-PEFT.md) · [Long-Context Methods](../08-Long-Context-Methods/08-Long-Context-Methods.md)

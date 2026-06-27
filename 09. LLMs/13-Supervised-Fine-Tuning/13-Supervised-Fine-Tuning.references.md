@@ -53,4 +53,4 @@ updated: 2026-06-27
 - Foundations (the loss SFT reuses): [Language-Modeling Objectives](../01-Language-Modeling-Objectives/01-Language-Modeling-Objectives.md) · [Decoder-only Architecture](../04-Decoder-only-Architecture/04-Decoder-only-Architecture.md)
 - Run it efficiently: [LoRA & PEFT](../12-LoRA-and-PEFT/12-LoRA-and-PEFT.md)
 - What comes next: [Instruction Tuning](../14-Instruction-Tuning/14-Instruction-Tuning.md) · [RLHF & DPO](../15-RLHF-and-DPO/15-RLHF-and-DPO.md)
-- Alternatives when SFT can't add knowledge: [RAG Fundamentals](../../11.%20RAG_and_LLM_Applications/concepts/01-RAG-Fundamentals.md)
+- Alternatives when SFT can't add knowledge: [RAG Fundamentals](../../11.%20RAG_and_LLM_Applications/01-RAG-Fundamentals/01-RAG-Fundamentals.md)

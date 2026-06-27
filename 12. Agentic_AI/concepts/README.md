@@ -44,5 +44,5 @@ updated: 2026-06-20
 > linked here to avoid repetition.
 
 - **Prompting & In-Context Learning · Chain-of-Thought · Fine-tuning / SFT · RLHF** → [LLMs](../../09.%20LLMs/README.md) ([Prompting](../../09.%20LLMs/16-Prompting-and-In-Context-Learning/16-Prompting-and-In-Context-Learning.md) · [Chain-of-Thought](../../09.%20LLMs/17-Chain-of-Thought-Reasoning/17-Chain-of-Thought-Reasoning.md) · [SFT](../../09.%20LLMs/13-Supervised-Fine-Tuning/13-Supervised-Fine-Tuning.md) · [RLHF & DPO](../../09.%20LLMs/15-RLHF-and-DPO/15-RLHF-and-DPO.md))
-- **Retrieval-Augmented Generation (RAG) & retrieval** → [RAG & LLM Applications](../../11.%20RAG_and_LLM_Applications/concepts/README.md)
+- **Retrieval-Augmented Generation (RAG) & retrieval** → [RAG & LLM Applications](../../11.%20RAG_and_LLM_Applications/README.md)
 - **RL foundations (MDPs · policies · reward)** → [Reinforcement Learning](../../08.%20Reinforcement_Learning/concepts/README.md)

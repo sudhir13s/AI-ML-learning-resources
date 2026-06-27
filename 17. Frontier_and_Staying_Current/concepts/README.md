@@ -42,4 +42,4 @@ updated: 2026-06-20
 - **Large language models** — GPT/Llama, scaling, fine-tuning, prompting, RLHF → [09. LLMs](../../09.%20LLMs/README.md)
 - **Generative AI** — diffusion, image/video/audio generation → [10. GenAI](../../10.%20GenAI/concepts/README.md)
 - **Agentic AI** — tool use, planning, multi-agent systems → [15. Agentic AI](../../12.%20Agentic_AI/concepts/README.md)
-- **Retrieval-augmented generation & LLM apps** → [16. RAG & LLM Applications](../../11.%20RAG_and_LLM_Applications/concepts/README.md)
+- **Retrieval-augmented generation & LLM apps** → [16. RAG & LLM Applications](../../11.%20RAG_and_LLM_Applications/README.md)

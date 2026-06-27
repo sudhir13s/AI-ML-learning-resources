@@ -53,4 +53,4 @@ for communicating results — knowing when to reach for each is the practical sk
 ## 🔗 In this platform
 - Related domain: [12. Deployment & MLOps](../../14.%20Deployment_and_MLOps/concepts/README.md) · [10. GenAI](../../10.%20GenAI/concepts/README.md)
 - Pairs with: [08 Hugging Face](08-Hugging-Face.md) *(Gradio powers HF Spaces)*
-- Deeper concept (the *why*): demos, serving & deployment → [Deployment & MLOps](../../14.%20Deployment_and_MLOps/concepts/README.md); LLM apps → [RAG & LLM Applications](../../11.%20RAG_and_LLM_Applications/concepts/README.md)
+- Deeper concept (the *why*): demos, serving & deployment → [Deployment & MLOps](../../14.%20Deployment_and_MLOps/concepts/README.md); LLM apps → [RAG & LLM Applications](../../11.%20RAG_and_LLM_Applications/README.md)
