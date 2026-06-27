@@ -1,9 +1,56 @@
-# 🖼️ Computer Vision — Mathematics Curriculum (Specialization)
+---
+id: "07-computer-vision"
+topic: "Computer Vision"
+level: intermediate
+prereqs: ["deep-learning", "linear-algebra"]
+updated: 2026-06-27
+---
+
+# 🖼️ Computer Vision
+> The mathematical and deep-learning spine of vision — images as signals, convolution and
+> frequency thinking, projective geometry and cameras, deep vision architectures (CNNs · ViTs),
+> detection & segmentation, and generative/self-supervised vision.
+
+## 📑 Concept Index
+Every chapter is a self-contained folder (`NN-Concept/NN-Concept.md`) with its page.
+> **✅ ready · ⬜ coming soon.** New to vision? Start with the field overview below, then work top to bottom.
+
+### Image processing & classical features
+1. ✅ [Image Representation & Filtering (edges · HOG · SIFT)](01-Image-Representation-and-Filtering/01-Image-Representation-and-Filtering.md)
+2. ✅ [Pooling & Receptive Fields](02-Pooling-and-Receptive-Fields/02-Pooling-and-Receptive-Fields.md)
+
+### Classification & backbones
+3. ✅ [Classic CNN Architectures (LeNet · AlexNet · VGG · ResNet · Inception · EfficientNet)](03-Classic-CNN-Architectures/03-Classic-CNN-Architectures.md)
+4. ✅ [Image Classification](04-Image-Classification/04-Image-Classification.md)
+5. ✅ [Transfer Learning for Vision](05-Transfer-Learning-for-Vision/05-Transfer-Learning-for-Vision.md)
+6. ✅ [Data Augmentation](06-Data-Augmentation/06-Data-Augmentation.md)
+
+### Detection & segmentation
+7. ✅ [Object Detection (R-CNN family · YOLO · SSD)](07-Object-Detection/07-Object-Detection.md)
+8. ✅ [Semantic Segmentation (FCN · U-Net · DeepLab)](08-Semantic-Segmentation/08-Semantic-Segmentation.md)
+9. ✅ [Instance Segmentation (Mask R-CNN)](09-Instance-Segmentation/09-Instance-Segmentation.md)
+10. ✅ [Detection & Segmentation Metrics (IoU · mAP)](10-Detection-and-Segmentation-Metrics/10-Detection-and-Segmentation-Metrics.md)
+
+### Modern & specialized vision
+11. ✅ [Vision Transformers (ViT)](11-Vision-Transformers/11-Vision-Transformers.md)
+12. ✅ [Self-Supervised Vision (SimCLR · MAE · DINO)](12-Self-Supervised-Vision/12-Self-Supervised-Vision.md)
+13. ✅ [Pose Estimation](13-Pose-Estimation/13-Pose-Estimation.md)
+14. ✅ [Optical Flow & Video Understanding](14-Optical-Flow-and-Video/14-Optical-Flow-and-Video.md)
+15. ✅ [Optical Character Recognition (OCR)](15-OCR/15-OCR.md)
+16. ✅ [3D & Depth Estimation](16-3D-and-Depth-Estimation/16-3D-and-Depth-Estimation.md)
+
+### Related concepts (covered in another section)
+> These topics are foundational or generative and live in their canonical home to avoid repetition.
+- **CNNs & Convolution** (the operation, kernels, stride/padding math) → [Deep Learning › CNNs & Convolution](../05.%20Deep_Learning/concepts/13-CNNs-and-Convolution.md)
+- **Residual / skip connections · Batch & Group Norm** (the motifs deep vision backbones rely on) → [Deep Learning](../05.%20Deep_Learning/concepts/README.md)
+- **Image generation** — GANs · Diffusion · text-to-image → [GenAI](../10.%20GenAI/README.md)
+- **Contrastive / embedding math** (InfoNCE, triplet loss reused by self-supervised vision) → [NLP](../06.%20NLP/README.md) · [Deep Learning](../05.%20Deep_Learning/concepts/README.md)
+
+## 📐 Mathematics curriculum (specialization)
 
 > Elective deep-dive track, absorbed and expanded from the retired `math-for-AIML-Q5`
 > CV specialization. Same format as the [main math curriculum](../01.%20Foundations/Maths%20for%20AI-ML/README.md):
 > what to study → why → best resources → which AI-ML-intuition pages it unlocks.
->
 
 **Goal:** the mathematical spine of vision — images as signals, convolution and frequency
 thinking, projective geometry and cameras, deep vision architectures, and generative vision.
@@ -14,7 +61,7 @@ thinking, projective geometry and cameras, deep vision architectures, and genera
 - **First Principles of Computer Vision** (Shree Nayar, Columbia) — [YouTube channel](https://www.youtube.com/@firstprinciplesofcomputerv3258) — exceptional visual lectures on classical CV
 - **Szeliski** — [Computer Vision: Algorithms and Applications](https://szeliski.org/Book/) (free)
 
-## Study order & what each module unlocks
+### Study order & what each module unlocks
 
 | Module | Key sub-topics | Best resources | → AI-ML-intuition |
 | :--- | :--- | :--- | :--- |
@@ -35,9 +82,3 @@ thinking, projective geometry and cameras, deep vision architectures, and genera
 
 **Completion target:** explain convolution's two priors and parameter math, walk a pinhole
 camera model, justify ViT patch tokenization, and read a diffusion-vision paper without fear.
-
-## 📑 Per-concept resources
-> This README covers the **mathematical spine** of computer vision (where to learn the field). For
-> **per-concept** resource cards — one curated card per interview topic (filtering & features, CNN
-> backbones, object detection, segmentation, ViT, self-supervised vision, OCR, depth, …) — see the
-> dedicated index: **[concepts/ → Concept index](concepts/README.md)**.
