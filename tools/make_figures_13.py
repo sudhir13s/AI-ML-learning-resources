@@ -19,6 +19,8 @@ Verified on Python 3.12 / torch 2.x / matplotlib 3.x.
 
 from __future__ import annotations
 
+import _pathsetup  # noqa: F401  (sys.path bootstrap for the moved generator)
+
 from pathlib import Path
 
 import matplotlib
@@ -42,7 +44,6 @@ from supervised_fine_tuning import (
     build_example,
     build_tokenizer,
     causal_lm_loss,
-    encode,
     format_chat,
 )
 
@@ -57,7 +58,7 @@ NAVY = "#2A5B80"
 INK = "#1C2530"  # near-black for axis text
 GRID = "#D4D9DF"
 
-OUT_DIR = Path(__file__).resolve().parent.parent.parent / "images"
+OUT_DIR = Path(__file__).resolve().parent.parent / "09. LLMs" / "images"
 DPI = 150
 
 

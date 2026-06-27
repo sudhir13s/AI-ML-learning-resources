@@ -17,6 +17,8 @@ Verified on Python 3.12 / matplotlib 3.x / Pillow.
 
 from __future__ import annotations
 
+import _pathsetup  # noqa: F401  (sys.path bootstrap for the moved generator)
+
 from pathlib import Path
 
 import matplotlib
@@ -39,7 +41,7 @@ from make_figures_08 import (
     rope_angles,
 )
 
-OUT_DIR = Path(__file__).resolve().parent.parent / "images"  # chapter-local images/
+OUT_DIR = Path(__file__).resolve().parent.parent / "09. LLMs" / "08-Long-Context-Methods" / "images"
 DPI = 95
 FPS = 18
 

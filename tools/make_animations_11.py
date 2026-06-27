@@ -16,6 +16,8 @@ Verified on Python 3.12 / matplotlib 3.x / Pillow.
 
 from __future__ import annotations
 
+import _pathsetup  # noqa: F401  (sys.path bootstrap for the moved generator)
+
 from pathlib import Path
 
 import matplotlib
@@ -36,7 +38,7 @@ from make_figures_11 import (
     softmax_with_temperature,
 )
 
-OUT_DIR = Path(__file__).resolve().parent.parent.parent / "images"
+OUT_DIR = Path(__file__).resolve().parent.parent / "09. LLMs" / "images"
 DPI = 95
 FPS = 18
 ARGMAX = int(np.argmax(TEACHER_LOGITS))

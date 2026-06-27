@@ -18,6 +18,8 @@ Verified on Python 3.12 / numpy 2.x / matplotlib 3.x.
 
 from __future__ import annotations
 
+import _pathsetup  # noqa: F401  (sys.path bootstrap for the moved generator)
+
 from pathlib import Path
 
 import matplotlib
@@ -43,7 +45,7 @@ SINGLE_HELDOUT_ACC = 0.007  # single-task model, same held-out test
 MULTI_INDIST_ACC = 1.000  # both master the in-distribution fixed-key task
 SINGLE_INDIST_ACC = 1.000
 
-OUT_DIR = Path(__file__).resolve().parent.parent.parent / "images"
+OUT_DIR = Path(__file__).resolve().parent.parent / "09. LLMs" / "images"
 DPI = 150
 
 

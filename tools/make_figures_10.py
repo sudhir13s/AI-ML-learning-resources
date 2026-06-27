@@ -12,6 +12,8 @@ Verified on Python 3.12 / matplotlib 3.x, torch 2.x. CPU only, deterministic (se
 
 from __future__ import annotations
 
+import _pathsetup  # noqa: F401  (sys.path bootstrap for the moved generator)
+
 import sys
 from pathlib import Path
 
@@ -37,7 +39,7 @@ AMBER = "#7A6528"
 NAVY = "#2A5B80"
 GRID = "#D8DCE0"
 
-IMAGES_DIR = Path(__file__).resolve().parent.parent / "images"
+IMAGES_DIR = Path(__file__).resolve().parent.parent / "09. LLMs" / "10-Quantization" / "images"
 DPI = 130
 SEED = 0
 

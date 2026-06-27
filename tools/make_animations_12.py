@@ -23,6 +23,8 @@ Verified on Python 3.12 / torch 2.x / matplotlib 3.x / Pillow (PillowWriter).
 
 from __future__ import annotations
 
+import _pathsetup  # noqa: F401  (sys.path bootstrap for the moved generator)
+
 from pathlib import Path
 
 import matplotlib
@@ -52,7 +54,7 @@ from make_figures_12 import (
 )
 
 torch.set_num_threads(1)  # single-threaded -> bit-reproducible, matches make_figures_12 / lora_peft.py
-OUT_DIR = Path(__file__).resolve().parent.parent.parent / "images"
+OUT_DIR = Path(__file__).resolve().parent.parent / "09. LLMs" / "images"
 DPI = 95
 FPS = 16
 

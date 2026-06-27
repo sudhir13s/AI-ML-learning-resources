@@ -25,10 +25,11 @@ import numpy as np
 import torch
 from matplotlib.animation import FuncAnimation, PillowWriter
 
+import _pathsetup  # noqa: F401  (puts 09. LLMs/*/code + tools/ on sys.path for the moved generators)
 from decoding_sampling import PEAKED_LOGITS, VOCAB, entropy_bits, softmax_with_temperature
 from make_figures_18 import AMBER, GRID, INK, NAVY, SLATE
 
-OUT_DIR = Path(__file__).resolve().parent.parent.parent / "images"
+OUT_DIR = Path(__file__).resolve().parent.parent / "09. LLMs" / "images"
 DPI = 95
 FPS = 18
 PEAKED = torch.tensor(PEAKED_LOGITS)

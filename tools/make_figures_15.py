@@ -23,6 +23,8 @@ Verified on Python 3.12 / torch 2.x / matplotlib 3.x.
 
 from __future__ import annotations
 
+import _pathsetup  # noqa: F401  (sys.path bootstrap for the moved generator)
+
 from pathlib import Path
 
 import matplotlib
@@ -46,7 +48,7 @@ GRID = "#D4D9DF"
 
 # Figures live in the SHARED chapter images dir (09. LLMs/images/), matching the KV-Cache
 # exemplar -- so the page references them as ../images/<name>.png.
-OUT_DIR = Path(__file__).resolve().parent.parent.parent / "images"
+OUT_DIR = Path(__file__).resolve().parent.parent / "09. LLMs" / "images"
 DPI = 150
 
 

@@ -28,6 +28,8 @@ Verified on Python 3.12 / matplotlib 3.x / Pillow (PillowWriter + Image).
 
 from __future__ import annotations
 
+import _pathsetup  # noqa: F401  (sys.path bootstrap for the moved generator)
+
 import io
 from pathlib import Path
 
@@ -51,7 +53,7 @@ NAVY = "#2A5B80"
 INK = "#1C2530"
 GRID = "#D4D9DF"
 
-OUT_DIR = Path(__file__).resolve().parent.parent.parent / "images"
+OUT_DIR = Path(__file__).resolve().parent.parent / "09. LLMs" / "images"
 DPI = 95
 FPS = 16
 

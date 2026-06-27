@@ -17,6 +17,8 @@ Verified on Python 3.12 / matplotlib 3.10 / Pillow.
 
 from __future__ import annotations
 
+import _pathsetup  # noqa: F401  (sys.path bootstrap for the moved generator)
+
 import io
 import sys
 from pathlib import Path
@@ -43,7 +45,7 @@ INK = "#1C2530"
 GRID = "#D4D9DF"
 IDLE = "#E7EAEE"  # un-materialized cells of the matrix
 
-OUT_DIR = Path(__file__).resolve().parent.parent.parent / "images"
+OUT_DIR = Path(__file__).resolve().parent.parent / "09. LLMs" / "images"
 DPI = 96
 FPS = 2  # slow -- the reader needs to read each block's bookkeeping
 HOLD_FRAMES = 3  # repeat the final frame so the GIF rests on the finished state

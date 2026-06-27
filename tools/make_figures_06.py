@@ -19,6 +19,8 @@ Verified on Python 3.12 / matplotlib 3.10 / torch 2.12.
 
 from __future__ import annotations
 
+import _pathsetup  # noqa: F401  (sys.path bootstrap for the moved generator)
+
 import sys
 from pathlib import Path
 
@@ -43,7 +45,7 @@ NAVY = "#2A5B80"
 INK = "#1C2530"
 GRID = "#D4D9DF"
 
-OUT_DIR = Path(__file__).resolve().parent.parent.parent / "images"
+OUT_DIR = Path(__file__).resolve().parent.parent / "09. LLMs" / "images"
 DPI = 110
 
 
