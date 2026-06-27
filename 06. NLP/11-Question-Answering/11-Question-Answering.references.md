@@ -3,7 +3,7 @@ id: "06-nlp/question-answering/references"
 topic: "Question Answering — References"
 parent: "06-nlp/question-answering"
 type: references
-updated: 2026-06-22
+updated: 2026-06-27
 ---
 
 # Question Answering — references and further reading
@@ -18,10 +18,12 @@ updated: 2026-06-22
 5. **Make it concrete** — code it with the [HF Question Answering chapter](https://huggingface.co/learn/llm-course/chapter7/7). *Fine-tune a span-QA model on SQuAD.*
 
 **Videos**:
-- [Applying BERT to Question Answering (SQuAD v1.1)](https://www.youtube.com/watch?v=l8ZYCvgGu0o) — **Chris McCormick** — start/end span prediction explained in detail, the clearest walkthrough.
+- [Applying BERT to Question Answering (SQuAD v1.1)](https://www.youtube.com/watch?v=l8ZYCvgGu0o) — **Chris McCormick** — start/end span prediction explained in detail, the clearest walkthrough of the span head.
 - [Stanford CS224N: Question Answering](https://www.youtube.com/watch?v=yIdF-17HwSk) — **Stanford (Chris Manning / Danqi Chen)** — reading comprehension and open-domain QA from the people who built DrQA/SQuAD.
-- [Text Extraction From a Corpus Using BERT (QA)](https://www.youtube.com/watch?v=XaQ0CBlQ4cY) — **Abhishek Thakur** — implement extractive QA hands-on.
+- [Stanford CS224N: Natural Language Generation](https://www.youtube.com/watch?v=1uMo8olr5ng) — **Stanford** — why EM/F1 break on generated answers and how generation is evaluated; the evaluation half of QA.
+- [Text Extraction From a Corpus Using BERT (QA)](https://www.youtube.com/watch?v=XaQ0CBlQ4cY) — **Abhishek Thakur** — implement extractive QA hands-on, end to end.
 - [RAG: Retrieval-Augmented Generation, explained](https://www.youtube.com/watch?v=T-D1OfcDW1M) — **IBM Technology** — the retrieve-then-generate idea and why it grounds answers, concisely.
+- [Building Production-Ready RAG Applications](https://www.youtube.com/watch?v=TRjq7t2Ms5I) — **Jerry Liu (LlamaIndex)** — open-domain QA as it is actually built today: retrieval quality, chunking, and the failure modes.
 
 **Courses (free)**:
 - [Hugging Face LLM Course — Ch. 7: Question Answering](https://huggingface.co/learn/llm-course/chapter7/7) — **Hugging Face** — fine-tune extractive QA on SQuAD, code-first, with the start/end head.
@@ -51,6 +53,7 @@ updated: 2026-06-22
 
 **In this platform**:
 - Concept page (full explanation): [Question Answering](11-Question-Answering.md)
+- Runnable code (the seeded source of truth): [teaching notebook](code/11-Question-Answering.ipynb) · [demo script](code/question_answering.py) · [figure generator](code/make_figures_11.py)
 - The encoder QA fine-tunes on: [Contextual Embeddings (ELMo/BERT)](../06-Contextual-Embeddings-ELMo-BERT/06-Contextual-Embeddings-ELMo-BERT.md)
 - The retriever half of open-domain QA: [Information Retrieval & Semantic Search](../16-Information-Retrieval-and-Semantic-Search/16-Information-Retrieval-and-Semantic-Search.md) · embeddings behind dense retrieval: [Sentence & Document Embeddings](../07-Sentence-and-Document-Embeddings/07-Sentence-and-Document-Embeddings.md)
 - The generator backbone (RAG reader): [Seq2Seq & Encoder–Decoder](../08-Sequence-to-Sequence-and-Encoder-Decoder/08-Sequence-to-Sequence-and-Encoder-Decoder.md)
