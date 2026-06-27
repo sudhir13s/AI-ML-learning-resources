@@ -3,7 +3,7 @@ id: "06-nlp/ngram-language-models/references"
 topic: "N-gram Language Models & Smoothing — References"
 parent: "06-nlp/ngram-language-models"
 type: references
-updated: 2026-06-22
+updated: 2026-06-27
 ---
 
 # N-gram Language Models and Smoothing — references and further reading
@@ -22,6 +22,7 @@ updated: 2026-06-22
 - [Kneser-Ney Smoothing (NLP817 3.11)](https://www.youtube.com/watch?v=9SlJ76HtjoE) — **Herman Kamper** — a focused, rigorous lecture on absolute discounting and the continuation probability, the heart of the gold-standard smoother.
 - [N-gram Language Modeling: Theory, Math, and Code](https://www.youtube.com/watch?v=Vc2C1NZkH0E) — **Learn With Yash Agrawal** — chain rule, MLE, and perplexity worked by hand plus a from-scratch implementation.
 - [What is Perplexity?](https://www.youtube.com/watch?v=NURcDHhYe98) — **Hugging Face** — perplexity as branching factor and its link to entropy, explained concisely.
+- [Interpolation and Backoff (NLP817 3.10)](https://www.youtube.com/watch?v=Q3I3yQYrz3w) — **Herman Kamper** — a focused lecture on linear interpolation vs backoff, the framework Kneser-Ney is expressed in; the companion to his Kneser-Ney lecture above.
 
 **Courses (free)**:
 - [Stanford CS124 / CS224N — Language Modeling](https://web.stanford.edu/class/cs224n/) — **Stanford (Manning, Jurafsky)** — the language-modeling lectures that move from n-grams to neural LMs.
@@ -45,6 +46,11 @@ updated: 2026-06-22
 - [Speech and Language Processing, 3rd ed. — Ch. 3 "N-gram Language Models"](https://web.stanford.edu/~jurafsky/slp3/3.pdf) — **Jurafsky & Martin** — chain rule, smoothing, backoff, Kneser-Ney, perplexity; the canonical reference.
 - [Foundations of Statistical Natural Language Processing — Ch. 6 "Statistical Inference: n-gram Models over Sparse Data"](https://nlp.stanford.edu/fsnlp/) — **Manning & Schütze** — the classic deep treatment of smoothing over sparse counts.
 - [Natural Language Processing with Python — Ch. 2](https://www.nltk.org/book/ch02.html) — **Bird, Klein & Loper** — conditional frequency distributions for building n-gram counts in code.
+
+**Runnable code (this chapter)**:
+- [Single source-of-truth module `ngram_lm.py`](code/ngram_lm.py) — counts, MLE, Laplace/add-k, Good-Turing, and interpolated Kneser-Ney (trigram and arbitrary-order), all deterministic; `python ngram_lm.py` reproduces every by-hand number on the page.
+- [Step-by-step teaching notebook](code/04-N-gram-Language-Models-and-Smoothing.ipynb) — the seven worked steps, each asserting its point before printing, importing the canonical functions.
+- [Figure generator `make_figures_04.py`](code/make_figures_04.py) — regenerates all eight `ng_*` figures from the SAME functions, so the prose and the plots cannot drift.
 
 **In this platform**:
 - Concept page (full explanation): [N-gram Language Models and Smoothing](04-N-gram-Language-Models-and-Smoothing.md)
