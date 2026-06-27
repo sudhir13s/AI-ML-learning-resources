@@ -23,6 +23,8 @@ updated: 2026-06-22
 - [Hierarchical Navigable Small Worlds (HNSW) for Vector Search](https://www.youtube.com/watch?v=QvKMwLjdK-s) — **James Briggs (Pinecone)** — the layered greedy-search graph behind most vector databases, visualized.
 - [Product Quantization for Vector Search](https://www.youtube.com/watch?v=t9mRf2S5vDI) — **James Briggs (Pinecone)** — how PQ compresses vectors to codes, with the memory math.
 - [BM25 — The Best Search Algorithm You've Never Heard Of](https://www.youtube.com/watch?v=ruBm9WywevM) — **ML & DS** — the BM25 saturation/length-normalization terms, clearly.
+- [What is Retrieval-Augmented Generation (RAG)?](https://www.youtube.com/watch?v=T-D1OfcDW1M) — **IBM Technology** — where the retriever you build plugs into the LLM, in five clear minutes.
+- [FAISS — Facebook AI Similarity Search](https://www.youtube.com/watch?v=sKyvsdEv6rk) — **James Briggs (Pinecone)** — building Flat / IVF / IVFPQ indexes in code, the library every ANN benchmark uses.
 
 **Interactive & visual**:
 - [Nearest Neighbor Indexes for Similarity Search](https://www.pinecone.io/learn/series/faiss/vector-indexes/) — **Pinecone (James Briggs)** — Flat vs IVF vs HNSW vs PQ with recall/latency/memory plots, the recall–latency–memory surface made tangible.
@@ -43,7 +45,10 @@ updated: 2026-06-22
 
 **Key papers**:
 - [The Probabilistic Relevance Framework: BM25 and Beyond](https://www.staff.city.ac.uk/~sbrp622/papers/foundations_bm25_review.pdf) — **Robertson & Zaragoza (2009)** — the definitive derivation and justification of BM25.
-- [Dense Passage Retrieval for Open-Domain QA (DPR)](https://arxiv.org/abs/2004.04906) — **Karpukhin et al. (2020)** — the contrastive dual-encoder with in-batch negatives that beats BM25.
+- [Dense Passage Retrieval for Open-Domain QA (DPR)](https://arxiv.org/abs/2004.04906) — **Karpukhin et al. (2020)** — the contrastive dual-encoder with in-batch negatives that beats BM25; the dual-encoder dot-product score and the contrastive loss derived on the page.
+- [Representation Learning with Contrastive Predictive Coding (InfoNCE)](https://arxiv.org/abs/1807.03748) — **van den Oord, Li & Vinyals (2018)** — the InfoNCE objective DPR's loss is an instance of.
+- [Cumulated Gain-based Evaluation of IR Techniques (nDCG)](https://doi.org/10.1145/582415.582418) — **Järvelin & Kekäläinen (2002), ACM TOIS** — the original (discounted) cumulated gain and per-query ideal normalization the nDCG derivation follows.
+- [Learning to Rank using Gradient Descent (RankNet)](https://www.microsoft.com/en-us/research/publication/learning-to-rank-using-gradient-descent/) — **Burges et al. (2005)** — the learning-to-rank line that popularized the exponential gain $2^{\mathrm{rel}}-1$ in DCG.
 - [Sentence-BERT](https://arxiv.org/abs/1908.10084) — **Reimers & Gurevych (2019)** — the bi-encoder fine-tune that made semantic search fast and the cross-encoder rerank precise.
 - [Efficient and Robust ANN Search using HNSW Graphs](https://arxiv.org/abs/1603.09320) — **Malkov & Yashunin (2018)** — the layered small-world graph behind most vector databases.
 - [Product Quantization for Nearest Neighbor Search](https://inria.hal.science/inria-00514462v2/document) — **Jégou, Douze & Schmid (2011)** — splitting vectors into subspaces and quantizing each: the memory win for billion-scale search.

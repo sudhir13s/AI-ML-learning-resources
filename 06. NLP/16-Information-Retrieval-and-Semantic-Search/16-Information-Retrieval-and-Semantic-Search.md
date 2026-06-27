@@ -68,7 +68,11 @@ TERM            POSTING LIST  (docID : term-freq)
 
 To answer a query, you fetch **only the posting lists of the query's terms** and merge them. A term appearing in 1,000 documents touches 1,000 postings — not 100M documents. This is *why* keyword search feels instant: you never look at a document that shares **no** word with the query. The cost is proportional to how many documents contain the query's (rare) terms, not to corpus size.
 
+![Forward index (document → its terms) vs the inverted index (term → posting list of docID:tf). The forward index forces an O(N) scan of every document per query; the inverted index lets you touch only the documents that share a query term. Note the killer detail on the right: the query word "car" has NO posting list at all — the gold passage says "automobile" — so lexical search is structurally blind to it. Built by `code/make_figures_16.py`.](../images/ir_inverted_index.png)
+
 > **Note:** the inverted index is the reason classical search scales. The entire posting-list machinery — skip pointers, delta-compressed doc IDs, block-max WAND for early termination — exists to merge those lists even faster. You don't need the internals for an interview, but you *do* need to say: "lexical retrieval is fast because the **inverted index** lets us touch only documents that share a query term."
+
+> **Source / derivation:** the inverted index, boolean and ranked retrieval, and IR evaluation (precision/recall, MAP, nDCG) are developed from first principles in [Manning, Raghavan & Schütze, *Introduction to Information Retrieval*](https://nlp.stanford.edu/IR-book/html/htmledition/irbook.html) — Ch. 1 (inverted index), Ch. 6 (term weighting), Ch. 8 (evaluation). Our `build_inverted_index()` in [`information_retrieval.py`](code/information_retrieval.py) builds the `term → posting list` map shown above.
 
 ### Boolean retrieval, then ranked retrieval
 
@@ -97,9 +101,13 @@ Reading every symbol:
 - $b$ (typically **0.75**) — the **length-normalization** knob. $b = 0$ disables length normalization; $b = 1$ fully divides by relative length. A document longer than average gets its TF discounted.
 - $\text{IDF}(t) = \ln\!\left(\dfrac{N - n_t + 0.5}{n_t + 0.5} + 1\right)$ — the BM25 IDF, where $n_t$ is the number of documents containing $t$. A term in *every* document contributes ~0; a *rare* term contributes a lot.
 
+> **Source / derivation:** [Robertson & Zaragoza (2009), *The Probabilistic Relevance Framework: BM25 and Beyond*](https://www.staff.city.ac.uk/~sbrp622/papers/foundations_bm25_review.pdf) — §3 derives the saturating TF term and the length-normalization factor from the probabilistic relevance model; the $\ln\!\big(\tfrac{N-n_t+0.5}{n_t+0.5}+1\big)$ IDF is its eq. (3). Our from-scratch `bm25_scores()` in [`information_retrieval.py`](code/information_retrieval.py) implements this exactly and is verified rank-for-rank against `rank_bm25.BM25Okapi` in the notebook.
+
 > **Note:** the structure to remember: **BM25 = IDF (rarity) × saturated, length-normalized TF**. That single sentence is the most-asked lexical-IR interview answer. TF-IDF down-weights common words; BM25 *additionally* saturates repeats and corrects for document length — which is why it's the default classical ranker in Lucene, Elasticsearch, and OpenSearch a quarter-century on.
 
 > **Tip:** BM25 has **no training and no embeddings**. It's a fixed formula over term statistics, computable directly from the inverted index. That makes it shockingly strong as a baseline, instant to deploy, perfectly interpretable ("this doc ranked high because of *these* rare query terms"), and a genuinely hard target for fancy neural retrievers to beat on keyword-heavy queries. **Never skip the BM25 baseline.**
+
+![BM25 saturates term frequency. Raw TF (red dashed, the TF-IDF behaviour) grows without bound — a document mentioning "engine" 100× would score 100× a single mention. BM25's saturated term (solid curves) approaches a ceiling of $k_1+1$, so the 10th occurrence barely beats the 9th; relevance saturates. Larger $k_1$ saturates more slowly (a higher ceiling). Computed directly from the BM25 TF factor in `code/make_figures_16.py`.](../images/ir_bm25_saturation.png)
 
 ---
 
@@ -116,7 +124,7 @@ d4: "How to fix my code when the build breaks on my machine."                   
 ... (4 unrelated docs)
 ```
 
-I ran BM25 (`rank_bm25`) and a dense bi-encoder (`all-MiniLM-L6-v2`) over this corpus. The **measured** result:
+Run a from-scratch BM25 (verified rank-for-rank against `rank_bm25`) and a dense bi-encoder (`all-MiniLM-L6-v2`, with a deterministic synthetic fallback so it runs offline) over this corpus — all in [`information_retrieval.py`](code/information_retrieval.py). The **measured** result:
 
 | Method | Rank of the gold passage d0 | What it ranked above it |
 |---|---|---|
@@ -124,7 +132,7 @@ I ran BM25 (`rank_bm25`) and a dense bi-encoder (`all-MiniLM-L6-v2`) over this c
 | **Dense bi-encoder** | **#1** | nothing — it's first |
 | **Hybrid (RRF of both)** | **#2** | one distractor |
 
-BM25 ranks two **off-topic** documents above the right answer purely because they share the surface words *fix* and *my*, while the gold passage — which actually answers the question — shares *zero* query terms (it says *automobile*, not *car*). The dense encoder, which scores by **meaning**, puts it first.
+BM25 ranks two **off-topic** documents above the right answer purely because they share the surface words *fix* and *my*, while the gold passage — which actually answers the question — shares *zero* query terms (it says *automobile*, not *car*), so its BM25 score is exactly **0**. The dense encoder, which scores by **meaning**, puts it first.
 
 ![Vocabulary mismatch, measured. Left: BM25 normalized scores — the gold passage d0 (amber, outlined) scores zero because it shares no surface word with 'car', while two lexical distractors (d2, d4) that merely share 'fix'/'my' dominate. Right: a dense bi-encoder ranks d0 first because 'automobile' embeds close to 'car'. Same corpus, same query — lexical misses the synonym, dense finds it.](../images/ir_sparse_vs_dense.png)
 
@@ -142,6 +150,8 @@ $$
 s(q, p) \;=\; E_Q(q) \cdot E_P(p) \qquad\text{or}\qquad \cos\bigl(E_Q(q), E_P(p)\bigr) = \frac{E_Q(q)\cdot E_P(p)}{\lVert E_Q(q)\rVert\,\lVert E_P(p)\rVert}.
 $$
 
+> **Source / derivation:** the dual-encoder dot-product score is the scoring function of [Karpukhin et al. (2020), *Dense Passage Retrieval for Open-Domain QA*](https://arxiv.org/abs/2004.04906) (eq. 1, $\text{sim}(q,p)=E_Q(q)^\top E_P(p)$). Cosine is the same dot product on **unit-normalized** vectors — the geometry of comparison is worked through in [AI-ML-intuition 1.06 Vector Similarities — the Scaled Dot-Product](../../../AI-ML-intuition/Module_1_Representation/1.06_Vector_Similarities_The_Scaled_Dot-Product.md). Our `cosine_matrix()` in [`information_retrieval.py`](code/information_retrieval.py) computes it directly.
+
 The decisive engineering property is **precomputation**: the corpus passages can be encoded **once, offline**, and stored in an index. At query time you encode *only the query* (one forward pass) and search the index. This is what makes dense retrieval fast enough to deploy — passage encoding is amortized away.
 
 > **Note:** the phrase to own is **"the corpus is encoded offline; only the query is encoded online."** A bi-encoder is *separable* — query and passage never interact until the final dot product — which is precisely what lets you precompute the corpus and pre-build a nearest-neighbor index. Contrast this with the cross-encoder (below), which *jointly* reads (query, passage) and therefore can't be precomputed. The whole two-stage architecture lives in this distinction.
@@ -155,6 +165,8 @@ For a training query $q_i$ with one relevant (**positive**) passage $p_i^+$ and 
 $$
 \mathcal{L}(q_i, p_i^+, p_{i,1}^-, \dots) \;=\; -\log \frac{\exp\!\bigl(s(q_i, p_i^+)\bigr)}{\exp\!\bigl(s(q_i, p_i^+)\bigr) + \displaystyle\sum_{j}\exp\!\bigl(s(q_i, p_{i,j}^-)\bigr)}.
 $$
+
+> **Source / derivation:** this is the negative-log-likelihood objective of [Karpukhin et al. (2020), DPR](https://arxiv.org/abs/2004.04906) (eq. 2) — itself the InfoNCE / noise-contrastive form of [van den Oord et al. (2018), *Representation Learning with Contrastive Predictive Coding*](https://arxiv.org/abs/1807.03748). The in-batch-negatives reduction to a cross-entropy over the $B\times B$ similarity matrix is DPR §3.
 
 Read it as a classification: among {positive + all negatives}, the model must assign highest similarity to the positive. Minimizing $-\log(\cdot)$ drives $s(q_i, p_i^+)$ **up** and every $s(q_i, p_{i,j}^-)$ **down** — exactly "pull positives close, push negatives away." It's the InfoNCE loss, the workhorse of contrastive learning.
 
@@ -178,7 +190,7 @@ Dense retrieval reduces "find relevant passages" to **find the vectors nearest t
 
 The escape is to give up *exactness*: return the **approximate** nearest neighbors — almost always the right ones, occasionally a near-miss — for orders of magnitude less time and memory. This is **approximate nearest neighbor (ANN)** search, and three ideas dominate it. Each attacks a different cost: **HNSW** cuts the *number of comparisons*, **IVF** cuts the *candidate set*, **PQ** cuts the *bytes per vector*. Real systems compose them.
 
-![ANN trades a little recall for a large speed and memory win. Left: recall@10 vs query latency (log scale). Exact kNN (red) is perfect recall but scans all N; HNSW reaches near-exact recall in ~log N hops; IVF and IVF+PQ go faster still for a small recall cost. Right: product quantization compresses a 768-dim FP32 vector from 3072 bytes to a 96-byte code — 32x smaller — which is what lets billion-vector indexes fit in RAM.](../images/ir_ann_tradeoff.png)
+![ANN trades a little recall for large speed and memory wins, measured in `code/make_figures_16.py`. Left: an IVF-style retriever's recall@10 vs exact climbs monotonically as you probe more cells (nprobe) — and the fraction of the corpus scanned (∝ latency, dotted) climbs with it. Exact kNN (red dashed) is recall 1.0 but scans 100%. There is no free lunch — only a chosen point on the recall-vs-cost curve. Right: product quantization compresses a 768-dim FP32 vector from 3072 bytes to a 96-byte code — 32× smaller — which is what lets billion-vector indexes fit in RAM (~3 TB → ~96 GB).](../images/ir_ann_tradeoff.png)
 
 ### HNSW — navigate a small-world graph
 
@@ -190,22 +202,38 @@ $$
 \text{HNSW query} \;\approx\; O(\log N)\ \text{distance computations, vs.}\ O(N)\ \text{for exact.}
 $$
 
-> **Note:** HNSW is the default in most vector databases (Qdrant, Weaviate, Milvus, pgvector, Lucene/Elasticsearch) because it gives **~95–99% recall at single-digit-millisecond latency** out of the box. Its costs are **memory** (it stores the full vectors *plus* the graph edges — heavier than IVF) and **slow inserts/deletes** (mutating the graph is expensive). The two tuning knobs: `M` (edges per node — higher = better recall, more memory) and `efSearch` (candidates explored per query — higher = better recall, slower). I measured exactly this trade-off below.
+> **Source / derivation:** [Malkov & Yashunin (2018), *Efficient and robust approximate nearest neighbor search using Hierarchical Navigable Small World graphs*](https://arxiv.org/abs/1603.09320) — the multi-layer small-world graph and the poly-logarithmic search-complexity result (§4–5); the hierarchy is the navigable-small-world analog of a skip list.
+
+> **Note:** HNSW is the default in most vector databases (Qdrant, Weaviate, Milvus, pgvector, Lucene/Elasticsearch) because it gives **~95–99% recall at single-digit-millisecond latency** out of the box. Its costs are **memory** (it stores the full vectors *plus* the graph edges — heavier than IVF) and **slow inserts/deletes** (mutating the graph is expensive). The two tuning knobs: `M` (edges per node — higher = better recall, more memory) and `efSearch` (candidates explored per query — higher = better recall, slower). The recall–`nprobe` analog for IVF is measured below.
+
+```mermaid
+graph TD
+    QRY(["query vector q"]):::data --> ENTRY["enter at the SPARSE top layer<br/>(few nodes, long-range links)"]:::amber
+    ENTRY -->|"a few long hops<br/>cover huge distance"| L1["descend to a denser layer<br/>(more nodes, shorter links)"]:::process
+    L1 -->|"greedy: hop to the<br/>neighbour closest to q"| L0["bottom layer holds ALL vectors<br/>(short hops pin the exact neighbours)"]:::out
+    L0 --> NN(["approx. nearest neighbours<br/>≈ O(log N) distance computations"]):::data
+
+    classDef data fill:#3A6B96,stroke:#2A5B86,color:#fff
+    classDef amber fill:#7A6528,stroke:#6A5518,color:#fff
+    classDef process fill:#5D4A8A,stroke:#4D3A7A,color:#fff
+    classDef out fill:#2E7A5A,stroke:#1E6A4A,color:#fff
+```
+
+*HNSW search descends a hierarchy of small-world graphs: long express-lane hops at the sparse top find the right region fast, short hops at the dense bottom pin the exact neighbours — the skip-list idea applied to vectors, giving ≈ O(log N) comparisons instead of O(N).*
 
 ### IVF — cluster first, search a few clusters
 
 **Inverted File** indexing (the "IVF" in FAISS) borrows the inverted-index idea for vectors. **Offline:** cluster all vectors into $n_{\text{list}}$ groups (k-means centroids — *coarse quantization*); each vector is filed under its nearest centroid. **At query time:** find the few centroids nearest the query and search **only the vectors in those clusters** (the `nprobe` closest cells), skipping the rest of the corpus entirely.
 
-If you probe $n_{\text{probe}}$ of $n_{\text{list}}$ clusters, you scan roughly $\frac{n_{\text{probe}}}{n_{\text{list}}}$ of the corpus. With $n_{\text{list}}=1000$ and $n_{\text{probe}}=10$, that's **~1%** of the vectors — a 100× speedup, at the risk of missing a neighbor that fell just across a cluster boundary. **`nprobe` is the recall–latency dial:** probe more cells → higher recall, slower search. I measured this precisely (FAISS, 20k vectors, $d=64$):
+If you probe $n_{\text{probe}}$ of $n_{\text{list}}$ clusters, you scan roughly $\frac{n_{\text{probe}}}{n_{\text{list}}}$ of the corpus. With $n_{\text{list}}=1000$ and $n_{\text{probe}}=10$, that's **~1%** of the vectors — a 100× speedup, at the risk of missing a neighbor that fell just across a cluster boundary. **`nprobe` is the recall–latency dial:** probe more cells → higher recall, slower search. Measured precisely with FAISS (20k vectors, $d=64$, 100 IVF cells — the notebook's optional cell reproduces this):
 
 | Method | recall@10 vs exact |
 |---|---|
 | IVF, nprobe=1 | **0.187** |
 | IVF, nprobe=8 | **0.467** |
 | IVF, nprobe=32 | **0.808** |
-| HNSW, efSearch=64 | **0.938** |
 
-You can *watch* recall climb as you probe more cells — that's the dial in action, and HNSW reaches higher recall still on this set. (Real corpora with better-separated clusters hit far higher IVF recall; the point is the **monotonic knob**, not these absolute numbers.)
+You can *watch* recall climb as you probe more cells — that's the dial in action. The from-scratch numpy IVF in [`information_retrieval.py`](code/information_retrieval.py) shows the same **monotonic knob** on a better-clustered synthetic set (0.44 → 1.00 over nprobe 1→16, plotted above). (Real corpora with better-separated clusters hit far higher IVF recall at the same `nprobe`; the point is the **monotonic knob**, not these absolute numbers.)
 
 ### Product quantization — compress the vectors themselves
 
@@ -223,6 +251,8 @@ $$
 $$
 \text{compression} = \frac{3072}{96} = \mathbf{32\times}.
 $$
+
+> **Source / derivation:** [Jégou, Douze & Schmid (2011), *Product Quantization for Nearest Neighbor Search*](https://inria.hal.science/inria-00514462v2/document) — the subvector decomposition, per-slice codebooks, and asymmetric distance computation (§III–IV). The bytes-per-vector arithmetic is implemented in `pq_compression()` in [`information_retrieval.py`](code/information_retrieval.py) and drives the memory bars in the ANN figure.
 
 A vector that took 3 KB now takes 96 bytes — so **1 billion** vectors drop from ~3 TB to ~96 GB, the difference between "needs a disk cluster" and "fits in one machine's RAM." Distances are computed *in the compressed space* using precomputed lookup tables (asymmetric distance computation), which is also fast.
 
@@ -256,6 +286,8 @@ $$
 \text{RRF}(d) \;=\; \sum_{\ell \in \text{lists}} \frac{1}{k + r_\ell(d)},
 $$
 
+> **Source / derivation:** [Cormack, Clarke & Buettcher (2009), *Reciprocal Rank Fusion Outperforms Condorcet and Individual Rank Learning Methods*](https://plg.uwaterloo.ca/~gvcormac/cormacksigir09-rrf.pdf) — defines the $\tfrac{1}{k+r}$ fusion and reports $k=60$ as the robust default. Our `reciprocal_rank_fusion()` in [`information_retrieval.py`](code/information_retrieval.py) reproduces the by-hand example below exactly.
+
 where $r_\ell(d)$ is $d$'s 1-based rank in list $\ell$ (a document absent from a list contributes nothing), and $k$ is a small constant — **$k = 60$** is the standard default. The $\frac{1}{k+r}$ shape means **top ranks matter most** (rank 1 contributes much more than rank 10), the constant $k$ **damps** how sharply early ranks dominate, and crucially a document that appears **decently in both lists** beats one that ranks #1 in only one — fusion rewards **agreement**.
 
 **Worked example — fuse two rankings by hand.** BM25 returns `[A, B, C, D, E]`; dense returns `[C, A, F, B, G]` (rank 1 first). With $k = 60$:
@@ -271,6 +303,8 @@ where $r_\ell(d)$ is $d$'s 1-based rank in list $\ell$ (a document absent from a
 | G | — | 5 → 1/65 = 0.01538 | 0.01538 |
 
 **Fused order: A, C, B, F, D, E, G** (verified in code). Note the result: **A wins** even though it was rank 1 in *neither* list — it ranked high in *both* (1 and 2), and that agreement beats C's single #1. The documents both retrievers found bubble to the top; single-list-only documents (F, D, E, G) sink below all the agreed-upon ones. That's RRF doing its job: **trusting consensus**.
+
+![Reciprocal Rank Fusion of BM25 = [A,B,C,D,E] and dense = [C,A,F,B,G], computed by `code/make_figures_16.py`. A wins (0.03252) despite ranking #1 in neither list — it placed 1 and 2 across the two, and that agreement beats C's single #1 (0.03227). The four documents that appear in only one list (F, D, E, G) sink below all three agreed-upon docs. RRF rewards consensus and needs no score calibration.](../images/ir_rrf.png)
 
 > **Tip:** RRF is beloved in production (Elasticsearch, OpenSearch, Weaviate, and Qdrant all ship it) because it is **parameter-light, score-scale-agnostic, and shockingly hard to beat**. It needs no training, no score calibration, and fuses *any* number of rankers (you can throw in a third or fourth retriever). When asked "how do you combine BM25 and embeddings?", **RRF is the crisp, correct, no-caveats answer** — and you can derive its formula on the spot.
 
@@ -292,6 +326,8 @@ The resolution is the **two-stage retrieve-then-rerank** pattern:
 2. **Re-rank** (expensive, precision-oriented): a cross-encoder scores **only those ~100–1000** jointly with the query and re-sorts them.
 
 You pay the cross-encoder's cost on *hundreds* of documents, not millions — and you get its precision exactly where it matters, at the top of the list the user sees.
+
+![The retrieve-then-rerank cascade, measured. BM25's top-4 candidates put the gold passage at #3 (behind two surface-match distractors). A cross-encoder reads each (query, passage) pair jointly, scores the gold passage far above the rest, and re-sorts the candidates — lifting the gold passage 3 → 1. The re-ranker buys precision exactly at the top of the list, on a handful of documents, not millions. Generated by `code/make_figures_16.py`.](../images/ir_rerank.png)
 
 ```mermaid
 graph TD
@@ -324,6 +360,8 @@ $$
 s(q, p) \;=\; \sum_{i \in q} \max_{j \in p}\ E(q_i)\cdot E(p_j).
 $$
 
+> **Source / derivation:** [Khattab & Zaharia (2020), *ColBERT: Efficient and Effective Passage Search via Contextualized Late Interaction over BERT*](https://arxiv.org/abs/2004.12832) — the MaxSim late-interaction operator (eq. 1). The token-level MaxSim mechanism is visualized as a heatmap in the sibling chapter [07 Sentence & Document Embeddings](../07-Sentence-and-Document-Embeddings/07-Sentence-and-Document-Embeddings.md).
+
 Because the passage token vectors are still **precomputable offline**, ColBERT keeps bi-encoder-like indexing speed while recovering much of the cross-encoder's fine-grained, term-level matching — this is **late interaction** (query and passage tokens interact *late*, at scoring time, not inside the encoder). The cost is a much larger index (one vector per token, not per passage), which PQ-style compression then tames.
 
 ---
@@ -349,6 +387,8 @@ For our list, treating rel > 0 as "relevant" (relevant positions: 1,2,3,5,6 → 
 | 5 | 4 | 4/5 = **0.80** | 4/5 = **0.80** |
 | 8 | 5 | 5/8 = **0.625** | 5/5 = **1.00** |
 
+![Precision@k (blue) falls and recall@k (green) rises as the cutoff k grows — the canonical IR trade-off — for rel = [3,2,3,0,1,2,0,0] with 5 relevant of 8. Precision dips once you reach into worse results; recall climbs to 1.0 by k=8 (all relevant captured). Computed from scratch in `code/make_figures_16.py`.](../images/ir_metrics_curve.png)
+
 > **Note:** **recall@k is the retriever's metric, precision@k (and nDCG) the ranker's.** A retriever's job is "did the right doc make the top-100 *at all*" → recall@100. The re-ranker's job is "is it near the *top*" → precision@5 / nDCG@10. Quote the metric that matches the stage you're optimizing; mixing them up is a classic interview slip.
 
 ### Mean Reciprocal Rank (MRR)
@@ -358,6 +398,8 @@ When you care chiefly about **the first correct answer** (QA, "I'm feeling lucky
 $$
 \text{MRR} \;=\; \frac{1}{|Q|}\sum_{q \in Q} \frac{1}{\text{rank}_q^{\text{first-relevant}}}.
 $$
+
+> **Source / derivation:** the reciprocal-rank measure dates to the [TREC-8 Question Answering Track (Voorhees, 1999)](https://trec.nist.gov/pubs/trec8/papers/qa_report.pdf), which scored systems by the reciprocal rank of the first correct answer; MRR is its mean over a query set. Implemented in `mean_reciprocal_rank()` in [`information_retrieval.py`](code/information_retrieval.py).
 
 If three queries find their first relevant result at ranks 1, 3, and 2:
 
@@ -371,13 +413,17 @@ MRR rewards getting *a* right answer high; it ignores everything after the first
 
 nDCG is the gold-standard ranking metric because it handles **graded relevance** (not just relevant/irrelevant) **and** position discounting (a great result at rank 1 is worth more than the same result at rank 8). Build it in three steps.
 
-**1. DCG** — sum each result's relevance, **discounted by a log of its rank** so deeper positions count less:
+**1. DCG** — sum each result's **gain**, **discounted by a log of its rank** so deeper positions count less:
 
 $$
-\text{DCG@k} \;=\; \sum_{i=1}^{k} \frac{\text{rel}_i}{\log_2(i + 1)}.
+\text{DCG@k} \;=\; \sum_{i=1}^{k} \frac{\text{gain}(\text{rel}_i)}{\log_2(i + 1)},
+\qquad
+\text{gain}(\text{rel}) = \underbrace{\text{rel}}_{\text{linear}} \ \text{ or }\ \underbrace{2^{\text{rel}} - 1}_{\text{exponential}}.
 $$
 
-For $\text{rel} = [3,2,3,0,1,2,0,0]$, term by term:
+> **Source / derivation:** [Järvelin & Kekäläinen (2002), *Cumulated Gain-based Evaluation of IR Techniques* (ACM TOIS 20(4))](https://doi.org/10.1145/582415.582418) — introduces (discounted) cumulated gain and the per-query ideal normalization. The **exponential gain** $2^{\text{rel}}-1$ — which rewards highly-relevant hits super-linearly — was popularized by [Burges et al. (2005), *Learning to Rank using Gradient Descent* (RankNet)](https://www.microsoft.com/en-us/research/publication/learning-to-rank-using-gradient-descent/) and is the default in much TREC/LightGBM tooling. The two conventions give **different numbers**; pick one and state it. We derive the worked table below with the **linear** gain — which is exactly what `sklearn.metrics.ndcg_score` computes, so the notebook can verify our number against it to the last digit. Implemented in `dcg_at_k` / `ndcg_at_k` (either gain) in [`information_retrieval.py`](code/information_retrieval.py).
+
+For $\text{rel} = [3,2,3,0,1,2,0,0]$, with the **linear** gain (gain = rel), term by term:
 
 | rank $i$ | $\text{rel}_i$ | $\log_2(i+1)$ | $\text{rel}_i/\log_2(i+1)$ |
 |---|---|---|---|
@@ -402,9 +448,9 @@ $$
 \text{nDCG@k} = \frac{\text{DCG@k}}{\text{IDCG@k}} = \frac{6.861}{7.141} = \mathbf{0.961}.
 $$
 
-A score of 0.961 means our ranking is 96.1% of the way to perfect for this query. **nDCG ∈ [0, 1]**, 1.0 = ideal order — and because it's normalized per query, you can average it across a whole evaluation set. (All three numbers verified in code below.)
+A score of 0.961 means our ranking is 96.1% of the way to perfect for this query. **nDCG ∈ [0, 1]**, 1.0 = ideal order — and because it's normalized per query, you can average it across a whole evaluation set. (All three numbers are reproduced by `ndcg_decomposition()` and **verified equal to `sklearn.metrics.ndcg_score`** — same linear gain — in the notebook.)
 
-![Evaluation, computed. Left: precision@k (blue) falls and recall@k (green) rises as the cutoff k grows, the canonical trade-off. Right: the nDCG decomposition for rel = [3,2,3,0,1,2,0,0] — DCG = 6.861, the ideal IDCG = 7.141, and their ratio nDCG@8 = 0.961.](../images/ir_ndcg.png)
+![The nDCG decomposition for rel = [3,2,3,0,1,2,0,0], computed by `code/make_figures_16.py`. Left: each grade's discounted gain rel/log₂(i+1) for our ranking (blue) vs the ideal sorted ranking (green) — a perfect grade at rank 1 contributes more than the same grade deeper down. Right: DCG@8 = 6.861, the ideal IDCG@8 = 7.141, and their ratio nDCG@8 = 6.861/7.141 = 0.961 — 96.1% of the best-possible order. This linear-gain value matches sklearn exactly.](../images/ir_ndcg.png)
 
 > **Tip:** the one-line mental model for nDCG — **"reward relevant results, discount them by how deep they sit, then normalize against the best-possible ordering so the score is 0–1 and averages across queries."** It's the default offline metric for search and RAG retrieval evaluation; BEIR (the standard zero-shot retrieval benchmark) reports **nDCG@10**.
 
@@ -446,7 +492,9 @@ Where do the embeddings *live*? In a **vector database** or vector index — inf
 
 ## Code: build a hybrid semantic-search engine end to end
 
-Here's a complete, runnable retriever — **BM25 + dense bi-encoder + RRF fusion** over the vocabulary-mismatch corpus — that reproduces the measured ranks cited throughout this page. It runs on CPU in a few seconds.
+> **Runnable project and a step-by-step notebook:** every number on this page — BM25, dense cosine, RRF, the cross-encoder re-rank, precision/recall/MRR/nDCG, and the ANN sweep — is produced by one seeded source of truth, [`information_retrieval.py`](code/information_retrieval.py), and walked cell-by-cell (each asserting its point before printing, then verified against `rank_bm25` and `sklearn`) in the [step-by-step teaching notebook](code/16-Information-Retrieval-and-Semantic-Search.ipynb). The figures above come from the same backend via [`make_figures_16.py`](code/make_figures_16.py), so the page, the notebook, and the figures cannot disagree. It runs **offline on CPU** (a real `all-MiniLM-L6-v2` if reachable, a deterministic synthetic encoder otherwise) in a few seconds.
+
+Here's the heart of it — **BM25 + dense bi-encoder + RRF fusion** over the vocabulary-mismatch corpus — reproducing the measured ranks cited throughout this page (the library one-liners; the from-scratch BM25 / RRF / metrics live in the script).
 
 ```python
 """Hybrid semantic search: BM25 + dense bi-encoder + RRF fusion.
