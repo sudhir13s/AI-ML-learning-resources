@@ -3,7 +3,7 @@ id: "06-nlp/coreference-resolution/references"
 topic: "Coreference Resolution — References"
 parent: "06-nlp/coreference-resolution"
 type: references
-updated: 2026-06-22
+updated: 2026-06-27
 ---
 
 # Coreference Resolution — references and further reading
@@ -54,6 +54,7 @@ updated: 2026-06-22
 
 **In this platform**:
 - Concept page (full explanation): [Coreference Resolution](14-Coreference-Resolution.md)
+- Runnable code: [teaching notebook](code/14-Coreference-Resolution.ipynb) · [seeded source module `coreference.py`](code/coreference.py) · [figure generator `make_figures_14.py`](code/make_figures_14.py) — the mention-ranking softmax, transitive closure, and all three metrics from scratch, with every page figure regenerated from the same functions.
 - Prior step / mention detection: [Sequence Labeling — POS & NER](../09-Sequence-Labeling-POS-and-NER/09-Sequence-Labeling-POS-and-NER.md) — NER feeds candidate mentions.
 - Encoder foundations: [Contextual Embeddings — ELMo, BERT](../06-Contextual-Embeddings-ELMo-BERT/06-Contextual-Embeddings-ELMo-BERT.md) — the SpanBERT-style representations span-ranking coref runs on · [Attention Mechanism](../../05.%20Deep_Learning/concepts/15-Attention-Mechanism.md) — the span head-attention pooling.
 - Downstream uses: [Question Answering](../11-Question-Answering/11-Question-Answering.md) · [Text Summarization](../13-Text-Summarization/13-Text-Summarization.md) · [Machine Translation](../12-Machine-Translation/12-Machine-Translation.md) — all need resolved entities.

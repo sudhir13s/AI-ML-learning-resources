@@ -6,7 +6,7 @@ level: advanced
 prereqs: ["sequence-labeling-pos-ner", "contextual-embeddings", "attention"]
 interview_frequency: medium
 template: concept-deep
-updated: 2026-06-22
+updated: 2026-06-27
 ---
 
 # Coreference Resolution: who is "he," and which "it" did you mean?
@@ -24,6 +24,8 @@ I'm going to teach this the way I'd actually walk a teammate through it: first t
 - resolve a short passage **by hand** into clusters, and read the output of a real coref pipeline.
 
 > **Note:** keep one distinction crisp from the start. **Coreference** is a *symmetric, transitive* relation between mentions ("these expressions denote the same entity"). **Anaphora** is a *directional* relation ("this expression's interpretation **depends** on an earlier one"). They overlap massively but are not identical — see the linguistics section. Interviewers love this distinction because it separates people who memorized "coref = pronouns" from people who understand the phenomenon.
+
+> **Runnable project and a step-by-step notebook:** every mechanism below — the mention-ranking softmax, transitive closure into clusters, and all three metrics from scratch — lives as verified code next to this page. See the [step-by-step teaching notebook](code/14-Coreference-Resolution.ipynb) and the [seeded source module](code/coreference.py) (run it with `python coreference.py`); every figure on the page is regenerated from the *same* functions by [`make_figures_14.py`](code/make_figures_14.py), so the prose, the figures, and the code can never drift.
 
 ---
 
@@ -164,6 +166,8 @@ The first wave of **learning-based** coref (Soon et al. 2001; Ng & Cardie 2002) 
 
 $$P\big(\text{coref}(i, j)\big) \in [0, 1],$$
 
+> **Source / derivation:** the binary mention-pair classifier with hand-engineered pairwise features is [Soon, Ng & Lim (2001), *A Machine Learning Approach to Coreference Resolution of Noun Phrases*](https://aclanthology.org/J01-4004/) — the canonical formulation whose independence-per-pair is exactly the transitivity flaw analyzed below.
+
 using the features above (distance, string match, agreement, …). At test time, you have a soup of pairwise yes/no decisions; you then **cluster** them — e.g. *closest-first* (link each mention to its nearest positive antecedent) or *best-first* (its highest-scoring one), followed by transitive closure.
 
 This works, and for a decade it was the standard. But it has a **structural flaw** that every interviewer probes:
@@ -185,6 +189,8 @@ Crucially, the candidate set includes a special **dummy antecedent ε** ("epsilo
 **The derivation.** Let mention $i$ have candidate antecedents $\mathcal{Y}(i) = \{\epsilon, 1, 2, \ldots, i-1\}$ (all earlier mentions plus ε). Define a real-valued score $s(i, j)$ for assigning antecedent $j$ to mention $i$. Turn scores into a distribution over antecedents with a **softmax**:
 
 $$P(y_i = j) \;=\; \frac{\exp\, s(i, j)}{\displaystyle\sum_{j' \in \mathcal{Y}(i)} \exp\, s(i, j')}.$$
+
+> **Source / derivation:** the softmax-over-antecedents (with the dummy ε) and the latent-antecedent marginal loss below are the mention-ranking objective of [Lee, He, Lewis & Zettlemoyer (2017), *End-to-end Neural Coreference Resolution*, §3](https://arxiv.org/abs/1707.07045) (Eq. 1), itself the neural form of [Clark & Manning (2016), *Deep Reinforcement Learning for Mention-Ranking Coreference Models*](https://arxiv.org/abs/1609.08667). The codeblock at [`coreference.py: antecedent_distribution`](code/coreference.py) implements exactly this softmax.
 
 Now the training signal. We don't always know *which specific* earlier mention is "the" antecedent — gold data gives us **clusters**, and any gold mention in $i$'s cluster is a **correct** antecedent. So we treat the set of gold antecedents $\mathrm{GOLD}(i)$ (the earlier mentions in $i$'s gold cluster, or $\{\epsilon\}$ if $i$ is the first mention of its entity) as a **latent** choice and **marginalize** over it. The loss for mention $i$ is the negative log of the total probability mass the model places on *any* correct antecedent:
 
@@ -236,6 +242,8 @@ Since there are $O(TL)$ spans, the model **keeps only the top $\lambda T$** by $
 
 $$s(i, j) \;=\; \underbrace{s_m(i)}_{\text{is } i \text{ a mention?}} \;+\; \underbrace{s_m(j)}_{\text{is } j \text{ a mention?}} \;+\; \underbrace{s_a(i, j)}_{\text{do } i,j \text{ corefer?}},$$
 
+> **Source / derivation:** the additive scoring $s(i,j) = s_m(i) + s_m(j) + s_a(i,j)$ with $s(i,\epsilon)=0$, the span representation $g_i = [x_{\text{start}(i)}; x_{\text{end}(i)}; \hat{x}_i; \phi(i)]$, and the top-$\lambda T$ pruning are all from [Lee, He, Lewis & Zettlemoyer (2017), §3 (Eqs. 2–4)](https://arxiv.org/abs/1707.07045). The coarse-to-fine pruning and higher-order refinement are [Lee, He & Zettlemoyer (2018)](https://arxiv.org/abs/1804.05392).
+
 where the pairwise term $s_a(i, j) = \mathbf{w}_a^\top \, \mathrm{FFNN}_a\big([\,g_i\,;\, g_j\,;\, g_i \odot g_j\,;\, \phi(i, j)\,]\big)$ uses the two span reps, their **element-wise product** $g_i \odot g_j$ (a similarity signal), and pairwise features $\phi(i,j)$ (distance, speaker, genre). The dummy antecedent is fixed at $s(i, \epsilon) = 0$.
 
 **Step 5 — softmax and the marginal loss.** This is exactly the **mention-ranking** objective from family 3, applied to the learned spans:
@@ -259,6 +267,8 @@ The 2017/2018 models used a biLSTM encoder. The single biggest jump in coref acc
 SpanBERT is a BERT variant pretrained with two changes tailored to **span** tasks: (1) it **masks contiguous spans** of tokens (not random individual tokens), and (2) a **span-boundary objective (SBO)** trains the model to predict the masked span's content from its **boundary** tokens alone. That is *exactly* the signal coref needs — the span-ranking model represents a mention by its boundary vectors, and SpanBERT pretrains those boundaries to encode the span. Plugging SpanBERT into the 2018 coref architecture pushed CoNLL F1 well past 79, a large leap over LSTM-based systems.
 
 > **Note:** the lesson generalizes. The end-to-end **architecture** (enumerate spans → represent → rank antecedents with the marginal loss) stayed fixed; the **encoder** got better (biLSTM → ELMo → BERT → SpanBERT), and accuracy rose with it. Coref rides the same contextual-embedding wave as the rest of NLP — see [Contextual Embeddings (ELMo, BERT)](../06-Contextual-Embeddings-ELMo-BERT/06-Contextual-Embeddings-ELMo-BERT.md) for *why* boundary-aware span representations carry so much coreference signal.
+
+![CoNLL F1 (OntoNotes English) across the field's model-family arc: rule/feature systems (~55) → mention-pair (~60) → mention-ranking (~65) → end-to-end span-ranking (Lee 2017, ~67) → +ELMo (Lee 2018, ~73) → SpanBERT (Joshi 2020, ~80). The same span-ranking architecture carried throughout; almost all of the gain came from a better encoder. Illustrative reference points from the literature, not recomputed here.](../images/coref_field_progress.png)
 
 > **Tip:** later work pushed efficiency further — **word-level coref** (Dobrovolskii 2021) ranks *single head words* instead of all spans (cutting the candidate set from $O(T^2)$ to $O(T)$), and **link-append / autoregressive** formulations recast coref as a sequence-generation task suited to large transformers. The span-ranking objective remains the conceptual backbone.
 
@@ -292,6 +302,8 @@ Take **gold** clustering $\{a,b,c\},\{d,e\}$ (two entities, 5 mentions) and a sy
 
 MUC counts **coreference links**. A cluster of size $n$ needs a minimum of $n-1$ links to connect it. MUC **recall** counts how many of the gold links the system recovered; **precision** is the symmetric quantity with the roles of gold and predicted swapped.
 
+> **Source / derivation:** the link-based scoring (recall $= \sum_i (|G_i| - p(G_i)) / \sum_i (|G_i| - 1)$, where $p(G_i)$ is the number of predicted partitions touching gold cluster $G_i$) is [Vilain, Burger, Aberdeen, Connolly & Hirschman (1995), *A Model-Theoretic Coreference Scoring Scheme*](https://aclanthology.org/M95-1005/). Implemented exactly at [`coreference.py: muc`](code/coreference.py).
+
 - Gold links needed: $\{a,b,c\}$ needs 2, $\{d,e\}$ needs 1 → **3 gold links**.
 - The prediction breaks gold cluster $\{a,b,c\}$ into the two pieces $\{a,b\}$ and $\{c\}$, so within that cluster it recovers only $3 - 2 = 1$ of the 2 needed links; cluster $\{d,e\}$'s 1 link is intact. Recall $= 2/3 \approx \mathbf{0.667}$. Precision is $\mathbf{1.0}$ — every link the system *did* predict ($a$–$b$, $d$–$e$) is correct. **MUC F1 $= \frac{2\cdot 1.0 \cdot 0.667}{1.667} = 0.80$.**
 
@@ -302,6 +314,8 @@ MUC counts **coreference links**. A cluster of size $n$ needs a minimum of $n-1$
 B³ scores **per mention** and averages, which fixes MUC's singleton blindness. For each mention $m$, let $G_m$ be its gold cluster and $P_m$ its predicted cluster:
 
 $$\text{Precision}(m) = \frac{|G_m \cap P_m|}{|P_m|}, \qquad \text{Recall}(m) = \frac{|G_m \cap P_m|}{|G_m|},$$
+
+> **Source / derivation:** the per-mention precision/recall and their average are [Bagga & Baldwin (1998), *Algorithms for Scoring Coreference Chains*](https://www.aaai.org/Papers/Symposia/Spring/1998/SS-98-01/SS98-01-013.pdf). The by-hand table below is reproduced exactly by [`coreference.py: bcubed`](code/coreference.py) (the notebook asserts `(1.0, 0.733, 0.846)`).
 
 then average over all mentions. Let me **compute it fully** for our example (gold $\{a,b,c\},\{d,e\}$; pred $\{a,b\},\{c\},\{d,e\}$):
 
@@ -325,6 +339,8 @@ That matches the measured bar in the figure (0.85). The recall hit comes entirel
 
 CEAF finds the **best one-to-one alignment** between gold and predicted entities, then scores the alignment. With the similarity $\phi_4(G, P) = \frac{2|G \cap P|}{|G| + |P|}$ (Dice overlap of two clusters), it maximizes total similarity over all bijections:
 
+> **Source / derivation:** the entity-alignment metric and the $\phi_4$ similarity are [Luo (2005), *On Coreference Resolution Performance Metrics*](https://aclanthology.org/H05-1004/). Implemented (best bijection over all permutations) at [`coreference.py: ceaf_phi4`](code/coreference.py).
+
 - Align $\{a,b,c\} \leftrightarrow \{a,b\}$: $\phi_4 = \frac{2\cdot 2}{3+2} = 0.8$. Align $\{d,e\} \leftrightarrow \{d,e\}$: $\phi_4 = \frac{2\cdot 2}{4} = 1.0$. The predicted singleton $\{c\}$ goes unaligned. Total similarity = 1.8.
 - **Precision** = 1.8 / (#predicted entities = 3) = **0.60**; **Recall** = 1.8 / (#gold entities = 2) = **0.90**; **CEAF-φ4 F1** $= \frac{2\cdot 0.6\cdot 0.9}{1.5} = \mathbf{0.72}$.
 
@@ -335,6 +351,8 @@ CEAF finds the **best one-to-one alignment** between gold and predicted entities
 The **CoNLL-2012 shared task** settled the matter: report the **unweighted mean of MUC, B³, and CEAF-φ4 F1**. For our example:
 
 $$\text{CoNLL F1} = \frac{0.80 + 0.846 + 0.72}{3} = \mathbf{0.789}.$$
+
+> **Source / derivation:** the three-metric average as *the* reported coreference score is the [CoNLL-2012 shared task (Pradhan et al. 2012)](https://aclanthology.org/W12-4501/). All four numbers (0.80 / 0.846 / 0.72 / 0.789) are computed by [`coreference.py`](code/coreference.py) and printed by `make_figures_14.py` and the notebook, so the figure cannot drift from the prose.
 
 Each metric measures the **same error** (one split mention) and lands on a **different number** — 0.80, 0.85, 0.72 — because each is sensitive to a different failure mode (links, mentions, entity alignment). Averaging them is the field's pragmatic admission that **no single view of "clustering correctness" is complete**.
 
@@ -350,6 +368,10 @@ Some pronouns can't be resolved by **any** amount of syntax, agreement, or recen
 > *The trophy doesn't fit in the suitcase because **it** is too small.*
 
 Same syntax, same agreement (*trophy* and *suitcase* are both singular, neuter). Swap one word (*big* → *small*) and the answer **flips**: in the first, *it* = the **trophy** (the trophy is too big); in the second, *it* = the **suitcase** (the suitcase is too small). No structural rule can decide it — you need **physical/commonsense reasoning** about containment. A pair of schemas is designed so that a system exploiting surface statistics scores at chance.
+
+> **Source / derivation:** the Winograd Schema Challenge — minimal-pair pronoun resolution requiring commonsense, proposed as an alternative to the Turing Test — is [Levesque, Davis & Morgenstern (2012), *The Winograd Schema Challenge*](https://cdn.aaai.org/ocs/4492/4492-21843-1-PB.pdf). The flip is reproduced by [`coreference.py: winograd_resolve`](code/coreference.py), where a single world-knowledge feature is the only thing that breaks the structural tie.
+
+![The Winograd flip, computed in coreference.py. Left: '...because it is too big' resolves 'it' to the trophy (+1 world-knowledge score, green); the suitcase scores -1. Right: changing only the adjective to 'small' flips the winner to the suitcase. Structure and agreement give both candidates a score of 0 (a tie); only the commonsense containment feature decides — which is exactly why rule-based and feature-based coref systems, having no semantics, score at chance on these.](../images/coref_winograd.png)
 
 > **Note:** Winograd schemas were proposed as an **alternative to the Turing Test** — a benchmark you can't pass by pattern-matching, only by reasoning. For years coref systems scored near chance on them. Large language models changed that dramatically: GPT-class models resolve most Winograd schemas correctly, because the commonsense knowledge needed has been absorbed into their pretraining. The challenge that was meant to be AI-complete became, largely, a measure of how much world knowledge a model memorized.
 
@@ -440,24 +462,33 @@ E5 = { the update }             (singleton)
 
 ## Worked example 2: a mention-ranking score by hand
 
-Now make the ranking concrete. Resolve **him** (mention $i$) in *"John told his manager that he would finish… She thanked **him**."* Candidates $\mathcal{Y}(i) = \{\epsilon,\ \text{John},\ \text{his},\ \text{he},\ \text{his manager},\ \text{She}\}$. Suppose a simple linear scorer with three features — `gender_agree` (+2 if the candidate's gender matches *him*=masc., −3 if it mismatches), `recency` (closer candidates score higher, 0 to +1), and `is_subject` (+0.5) — produces these scores $s(i,j)$:
+Now make the ranking concrete — using the *exact* linear scorer in [`coreference.py`](code/coreference.py), so the table, the figure below, and the notebook are one and the same computation. Resolve **him** (mention $i$, at reading position 5) in *"John told his manager that he would finish… She thanked **him**."* Candidates $\mathcal{Y}(i) = \{\epsilon,\ \text{John},\ \text{his},\ \text{his manager},\ \text{he},\ \text{She}\}$. The scorer adds three features:
 
-| candidate $j$ | gender | recency | subject | $s(i,j)$ |
+- `gender` — **+2** if the candidate's gender matches *him* (masc.), **−3** if it clashes, **0** if the candidate's gender is unknown;
+- `recency` — **$1/\text{distance}$**, where distance is how many mentions back the candidate sits (so the immediately previous mention scores 1.0, and it decays with distance);
+- `subject` — **+0.5** if the candidate is the discourse subject.
+
+The dummy **ε** is pinned at $s(i,\epsilon)=0$. With *him* at position 5, the distances are John 5, his 4, his manager 3, he 2, She 1:
+
+| candidate $j$ | gender | recency $=1/d$ | subject | $s(i,j)$ |
 |---|---|---|---|---|
-| **ε** (no antecedent) | — | — | — | $0.0$ |
-| John | +2 (masc ✓) | +0.3 | +0.5 | $\mathbf{2.8}$ |
-| his | +2 (masc ✓) | +0.4 | 0 | $2.4$ |
-| he | +2 (masc ✓) | +1.0 | +0.5 | $\mathbf{3.5}$ |
-| his manager | −1 (unknown) | +0.6 | 0 | $-0.4$ |
-| She | −3 (fem ✗) | +0.9 | +0.5 | $-1.6$ |
+| **ε** (no antecedent) | — | — | — | $0.00$ |
+| John | $+2$ (masc ✓) | $1/5 = 0.20$ | $+0.5$ | $\mathbf{2.70}$ |
+| his | $+2$ (masc ✓) | $1/4 = 0.25$ | $0$ | $2.25$ |
+| his manager | $0$ (unknown) | $1/3 = 0.33$ | $0$ | $0.33$ |
+| he | $+2$ (masc ✓) | $1/2 = 0.50$ | $+0.5$ | $\mathbf{3.00}$ |
+| She | $-3$ (fem ✗) | $1/1 = 1.00$ | $+0.5$ | $-1.50$ |
 
-Apply the softmax $P(y_i=j) = e^{s(i,j)} / \sum_{j'} e^{s(i,j')}$. The denominator is $e^{0} + e^{2.8} + e^{2.4} + e^{3.5} + e^{-0.4} + e^{-1.6} = 1 + 16.4 + 11.0 + 33.1 + 0.67 + 0.20 = 62.4$. So:
+Apply the softmax $P(y_i=j) = e^{s(i,j)} / \sum_{j'} e^{s(i,j')}$. Exponentiating (values shown to 2 dp): $e^{0}=1.00$, $e^{2.70}=14.88$, $e^{2.25}=9.49$, $e^{0.33}=1.40$, $e^{3.00}=20.09$, $e^{-1.50}=0.22$, summing to a denominator of $\approx 47.07$. The six probabilities (they sum to **1.0**) are:
 
-$$P(\text{he}) = \frac{33.1}{62.4} = \mathbf{0.53}, \quad P(\text{John}) = \frac{16.4}{62.4} = 0.26, \quad P(\text{his}) = 0.18, \quad P(\epsilon) = 0.016.$$
+$$P(\text{he}) = \frac{20.09}{47.07} = \mathbf{0.43}, \quad P(\text{John}) = \frac{14.88}{47.07} = 0.32, \quad P(\text{his}) = \frac{9.49}{47.07} = 0.20,$$
+$$P(\text{his manager}) = \frac{1.40}{47.07} = 0.03, \quad P(\epsilon) = \frac{1.00}{47.07} = 0.02, \quad P(\text{She}) = \frac{0.22}{47.07} = 0.005.$$
 
-The model picks **he** as the antecedent — and since *he* is already in E1 = {John, his, he}, transitive closure puts *him* in the **John** cluster, the correct answer. The fem. *She* and the gender-unknown *manager* are crushed by the gender feature; ε gets almost no mass because a strong masculine antecedent exists.
+The model picks **he** as the antecedent — and since *he* is already in E1 = {John, his, he}, transitive closure puts *him* in the **John** cluster, the correct answer. The fem. *She* is crushed by the gender clash and the gender-unknown *manager* gets little mass; ε gets almost none because a strong masculine antecedent exists.
 
-> **Note:** this is the mechanism behind family 3. Each mention runs **one** softmax over its candidates; ε competes as the "new entity" option; and the **marginal loss** would, in training, reward putting mass on *any* of {John, his, he} (all gold antecedents of *him*) — which is why both *he* (0.53) and *John* (0.26) carrying mass is fine, not a bug.
+![The mention-ranking softmax over every candidate antecedent of 'him', computed by the runnable scorer in coreference.py. The chosen antecedent 'he' (green) carries the most mass (0.43); the masculine John (0.32) and his (0.20) follow; the gender-clashing 'She' (red) is crushed to near-zero (0.005); the dummy epsilon 'no antecedent' (amber, 0.02) gets almost no mass because a strong masculine antecedent exists. This is one softmax — the antecedents compete, and epsilon competes as the 'start a new entity' option.](../images/coref_mention_ranking.png)
+
+> **Note:** the table, the figure, and the notebook are the same computation — these probabilities are produced by `coreference.py` (`antecedent_distribution`) and plotted above. This is the mechanism behind family 3: each mention runs **one** softmax over its candidates; ε competes as the "new entity" option; and the **marginal loss** would, in training, reward putting mass on *any* of {John, his, he} (all gold antecedents of *him*) — which is why both *he* (0.43) and *John* (0.32) carrying mass is fine, not a bug.
 
 ---
 
@@ -476,57 +507,80 @@ Precision $= 1.0$ (no wrong merges — both predicted clusters are subsets of th
 
 Now the **opposite error** — the system **over-merges**: gold $\{w,x\},\{y,z\}$ (two entities) but predicted $\{w,x,y,z\}$ (one). By symmetry, precision $= 0.5$ (each mention's predicted cluster is only half-right) and recall $= 1.0$, giving the **same** B³ F1 $= 0.667$.
 
+![B-cubed precision, recall and F1 for the two ways a clustering can be wrong, computed from scratch in coreference.py. Over-splitting one entity into two halves keeps precision perfect (1.0) but halves recall (0.5); over-merging two entities into one mirrors it (precision 0.5, recall 1.0). Both land on the same F1 (0.667) — which is exactly why you report precision and recall, not just F1: they tell you which way the system is broken.](../images/coref_bcubed_symmetry.png)
+
 > **Tip:** the lesson: **B³ precision punishes over-merging; B³ recall punishes over-splitting.** They're the two failure directions of any clustering, and the F1 balances them. This is *why* you report precision and recall, not just F1 — they tell you *which* way your system is broken.
 
 ---
 
 ## Worked example 4: a measured coref run
 
-Now actually run mention detection and the metric code. spaCy supplies real mention detection; we compute B³ exactly on a clustering (the full generator also computes MUC and CEAF-φ4). The diagram generator `tools/gen_coreference_diagrams.py` runs this and prints the numbers — they match the figure and the by-hand B³ above.
+Now actually run the whole pipeline. The seeded module [`coreference.py`](code/coreference.py) does real spaCy **mention detection** and the **mention-ranking** resolve, then scores the metrics exactly; the [notebook](code/14-Coreference-Resolution.ipynb) runs it cell by cell, asserting each number before printing it. Here is the from-scratch core (the full module is in the companion files):
 
 ```python
-"""Coreference: real spaCy mention detection + exact B-cubed metric.
-Verified on Python 3.12 (spaCy 3.8, en_core_web_sm)."""
-import spacy
-nlp = spacy.load("en_core_web_sm")
-text = ("John told his manager that he would finish the report by Friday. "
-        "She thanked him for the update.")
-doc = nlp(text)
+"""Coreference core: mention-ranking softmax, transitive closure, B-cubed -- all from scratch.
+Verified on Python 3.12 / numpy 2.4.6 (the seeded coreference.py is the source of truth)."""
+import numpy as np
 
-# --- mention detection: named entities + pronouns + noun chunks (candidate mentions) ---
-ner   = [(e.text, e.label_) for e in doc.ents]
-prons = [t.text for t in doc if t.tag_ in ("PRP", "PRP$")]   # he, his, she, him ...
-nps   = [nc.text for nc in doc.noun_chunks]
-print("NER          :", ner)
-print("pronouns     :", prons)
-print("noun chunks  :", nps)
+EPSILON = "ε"  # the dummy 'no antecedent' candidate, scored at 0 (the new-entity threshold)
 
-# --- exact B-cubed metric on gold vs predicted clusterings ---
-def bcubed(gold, pred):
+def softmax(scores):                     # numerically stable softmax over candidate antecedents
+    z = scores - scores.max()
+    e = np.exp(z)
+    return e / e.sum()
+
+def transitive_closure(antecedents):     # chain antecedent links into clusters (union-find)
+    n = len(antecedents); parent = list(range(n))
+    def find(x):
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]; x = parent[x]
+        return x
+    for i, a in enumerate(antecedents):  # a is an earlier index, or EPSILON
+        if a != EPSILON:
+            ra, rb = find(i), find(int(a)); parent[max(ra, rb)] = min(ra, rb)
+    groups = {}
+    for i in range(n): groups.setdefault(find(i), []).append(i)
+    return [sorted(g) for g in sorted(groups.values(), key=min)]
+
+def bcubed(gold, pred):                  # per-mention precision/recall, averaged (Bagga & Baldwin 1998)
     g = {m: set(c) for c in gold for m in c}
     p = {m: set(c) for c in pred for m in c}
-    P = sum(len(g[m] & p[m]) / len(p[m]) for m in g) / len(g)
-    R = sum(len(g[m] & p[m]) / len(g[m]) for m in g) / len(g)
-    F = 2 * P * R / (P + R) if P + R else 0.0
-    return round(P, 3), round(R, 3), round(F, 3)
+    ms = set(g) | set(p)
+    P = sum(len(g[m] & p[m]) / len(p[m]) for m in ms) / len(ms)
+    R = sum(len(g[m] & p[m]) / len(g[m]) for m in ms) / len(ms)
+    return round(P, 3), round(R, 3), round(2 * P * R / (P + R), 3)
 
-gold = [["a", "b", "c"], ["d", "e"]]      # 2 entities
-pred = [["a", "b"], ["c"], ["d", "e"]]    # predictor split 'c' into a singleton
-print("B-cubed (P,R,F1):", bcubed(gold, pred))   # -> (1.0, 0.733, 0.846)
+# the predictor split mention 'c' out of the {a,b,c} entity (the running metric example)
+print("B-cubed (P,R,F1):", bcubed([["a","b","c"],["d","e"]], [["a","b"],["c"],["d","e"]]))
 ```
 
-Running it prints:
+Running the full module (`python coreference.py`) prints the real, executed output:
 
 ```
-NER          : [('John', 'PERSON'), ('Friday', 'DATE')]
-pronouns     : ['his', 'he', 'She', 'him']
-noun chunks  : ['John', 'his manager', 'he', 'the report', 'Friday', 'She', 'him', 'the update']
-B-cubed (P,R,F1): (1.0, 0.733, 0.846)
+== Mention-ranking on the toy passage ==
+  John         -> antecedent: ε            (p=1.00)
+  his          -> antecedent: John         (p=0.97)
+  his manager  -> antecedent: ε            (p=0.45)
+  he           -> antecedent: John         (p=0.52)
+  She          -> antecedent: his manager  (p=0.54)
+  him          -> antecedent: he           (p=0.43)
+  clusters: [['John', 'his', 'he', 'him'], ['his manager', 'She']]
+
+== Metrics on gold={{a,b,c},{d,e}} pred={{a,b},{c},{d,e}} ==
+  MUC       P=1.000 R=0.667 F1=0.800
+  B-cubed   P=1.000 R=0.733 F1=0.846
+  CEAF-phi4 P=0.600 R=0.900 F1=0.720
+  CoNLL avg F1 = 0.789
+
+== Real spaCy mention detection on the running passage ==
+  NER         : [('John', 'PERSON'), ('Friday', 'DATE')]
+  pronouns    : ['his', 'he', 'She', 'him']
+  noun chunks : ['John', 'his manager', 'he', 'the report', 'Friday', 'She', 'him', 'the update']
 ```
 
-The mentions match Worked example 1 exactly, and the B³ F1 = **0.846** matches the by-hand table and the figure. The full generator additionally computes MUC F1 = 0.80 and CEAF-φ4 F1 = 0.72, for CoNLL avg = 0.79 — all from the same code, so the page's numbers can't drift from the math.
+The clusters reproduce **Worked example 1** exactly — `{John, his, he, him}` and `{his manager, She}` — so the toy mention-ranking scorer earns a **CoNLL F1 of 1.0** on this passage; the spaCy mentions match Worked example 1's list; and B³ F1 = **0.846** matches the by-hand table, the figure, and MUC 0.80 / CEAF 0.72 / CoNLL 0.79 — all from the same seeded functions, so the page's numbers can't drift from the math.
 
-> **Note:** I used spaCy's mention detector (real, reproducible) plus exact metric code rather than a heavyweight end-to-end coref model, because the canonical libraries (`neuralcoref`, `fastcoref`) are pinned to **older `transformers`/spaCy** versions and break on current installs — a common, frustrating reality of the coref tooling ecosystem. The lesson is itself worth knowing: coref libraries lag the fast-moving transformer stack, so in production you either pin an old environment, use a serving wrapper, or **prompt an LLM**. The **task structure and metrics**, however, are exactly what you compute above.
+> **Note:** I used spaCy's mention detector (real, reproducible) plus the from-scratch ranking and metric code rather than a heavyweight pretrained end-to-end coref model, because the canonical libraries (`neuralcoref`, `fastcoref`) are pinned to **older `transformers`/spaCy** versions and break on current installs — a common, frustrating reality of the coref tooling ecosystem. The lesson is itself worth knowing: coref libraries lag the fast-moving transformer stack, so in production you either pin an old environment, use a serving wrapper, or **prompt an LLM**. The **task structure, the mention-ranking objective, and the metrics**, however, are exactly what the code above computes.
 
 > **Tip:** to run a full neural model, the practical paths today are: an **LLM prompt** (`"return coreference clusters as JSON"`), a maintained library in a **pinned environment** (`fastcoref`/`maverick-coref` with the transformers version they require), or AllenNLP's SpanBERT coref in its own env. All produce the **clusters**; you score them with the exact metric code above.
 
