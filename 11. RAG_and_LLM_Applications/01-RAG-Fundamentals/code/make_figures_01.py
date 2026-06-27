@@ -214,7 +214,9 @@ def fig_prompt_anatomy(idf: dict[str, float], index: np.ndarray) -> None:
 
     passages = [_wrap(CORPUS[i]) for i in top_idx]
 
-    fig, ax = plt.subplots(figsize=(8.6, 5.4))
+    # taller canvas + a bottom margin so the italic punchline below the last block isn't clipped
+    fig, ax = plt.subplots(figsize=(8.6, 6.2))
+    fig.subplots_adjust(bottom=0.10, top=0.92)
     ax.axis("off")
     blocks = [
         ("INSTRUCTION", "Answer using ONLY the context. If absent, say you don't know.", AMBER),
@@ -222,18 +224,20 @@ def fig_prompt_anatomy(idf: dict[str, float], index: np.ndarray) -> None:
          "\n".join(f"[{i + 1}] {p}" for i, p in enumerate(passages)), GREEN),
         ("QUESTION", PRIVATE_QUESTION, BLUE),
     ]
-    y = 0.96
+    y = 0.97
     for title, body, color in blocks:
         n_lines = body.count("\n") + 1
-        height = 0.10 + 0.075 * n_lines  # taller box for multi-line context
+        height = 0.085 + 0.062 * n_lines  # box height scales with line count; trimmed to leave room below
         ax.add_patch(plt.Rectangle((0.02, y - height), 0.96, height, transform=ax.transAxes,
                                     facecolor=color, alpha=0.16, edgecolor=color, linewidth=1.6))
-        ax.text(0.04, y - 0.03, title, transform=ax.transAxes, fontsize=10.5, fontweight="bold",
+        ax.text(0.04, y - 0.028, title, transform=ax.transAxes, fontsize=10.5, fontweight="bold",
                 color=color, va="top")
-        ax.text(0.04, y - 0.075, body, transform=ax.transAxes, fontsize=9, color=INK, va="top",
+        ax.text(0.04, y - 0.07, body, transform=ax.transAxes, fontsize=9, color=INK, va="top",
                 family="monospace")
-        y -= height + 0.03
-    ax.text(0.04, y - 0.005, "↓ this whole block — not just the question — is what the LLM generates from",
+        y -= height + 0.028
+    # place the punchline at a fixed safe height near the bottom, never below the axes
+    ax.text(0.04, max(y - 0.005, 0.04),
+            "↓ this whole block — not just the question — is what the LLM generates from",
             transform=ax.transAxes, fontsize=9.5, style="italic", color=INK, va="top")
     ax.set_title("Anatomy of the augmented prompt", fontsize=13, color=INK, pad=8)
     _save(fig, "rag01_prompt_anatomy.png")

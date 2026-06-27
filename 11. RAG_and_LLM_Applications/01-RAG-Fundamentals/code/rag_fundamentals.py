@@ -42,8 +42,10 @@ CORPUS: tuple[str, ...] = (
 # ---- Embedding hyperparameters (hoisted; no magic numbers inline) ---------------------------
 EMBED_DIM = 256  # hashing dimensionality: big enough that token collisions are rare on this corpus
 TOP_K = 3  # how many passages to retrieve and stuff into the prompt
-RANDOM_SEED = 0  # seed for any stochastic step, so runs are reproducible
 TOKEN_RE = re.compile(r"[a-z0-9]+")  # lowercase alphanumeric tokens; drops punctuation/case
+# NOTE: no random seed — the whole pipeline is deterministic by construction. The embedder uses a
+# fixed FNV-1a hash (see _stable_hash) precisely so there is no stochastic step to seed; identical
+# inputs always produce identical vectors, scores, and answers across runs and machines.
 
 # Two test questions: one answerable only from the private corpus, one a generic fact.
 PRIVATE_QUESTION = "When was the Helios-7 satellite launched?"
@@ -230,7 +232,6 @@ def _report_device() -> str:
 
 
 def main() -> None:
-    np.random.seed(RANDOM_SEED)
     _report_device()
     print("numpy:", np.__version__)
     print(f"corpus: {len(CORPUS)} passages | embed_dim: {EMBED_DIM} | top_k: {TOP_K}\n")
