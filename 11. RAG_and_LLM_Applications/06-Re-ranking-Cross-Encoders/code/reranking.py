@@ -29,6 +29,10 @@ nDCG@3 0.000 -> 1.000, MRR 0.250 -> 1.000, asserted before it is claimed.
 Verified on Python 3.12 / numpy 2.x / sentence-transformers (both MiniLM models, CPU). The models
 load deterministically on CPU; the metrics are pure arithmetic.
 
+No random seed is set, and none is needed: this is INFERENCE ONLY -- both models run with dropout
+off (eval mode) and no sampling, so a fixed input yields a fixed output. Every score, rank, and
+metric below is therefore deterministic and identical across runs on the same cached models.
+
 Run:
     python reranking.py
 """
@@ -291,7 +295,7 @@ def ndcg_at_k(order: tuple[int, ...], gold: int, k: int) -> float:
 
     Dividing by the ideal DCG puts the score in [0, 1]: 1.0 means the gold is ranked #1, 0.0 means it
     is absent from the top-k. With one gold, IDCG = 1 / log2(2) = 1, so nDCG@k here equals the gold's
-    own discounted gain -- 1.0 at rank 1, ~0.63 at rank 2, 0.0 once it falls past rank k.
+    own discounted gain -- 1.0 at rank 1, 0.631 at rank 2, 0.0 once it falls past rank k.
     """
     idcg = 1.0 / np.log2(1 + 1)  # ideal: the single gold at rank 1
     return dcg_at_k(order, gold, k) / idcg
@@ -340,7 +344,9 @@ def main() -> None:
             if torch.backends.mps.is_available()
             else "cpu"
         )
-        print("torch:", torch.__version__, "| device:", device)
+        # `device` is the detected accelerator; the demo models are loaded on CPU on purpose
+        # (deterministic, reproducible) -- so the committed logits below come from CPU, not `device`.
+        print("torch:", torch.__version__, "| detected device:", device, "| demo models on: cpu")
     except ImportError:
         print("torch: not installed")
 
