@@ -28,6 +28,8 @@ Verified on Python 3.12 / torch 2.x / matplotlib 3.x.
 
 from __future__ import annotations
 
+import _pathsetup  # noqa: F401  (sys.path bootstrap for the moved generator)
+
 import math
 from pathlib import Path
 
@@ -41,7 +43,6 @@ from language_modeling_objectives import (
     CONFIDENT_WRONG_PROB,
     PREDICTED_PROBS,
     TRUE_NEXT_TOKEN_ID,
-    VOCAB,
     causal_and_bidirectional_masks,
     cross_entropy_curve,
     divergent_training_perplexity,
@@ -60,7 +61,7 @@ NAVY = "#2A5B80"
 INK = "#1C2530"  # near-black for axis text
 GRID = "#D4D9DF"
 
-OUT_DIR = Path(__file__).resolve().parent.parent.parent / "images"
+OUT_DIR = Path(__file__).resolve().parent.parent / "09. LLMs" / "images"
 DPI = 150
 
 

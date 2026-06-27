@@ -16,6 +16,8 @@ Verified on Python 3.12 / matplotlib 3.x / torch 2.x / Pillow.
 
 from __future__ import annotations
 
+import _pathsetup  # noqa: F401  (sys.path bootstrap for the moved generator)
+
 from pathlib import Path
 
 import matplotlib
@@ -33,7 +35,7 @@ from hallucination_alignment import (
 )
 from make_figures_20 import GREEN, GRID, INK, RED, SLATE
 
-OUT_DIR = Path(__file__).resolve().parent.parent.parent / "images"
+OUT_DIR = Path(__file__).resolve().parent.parent / "09. LLMs" / "images"
 DPI = 95
 FPS = 18
 LOGITS = base_logits_tensor(device="cpu")

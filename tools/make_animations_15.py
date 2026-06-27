@@ -21,6 +21,8 @@ Verified on Python 3.12 / matplotlib 3.x / Pillow (PillowWriter).
 
 from __future__ import annotations
 
+import _pathsetup  # noqa: F401  (sys.path bootstrap for the moved generator)
+
 from pathlib import Path
 
 import matplotlib
@@ -35,7 +37,7 @@ from matplotlib.animation import FuncAnimation, PillowWriter
 from make_figures_15 import AMBER, GREEN, INK, NAVY, PURPLE, RED, SLATE, _style_axis
 from rlhf_dpo import BETA, REF_LOGPROB, run_toy_dpo
 
-OUT_DIR = Path(__file__).resolve().parent.parent.parent / "images"
+OUT_DIR = Path(__file__).resolve().parent.parent / "09. LLMs" / "images"
 DPI = 95            # keep the GIF a sensible size for a repo asset
 FPS = 16
 FRAME_STRIDE = 2    # animate every 2nd training step (61 frames) -- smooth but compact
@@ -105,7 +107,7 @@ def make_dpo_update_gif() -> None:
 
     # A live step counter, top-centre, so the reader can see progress.
     step_text = fig.text(0.5, 0.015, "", ha="center", color=INK, fontsize=10, fontweight="bold")
-    title = fig.suptitle(
+    fig.suptitle(
         f"A measured DPO update, watched happening: chosen up, rejected down  (β={BETA})",
         fontweight="bold", fontsize=13,
     )

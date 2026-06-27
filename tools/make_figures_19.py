@@ -27,6 +27,8 @@ Verified on Python 3.12 / numpy 2.x / matplotlib 3.x.
 
 from __future__ import annotations
 
+import _pathsetup  # noqa: F401  (sys.path bootstrap for the moved generator)
+
 from pathlib import Path
 
 import matplotlib
@@ -56,7 +58,6 @@ from llm_evaluation import (
     pass_at_k,
     pass_at_k_naive_mc,
     perplexity,
-    ranking,
     simulate_elo,
 )
 
@@ -78,7 +79,7 @@ NAVY = "#2A5B80"
 INK = "#1C2530"  # near-black for axis text
 GRID = "#D4D9DF"
 
-OUT_DIR = Path(__file__).resolve().parent.parent.parent / "images"
+OUT_DIR = Path(__file__).resolve().parent.parent / "09. LLMs" / "images"
 DPI = 150
 
 

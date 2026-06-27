@@ -15,6 +15,8 @@ Verified on Python 3.12 / matplotlib 3.x / Pillow.
 
 from __future__ import annotations
 
+import _pathsetup  # noqa: F401  (sys.path bootstrap for the moved generator)
+
 import io
 from pathlib import Path
 
@@ -35,7 +37,7 @@ INK = "#1C2530"
 MUTE = "#C7CDD4"
 BG = "#FBFCFD"
 
-OUT_DIR = Path(__file__).resolve().parent.parent.parent / "images"
+OUT_DIR = Path(__file__).resolve().parent.parent / "09. LLMs" / "images"
 DPI = 95
 N_EXPERTS = 8
 

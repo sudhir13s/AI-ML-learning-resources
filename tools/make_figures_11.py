@@ -16,6 +16,8 @@ Verified on Python 3.12 / numpy 2.x / matplotlib 3.x.
 
 from __future__ import annotations
 
+import _pathsetup  # noqa: F401  (sys.path bootstrap for the moved generator)
+
 from pathlib import Path
 
 import matplotlib
@@ -42,7 +44,7 @@ GRID = "#D4D9DF"
 CLASSES = ["cat", "dog", "lynx", "car", "plane"]
 TEACHER_LOGITS = np.array([8.0, 5.0, 4.0, 1.0, 0.0])  # cat is the argmax; dog/lynx carry "dark knowledge"
 
-OUT_DIR = Path(__file__).resolve().parent.parent.parent / "images"
+OUT_DIR = Path(__file__).resolve().parent.parent / "09. LLMs" / "images"
 DPI = 150
 
 

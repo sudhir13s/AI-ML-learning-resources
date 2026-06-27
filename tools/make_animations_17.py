@@ -15,6 +15,8 @@ Verified on Python 3.12 / matplotlib 3.x / Pillow.
 
 from __future__ import annotations
 
+import _pathsetup  # noqa: F401  (sys.path bootstrap for the moved generator)
+
 import io
 from pathlib import Path
 
@@ -26,7 +28,7 @@ from PIL import Image
 
 from make_figures_17 import GREEN, INK, RED, SLATE
 
-OUT_DIR = Path(__file__).resolve().parent.parent.parent / "images"
+OUT_DIR = Path(__file__).resolve().parent.parent / "09. LLMs" / "images"
 DPI = 95
 
 # The right panel's chain of thought, revealed one line per frame.

@@ -15,6 +15,8 @@ Verified on Python 3.12 / torch 2.x / matplotlib 3.x.
 
 from __future__ import annotations
 
+import _pathsetup  # noqa: F401  (sys.path bootstrap for the moved generator)
+
 from pathlib import Path
 
 import matplotlib
@@ -46,7 +48,7 @@ N_SINK = 4
 RECENT_W = 6
 SEED = 0
 
-OUT_DIR = Path(__file__).resolve().parent.parent / "images"
+OUT_DIR = Path(__file__).resolve().parent.parent / "09. LLMs" / "08-Long-Context-Methods" / "images"
 DPI = 150
 
 

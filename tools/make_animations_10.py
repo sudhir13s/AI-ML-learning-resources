@@ -15,6 +15,8 @@ Verified on Python 3.12 / matplotlib 3.x / Pillow.
 
 from __future__ import annotations
 
+import _pathsetup  # noqa: F401  (sys.path bootstrap for the moved generator)
+
 import io
 from pathlib import Path
 
@@ -25,10 +27,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
 
-from make_figures import AMBER, BLUE, GRID, RED, SLATE
+from make_figures_10 import AMBER, BLUE, GRID, RED, SLATE
 
 # 10-Quantization keeps its figures in a CHAPTER-LOCAL images/ dir (unlike the shared 09. LLMs/images/).
-OUT_DIR = Path(__file__).resolve().parent.parent / "images"
+OUT_DIR = Path(__file__).resolve().parent.parent / "09. LLMs" / "10-Quantization" / "images"
 DPI = 95
 INT8_QMAX = 127
 
