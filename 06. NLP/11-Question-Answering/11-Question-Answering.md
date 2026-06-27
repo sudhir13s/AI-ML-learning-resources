@@ -6,7 +6,7 @@ level: intermediate
 prereqs: ["contextual-embeddings", "seq2seq-encoder-decoder", "information-retrieval"]
 interview_frequency: high
 template: concept-deep
-updated: 2026-06-22
+updated: 2026-06-27
 ---
 
 # Question Answering: from finding the span to grounding the answer
@@ -69,6 +69,31 @@ To use [BERT](../06-Contextual-Embeddings-ELMo-BERT/06-Contextual-Embeddings-ELM
 
 BERT runs full **bidirectional** self-attention over the whole thing, so every passage token's final hidden vector $h_i \in \mathbb{R}^{d}$ is computed *with the question in view* — the representation of "1969" already "knows" you asked *when*. That question-aware contextualization is the entire reason a pretrained encoder is so good here; the span head on top is almost trivial by comparison.
 
+The whole extractive-QA forward pass, end to end:
+
+```mermaid
+graph LR
+    IN(["[CLS] question [SEP] passage [SEP]"]):::data --> BERT["BERT<br/>bidirectional self-attention"]:::process
+    BERT --> H[("per-token hidden states<br/>h_0, h_1, ... h_n")]:::frozen
+    H --> SH["start head<br/>S · h_i"]:::startc
+    H --> EH["end head<br/>E · h_j"]:::endc
+    SH --> SS["softmax over positions<br/>P_start(i)"]:::startc
+    EH --> ES["softmax over positions<br/>P_end(j)"]:::endc
+    SS --> DEC{"argmax over valid spans<br/>j >= i, j - i < L_max"}:::decision
+    ES --> DEC
+    DEC --> OUT(["answer span<br/>passage[i : j+1]"]):::out
+
+    classDef data fill:#3A6B96,stroke:#2A5B86,color:#fff
+    classDef process fill:#5D4A8A,stroke:#4D3A7A,color:#fff
+    classDef frozen fill:#4A5B6E,stroke:#3A4B5E,color:#fff
+    classDef startc fill:#2E7A5A,stroke:#1E6A4A,color:#fff
+    classDef endc fill:#8B3B4A,stroke:#7B2B3A,color:#fff
+    classDef decision fill:#2A5B80,stroke:#1A4B70,color:#fff
+    classDef out fill:#7A6528,stroke:#6A5518,color:#fff
+```
+
+The only QA-specific parts are the two small heads ($\mathbf{S}$, $\mathbf{E}$) and the decode at the end; everything to the left is the pretrained encoder, untouched.
+
 > **Note:** the `[CLS]` token (position 0) and the segment structure aren't decoration — `[CLS]` becomes the **no-answer** signal in SQuAD 2.0 (below), and the `[SEP]` boundary is how the model knows to only emit spans from the *passage* segment, never the question.
 
 ### Deriving the span head from scratch
@@ -78,6 +103,8 @@ Now the model itself. We learn exactly **two new vectors** — a **start vector*
 $$
 \text{start\_logit}_i = \mathbf{S} \cdot h_i, \qquad \text{end\_logit}_i = \mathbf{E} \cdot h_i.
 $$
+
+> **Source / derivation:** the start/end span head is **§4.2 of [BERT (Devlin et al. 2018)](https://arxiv.org/abs/1810.04805)** — "we only introduce a start vector $S$ and an end vector $E$ … the probability of word $i$ being the start of the answer span is computed as a dot product between $T_i$ and $S$ followed by a softmax." The task it solves is **[SQuAD (Rajpurkar et al. 2016)](https://arxiv.org/abs/1606.05250)**, which defined the answer-is-always-a-contiguous-span framing that makes a two-vector head sufficient.
 
 Read that geometrically: $\mathbf{S}$ is a learned direction in embedding space that means *"I am the first word of an answer,"* and we score each token by **how much it points that way**. Same for $\mathbf{E}$ and *"I am the last word of an answer."* We then turn the scores into probability distributions over passage positions with a softmax:
 
@@ -92,6 +119,8 @@ $$
 (\hat i, \hat j) = \operatorname*{arg\,max}_{\,j \ge i,\; j-i < L_{\max}} \; \big(\mathbf{S}\cdot h_i + \mathbf{E}\cdot h_j\big).
 $$
 
+> **Source / derivation:** the constrained span decode is **§4.2 of [BERT (Devlin et al. 2018)](https://arxiv.org/abs/1810.04805)** — "the score of a candidate span from position $i$ to position $j$ is defined as $S\cdot T_i + E\cdot T_j$, and the maximum scoring span where $j \ge i$ is used as a prediction." The $j \ge i$ and length-cap constraints are exactly the official SQuAD-evaluation decode.
+
 > **Note:** we maximize the **sum of logits** $\mathbf{S}\cdot h_i + \mathbf{E}\cdot h_j$, which is equivalent to maximizing the **product of probabilities** $P_{\text{start}}(i)\cdot P_{\text{end}}(j)$ because the two softmax denominators are constants for a given passage and $\log(ab) = \log a + \log b$. Working in logits avoids underflow and is what every implementation actually does.
 
 > **Gotcha:** the $j \ge i$ constraint is **not optional**. The start and end heads are independent softmaxes — nothing stops `argmax(start)` from landing *after* `argmax(end)`, which would describe a negative-length span. The decode must enumerate valid $(i,j)$ pairs (typically the top-$k$ starts × top-$k$ ends, filtered to $j \ge i$ and $j-i < L_{\max}$), not just take the two independent argmaxes.
@@ -104,6 +133,8 @@ $$
 \mathcal{L} = -\tfrac{1}{2}\Big(\log P_{\text{start}}(i^{*}) + \log P_{\text{end}}(j^{*})\Big).
 $$
 
+> **Source / derivation:** the training objective is **§4.2 of [BERT (Devlin et al. 2018)](https://arxiv.org/abs/1810.04805)** — "the training objective is the sum of the log-likelihoods of the correct start and end positions." It is two independent **position cross-entropies** (start and end), one over each softmax; the $\tfrac{1}{2}$ averages the two so the loss is on the same scale as a single cross-entropy. This is the standard fine-tuning recipe SQuAD ([Rajpurkar et al. 2016](https://arxiv.org/abs/1606.05250)) is trained with.
+
 You backprop through $\mathbf{S}$, $\mathbf{E}$, **and** all of BERT (full fine-tuning), and that's it — a couple of epochs over SQuAD turns a pretrained encoder into a strong reading-comprehension model. Devlin et al.'s [BERT paper](https://arxiv.org/abs/1810.04805) reported this exact recipe beating the prior state of the art and approaching human performance on SQuAD 1.1.
 
 > **Tip:** because the only new weights are two $d$-dimensional vectors, the span head is **tiny** — the heavy lifting is all in the pretrained encoder. This is the textbook example of "pretrain a general encoder, bolt on a task-specific head, fine-tune end-to-end."
@@ -114,7 +145,7 @@ Here's the span head as it *actually* behaves, measured from a real fine-tuned m
 
 ![Two overlaid bar charts of probability over the passage tokens of "The Eiffel Tower is … on the Champ de Mars in Paris, France." The green start distribution spikes sharply on "Champ"; the red end distribution spikes on "France"; the predicted span between them is shaded. Almost all the probability mass sits on those two tokens — the head has learned to point.](../images/qa_span_head.png)
 
-Notice how *peaked* the distributions are: the start head dumps its mass on **Champ** and the end head on **France**, so $\arg\max P_{\text{start}}\cdot P_{\text{end}}$ cleanly selects the span **"Champ de Mars in Paris, France."** That confident, bimodal shape — one sharp green peak, one sharp red peak — is what a well-trained span head looks like.
+Notice how *peaked* the distributions are: the start head puts its largest mass on **Champ** (≈0.52, with smaller bumps on the nearby "on"/"the") and the end head puts most of its mass on **France** (≈0.63), so $\arg\max P_{\text{start}}\cdot P_{\text{end}}$ cleanly selects the span **"Champ de Mars in Paris, France."** That confident, bimodal shape — one dominant green peak, one dominant red peak — is what a well-trained span head looks like.
 
 ---
 
@@ -134,9 +165,19 @@ Let's do the decode arithmetic ourselves so the formula is concrete. Take a tiny
 
 **Step 1 — find the best valid span.** Enumerate $(i,j)$ with $j \ge i$ and score $= \text{start}_i + \text{end}_j$. The start head's max is position 5 (4.0) and the end head's max is also position 5 (4.5), and $5 \ge 5$ is valid, so the top span is $(5,5)$ with score $4.0 + 4.5 = 8.5$. The next best valid span, $(5,6)$ ("Paris ."), scores $4.0 + (-0.5) = 3.5$ — far lower. So the prediction is the single-token span **"Paris."**
 
-**Step 2 — turn logits into a confidence.** Softmax the start logits. The dominant term is $e^{4.0}\approx 54.6$ against a sum of roughly $e^{-2}+e^{-1}+e^{-3}+e^{-0.5}+e^{-2}+e^{4}+e^{-1}\approx 0.14+0.37+0.05+0.61+0.14+54.6+0.37 \approx 56.3$, so $P_{\text{start}}(5)\approx 54.6/56.3 \approx \mathbf{0.97}$. The end head is similarly peaked, $P_{\text{end}}(5)\approx 0.97$, giving a joint span probability $\approx 0.94$. **High confidence, correct span.**
+**Step 2 — turn logits into a confidence.** Softmax the start logits. The dominant term is $e^{4.0}\approx 54.6$ against a sum of roughly $e^{-2}+e^{-1}+e^{-3}+e^{-0.5}+e^{-2}+e^{4}+e^{-1}\approx 0.14+0.37+0.05+0.61+0.14+54.6+0.37 \approx 56.3$, so $P_{\text{start}}(5)\approx 54.6/56.3 \approx \mathbf{0.970}$. The end head is even more peaked, $P_{\text{end}}(5)\approx 0.986$, giving a joint span probability $0.970 \times 0.986 \approx \mathbf{0.957}$. **High confidence, correct span** — and the code in the Code section computes exactly this 0.957.
 
-> **Note:** this is *exactly* what the measured Eiffel-Tower chart above shows numerically — one sharp start peak, one sharp end peak, and the argmax-pair decode lands on the right span. The hand example just lets you see the softmax produce the ~0.97 confidence the bars depict.
+![A two-row heatmap of the start logits (S·h_i) and end logits (E·h_j) over the seven passage tokens "The capital of France is Paris .". Almost every cell is pale (logits near −3 to −1); the two cells under "Paris" glow dark (4.0 and 4.5) and are boxed — start in green, end in red. This is the raw material of the decode: both heads point at the same token, so the argmax-pair span is the single token "Paris".](../images/qa_span_logits_heatmap.png)
+
+The heatmap above is the entire input to the decode: two rows of logits, one column per token. Reading off the two boxed cells — the brightest in each row — *is* the argmax-pair decode. Because both heads peak on the same position, the predicted span is the single token **"Paris."** When the start and end peaks land on *different* tokens (as in the Eiffel chart earlier, "Champ" … "France"), the span stretches between them.
+
+To see why the $j \ge i$ constraint matters, picture the full **joint span-score matrix** — cell $(i,j)$ holding $\mathbf{S}\cdot h_i + \mathbf{E}\cdot h_j$, with the lower triangle ($j < i$) greyed out as illegal:
+
+![A 7×7 heatmap of the joint span score start_i + end_j for every (start i, end j) pair over the same passage. The lower-left triangle (j < i, backwards spans) is greyed out as invalid. The single brightest valid cell, boxed in green and labelled "argmax", sits at (Paris, Paris) with score 8.5. The bright vertical band under the "Paris" end-column shows that ending on "Paris" scores well for many start positions, but only the (Paris, Paris) cell wins among valid spans.](../images/qa_joint_span_score.png)
+
+The decode is just *argmax over the upper triangle of this matrix*. The greyed lower triangle is the 21 illegal backwards spans the $j \ge i$ filter throws away; the boxed cell is the winner.
+
+> **Note:** this is *exactly* what the measured Eiffel-Tower chart above shows numerically — one sharp start peak, one sharp end peak, and the argmax-pair decode lands on the right span. The hand example just lets you see the softmax produce the ~0.97 per-head peak (and the 0.957 joint) the bars depict.
 
 > **Gotcha:** had the end head instead peaked at position 3 ("France", before "Paris"), the *naive* two-argmax decode would return the invalid span "France … Paris" running backwards. The $j \ge i$ filter forces the decoder to instead pick the best *valid* pair — this is why production code enumerates pairs rather than taking independent argmaxes.
 
@@ -156,6 +197,8 @@ Now the real thing end to end. Running the derived decode (best valid $(i,j)$ ov
 
 All three correct, all three with a large positive span score and a deeply negative null score (we'll use that null score next). Notice the third question requires the model to resolve "stayed in orbit" → "orbited above" → **Michael Collins** — a small piece of reasoning, not a keyword match. That's the contextualized encoder earning its keep. The runnable code for this is in the **Code** section below.
 
+> **Gotcha — the passage doesn't fit.** A BERT-style encoder has a hard input limit (typically **512 tokens**), so `[CLS] question [SEP] passage [SEP]` must fit inside it. A long document (a contract, a Wikipedia article) blows past 512, and naively truncating it can **cut off the very span that holds the answer** — a silent, unrecoverable failure. The standard fix is a **sliding window** with overlap (`doc_stride` in Hugging Face): split the document into overlapping chunks that each fit, run the span head on every chunk, and take the **global argmax of the span scores across chunks** — the same cross-passage argmax used in open-domain QA. The overlap matters: without it, an answer straddling a chunk boundary is split across two windows and found by neither. (Off-by-one in the chunk stride is a classic bug — too large a stride and you skip tokens, too small and you re-score the same span many times.)
+
 ---
 
 ## Family 1b: when there is no answer — SQuAD 2.0
@@ -169,6 +212,8 @@ The elegant part is that abstaining needs **no new architecture** — it reuses 
 $$
 s_{\text{null}} = \mathbf{S}\cdot h_{\text{[CLS]}} + \mathbf{E}\cdot h_{\text{[CLS]}}.
 $$
+
+> **Source / derivation:** the null-span abstain mechanism is **[SQuAD 2.0 (Rajpurkar et al. 2018)](https://arxiv.org/abs/1806.03822)**, which introduced 50k+ unanswerable questions and the rule that a system must predict no-answer when the null score plus a threshold exceeds the best span score. The reuse of the **`[CLS]` position** as the null span is the standard BERT recipe ([Devlin et al. 2018, §4.2](https://arxiv.org/abs/1810.04805)) — training labels unanswerable examples with start = end = `[CLS]`.
 
 Let $s_{\text{best}}$ be the score of the best *real* span found by the usual decode. The decision rule is a comparison (often with a tuned threshold $\tau$):
 
@@ -184,7 +229,7 @@ Training labels unanswerable examples with **start = end = `[CLS]` position**, s
 
 ### Worked example 3: abstaining, measured
 
-Here's the rule firing on a model trained for it (`deepset/roberta-base-squad2`), same Apollo passage:
+Here's the rule firing on a model trained for it (`deepset/roberta-base-squad2`), same Apollo passage. These four numbers are **reproduced exactly** by `abstain_demo()` in [`question_answering.py`](code/question_answering.py) — it loads the SQuAD-2.0 model and asserts each logit against the table below (and the notebook surfaces it in its own cell):
 
 | question | best span | span score $s_{\text{best}}$ | null score $s_{\text{null}}$ | decision |
 |:---|:---|:---:|:---:|:---:|
@@ -212,7 +257,15 @@ Reading comprehension assumes someone *hands you the passage*. Real questions do
 
 > **Note:** **DPR** (Dense Passage Retrieval; [Karpukhin et al. 2020](https://arxiv.org/abs/2004.04906)) replaced the lexical retriever with a **dense bi-encoder**: a question encoder and a passage encoder trained so a question's vector lands near its answer-bearing passages, retrieved by **maximum inner-product search** over a FAISS index. By matching *meaning* rather than surface words, DPR sharply raised retrieval recall — and thus end-to-end QA accuracy. The full dense-retrieval machinery (bi-encoder vs cross-encoder, ANN) is in the [IR page](../16-Information-Retrieval-and-Semantic-Search/16-Information-Retrieval-and-Semantic-Search.md).
 
+> **Source / derivation:** the retrieve-then-read decomposition and the dense bi-encoder are **§3 of [DPR (Karpukhin et al. 2020)](https://arxiv.org/abs/2004.04906)** — the retriever similarity is the inner product $\text{sim}(q,p) = E_Q(q)^\top E_P(p)$ of a question encoder and a passage encoder, trained with an in-batch-negatives contrastive loss; the reader then runs the BERT span head over the top-$k$ retrieved passages. Our miniature retriever (a transparent bag-of-words cosine in [code](code/question_answering.py)) keeps the *same retrieve-by-similarity mechanics* with math you can verify by hand; lexical overlap is exactly the paraphrase weakness DPR's learned encoders were built to fix.
+
 > **Gotcha:** open-domain accuracy is **bottlenecked by the retriever**. If the answer-bearing passage isn't in the top-$k$, the reader **cannot** recover it — a perfect reader scores zero on a question whose evidence was never retrieved. This is why so much open-domain QA research is really *retrieval* research, and why "retriever recall@k" is the metric to watch.
+
+This bottleneck is a hard **ceiling**, not a soft penalty — end-to-end accuracy can never rise above retriever recall@k, no matter how good the reader is:
+
+![A line chart with k (passages retrieved: 1, 3, 5, 10, 20) on the x-axis and accuracy on the y-axis. The blue "retriever recall@k" line rises from ~0.55 at k=1 to ~0.93 at k=20 — this is the ceiling. The green "end-to-end QA accuracy" line sits strictly below it (recall times an ~0.80 reader), with the gap between them shaded red and labelled "reader can only lose from here". The reader can never push end-to-end accuracy above the blue recall curve.](../images/qa_retrieval_ceiling.png)
+
+The blue line is a wall: every point on the green end-to-end curve lies *below* it, because the reader only ever *subtracts* from what the retriever surfaced. That is why raising $k$ (or training a better retriever) is usually the highest-leverage move in an open-domain QA system — and why retrieval recall is the first number to look at when accuracy is disappointing.
 
 ### A worked retrieve-then-read trace
 
@@ -282,6 +335,10 @@ Trace the example. Hop 1: search *"Apollo 11 command module pilot"* → retrieve
 
 > **Tip:** the **error compounds** across hops. If each retrieval step is 90% likely to surface the right evidence, a clean two-hop chain succeeds only $0.9 \times 0.9 \approx 81\%$ of the time, and three hops drop to ~73% — *before* any reader error. This multiplicative decay is why multi-hop QA is hard and why systems invest in high-recall retrieval and the ability to **backtrack** when a hop turns up nothing useful.
 
+![A line chart with "number of reasoning hops" (1 to 5) on the x-axis and "probability the whole chain succeeds" on the y-axis. Three curves for per-hop retrieval recall p: green p=0.95 falling to 0.77 at hop 5, amber p=0.90 falling to 0.59, and red p=0.80 falling to 0.33. Each curve is p raised to the number of hops — even a strong 90%-per-hop retriever drops below 60% by five hops, before any reader error.](../images/qa_multihop_compounding.png)
+
+The curves are just $p^{\text{hops}}$: success multiplies, so even an excellent per-hop retriever decays fast. A 90%-per-hop system that feels reliable on single-hop questions falls to **59%** by hop 5 — which is why production multi-hop systems lean on high-recall retrieval, **backtracking**, and re-ranking rather than a single greedy chain.
+
 ---
 
 ## Conversational QA: questions in context
@@ -306,6 +363,8 @@ $$
 F_1 = \frac{2 \cdot \text{precision} \cdot \text{recall}}{\text{precision} + \text{recall}}.
 $$
 
+> **Source / derivation:** Exact Match and token-level F1 are the two official SQuAD metrics defined in **§6.1 of [SQuAD (Rajpurkar et al. 2016)](https://arxiv.org/abs/1606.05250)** — "Exact match … measures the percentage of predictions that match any one of the ground truth answers exactly. (Macro-averaged) F1 … measures the average overlap between the prediction and ground truth answer … treating the prediction and ground truth as bags of tokens." The normalization (lowercase, strip punctuation, drop *a/an/the*) is the official `evaluate-v2.0.py` scorer's, reproduced verbatim in our [code](code/question_answering.py).
+
 > **Note:** when a SQuAD question has **multiple gold answers** (annotators don't always agree), the score is the **max** over golds — you get credit for matching *any* acceptable answer. The full metric machinery (EM/F1 internals, BLEU/ROUGE for generation) lives on the [NLP Evaluation Metrics page](../18-NLP-Evaluation-Metrics/18-NLP-Evaluation-Metrics.md); here we only need them to score *answers*.
 
 ### Worked example 4: EM and F1 by hand
@@ -316,7 +375,7 @@ Take prediction **"Paris, France"** vs gold **"Paris"**.
 **Step 2 — EM.** `["paris","france"] != ["paris"]` → **EM = 0**. (The extra word kills an exact match entirely — EM is brutal.)
 **Step 3 — F1.** Shared tokens: just `"paris"`, so $n_{\text{same}} = 1$. Precision $= 1/2 = 0.5$ (the prediction has 2 tokens, 1 right), recall $= 1/1 = 1.0$ (it found the only gold token). $F_1 = 2(0.5)(1.0)/(0.5+1.0) = 1.0/1.5 = \mathbf{0.667}$.
 
-So EM says "wrong" (0) but F1 says "two-thirds right" (0.667) — and the second is clearly the fairer verdict. Here are five measured pairs (computed by the SQuAD scorer in `gen_qa_diagrams.py`):
+So EM says "wrong" (0) but F1 says "two-thirds right" (0.667) — and the second is clearly the fairer verdict. Here are five measured pairs (computed by the SQuAD scorer in [`question_answering.py`](code/question_answering.py)):
 
 ![Horizontal bar chart comparing Exact Match (slate) and token-level F1 (green) for five prediction/gold pairs. "Paris, France" vs "Paris" gets EM=0 but F1=0.67; "the Champ de Mars" vs "Champ de Mars" gets EM=1, F1=1.00 (the article is normalized away); "Leonardo da Vinci" exact match scores 1/1.00; "1889" vs "in 1889" gets EM=0, F1=0.67; "London" vs "Paris" scores 0/0.00.](../images/qa_em_f1.png)
 
@@ -329,6 +388,14 @@ So EM says "wrong" (0) but F1 says "two-thirds right" (0.667) — and the second
 | "London" | "Paris" | 0 | 0.00 | no token overlap |
 
 > **Tip:** the *"the Champ de Mars"* row is the one to remember: **normalization** (dropping *a/an/the* and punctuation) is why it scores a perfect EM=1 despite the literal strings differing. Forgetting normalization is the #1 reason a hand-computed SQuAD score disagrees with the official scorer.
+
+### Why F1 is lenient and EM is brutal
+
+The cleanest way to *feel* the difference between the two metrics is to take a correct answer and append extra (correct-but-unrequested) tokens one at a time. **EM dies at the very first extra token** — the strings no longer match exactly — but **F1 only sags slowly**, because recall stays pinned at 1.0 (you still said every gold token) while precision falls one token at a time:
+
+![A line chart with "extra tokens appended to the correct answer 'Leonardo da Vinci'" on the x-axis (0 to 9) and score on the y-axis (0 to 1). The Exact Match line (slate) drops vertically from 1 to 0 at the first extra token and stays flat at 0. The token-F1 line (green) starts at 1.0 and decays smoothly — 0.86, 0.75, 0.67, 0.60 … — crossing a dashed red "F1=0.5" line around 6 extra tokens. The gap between the two lines is F1's leniency made visible.](../images/qa_em_f1_leniency.png)
+
+That smooth green decay versus the cliff-edge slate drop *is* the leniency of F1: a verbose-but-correct answer keeps most of its F1 while scoring a flat zero on EM. This is precisely why SQuAD reports **both** — EM alone is too harsh on answers that are right but not phrased canonically, and F1 alone would over-reward answers padded with correct filler. (The decay is monotonic by construction — the notebook asserts it.)
 
 ### Why generative QA breaks EM/F1
 
@@ -369,7 +436,9 @@ It's worth grounding all this in the systems you actually use, because each maps
 
 ## Code: extractive QA and SQuAD scoring, verified
 
-Two self-contained blocks, both verified on Python 3.12 (`torch` 2.12, `transformers` 5.10). The first runs the **derived span decode** on a real model; the second is the **SQuAD EM/F1 scorer** computing the worked-example numbers exactly.
+> **Runnable project and a step-by-step notebook:** every number on this page comes from one seeded source of truth that lives next to it — see the [step-by-step teaching notebook](code/11-Question-Answering.ipynb) and the [runnable demo script](code/question_answering.py) (run it with `python question_answering.py`). The same functions also generate every figure on this page, via [`make_figures_11.py`](code/make_figures_11.py) — so the prose, the notebook, and the charts cannot drift apart. The notebook runs **fully offline**: it uses a real fine-tuned SQuAD model if one is cached, and a deterministic synthetic span model otherwise.
+
+Two self-contained blocks below, both verified on Python 3.12 (`torch` 2.12, `transformers` 5.10, `numpy` 2.4). The first runs the **derived span decode** on a real model; the second is the **SQuAD EM/F1 scorer** computing the worked-example numbers exactly.
 
 ```python
 """Extractive QA: the derived start/end span decode on a real SQuAD model.
