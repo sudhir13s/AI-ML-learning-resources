@@ -3,7 +3,7 @@ id: "06-nlp/text-summarization/references"
 topic: "Text Summarization — References"
 parent: "06-nlp/text-summarization"
 type: references
-updated: 2026-06-22
+updated: 2026-06-27
 ---
 
 # Text Summarization — references and further reading
@@ -35,20 +35,26 @@ updated: 2026-06-22
 - [PEGASUS: A State-of-the-Art Model for Abstractive Summarization](https://research.google/blog/pegasus-a-state-of-the-art-model-for-abstractive-text-summarization/) — **Google Research** — the gap-sentence-generation idea from the team that built it.
 
 **Key papers**:
-- [TextRank: Bringing Order into Texts](https://aclanthology.org/W04-3252/) — **Mihalcea & Tarau (2004)** — graph-based extractive summarization (PageRank on a sentence graph).
-- [LexRank: Graph-based Lexical Centrality as Salience](https://arxiv.org/abs/1109.2128) — **Erkan & Radev (2004)** — the TF-IDF-cosine variant of sentence-centrality summarization.
+- [TextRank: Bringing Order into Texts](https://aclanthology.org/W04-3252/) — **Mihalcea & Tarau (2004)** — graph-based extractive summarization (PageRank on a sentence graph); Eq. 6 is the weighted-graph recurrence derived on the page.
+- [The PageRank Citation Ranking: Bringing Order to the Web](http://ilpubs.stanford.edu:8090/422/) — **Page, Brin, Motwani & Winograd (1999)** — the original random-surfer / damping-factor model and the contraction-map convergence argument TextRank inherits.
+- [LexRank: Graph-based Lexical Centrality as Salience](https://arxiv.org/abs/1109.2128) — **Erkan & Radev (2004)** — the TF-IDF-cosine variant of sentence-centrality summarization (the edge weight we compute).
 - [The Use of MMR for Reordering Documents and Producing Summaries](https://www.cs.cmu.edu/~jgc/publication/The_Use_MMR_Diversity_Based_LTMIR_1998.pdf) — **Carbonell & Goldstein (1998)** — Maximal Marginal Relevance, the relevance−redundancy trade-off.
-- [Get To The Point: Summarization with Pointer-Generator Networks](https://arxiv.org/abs/1704.04368) — **See, Liu & Manning (2017)** — copy mechanism ($p_{gen}$) + coverage to fix OOV and repetition.
+- [Get To The Point: Summarization with Pointer-Generator Networks](https://arxiv.org/abs/1704.04368) — **See, Liu & Manning (2017)** — copy mechanism ($p_{gen}$, Eqs. 8–9) + coverage (Eqs. 10–12) to fix OOV and repetition.
+- [Neural Machine Translation by Jointly Learning to Align and Translate](https://arxiv.org/abs/1409.0473) — **Bahdanau, Cho & Bengio (2015)** — the attention distribution the pointer-generator reinterprets as a copy distribution.
+- [Pointer Networks](https://arxiv.org/abs/1506.03134) — **Vinyals, Fortunato & Jaitly (2015)** — pointing at input positions, the copy half of the pointer-generator.
+- [Modeling Coverage for Neural Machine Translation](https://arxiv.org/abs/1601.04811) — **Tu et al. (2016)** — the coverage idea See et al. adapt from MT to stop summary repetition.
 - [PEGASUS: Pre-training with Extracted Gap-sentences](https://arxiv.org/abs/1912.08777) — **Zhang et al. (2020)** — pretraining objective tailored to summarization (GSG).
 - [BART: Denoising Sequence-to-Sequence Pre-training](https://arxiv.org/abs/1910.13461) — **Lewis et al. (2020)** — the standard abstractive-summarization backbone.
 - [Exploring the Limits of Transfer Learning with T5](https://arxiv.org/abs/1910.10683) — **Raffel et al. (2020)** — text-to-text framing ("summarize:" prefix).
 - [Text Summarization with Pretrained Encoders (BERTSUM)](https://arxiv.org/abs/1908.08345) — **Liu & Lapata (2019)** — BERT for extractive *and* abstractive summarization.
-- [ROUGE: A Package for Automatic Evaluation of Summaries](https://aclanthology.org/W04-1013/) — **Lin (2004)** — the standard n-gram-overlap metric, defined.
+- [ROUGE: A Package for Automatic Evaluation of Summaries](https://aclanthology.org/W04-1013/) — **Lin (2004)** — the standard n-gram-overlap metric; Eqs. 1–4 are the ROUGE-N recall and ROUGE-L LCS F-measure derived on the page.
+- [BERTScore: Evaluating Text Generation with BERT](https://arxiv.org/abs/1904.09675) — **Zhang, Kishore, Wu, Weinberger & Artzi (2020)** — embedding-based token matching that credits paraphrases ROUGE misses (still not faithfulness).
 - [On Faithfulness and Factuality in Abstractive Summarization](https://arxiv.org/abs/2005.00661) — **Maynez et al. (2020)** — abstractive models hallucinate; ROUGE doesn't catch it.
 - [Evaluating the Factual Consistency of Abstractive Summarization (FactCC)](https://arxiv.org/abs/1910.12840) — **Kryściński et al. (2020)** — a trained consistency classifier.
 - [Asking and Answering Questions to Evaluate Factual Consistency (QAGS)](https://arxiv.org/abs/2004.04228) — **Wang et al. (2020)** — QA-based faithfulness evaluation.
 - [SummaC: Re-Visiting NLI-based Models for Inconsistency Detection](https://arxiv.org/abs/2111.09525) — **Laban et al. (2022)** — entailment-based faithfulness checking.
 - [Longformer: The Long-Document Transformer](https://arxiv.org/abs/2004.05150) — **Beltagy et al. (2020)** — sparse attention (and LED) for long-input summarization.
+- [Automatic Summarization (monograph)](https://www.cis.upenn.edu/~nenkova/1500000015-Nenkova.pdf) — **Nenkova & McKeown (2011)** — the classic survey framing compression, informativeness, and evaluation.
 
 **Books (free chapters)**:
 - [Speech and Language Processing, 3rd ed. — Ch. 12 "Machine Translation" (seq2seq + ROUGE-adjacent eval)](https://web.stanford.edu/~jurafsky/slp3/12.pdf) — **Jurafsky & Martin** — the encoder–decoder + attention machinery abstractive summarization reuses.
@@ -56,6 +62,7 @@ updated: 2026-06-22
 
 **In this platform**:
 - Concept page (full explanation): [Text Summarization](13-Text-Summarization.md)
+- Runnable code (same verified functions the page and figures use): [teaching notebook](code/13-Text-Summarization.ipynb) · [source-of-truth module](code/text_summarization.py) · [figure generator](code/make_figures_13.py)
 - The engine of abstractive summarization: [08 Sequence-to-Sequence & Encoder–Decoder](../08-Sequence-to-Sequence-and-Encoder-Decoder/08-Sequence-to-Sequence-and-Encoder-Decoder.md) · [16 Transformer Architecture](../../05.%20Deep_Learning/concepts/16-Transformer-Architecture.md) · [15 Attention Mechanism](../../05.%20Deep_Learning/concepts/15-Attention-Mechanism.md)
 - How summaries are decoded: [17 Decoding Strategies](../17-Decoding-Strategies/17-Decoding-Strategies.md)
 - How summaries are scored (ROUGE in full): [18 NLP Evaluation Metrics](../18-NLP-Evaluation-Metrics/18-NLP-Evaluation-Metrics.md)
