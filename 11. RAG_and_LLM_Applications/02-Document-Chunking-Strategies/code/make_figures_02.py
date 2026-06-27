@@ -44,7 +44,7 @@ from document_chunking import (
     chunk_semantic,
     compute_idf,
     evaluate_strategy,
-    _split_sentences,
+    split_sentences,
 )
 
 # ---- Palette (matches the chapter's muted Mermaid classDefs) -------------------------------
@@ -138,10 +138,16 @@ def fig_size_recall_precision() -> None:
         else:
             precision.append(0.0)
 
+    # the smooth EXPECTED recall 1 - f/S, averaged over random fact offsets (only valid for S > f)
+    size_curve = np.linspace(answer_len + 1, sizes.max(), 200)
+    expected_recall = 1.0 - answer_len / size_curve
+
     fig, ax = plt.subplots(figsize=(7.6, 4.8))
     _style_axis(ax)
+    ax.plot(size_curve, expected_recall, color=GREEN, linewidth=1.4, linestyle="--", alpha=0.45,
+            label="expected recall  1 − f/S  (avg over offsets)")
     ax.plot(sizes, recall, marker="o", color=GREEN, linewidth=2.2, markersize=6,
-            markeredgecolor=INK, label="recall: answer survives whole")
+            markeredgecolor=INK, label="realized recall (this fact): survives whole")
     ax.plot(sizes, precision, marker="s", color=BLUE, linewidth=2.2, markersize=6,
             markeredgecolor=INK, label="precision: answer's share of the chunk")
     ax.axvline(FIXED_CHUNK_CHARS, color=RED, linewidth=1.5, linestyle="--", alpha=0.8)
@@ -158,13 +164,13 @@ def fig_size_recall_precision() -> None:
 
 def fig_overlap_diagram() -> None:
     """Fixed chunks without vs with overlap — overlap re-includes the boundary region."""
-    fig, (ax_no, ax_yes) = plt.subplots(2, 1, figsize=(8.8, 4.4))
+    fig, (ax_no, ax_yes) = plt.subplots(2, 1, figsize=(8.8, 5.0))
     doc_len = 10  # ten abstract "tokens" for a clean schematic
     chunk_w = 4
 
     def _draw(ax, overlap, title):
         ax.set_xlim(-0.5, doc_len + 0.5)
-        ax.set_ylim(-1.6, 1.2)
+        ax.set_ylim(-2.3, 1.2)
         ax.axis("off")
         ax.set_title(title, fontsize=11, color=INK, loc="left")
         # the document as a strip of token cells
@@ -174,26 +180,35 @@ def fig_overlap_diagram() -> None:
         ax.add_patch(plt.Rectangle((3, 0.3), 1.9, 0.5, facecolor=AMBER, alpha=0.35, edgecolor=AMBER))
         ax.text(3.95, 0.55, "fact", fontsize=8.5, ha="center", va="center", color=INK)
         step = chunk_w - overlap
-        colors = [BLUE, PURPLE, GREEN, SLATE]
+        colors = [BLUE, PURPLE, SLATE, AMBER, BLUE]
+        fact_lo, fact_hi = 3, 4  # the fact spans tokens 3-4
         start, ci = 0, 0
         while start < doc_len:
+            width = min(chunk_w, doc_len - start)
+            # does this chunk window [start, start+chunk_w) fully contain BOTH fact tokens?
+            holds_fact = start <= fact_lo and fact_hi <= start + chunk_w - 1
             color = colors[ci % len(colors)]
-            ax.add_patch(plt.Rectangle((start, -1.2 - (ci % 2) * 0.0), min(chunk_w, doc_len - start),
-                                       0.5, facecolor=color, alpha=0.5, edgecolor=color))
-            ax.text(start + min(chunk_w, doc_len - start) / 2, -0.95, f"chunk {ci}", fontsize=8,
-                    ha="center", color=INK)
+            row_y = -1.2 - (ci % 2) * 0.62  # stagger rows so overlapping chunks are both visible
+            ax.add_patch(plt.Rectangle((start, row_y), width, 0.5,
+                                       facecolor=GREEN if holds_fact else color,
+                                       alpha=0.6 if holds_fact else 0.45,
+                                       edgecolor=GREEN if holds_fact else color,
+                                       linewidth=2.6 if holds_fact else 1.0))
+            tag = f"chunk {ci}" + ("  ✓ holds fact" if holds_fact else "")
+            ax.text(start + width / 2, row_y + 0.25, tag, fontsize=8, ha="center", va="center",
+                    color=INK, fontweight="bold" if holds_fact else "normal")
             start += step
             ci += 1
 
     _draw(ax_no, 0, "WITHOUT overlap — the fact (tokens 3–4) is split across chunk 0 | chunk 1")
-    _draw(ax_yes, 2, "WITH overlap=2 — chunk 1 re-includes tokens 2–3, so the fact survives whole")
+    _draw(ax_yes, 2, "WITH overlap=2 — chunk 1 re-includes tokens 2–3, so it lands the fact whole (green)")
     fig.suptitle("Overlap rescues facts that straddle a chunk boundary", fontsize=12.5, color=INK, y=1.0)
     _save(fig, "rag02_overlap_diagram.png")
 
 
 def fig_semantic_trace() -> None:
     """Adjacent-sentence cosine similarity across the doc, with the percentile cut line."""
-    sentences = _split_sentences(DOCUMENT)
+    sentences = split_sentences(DOCUMENT)
     idf = compute_idf(sentences)
     sims = adjacent_similarities(sentences, idf)
     threshold = float(np.percentile(sims, SEMANTIC_PERCENTILE))
@@ -221,7 +236,7 @@ def fig_semantic_trace() -> None:
 
 def fig_strategy_compare() -> None:
     """Per-strategy #chunks and whether the answer survived + was retrieved top-1."""
-    idf_sent = compute_idf(_split_sentences(DOCUMENT))
+    idf_sent = compute_idf(split_sentences(DOCUMENT))
     strategies = {
         "fixed\n(no overlap)": chunk_fixed(DOCUMENT, overlap=0),
         "fixed\n(+overlap)": chunk_fixed(DOCUMENT, overlap=40),

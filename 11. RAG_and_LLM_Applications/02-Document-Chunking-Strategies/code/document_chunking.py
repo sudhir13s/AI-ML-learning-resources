@@ -171,7 +171,7 @@ def chunk_recursive(text: str, max_chars: int = RECURSIVE_MAX_CHARS) -> list[str
     return chunks
 
 
-def _split_sentences(text: str) -> list[str]:
+def split_sentences(text: str) -> list[str]:
     """Flatten a document to a list of non-empty sentences (drops heading-only lines' blank tails)."""
     # join lines so sentences that wrap headings still parse, then split on sentence punctuation
     flat = re.sub(r"\s+", " ", text).strip()
@@ -208,7 +208,7 @@ def chunk_semantic(
     text: str, idf: dict[str, float], percentile: float = SEMANTIC_PERCENTILE
 ) -> list[str]:
     """Semantic chunking: group consecutive sentences, cutting where their embeddings diverge."""
-    sentences = _split_sentences(text)
+    sentences = split_sentences(text)
     starts = semantic_boundaries(sentences, idf, percentile)
     bounds = starts + [len(sentences)]  # append the end so the last segment closes
     chunks = []
@@ -275,7 +275,7 @@ def main() -> None:
     naive = chunk_fixed(DOCUMENT, overlap=FIXED_OVERLAP_CHARS)
     fixed_overlap = chunk_fixed(DOCUMENT, overlap=FIXED_OVERLAP_FIX_CHARS)
     recursive = chunk_recursive(DOCUMENT)
-    idf_for_semantic = compute_idf(_split_sentences(DOCUMENT))  # sentence-level idf for boundary detection
+    idf_for_semantic = compute_idf(split_sentences(DOCUMENT))  # sentence-level idf for boundary detection
     semantic = chunk_semantic(DOCUMENT, idf_for_semantic)
 
     strategies = {

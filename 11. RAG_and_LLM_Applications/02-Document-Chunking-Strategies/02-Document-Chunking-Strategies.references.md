@@ -25,6 +25,7 @@ updated: 2026-06-27
 
 **Interactive & visual**:
 - [ChunkViz](https://chunkviz.up.railway.app/) — **Greg Kamradt** — paste text, pick a splitter and size/overlap, and *see* the chunk boundaries highlighted live; the fastest way to build intuition for where cuts land.
+- [The 5 Levels of Text Splitting — notebook](https://github.com/FullStackRetrieval-com/RetrievalTutorials/blob/main/tutorials/LevelsOfTextSplitting/5_Levels_Of_Text_Splitting.ipynb) — **Greg Kamradt** — the runnable companion notebook to the video, implementing character → recursive → document → **semantic** → agentic splitting from scratch.
 
 **Courses (free)**:
 - [LangChain: Chat with Your Data](https://www.deeplearning.ai/short-courses/langchain-chat-with-your-data/) — **DeepLearning.AI** — its "Document Splitting" lesson walks character vs recursive vs token splitters hands-on.
