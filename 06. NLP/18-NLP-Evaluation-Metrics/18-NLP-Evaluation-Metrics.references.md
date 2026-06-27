@@ -3,7 +3,7 @@ id: "06-nlp/evaluation-metrics/references"
 topic: "NLP Evaluation Metrics — References"
 parent: "06-nlp/evaluation-metrics"
 type: references
-updated: 2026-06-22
+updated: 2026-06-27
 ---
 
 # NLP Evaluation Metrics — references and further reading
@@ -24,6 +24,8 @@ updated: 2026-06-22
 - [What is the ROUGE metric?](https://www.youtube.com/watch?v=TMshhnrEXlg) — **Hugging Face** — recall-oriented summarization scoring, ROUGE-N and ROUGE-L.
 - [Understanding BLEU Score in Machine Translation](https://www.youtube.com/watch?v=zZfTFXUMUxc) — **Developers Hutt** — a fully worked BLEU example including the brevity penalty.
 - [BERTScore explained](https://www.youtube.com/watch?v=Tkc2vfvBSPg) — **Connor Shorten / Henry AI Labs** — embedding-based scoring and why it beats BLEU on paraphrase.
+- [The Bootstrap (resampling for confidence intervals)](https://www.youtube.com/watch?v=Xz0x-8-cgaQ) — **StatQuest (Josh Starmer)** — the resampling intuition behind the paired-bootstrap significance test used on this page.
+- [LLM Evaluation & LLM-as-a-Judge](https://www.youtube.com/watch?v=fh70t6hrG-Y) — **Weights & Biases** — how to run an LLM judge and validate it against human preference.
 
 **Courses (free)**:
 - [Hugging Face LLM Course — evaluation & metrics](https://huggingface.co/learn/llm-course/chapter7/4) — **Hugging Face** — compute BLEU/ROUGE/F1 in code alongside training.
@@ -51,6 +53,13 @@ updated: 2026-06-22
 - [GLUE: A Multi-Task Benchmark for NLU](https://arxiv.org/abs/1804.07461) — **Wang et al. (2018)** — the multi-task NLU benchmark suite.
 - [Holistic Evaluation of Language Models (HELM)](https://arxiv.org/abs/2211.09110) — **Liang et al. (2022, Stanford)** — many scenarios × many metrics; no single number suffices.
 
+**Statistics & significance (the meta-tools)**:
+- [Statistical Significance Tests for Machine Translation Evaluation](https://aclanthology.org/W04-3250/) — **Koehn (2004)** — the paired bootstrap resampling test for whether a metric difference is real; the source for this page's bootstrap CI demo.
+- [Bootstrap Methods: Another Look at the Jackknife](https://doi.org/10.1214/aos/1176344552) — **Efron (1979, Ann. Statist.)** — the original bootstrap: estimate a sampling distribution by resampling with replacement.
+- [The Proof and Measurement of Association between Two Things](https://doi.org/10.2307/1412159) — **Spearman (1904, Am. J. Psychology)** — rank correlation ρ, the meta-metric for "does the metric order outputs like humans?".
+- [A New Measure of Rank Correlation](https://doi.org/10.1093/biomet/30.1-2.81) — **Kendall (1938, Biometrika)** — τ, concordant-minus-discordant pairs; the pairwise rank-agreement statistic.
+- [Information Retrieval, 2nd ed. — Ch. 7 (the F-measure)](https://www.dcs.gla.ac.uk/Keith/Chapter.7/Ch.7.html) — **van Rijsbergen (1979)** — the effectiveness measure that gives F1 its harmonic-mean form.
+
 **Books (free chapters)**:
 - [Speech and Language Processing, 3rd ed. — **Ch. 3 §"Perplexity"**](https://web.stanford.edu/~jurafsky/slp3/3.pdf) — **Jurafsky & Martin** — perplexity ↔ cross-entropy, derived.
 - [Speech and Language Processing, 3rd ed. — **Ch. 13 "Machine Translation" (BLEU & MT evaluation)**](https://web.stanford.edu/~jurafsky/slp3/13.pdf) — **Jurafsky & Martin** — BLEU and human MT evaluation in context.
@@ -60,6 +69,10 @@ updated: 2026-06-22
 - [Google Research `rouge-score`](https://github.com/google-research/google-research/tree/master/rouge) — **Google** — the canonical ROUGE-N / ROUGE-L implementation used on the page.
 - [`bert-score`](https://github.com/Tiiiger/bert_score) — **Tianyi Zhang et al.** — the official BERTScore library (with baseline rescaling).
 - [Hugging Face `evaluate`](https://github.com/huggingface/evaluate) — **Hugging Face** — one API for BLEU, ROUGE, BERTScore, F1, perplexity, and more.
+- [scipy.stats — `spearmanr`, `kendalltau`, `bootstrap`](https://docs.scipy.org/doc/scipy/reference/stats.html) — **SciPy** — the standard implementations the notebook cross-checks the from-scratch correlation/bootstrap against.
+
+**Building an LLM-as-judge (model guidance)**:
+- [Anthropic — Define your success criteria & build evaluations](https://docs.anthropic.com/en/docs/test-and-evaluate/develop-tests) — **Anthropic** — how to design rubrics and evals for an LLM grader; pair with the pairwise-swap protocol on the page before wiring a real judge.
 
 **In this platform**:
 - Concept page (full explanation): [NLP Evaluation Metrics](18-NLP-Evaluation-Metrics.md)
