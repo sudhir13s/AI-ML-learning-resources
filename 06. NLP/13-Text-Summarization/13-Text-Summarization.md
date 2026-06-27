@@ -3,10 +3,10 @@ id: "06-nlp/text-summarization"
 topic: "Text Summarization (extractive & abstractive)"
 parent: "06-nlp"
 level: intermediate
-prereqs: ["seq2seq-encoder-decoder", "attention", "contextual-embeddings", "decoding-strategies"]
+prereqs: ["seq2seq-encoder-decoder", "attention", "contextual-embeddings", "decoding-strategies", "tf-idf"]
 interview_frequency: medium
 template: concept-deep
-updated: 2026-06-22
+updated: 2026-06-27
 ---
 
 # Text Summarization: keep the signal, drop the rest
@@ -37,6 +37,8 @@ $$\rho \;=\; \frac{\text{length}(S)}{\text{length}(D)},$$
 
 usually in tokens or sentences. A news headline is $\rho \approx 0.02$; an abstract of a paper $\rho \approx 0.05$; a "TL;DR" of an email thread maybe $\rho \approx 0.2$. The target $\rho$ is a **design choice**, not a model property — and the lower you push it, the more aggressively the system must decide what to *drop*. This is why "length control" is a first-class requirement (more below).
 
+> **Source / derivation:** the compression ratio (and the informativeness/fluency/faithfulness framing below) follows the textbook treatment in [Jurafsky & Martin, *Speech and Language Processing*, 3rd ed.](https://web.stanford.edu/~jurafsky/slp3/) and the survey [Nenkova & McKeown, *Automatic Summarization* (2011)](https://www.cis.upenn.edu/~nenkova/1500000015-Nenkova.pdf).
+
 **2. Informativeness vs. fluency vs. faithfulness.** A good summary must be:
 
 - ***informative*** — it covers the *salient* content of $D$ (the right facts, not trivia);
@@ -58,24 +60,24 @@ Everything in summarization is a choice between, or a blend of, two strategies:
 - ***Extractive*** — **SELECT** the most salient sentences or spans from $D$ and concatenate them *verbatim*. The summary is a literal subset of the source.
 - ***Abstractive*** — **GENERATE** new text that conveys the source's meaning, free to *paraphrase, fuse, and compress*. The summary may contain words and phrasings that never appear in $D$.
 
-![Two paradigms side by side. Extractive (left) selects whole sentences from the source verbatim and concatenates them — faithful by construction, but cannot fuse or compress within a sentence. Abstractive (right) runs the source through a seq2seq encoder–decoder and generates new text that fuses S1+S3 and coins words ("surged", "strained") absent from the source — fluent and compressive, but able to drift from the facts.](../images/summ_extractive_vs_abstractive.png)
+![Two paradigms side by side. Extractive (left) selects whole sentences from the source verbatim and concatenates them — faithful by construction, but cannot fuse or compress within a sentence. Abstractive (right) runs the source through a seq2seq encoder–decoder and generates new text that fuses S1+S3 and coins words ("surged", "keep up") absent from the source — fluent and compressive, but able to drift from the facts.](../images/sum_paradigms.png)
 
 The mental model for the whole field:
 
 ```mermaid
 graph TD
-    ROOT(["Text Summarization<br/>condense → preserve key info"]):::data
+    ROOT(["Text Summarization<br/>condense, preserve key info"]):::data
     ROOT --> EXT["EXTRACTIVE<br/>select sentences verbatim"]:::blue
     ROOT --> ABS["ABSTRACTIVE<br/>generate new text"]:::purple
 
-    EXT --> G["Graph centrality<br/>TextRank · LexRank"]:::blue
-    EXT --> C["Centroid / TF-IDF<br/>scoring"]:::blue
-    EXT --> S["Supervised<br/>sentence classification"]:::blue
-    EXT --> M["MMR<br/>relevance − redundancy"]:::blue
+    EXT --> GC["Graph centrality<br/>TextRank / LexRank"]:::blue
+    EXT --> CN["Centroid / TF-IDF<br/>scoring"]:::blue
+    EXT --> SC["Supervised<br/>sentence classification"]:::blue
+    EXT --> MM["MMR<br/>relevance - redundancy"]:::blue
 
     ABS --> PG["Pointer-generator<br/>copy + coverage"]:::purple
-    ABS --> PT["Pretrained seq2seq<br/>BART · PEGASUS · T5"]:::purple
-    ABS --> LLM["LLM zero-shot<br/>instruction-controlled"]:::green
+    ABS --> PT["Pretrained seq2seq<br/>BART / PEGASUS / T5"]:::purple
+    ABS --> LM["LLM zero-shot<br/>instruction-controlled"]:::green
 
     classDef data fill:#3A6B96,stroke:#2A5B86,color:#fff
     classDef blue fill:#2A5B80,stroke:#1A4B70,color:#fff
@@ -96,16 +98,26 @@ The most elegant extractive idea borrows directly from how Google ranks web page
 **The construction, step by step:**
 
 1. **Nodes.** Split $D$ into sentences $s_1, \dots, s_n$; each becomes a node in a graph $G$.
-2. **Edges.** Connect every pair $(s_i, s_j)$ with a weight $w_{ij}$ = their **similarity**. TextRank uses a content-overlap measure; LexRank uses **cosine similarity of TF-IDF vectors** (the version we'll compute). Cosine of TF-IDF means: represent each sentence as a vector of term frequencies reweighted by how rare each term is across the document (IDF), then measure the angle between vectors — two sentences sharing rare, content-bearing words score high; two sharing only common words score low.
+2. **Edges.** Connect every pair $(s_i, s_j)$ with a weight $w_{ij}$ = their **similarity**. TextRank uses a content-overlap measure; LexRank uses **cosine similarity of TF-IDF vectors** (the version we'll compute). Cosine of TF-IDF means: represent each sentence as a vector of term frequencies reweighted by how rare each term is across the document (IDF — see [03 Bag-of-Words & TF-IDF](../03-Bag-of-Words-and-TF-IDF/03-Bag-of-Words-and-TF-IDF.md)), then measure the angle between vectors — two sentences sharing rare, content-bearing words score high; two sharing only common words score low.
 3. **Score by PageRank.** Run the PageRank recursion until the scores converge:
 
 $$\text{PR}(s_i) \;=\; \frac{1-d}{n} \;+\; d \sum_{j \,:\, w_{ji} > 0} \frac{w_{ji}}{\sum_{k} w_{jk}}\, \text{PR}(s_j),$$
 
 where $d \approx 0.85$ is the **damping factor** (the probability the "random surfer" follows an edge rather than teleporting to a random node). Each sentence's score is a weighted vote from its neighbors, normalized by how many votes each neighbor casts.
 
+> **Source / derivation:** the sentence-graph recurrence is [Mihalcea & Tarau, *TextRank: Bringing Order into Texts* (EMNLP 2004), Eq. 6](https://aclanthology.org/W04-3252/) (its weighted-graph generalization of PageRank), built directly on the original [Page, Brin, Motwani & Winograd, *The PageRank Citation Ranking* (Stanford 1999)](http://ilpubs.stanford.edu:8090/422/) random-surfer model; the TF-IDF-cosine edge variant is [Erkan & Radev, *LexRank* (JAIR 2004)](https://arxiv.org/abs/1109.2128).
+
 4. **Select.** Sort sentences by PR score and take the top-$k$ (for your target $\rho$), usually **emitting them in original document order** so the summary reads in sequence.
 
-**Why the recursion converges (the fixed point).** Stack the scores into a vector $\mathbf{p}$ and the row-normalized similarity weights into a matrix $M$ (where $M_{ij} = w_{ij}/\sum_k w_{ik}$). The recursion is then a linear map $\mathbf{p} \leftarrow \tfrac{1-d}{n}\mathbf{1} + d\,M^\top \mathbf{p}$. Because $M$ is row-stochastic and the damping term mixes in a uniform "teleport," this map is a **contraction** with a unique fixed point — the same Perron–Frobenius / power-iteration argument behind web PageRank. So iterating from any starting vector converges to the stationary scores, which is what `nx.pagerank` returns. The damping $d=0.85$ both *guarantees* the contraction (no dangling-node traps) and keeps the ranking from being dominated by a single tight cluster.
+**Why the recursion converges (the fixed point).** Stack the scores into a vector $\mathbf{p}$ and the row-normalized similarity weights into a matrix $M$ (where $M_{ij} = w_{ij}/\sum_k w_{ik}$). The recursion is then a linear map
+
+$$\mathbf{p} \;\leftarrow\; \tfrac{1-d}{n}\mathbf{1} \;+\; d\,M^\top \mathbf{p}.$$
+
+Because $M$ is row-stochastic and the damping term mixes in a uniform "teleport," this map is a **contraction** with a unique fixed point — the same Perron–Frobenius / power-iteration argument behind web PageRank. So iterating from any starting vector converges to the stationary scores, which is what our from-scratch `pagerank_power_iteration` (and `nx.pagerank`) returns. The damping $d=0.85$ both *guarantees* the contraction (no dangling-node traps) and keeps the ranking from being dominated by a single tight cluster.
+
+> **Source / derivation:** the contraction-map / power-iteration convergence argument is the Perron–Frobenius analysis in [Page et al. 1999, §2.1–2.4](http://ilpubs.stanford.edu:8090/422/); we verify our numpy power iteration against `networkx.pagerank` on the identical graph (max abs diff ≈ 4.7e-7) in the notebook.
+
+![Power iteration converging to the stationary centrality scores. From a uniform start of 1/n, each sentence's PageRank score (one line per sentence) oscillates briefly and settles within a handful of steps to its stationary value — the contraction map's fixed point made visible. S1 and S3 (green, the two themes that get selected) settle highest; the bakery distractor S5 (red) settles lowest.](../images/sum_pagerank_convergence.png)
 
 > **Note:** the stationary scores have a clean reading: $\text{PR}(s_i)$ is the long-run probability that a "random reader" — who hops from sentence to sentence proportional to similarity, occasionally teleporting to a random sentence — is *currently* on sentence $s_i$. The sentences you visit most are the most central, hence the most summary-worthy.
 
@@ -121,7 +133,7 @@ Take this tiny document (two on-topic clusters plus one distractor):
 - **S4:** *Grid operators say the network cannot easily handle the added solar load.*
 - **S5:** *A local bakery announced a new sourdough recipe on Tuesday.*
 
-By eye: S1≈S2 (both "solar grew in Europe"), S3≈S4 (both "grid can't cope"), and S5 is unrelated to everything. Now we compute it properly. Building TF-IDF vectors (English stop-words removed), taking pairwise cosine similarities as edge weights, and running weighted PageRank ($d=0.85$) to convergence yields these centrality scores (**these are measured by the generator script, not hand-waved**):
+By eye: S1≈S2 (both "solar grew in Europe"), S3≈S4 (both "grid can't cope"), and S5 is unrelated to everything. Now we compute it properly. Building TF-IDF vectors (English stop-words removed), taking pairwise cosine similarities as edge weights, and running weighted PageRank ($d=0.85$) to convergence yields these centrality scores (**these are measured by the from-scratch code, not hand-waved**):
 
 | Sentence | PageRank centrality |
 |---|---|
@@ -131,11 +143,11 @@ By eye: S1≈S2 (both "solar grew in Europe"), S3≈S4 (both "grid can't cope"),
 | S4 Grid operators say the network… | 0.181 |
 | S5 A local bakery announced… | 0.098 |
 
-![The measured TextRank graph for the 5-sentence document. Each node is a sentence; node size and color encode its PageRank centrality (green = top-2 selected). Edges are TF-IDF cosine similarities (numbers on edges). S1 and S3 win because each anchors one of the two on-topic clusters and connects across to the other; the bakery sentence S5 is nearly isolated (only weak 0.09 links) and is correctly demoted to last.](../images/summ_textrank_graph.png)
+![The measured TextRank graph for the 5-sentence document. Each node is a sentence; node size and colour encode its PageRank centrality (green = top-2 selected). Edges are TF-IDF cosine similarities (numbers on edges). S1 and S3 win because each anchors one of the two on-topic clusters and connects across to the other; the bakery sentence S5 is nearly isolated (only a weak 0.09 link) and is correctly demoted to last.](../images/sum_textrank_graph.png)
 
 Read the result. **The top-2 are S1 (0.280) and S3 (0.238)** — exactly the right pick: one sentence about the *solar growth* theme and one about the *grid strain* theme, giving a balanced 2-sentence summary "Solar power grew sharply in Europe… the aging grid struggles to absorb the new supply." Notice three things the algorithm got right *for free*:
 
-1. **It demoted the distractor.** S5 (the bakery) scores **0.098** — less than half the leaders — because it shares almost no content words with anything; its only edges are tiny (0.09). PageRank's "important = connected to important" recursion *automatically* filters off-topic sentences.
+1. **It demoted the distractor.** S5 (the bakery) scores **0.098** — less than half the leaders — because it shares almost no content words with anything; its only edge is tiny (0.09). PageRank's "important = connected to important" recursion *automatically* filters off-topic sentences.
 2. **It avoided redundancy at the *cluster* level by accident, not by design.** S1 beats its near-twin S2 narrowly (0.280 vs 0.203) — TextRank prefers the *more central phrasing* of a cluster. But note it does **not** stop you from picking *both* S1 and S2 if you asked for top-3; raw centrality has no redundancy penalty. That gap is exactly what **MMR** fixes (next section).
 3. **Cross-cluster bridges matter.** S1 and S3 each score highest in part because they link *across* the two themes (the S1↔S3 edge), making them the natural "spine" of the document.
 
@@ -164,6 +176,8 @@ If you *have* labeled data — documents paired with human "which sentences belo
 Centrality tells you what's *relevant*; it says nothing about whether you're *repeating yourself*. **Maximal Marginal Relevance** (Carbonell & Goldstein, 1998) fixes that by selecting sentences **greedily**, each time picking the one that maximizes a relevance−redundancy trade-off:
 
 $$\text{MMR} \;=\; \arg\max_{s_i \in R \setminus S}\; \Big[\, \lambda \cdot \text{Rel}(s_i, D) \;-\; (1-\lambda)\cdot \max_{s_j \in S}\, \text{Sim}(s_i, s_j) \,\Big].$$
+
+> **Source / derivation:** the MMR objective is [Carbonell & Goldstein, *The Use of MMR, Diversity-Based Reranking* (SIGIR 1998), Eq. 1](https://www.cs.cmu.edu/~jgc/publication/The_Use_MMR_Diversity_Based_LTMIR_1998.pdf) — the original relevance-minus-redundancy reranking criterion.
 
 Read it term by term. $R$ is the pool of candidate sentences, $S$ the set already selected. $\text{Rel}(s_i, D)$ is how relevant $s_i$ is to the document/query (e.g. centroid or TextRank score). $\max_{s_j \in S}\text{Sim}(s_i, s_j)$ is $s_i$'s similarity to the *most similar already-chosen* sentence — its **redundancy**. The hyperparameter $\lambda \in [0,1]$ slides between the two: $\lambda = 1$ is pure relevance (ignore redundancy — you may pick three paraphrases), $\lambda = 0$ is pure diversity (ignore relevance — you spread out but may pick junk). In practice $\lambda \approx 0.7$ — mostly relevance, with a redundancy penalty so the second sentence you pick isn't a restatement of the first.
 
@@ -198,7 +212,9 @@ The **final distribution** over the *extended* vocabulary (fixed vocab ∪ all s
 
 $$P(w) \;=\; p_{gen}\,P_{\text{vocab}}(w) \;+\; (1 - p_{gen})\!\!\sum_{i \,:\, w_i = w}\! a_t^i.$$
 
-![The pointer-generator soft switch. The decoder state feeds (a) a vocabulary distribution P_vocab for generating a new word, (b) the attention distribution over the source = the copy distribution, and (c) the gate p_gen = sigmoid of a learned function of the decoder state, context, and input. The final P(w) mixes them: p_gen times P_vocab plus (1-p_gen) times the summed copy attention. p_gen near 1 generates a paraphrase; p_gen near 0 copies a source word, which solves out-of-vocabulary names and numbers.](../images/summ_pointer_generator.png)
+> **Source / derivation:** the gate and the final mixture are [See, Liu & Manning, *Get To The Point: Summarization with Pointer-Generator Networks* (ACL 2017), Eqs. 8–9](https://arxiv.org/abs/1704.04368); the copy distribution reuses the attention of [Bahdanau, Cho & Bengio (2015)](https://arxiv.org/abs/1409.0473), and the pointer idea is [Vinyals, Fortunato & Jaitly, *Pointer Networks* (2015)](https://arxiv.org/abs/1506.03134).
+
+![The pointer-generator soft switch. The decoder state feeds (a) a vocabulary distribution P_vocab for generating a new word, (b) the attention distribution over the source = the copy distribution, and (c) the gate p_gen = sigmoid of a learned function of the decoder state, context, and input. The final P(w) mixes them: p_gen times P_vocab plus (1-p_gen) times the summed copy attention. p_gen near 1 generates a paraphrase; p_gen near 0 copies a source word, which solves out-of-vocabulary names and numbers.](../images/sum_pointer_generator.png)
 
 **Why this is exactly the OOV cure.** If a rare named entity — say "**Tsiolkovsky**" — appears in the source but *not* in the fixed vocabulary, $P_{\text{vocab}}$ literally **cannot** produce it (it has no slot for it). But the attention distribution *can* point at that source position, so the copy term carries it into $P(w)$ verbatim. The model learns to drive $p_{gen} \to 0$ for rare names, dates, and numbers (copy them) and $p_{gen} \to 1$ for connective, paraphrasing words (generate them). **OOV solved, not by a bigger vocabulary, but by pointing.**
 
@@ -216,13 +232,19 @@ $$P(\text{"Tsiolkovsky"}) = 0.30 \times \underbrace{0}_{\text{not in vocab}} + (
 
 $$P(\text{"and"}) = 0.30 \times 0.50 + 0.70 \times \underbrace{0}_{\text{"and" not in source}} = \mathbf{0.15}.$$
 
-So even though "and" was the *vocab* favorite, the blended distribution emits **"Tsiolkovsky"** ($0.56 > 0.15$) — the copy mechanism rescues a word the generator could never have produced. Flip $p_{gen}$ to $0.9$ and the arithmetic reverses ($P(\text{"and"}) = 0.45$ vs $P(\text{"Tsiolkovsky"}) = 0.08$), and the model paraphrases instead. **That one scalar is the entire extractive-vs-abstractive dial, learned per token.**
+So even though "and" was the *vocab* favorite, the blended distribution emits **"Tsiolkovsky"** ($0.56 > 0.15$) — the copy mechanism rescues a word the generator could never have produced. Flip $p_{gen}$ to $0.9$ and the arithmetic reverses ($P(\text{"and"}) = 0.45$ vs $P(\text{"Tsiolkovsky"}) = 0.08$), and the model paraphrases instead. **That one scalar is the entire extractive-vs-abstractive dial, learned per token.** Both columns below are computed by `pointer_generator_mix` in the code:
+
+![The p_gen mixture probabilities at two gate values, measured. Left (p_gen=0.30, "wants to copy"): the out-of-vocabulary source word "Tsiolkovsky" wins (0.56) via the copy term, even though "and" is the vocab favourite. Right (p_gen=0.90, "wants to generate"): the arithmetic reverses and "and" wins (0.45). The single scalar p_gen slides the model between copying a source word and generating a paraphrase.](../images/sum_pgen_mixture.png)
 
 **Why we also need coverage.** Copying fixes OOV but not *repetition*. The model can keep attending to the same source region and re-emit the same phrase. See et al.'s **coverage mechanism** maintains a running **coverage vector** $c_t = \sum_{t'<t} a_{t'}$ — the total attention each source position has received so far — and adds a **coverage loss** that penalizes attending to already-covered positions:
 
 $$\text{covloss}_t \;=\; \sum_i \min\big(a_t^i,\; c_t^i\big).$$
 
+> **Source / derivation:** the coverage vector and the $\min$-based coverage loss are [See, Liu & Manning (2017), Eqs. 10–12](https://arxiv.org/abs/1704.04368), adapting the coverage idea of [Tu et al., *Modeling Coverage for Neural Machine Translation* (2016)](https://arxiv.org/abs/1601.04811) from MT to summarization.
+
 The $\min$ penalizes *overlap* between the current attention $a_t^i$ and the accumulated coverage $c_t^i$: if position $i$ has already been heavily attended ($c_t^i$ large) and you attend to it again ($a_t^i$ large), the $\min$ is large and you pay for it. The model learns to **spread attention across the source**, dramatically reducing repetition. The coverage vector is also fed *into* the attention computation, so the model can *see* what it has already covered while deciding where to look next.
+
+![The coverage mechanism, illustrative. Top (without coverage): the decoder re-attends to the same source positions (2-3) every step, so the accumulated coverage piles up there and the model repeats a phrase. Bottom (with the coverage loss): attention is pushed to spread roughly evenly across the source, so coverage is flat and repetition drops. The coverage loss sum_i min(a_t^i, c_t^i) is exactly the penalty that produces the bottom panel from the top.](../images/sum_coverage.png)
 
 > **Note:** the pointer-generator is the conceptual bridge between the two paradigms made *differentiable*: copying *is* extraction, generating *is* abstraction, and $p_{gen}$ blends them per token. Every later "extract-then-rewrite" or "constrained-copy" system is a descendant of this idea. Even modern LLMs, with no explicit copy gate, learn the *behavior* — they copy rare names verbatim and paraphrase the connective tissue, because that's what the data rewards.
 
@@ -234,9 +256,15 @@ The pointer-generator was trained from scratch per dataset. The leap that made a
 
 **BART** (Lewis et al. 2020) — a **denoising autoencoder**. Corrupt a document (mask spans, delete tokens, permute sentences, rotate the document) and train an encoder–decoder to **reconstruct the original**. Because it learns to map *corrupted, scrambled* text back to *clean, ordered* text, BART is an excellent starting point for any text-to-text generation — and it became *the* default summarization backbone (`bart-large-cnn`, and the distilled `distilbart-cnn` we use in the demo).
 
+> **Source / derivation:** the denoising-autoencoder objective is [Lewis et al., *BART* (ACL 2020), §2](https://arxiv.org/abs/1910.13461).
+
 **PEGASUS** (Zhang et al. 2020) — the clever one, because its **pretraining objective is summarization-shaped**. The idea is **Gap-Sentence Generation (GSG)**: from a document, *remove* the most "important" whole sentences (selected by their ROUGE overlap with the rest of the document — i.e. the sentences a summary would likely contain), concatenate them as a pseudo-summary target, and train the model to **generate those removed sentences from the remaining document**. Deriving why this works: GSG makes the pretraining task a *miniature summarization task* — "given a document with its key sentences blanked out, reconstruct them" is exactly "given a document, produce its salient content." So when you fine-tune PEGASUS on real summaries, it's already been doing the right *shape* of task for millions of documents. The payoff: PEGASUS reaches strong ROUGE with **very few** fine-tuning examples (it's remarkably few-shot), which is the whole point of designing the objective to match the downstream task.
 
+> **Source / derivation:** Gap-Sentence Generation and the ROUGE-based "principal sentence" selection are [Zhang, Zhao, Saleh & Liu, *PEGASUS: Pre-training with Extracted Gap-sentences* (ICML 2020), §3.1](https://arxiv.org/abs/1912.08777).
+
 **T5** (Raffel et al. 2020) — the **text-to-text** unifier. *Every* NLP task is cast as "text in → text out," with a task prefix. For summarization you literally prepend **`"summarize: "`** to the document and the model emits the summary. T5's pretraining is span-corruption (mask random spans, generate them), and its contribution to summarization is less a special objective than a demonstration that **one model, one format** handles summarization alongside translation, QA, and classification — the conceptual ancestor of instruction-tuned LLMs.
+
+> **Source / derivation:** the text-to-text framing and span-corruption objective are [Raffel et al., *Exploring the Limits of Transfer Learning with T5* (JMLR 2020), §2.4 and §3.1.4](https://arxiv.org/abs/1910.10683).
 
 > **Tip:** picking a backbone in practice — **BART/distilBART** for a strong, cheap, fine-tunable general summarizer; **PEGASUS** when you have *little* labeled data (its objective gives it a head start); **T5/Flan-T5** when you want one model across many tasks or you like the prompt-prefix format. All three are encoder–decoders, which (unlike decoder-only LLMs) keep the source fully bidirectionally encoded — a real advantage for faithfulness on a fixed input.
 
@@ -327,9 +355,15 @@ You can't improve what you can't measure, and summarization measurement is genui
 
 $$\text{ROUGE-N}_{\text{recall}} \;=\; \frac{\sum_{\text{n-grams} \in \text{ref}} \text{count}_{\text{match}}(\text{n-gram})}{\sum_{\text{n-grams} \in \text{ref}} \text{count}(\text{n-gram})}.$$
 
+> **Source / derivation:** the ROUGE-N recall formula is [Lin, *ROUGE: A Package for Automatic Evaluation of Summaries* (ACL Workshop 2004), §2 Eq. 1](https://aclanthology.org/W04-1013/); we verify our from-scratch ROUGE-1/2/L against Google's `rouge-score` (matched to 0.0 with Porter stemming) in the notebook.
+
 In words: of all the n-grams in the *reference*, what fraction also appear in the *candidate*? (Modern reporting uses the **F1** — the harmonic mean of this recall and the analogous precision — to also penalize over-long summaries that pad to boost recall.)
 
-- **ROUGE-L** — longest common subsequence (LCS) between candidate and reference, rewarding in-order overlap *without* requiring contiguity — a softer, order-aware measure than ROUGE-2.
+- **ROUGE-L** — longest common subsequence (LCS) between candidate and reference, rewarding in-order overlap *without* requiring contiguity — a softer, order-aware measure than ROUGE-2. With $\text{LCS}(C,R)$ the subsequence length, $\text{R}_{\text{lcs}} = \text{LCS}/|R|$, $\text{P}_{\text{lcs}} = \text{LCS}/|C|$, and the F-measure their (β-weighted) harmonic mean:
+
+$$\text{ROUGE-L}_{F} \;=\; \frac{(1+\beta^2)\,\text{R}_{\text{lcs}}\,\text{P}_{\text{lcs}}}{\text{R}_{\text{lcs}} + \beta^2\,\text{P}_{\text{lcs}}}.$$
+
+> **Source / derivation:** the LCS-based precision/recall/F-measure is [Lin (2004), §3 Eqs. 2–4](https://aclanthology.org/W04-1013/); `rouge-score`'s `rougeL` uses $\beta=1$ (the plain harmonic mean) for single-sentence summaries, which our `rouge_l` reproduces exactly.
 
 ### Worked example 3 — ROUGE by hand
 
@@ -340,27 +374,35 @@ Candidate $C$: *"the cat sat on a mat"*.
 
 **ROUGE-2 recall** — reference bigrams present in the candidate: *the-cat* ✓, *cat-sat* ✓, *sat-on* ✓, *on-the* ✗ (candidate has *on-a*), *the-mat* ✗ (candidate has *a-mat*). 3 of 5 → **ROUGE-2 recall = 3/5 = 0.60**.
 
-**ROUGE-L** — the LCS is *"the cat sat on … mat"* (length 5) → recall 5/6, precision 5/6 → **F1 ≈ 0.83**. The single word swap (*the*→*a*) barely dents ROUGE-1/L but **drops** ROUGE-2 to 0.60, because it breaks two bigrams — which is exactly why ROUGE-2 is the more sensitive fluency/ordering signal.
+**ROUGE-L** — the LCS is *"the cat sat on … mat"* (length 5) → recall 5/6, precision 5/6 → **F1 ≈ 0.83**. The single word swap (*the*→*a*) barely dents ROUGE-1/L but **drops** ROUGE-2 to 0.60, because it breaks two bigrams — which is exactly why ROUGE-2 is the more sensitive fluency/ordering signal. All nine numbers below are computed by our from-scratch `rouge_all` (verified == `rouge-score`):
+
+![ROUGE-1/2/L recall, precision, and F1 on the one-word swap, measured. ROUGE-1 (unigrams) and ROUGE-L (LCS) all sit at 0.83 — the swap of one of six words. ROUGE-2 (bigrams) drops to 0.60 because the single swap breaks two of the five reference bigrams. This is why ROUGE-2 is the sharper fluency/ordering signal: it punishes broken word order that ROUGE-1 cannot see.](../images/sum_rouge_breakdown.png)
 
 ### Worked example 4 — measured extractive vs. abstractive ROUGE
 
-Now a real, *measured* comparison on the solar/grid document. We take the **extractive** summary = TextRank's top-2 (S1 + S3, from Worked example 1), and an **abstractive** summary from a real model (`distilbart-cnn-12-6`), and score both against the reference *"Solar power grew fast in Europe but the grid struggles to absorb it."* (computed with `rouge-score`, stemming on):
+Now a real, *measured* comparison on the solar/grid document. We take the **extractive** summary = TextRank's top-2 (S1 + S3, from Worked example 1), and an **abstractive** summary from a real model (`distilbart-cnn-12-6`, beam search), and score both against the reference *"Solar power grew fast in Europe but the grid struggles to absorb it."* (computed with our `rouge_all`, stemming on — and verified equal to `rouge-score`):
 
 | | ROUGE-1 | ROUGE-2 | ROUGE-L |
 |---|---|---|---|
 | **Extractive** (TextRank top-2) | **0.53** | **0.25** | **0.53** |
 | **Abstractive** (distilbart-cnn) | 0.39 | 0.14 | 0.22 |
 
-![Measured ROUGE-1/2/L F1 of the extractive (TextRank top-2) vs abstractive (distilbart-cnn) summaries against the reference. On this short document the extractive summary scores higher on all three metrics — its lexical overlap with the reference is higher — which is a clean illustration of ROUGE's bias toward word-level overlap rather than meaning.](../images/summ_rouge_compare.png)
+![Measured ROUGE-1/2/L F1 of the extractive (TextRank top-2) vs abstractive (distilbart-cnn) summaries against the reference. On this short document the extractive summary scores higher on all three metrics — its lexical overlap with the reference is higher — a clean illustration of ROUGE's bias toward word-level overlap rather than meaning.](../images/sum_extractive_vs_abstractive_rouge.png)
 
 The **extractive summary scores higher** here (0.53 vs 0.39 on ROUGE-1) — and that's a *teaching* result, not a bug. Two lessons fall out of it:
 
 1. **ROUGE rewards lexical overlap, not meaning.** The extractive summary copies source words that happen to overlap the reference's vocabulary; the abstractive summary *paraphrases* (and the small distilbart over-includes the grid detail and reorders), so its words match the reference less even when its *meaning* is comparable. A genuinely good abstractive summary can score *lower* ROUGE than a clunky extractive one — which is ROUGE's central blind spot.
 2. **Small documents and small models flatter extraction.** On the full CNN/DailyMail benchmark, fine-tuned BART/PEGASUS beat extractive baselines on ROUGE; our tiny single-doc demo is the opposite regime. The number depends heavily on the document, the reference, and the model — *always report which*.
 
-> **Gotcha — ROUGE's four big blind spots.** (1) **No semantics**: paraphrases score zero overlap even when meaning is identical (*"car"* vs *"automobile"*). (2) **No faithfulness**: a fluent *hallucination* that happens to share words with the reference can score *high* — ROUGE cannot tell truth from invention. (3) **Reference-bound**: it measures similarity to *one human's* summary, not quality; a different-but-valid summary is punished. (4) **Gameable**: you can inflate ROUGE-1 by stuffing high-frequency reference words. Treat ROUGE as a *cheap regression signal*, never as ground-truth quality — and *never* report it without a faithfulness check and, ideally, a human eval.
+To see the blind spot in its purest form, score a faithful **paraphrase** that reuses *none* of the reference's words against a wordy **copy** that reuses its vocabulary:
 
-> **Tip:** complementary automatic metrics patch some gaps: **BERTScore** uses contextual embeddings so paraphrases match (semantic, not lexical), and **METEOR** adds stemming/synonym matching. But *none* of these — ROUGE, BERTScore, METEOR — measure **faithfulness**, the failure that actually hurts in production. For that you need the next section's metrics.
+![ROUGE's blind spot, measured. A faithful paraphrase of the reference ("company sales rose during q3" for "the firm's revenue increased in the third quarter") scores ROUGE-1 F1 = 0.00 — it shares no words — while a wordy verbatim-ish copy scores 0.95. The metric rewards lexical overlap, not meaning: a perfect paraphrase is invisible to ROUGE, and a clunky copy looks great.](../images/sum_rouge_blindness.png)
+
+> **Gotcha — ROUGE's four big blind spots.** (1) **No semantics**: paraphrases score zero overlap even when meaning is identical (*"car"* vs *"automobile"*; or the 0.00-scoring paraphrase above). (2) **No faithfulness**: a fluent *hallucination* that happens to share words with the reference can score *high* — ROUGE cannot tell truth from invention. (3) **Reference-bound**: it measures similarity to *one human's* summary, not quality; a different-but-valid summary is punished. (4) **Gameable**: you can inflate ROUGE-1 by stuffing high-frequency reference words. Treat ROUGE as a *cheap regression signal*, never as ground-truth quality — and *never* report it without a faithfulness check and, ideally, a human eval.
+
+> **Tip:** complementary automatic metrics patch some gaps: **BERTScore** ([Zhang et al. 2020](https://arxiv.org/abs/1904.09675)) uses contextual embeddings so paraphrases match (semantic, not lexical), and **METEOR** adds stemming/synonym matching. But *none* of these — ROUGE, BERTScore, METEOR — measure **faithfulness**, the failure that actually hurts in production. For that you need the next section's metrics.
+
+> **Source / derivation:** BERTScore's token-level cosine matching between contextual embeddings (its recall/precision/F1) is [Zhang, Kishore, Wu, Weinberger & Artzi, *BERTScore: Evaluating Text Generation with BERT* (ICLR 2020), §3](https://arxiv.org/abs/1904.09675).
 
 ---
 
@@ -371,6 +413,8 @@ Here's the failure that gets a summarizer pulled from production: **the summary 
 - **FactCC** (Kryściński et al. 2020) — a trained classifier that, given a (source, summary-sentence) pair, predicts **consistent / inconsistent**. Learns to spot the typical corruptions (swapped entities, negation, wrong numbers).
 - **QAGS** (Wang et al. 2020) — **question-answering-based**: generate questions from the *summary*, answer them against the *summary* and against the *source*; if the answers disagree, the summary is unfaithful. The intuition: a faithful summary should yield the same answers as the source it claims to summarize.
 - **SummaC** (Laban et al. 2022) — uses **natural-language inference**: check, sentence by sentence, whether the source **entails** each summary sentence. If a summary sentence isn't entailed by *any* source sentence, flag it. Robust and simple.
+
+> **Source / derivation:** the hallucination measurement that motivates all three is [Maynez, Narayan, Bohnet & McDonald, *On Faithfulness and Factuality in Abstractive Summarization* (ACL 2020)](https://arxiv.org/abs/2005.00661); the metrics are [FactCC](https://arxiv.org/abs/1910.12840), [QAGS](https://arxiv.org/abs/2004.04228), and [SummaC](https://arxiv.org/abs/2111.09525) respectively (all in the references).
 
 > **Note:** the deeper distinction is **intrinsic vs. extrinsic** hallucination. *Intrinsic* = the summary **contradicts** the source (source says "sales fell," summary says "sales rose"). *Extrinsic* = the summary adds information **not in** the source (it may even be true-in-the-world, but it's unsupported *by this document*). Both are faithfulness failures; extrinsic ones are nastier because they're often *fluent and plausible*, so a human skim misses them — which is precisely why you need an automatic entailment/QA check, not just an eyeball.
 
@@ -407,51 +451,37 @@ Given "summarize this corpus," here's the reasoning I'd actually do:
 
 ## Code: extract, generate, and measure — end to end
 
-This runs entirely in Python 3.12 and reproduces every measured number on this page: it (1) builds the TextRank sentence graph and prints centrality scores, (2) generates an abstractive summary with a small real model, and (3) scores both with ROUGE. It's the same logic the diagram generator uses, distilled.
+Everything measured on this page is reproduced by one seeded, from-scratch module — TextRank (TF-IDF cosine graph + power-iteration PageRank verified against `networkx`), ROUGE-1/2/L (verified against `rouge-score`), the $p_{gen}$ mixture, and the ROUGE-blindness demo — plus an optional real `distilbart` summarizer. The page, the notebook, and every figure import the **same** functions, so they cannot drift.
+
+> **Runnable project and a step-by-step notebook:** the verified code lives as a clean script and an executed teaching notebook next to this page — see the [step-by-step teaching notebook](code/13-Text-Summarization.ipynb), the [source-of-truth module](code/text_summarization.py) (run it with `python text_summarization.py`), and the [figure generator](code/make_figures_13.py) that regenerates every PNG from those same functions.
 
 ```python
-"""Summarization end-to-end: TextRank centrality, an abstractive model, and ROUGE.
-Verified on Python 3.12 (scikit-learn 1.9, networkx 3.6, transformers 5.10, torch 2.12)."""
-import numpy as np, networkx as nx
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
-from rouge_score import rouge_scorer
+"""Summarization end-to-end: TextRank centrality, ROUGE from scratch, and an abstractive model.
+Verified on Python 3.12 (numpy 2.4.6, scikit-learn 1.9, networkx 3.6, rouge-score, transformers 5.10, torch 2.12)."""
+import numpy as np
+from text_summarization import (
+    SOLAR_DOC, SOLAR_REFERENCE, textrank_scores, textrank_summary,
+    rouge_all, pointer_generator_mix, run_real_abstractive,
+)
 
-doc = [
-    "Solar power capacity grew sharply across Europe last year.",
-    "Solar energy installations expanded rapidly throughout Europe in 2024.",
-    "Engineers warn the aging power grid struggles to absorb the new supply.",
-    "Grid operators say the network cannot easily handle the added solar load.",
-    "A local bakery announced a new sourdough recipe on Tuesday.",
-]
-reference = "Solar power grew fast in Europe but the grid struggles to absorb it."
+# (1) EXTRACTIVE: TextRank = power-iteration PageRank on a TF-IDF cosine sentence graph
+scores = textrank_scores(SOLAR_DOC)
+top, extractive = textrank_summary(SOLAR_DOC, k=2)
+print("centrality:", {f"S{i+1}": round(float(scores[i]), 3) for i in range(len(SOLAR_DOC))})
+print(f"extractive top-2 -> S{top[0]+1}, S{top[1]+1}")
 
-# (1) EXTRACTIVE: TextRank = PageRank on a TF-IDF cosine sentence graph
-X = TfidfVectorizer(stop_words="english").fit_transform(doc)
-sim = cosine_similarity(X); np.fill_diagonal(sim, 0.0)
-scores = nx.pagerank(nx.from_numpy_array(sim), weight="weight")   # d=0.85 default
-ranked = sorted(scores, key=scores.get, reverse=True)
-print("centrality:", {f"S{i+1}": round(scores[i], 3) for i in range(len(doc))})
-top2 = sorted(ranked[:2])                                          # keep document order
-extractive = " ".join(doc[i] for i in top2)
-print("extractive top-2 -> S%d, S%d" % (top2[0] + 1, top2[1] + 1))
+# (2) THE p_gen SWITCH: copying rescues an out-of-vocabulary name
+mix = pointer_generator_mix({"and": 0.50, "power": 0.10}, {"Tsiolkovsky": 0.80, "the": 0.20}, p_gen=0.30)
+print(f"p_gen=0.30 -> P(Tsiolkovsky)={mix['Tsiolkovsky']:.2f}  P(and)={mix['and']:.2f}")
 
-# (2) ABSTRACTIVE: a small real seq2seq summarizer (encoder-decoder, BART-distilled)
-from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
-name = "sshleifer/distilbart-cnn-12-6"
-tok = AutoTokenizer.from_pretrained(name)
-model = AutoModelForSeq2SeqLM.from_pretrained(name)
-ids = tok(" ".join(doc[:4]), return_tensors="pt", truncation=True)   # drop the distractor
-out = model.generate(**ids, max_length=40, min_length=12, num_beams=4) # beam search!
-abstractive = tok.decode(out[0], skip_special_tokens=True).strip()
-print("abstractive:", abstractive)
+# (3) ABSTRACTIVE: a real seq2seq summarizer (distilBART, beam search -> deterministic)
+abstractive = run_real_abstractive()
 
-# (3) EVALUATE: ROUGE-1/2/L F1 of each summary vs the reference
-sc = rouge_scorer.RougeScorer(["rouge1", "rouge2", "rougeL"], use_stemmer=True)
+# (4) EVALUATE: ROUGE-1/2/L F1 of each summary vs the reference (verified == rouge-score)
 for label, summ in [("extractive", extractive), ("abstractive", abstractive)]:
-    r = sc.score(reference, summ)
-    print(f"{label:11s} ROUGE-1={r['rouge1'].fmeasure:.2f} "
-          f"R-2={r['rouge2'].fmeasure:.2f} R-L={r['rougeL'].fmeasure:.2f}")
+    r = rouge_all(summ, SOLAR_REFERENCE)
+    print(f"{label:11s} ROUGE-1={r['rouge1']['fmeasure']:.2f} "
+          f"R-2={r['rouge2']['fmeasure']:.2f} R-L={r['rougeL']['fmeasure']:.2f}")
 ```
 
 Output (deterministic; beam search, no sampling):
@@ -459,13 +489,12 @@ Output (deterministic; beam search, no sampling):
 ```
 centrality: {'S1': 0.28, 'S2': 0.203, 'S3': 0.238, 'S4': 0.181, 'S5': 0.098}
 extractive top-2 -> S1, S3
-abstractive: Engineers warn the aging power grid struggles to absorb the new supply . Grid
-operators say the network cannot easily handle the added solar load . Solar energy ...
+p_gen=0.30 -> P(Tsiolkovsky)=0.56  P(and)=0.15
 extractive  ROUGE-1=0.53 R-2=0.25 R-L=0.53
 abstractive ROUGE-1=0.39 R-2=0.14 R-L=0.22
 ```
 
-> **Note:** the headline numbers — **TextRank correctly picks S1+S3** (the two themes, demoting the bakery distractor to last at 0.098), and **extractive out-ROUGEs abstractive here** (0.53 vs 0.39) — are exactly the two pedagogical points: centrality finds salient, non-redundant sentences for free, and ROUGE's lexical bias can flatter a verbatim extract over a real paraphrase. Swap in `facebook/bart-large-cnn` and a longer document and the abstractive side pulls ahead — the *regime* matters.
+> **Note:** the headline numbers — **TextRank correctly picks S1+S3** (the two themes, demoting the bakery distractor to last at 0.098), the **$p_{gen}$ switch copies the OOV name**, and **extractive out-ROUGEs abstractive here** (0.53 vs 0.39) — are exactly the page's pedagogical points: centrality finds salient, non-redundant sentences for free, copying rescues rare words a softmax can't emit, and ROUGE's lexical bias can flatter a verbatim extract over a real paraphrase. Swap in `facebook/bart-large-cnn` and a longer document and the abstractive side pulls ahead — the *regime* matters.
 
 > **Tip:** to *see* the faithfulness gap ROUGE misses, run the abstractive output through an NLI model (SummaC-style: does any source sentence entail each summary sentence?) — a fluent summary with a swapped number scores fine on ROUGE and **fails** entailment. That's the check that belongs in your CI, not just ROUGE.
 
@@ -483,7 +512,7 @@ abstractive ROUGE-1=0.39 R-2=0.14 R-L=0.22
 - *What does the pointer-generator solve, and how?* OOV and rare-name copying — a soft switch $p_{gen}$ mixes the vocab distribution with a copy-from-source (attention) distribution; **coverage** then kills repetition.
 - *What's special about PEGASUS?* Gap-Sentence Generation pretraining — remove the most important sentences and train to regenerate them, a summarization-shaped objective → strong few-shot.
 - *How do you summarize a 50-page document?* Long-context model, or **map-reduce** (summarize chunks → summarize the summaries) / **refine** (sequential update).
-- *What does ROUGE measure, and miss?* N-gram overlap with a reference (recall-oriented); it misses **semantics** (paraphrases) and **faithfulness** (hallucinations score fine).
+- *What does ROUGE measure, and miss?* N-gram overlap with a reference (recall-oriented) and the LCS for ROUGE-L; it misses **semantics** (paraphrases) and **faithfulness** (hallucinations score fine).
 - *Why isn't ROUGE enough?* Abstractive models hallucinate and ROUGE can't tell — add FactCC/QAGS/SummaC and human eval; gate the ship on faithfulness.
 - *Best decoding for summaries?* Beam search / low temperature (faithful, focused), not high-temperature sampling; plus length penalty and no-repeat-ngram.
 
