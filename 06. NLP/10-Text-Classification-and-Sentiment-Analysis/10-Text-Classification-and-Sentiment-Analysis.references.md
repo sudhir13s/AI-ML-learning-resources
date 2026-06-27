@@ -22,6 +22,7 @@ updated: 2026-06-22
 - [Text Classification Using BERT & TensorFlow](https://www.youtube.com/watch?v=D9yyt6BfgAM) — **codebasics** — fine-tune BERT for spam/sentiment, clearly walked.
 - [Sentiment Analysis with BERT Neural Network and Python](https://www.youtube.com/watch?v=szczpgOEdXs) — **Nicholas Renotte** — a hands-on transformer sentiment build.
 - [Naive Bayes, Clearly Explained](https://www.youtube.com/watch?v=O2L2Uv9pdDA) — **StatQuest (Josh Starmer)** — the most visual walkthrough of the multinomial NB text classifier, the bottom rung of the ladder.
+- [ROC and AUC, Clearly Explained!](https://www.youtube.com/watch?v=4jRBRDbJemM) — **StatQuest (Josh Starmer)** — the clearest visual intuition for ROC/AUC (and why precision-recall is the better lens under imbalance), the evaluation backbone of this page.
 
 **Courses (free)**:
 - [NLP Course for You — Text Classification](https://lena-voita.github.io/nlp_course/text_classification.html) — **Lena Voita (Yandex)** — Naive Bayes → logistic regression → neural, fully free, beautifully illustrated.
@@ -43,15 +44,19 @@ updated: 2026-06-22
 - [Universal Language Model Fine-tuning (ULMFiT)](https://arxiv.org/abs/1801.06146) — **Howard & Ruder (2018)** — the transfer-learning recipe (pretrain → fine-tune) for text classification.
 - [Benchmarking Zero-shot Text Classification (NLI)](https://arxiv.org/abs/1909.00161) — **Yin et al. (2019)** — classification with no labels by reframing labels as NLI hypotheses.
 - [Thumbs up? Sentiment Classification using Machine Learning Techniques](https://arxiv.org/abs/cs/0205070) — **Pang, Lee & Vaithyanathan (2002)** — the paper that launched ML sentiment analysis on movie reviews.
+- [The Precision-Recall Plot Is More Informative than the ROC Plot When Evaluating Binary Classifiers on Imbalanced Datasets](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0118432) — **Saito & Rehmsmeier (2015, PLoS ONE)** — *why* PR-AUC, not ROC-AUC, is the honest metric under class imbalance; the provenance for the PR-vs-ROC section.
 
 **Books (free chapters)**:
 - [Speech and Language Processing, 3rd ed. — Ch. 4 "Naive Bayes, Text Classification, and Sentiment"](https://web.stanford.edu/~jurafsky/slp3/4.pdf) — **Jurafsky & Martin** — Naive Bayes, smoothing, evaluation, sentiment phenomena.
-- [Speech and Language Processing, 3rd ed. — Ch. 5 "Logistic Regression"](https://web.stanford.edu/~jurafsky/slp3/5.pdf) — **Jurafsky & Martin** — the discriminative baseline, derived for text.
+- [Speech and Language Processing, 3rd ed. — Ch. 5 "Logistic Regression"](https://web.stanford.edu/~jurafsky/slp3/5.pdf) — **Jurafsky & Martin** — the discriminative baseline, the sigmoid + cross-entropy derivation, and the $(\sigma(z)-y)\,\mathbf{x}$ gradient, derived for text.
+- [Introduction to Information Retrieval — Ch. 8 "Evaluation in information retrieval"](https://nlp.stanford.edu/IR-book/html/htmledition/evaluation-in-information-retrieval-1.html) — **Manning, Raghavan & Schütze (2008)** — precision, recall, F-measure, and the ROC/PR construction from first principles; the provenance for the evaluation section.
 - [Opinion Mining and Sentiment Analysis (Foundations & Trends)](https://www.cs.cornell.edu/home/llee/omsa/omsa.pdf) — **Pang & Lee (2008)** — the foundational survey of sentiment's hard problems (negation, aspect, domain, subjectivity).
 - [Natural Language Processing with Python — Ch. 6 "Learning to Classify Text"](https://www.nltk.org/book/ch06.html) — **Bird, Klein & Loper** — feature design and classifiers in NLTK.
+- [Deep Learning — Ch. 6 "Deep Feedforward Networks" (§6.2.2 Output Units)](https://www.deeplearningbook.org/contents/mlp.html) — **Goodfellow, Bengio & Courville (2016)** — softmax + cross-entropy for one-of-$K$ and independent sigmoids + BCE for multi-label outputs; the provenance for the output-layer rule.
 
 **In this platform**:
 - Concept page (full explanation): [Text Classification & Sentiment Analysis](10-Text-Classification-and-Sentiment-Analysis.md)
+- Runnable code (seeded, CPU-only): [teaching notebook](code/10-Text-Classification-and-Sentiment-Analysis.ipynb) · [source-of-truth module](code/text_classification.py) · [figure generator](code/make_figures_10.py)
 - Builds on these features: [Bag-of-Words & TF-IDF](../03-Bag-of-Words-and-TF-IDF/03-Bag-of-Words-and-TF-IDF.md) · [Word Embeddings (word2vec/GloVe/fastText)](../05-Word-Embeddings-Word2Vec-GloVe-FastText/05-Word-Embeddings-Word2Vec-GloVe-FastText.md) · [Contextual Embeddings (ELMo · BERT)](../06-Contextual-Embeddings-ELMo-BERT/06-Contextual-Embeddings-ELMo-BERT.md)
 - The classifiers, in depth: [Naive Bayes](../../03.%20Supervised_Learning/concepts/05-Naive-Bayes.md) · [Logistic Regression](../../03.%20Supervised_Learning/concepts/02-Logistic-Regression.md) · [Support Vector Machines](../../03.%20Supervised_Learning/concepts/06-Support-Vector-Machines.md)
 - Evaluation: [Classification Metrics (precision · recall · F1 · ROC-AUC)](../../03.%20Supervised_Learning/concepts/14-Classification-Metrics.md) · [NLP Evaluation Metrics](../18-NLP-Evaluation-Metrics/18-NLP-Evaluation-Metrics.md)

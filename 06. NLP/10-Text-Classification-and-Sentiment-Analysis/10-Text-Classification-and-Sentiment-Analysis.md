@@ -19,11 +19,11 @@ This page is the definitive treatment. We will build the task from first princip
 
 - frame any labeling problem as **binary / multi-class / multi-label** and pick the right output layer + loss;
 - climb the ladder — **BoW/TF-IDF + classical ML → pooled embeddings → CNN-for-text → RNN/biLSTM → fine-tuned BERT** — and explain *what each rung buys you*;
-- **derive the multinomial Naive Bayes sentiment decision** end to end (log-posterior, smoothing) and reproduce it in code;
+- **derive the multinomial Naive Bayes sentiment decision** end to end (log-posterior, smoothing) and reproduce it in code, *and* derive the **logistic-regression sigmoid + cross-entropy gradient** that explains why LR usually edges NB on text;
 - explain why **linear models on sparse TF-IDF** are a famously strong baseline, and what a transformer adds;
 - handle **negation, aspects, sarcasm, and domain shift** — the things that break naive sentiment;
 - choose between **fine-tuning a small model and prompting an LLM** from a cost/latency/accuracy argument, with **zero-shot NLI** as the no-data option;
-- evaluate with **macro-F1 and the confusion matrix**, and **calibrate a decision threshold**.
+- **evaluate properly** — precision/recall/F1 from the confusion matrix, **macro vs micro** F1, the **threshold trade-off**, and **why PR-AUC beats ROC-AUC under class imbalance** (with the measured curves to prove it).
 
 We'll go intuition and pictures first, then the math (every step shown), then runnable, **verified** code — the numbers in every figure below were measured in Python 3.12, not invented.
 
@@ -92,7 +92,7 @@ Hold that three-stage skeleton in mind; the entire rest of this page is just *fi
 
 Here is the whole story in one picture. As you climb, the representation captures **more of how language actually works** — from "which words appeared" (a bag, order-blind) all the way to "what each word means *in this exact sentence*" (deep, bidirectional context). Accuracy generally climbs with you. So do cost and latency.
 
-![The text-classification representation ladder: BoW/TF-IDF + classical ML at the bottom, then pooled word embeddings, then CNN-for-text, then RNN/biLSTM, then fine-tuned BERT at the top. Each rung models more context at more compute; a TF-IDF linear model is the baseline everything must beat.](../images/textcls_ladder.png)
+![The text-classification representation ladder: BoW/TF-IDF + classical ML at the bottom, then pooled word embeddings, then CNN-for-text, then RNN/biLSTM, then fine-tuned BERT at the top. Each rung models more context at more compute; a TF-IDF linear model is the baseline everything must beat.](../images/tc_ladder.png)
 
 The pedagogical spine of this page is to walk **up** that ladder, and for each rung answer the same two questions: *what does the representation capture?* and *how does the classification decision ride on it?* The punchline — visible in the measured comparison later — is that the **bottom rung is shockingly competitive**, and most of the accuracy gap to the top is closed by the *jump to contextual transformers*, with the middle rungs (DAN, CNN, RNN) being historically important way-stations.
 
@@ -120,13 +120,17 @@ The "naive" assumption — words are conditionally independent given the class �
 
 $$\boxed{\;\hat{c} \;=\; \arg\max_{c}\;\Big[\;\underbrace{\log P(c)}_{\text{prior}} \;+\; \sum_{w \in V} x_w \,\underbrace{\log P(w\mid c)}_{\text{log-likelihood}}\;\Big]\;}$$
 
+> **Source / derivation:** the multinomial Naive Bayes posterior, the conditional-independence factorization, and the move to log-space are derived in [Jurafsky & Martin, *Speech and Language Processing* (3rd ed.), Ch. 4 "Naive Bayes, Text Classification, and Sentiment"](https://web.stanford.edu/~jurafsky/slp3/4.pdf) (Eqs. 4.9–4.10) — the canonical treatment, in the references.
+
 The per-word likelihoods are estimated from training counts with **Laplace (add-$\alpha$) smoothing**, so that a word never seen in class $c$ doesn't zero out the whole product:
 
 $$P(w \mid c) \;=\; \frac{\text{count}(w, c) + \alpha}{\Big(\sum_{w' \in V}\text{count}(w', c)\Big) + \alpha\,|V|}.$$
 
+> **Source / derivation:** add-$\alpha$ (Laplace) smoothing of the multinomial likelihood — and why an unsmoothed zero count would annihilate the whole product — is [SLP3 Ch. 4 §4.1](https://web.stanford.edu/~jurafsky/slp3/4.pdf) (Eq. 4.14). The smoothing is exactly a symmetric Dirichlet$(\alpha)$ prior on the per-class word distribution (see the [Naive Bayes](../../03.%20Supervised_Learning/concepts/05-Naive-Bayes.md) page for that derivation).
+
 Notice the *shape* of that boxed rule: a sum of `count × log-likelihood`, which is a **linear function of the word-count vector**. That's the secret the Naive Bayes page proves in full — multinomial NB is a **linear classifier** in disguise, a sibling of logistic regression. Same decision *geometry*, different way of estimating the weights (NB from class-conditional counts, generatively; logistic regression by directly optimizing the conditional likelihood, discriminatively).
 
-> **Note:** people dismiss Naive Bayes as a toy, but for text it is *genuinely strong* — fast, needs little data, and hard to beat as a one-line baseline. The independence assumption is wildly false (words travel in packs) yet the **ranking** of classes usually comes out right even when the probabilities are nonsense — which is all classification needs. See the measured 0.83 accuracy below: not far behind a logistic-regression baseline.
+> **Note:** people dismiss Naive Bayes as a toy, but for text it is *genuinely strong* — fast, needs little data, and hard to beat as a one-line baseline. The independence assumption is wildly false (words travel in packs) yet the **ranking** of classes usually comes out right even when the probabilities are nonsense — which is all classification needs. See the measured 0.906 accuracy below: only ~1 point behind the logistic-regression baseline.
 
 > **Gotcha:** the multinomial event model uses word **counts** (term frequency); the **Bernoulli** model uses binary present/absent flags and explicitly models *absent* words too. For longer documents the **multinomial** model is the standard for sentiment/topic; Bernoulli can win on very short texts. And the **Complement NB** variant (CNB) is the one to reach for under **class imbalance** — it estimates each class's parameters from the *complement* of that class, which is more stable when one class is rare.
 
@@ -134,11 +138,23 @@ We work this rule fully by hand in **Worked example 1** below — and prove it m
 
 ### Logistic regression on TF-IDF: the discriminative baseline
 
-[Logistic regression](../../03.%20Supervised_Learning/concepts/02-Logistic-Regression.md) learns a weight vector $\mathbf{w}$ and bias $b$ and predicts $P(y{=}1\mid \mathbf{x}) = \sigma(\mathbf{w}^\top\mathbf{x} + b)$, fitting the weights by maximizing the conditional log-likelihood (equivalently minimizing cross-entropy) with L2 regularization. On **sparse TF-IDF features** it is the workhorse text baseline: it learns a signed weight *per word* (large positive for `excellent`, large negative for `terrible`), so the model is **directly interpretable** — sort the weights and you can read off the most positive and most negative words. It typically edges out Naive Bayes because it doesn't assume independence; instead it can *down-weight* correlated, redundant features. In the measured comparison it lands at **0.858** accuracy — a couple of points above NB.
+[Logistic regression](../../03.%20Supervised_Learning/concepts/02-Logistic-Regression.md) learns a weight vector $\mathbf{w}$ and bias $b$ and predicts $P(y{=}1\mid \mathbf{x}) = \sigma(\mathbf{w}^\top\mathbf{x} + b)$, where $\sigma(z) = 1/(1+e^{-z})$ is the **sigmoid** that squashes the real-valued score $z = \mathbf{w}^\top\mathbf{x} + b$ into a probability. It fits the weights by **minimizing cross-entropy** (equivalently, maximizing the conditional log-likelihood) with L2 regularization. The loss for one example with true label $y \in \{0,1\}$ is
+
+$$\mathcal{L}(\mathbf{w}, b) \;=\; -\big[\,y \log \sigma(z) + (1-y)\log(1-\sigma(z))\,\big],$$
+
+and the gradient that drives training has a strikingly clean form — the **prediction-minus-target error** times the feature:
+
+$$\frac{\partial \mathcal{L}}{\partial \mathbf{w}} \;=\; \big(\sigma(z) - y\big)\,\mathbf{x}, \qquad \frac{\partial \mathcal{L}}{\partial b} \;=\; \sigma(z) - y.$$
+
+That $(\hat{y} - y)\mathbf{x}$ shape is the whole reason logistic regression trains stably: each word's weight is nudged in proportion to how wrong the current probability is, scaled by how strongly that word appeared. Connect it back to the interpretation — a large positive $w_{\texttt{excellent}}$ pushes $z$ up, hence $\sigma(z)$ toward 1 (positive); a large negative $w_{\texttt{terrible}}$ pushes it toward 0.
+
+> **Source / derivation:** the sigmoid, the cross-entropy objective, and the $(\sigma(z)-y)\,\mathbf{x}$ gradient are derived for text in [Jurafsky & Martin, *SLP3* Ch. 5 "Logistic Regression"](https://web.stanford.edu/~jurafsky/slp3/5.pdf) (Eqs. 5.11, 5.17, 5.24) — in the references; the full optimization story (convexity, L1 vs L2) is on the [Logistic Regression](../../03.%20Supervised_Learning/concepts/02-Logistic-Regression.md) page.
+
+On **sparse TF-IDF features** logistic regression is the workhorse text baseline: it learns a signed weight *per word*, so the model is **directly interpretable** — sort the weights and you can read off the most positive and most negative words. It typically edges out Naive Bayes because it doesn't assume independence; instead it can *down-weight* correlated, redundant features (the burst-correlated word clusters in the worked comparison below are exactly what NB double-counts and LR learns to discount). In the measured comparison it lands at **0.919** accuracy — about a point above NB and three above the linear SVM on that set.
 
 ### Linear SVM: the margin-maximizer for sparse high-dim text
 
-A **linear support vector machine** ([SVM](../../03.%20Supervised_Learning/concepts/06-Support-Vector-Machines.md)) finds the **maximum-margin** separating hyperplane. On high-dimensional **sparse** TF-IDF data it is, historically, *the* text-classification champion (Joachims showed in 1998 that text is "linearly separable in high-dimensions" and SVMs exploit exactly that). The intuition for *why linear models win here*: with tens of thousands of sparse features and relatively few examples, the data is **almost always linearly separable**, so a linear decision boundary has plenty of capacity — and a kernel would only overfit. The margin objective also makes the SVM robust to the many irrelevant features. In the comparison `LinearSVC` ties LogReg at **0.860**.
+A **linear support vector machine** ([SVM](../../03.%20Supervised_Learning/concepts/06-Support-Vector-Machines.md)) finds the **maximum-margin** separating hyperplane. On high-dimensional **sparse** TF-IDF data it is, historically, *the* text-classification champion (Joachims showed in 1998 that text is "linearly separable in high-dimensions" and SVMs exploit exactly that). The intuition for *why linear models win here*: with tens of thousands of sparse features and relatively few examples, the data is **almost always linearly separable**, so a linear decision boundary has plenty of capacity — and a kernel would only overfit. The margin objective also makes the SVM robust to the many irrelevant features. On most real text it ties or edges LogReg; on the small burst-correlated set in the worked comparison below it lands a bit behind both at **0.890** (a reminder that the ranking among the three is dataset-dependent — *measure on yours*).
 
 > **Tip:** *why are linear models + sparse TF-IDF such a strong baseline?* Three reasons worth saying out loud: (1) in tens-of-thousands of dimensions with sparse features, classes are usually **linearly separable**, so a linear boundary suffices; (2) the model is **fast and data-efficient** — it trains in seconds and works with a few thousand labels; (3) it is **interpretable** — every word has a signed weight. The non-linearity that deep models add only pays off when *interactions between words* matter, which for topic/spam is rarely, and for sentiment is sometimes (negation, sarcasm).
 
@@ -160,13 +176,15 @@ $$\mathbf{h} \;=\; \text{pool}\big(\mathbf{e}_{w_1}, \mathbf{e}_{w_2}, \dots, \m
 
 To capture **local word order** without the cost of a full recurrent model, Kim (2014) had an elegant idea: slide **1-D convolutional filters** over the *sequence of embeddings*. Lay the sentence out as a matrix of shape $(T \text{ tokens} \times d \text{ dims})$, and a filter of width $h$ is a small weight patch that covers $h$ consecutive word-vectors at a time. As it slides, at each position it computes a single number — a **feature** — that fires when that particular $h$-gram pattern is present.
 
-![CNN-for-text: an embedding matrix (tokens by embedding dim) with a width-3 filter sliding over 'was not good', producing a feature map, then max-over-time pooling collapsing it to one feature ('this n-gram is present'). Many filters of widths 2/3/4/5 feed a softmax classifier (Kim 2014).](../images/textcls_cnn.png)
+![CNN-for-text: an embedding matrix (tokens by embedding dim) with a width-3 filter sliding over 'was not good', producing a feature map, then max-over-time pooling collapsing it to one feature ('this n-gram is present'). Many filters of widths 2/3/4/5 feed a softmax classifier (Kim 2014).](../images/tc_cnn.png)
 
 Formally, with embeddings $\mathbf{e}_1,\dots,\mathbf{e}_T \in \mathbb{R}^d$ stacked, a filter $\mathbf{W}\in\mathbb{R}^{h\times d}$ produces, at position $i$, the feature
 
 $$c_i \;=\; g\big(\mathbf{W}\odot \mathbf{e}_{i:i+h-1} + b\big),$$
 
 a non-linearity $g$ (ReLU) over the element-wise product summed across the $h\times d$ window. Sweeping $i$ from $1$ to $T-h+1$ gives a **feature map** $\mathbf{c} = [c_1,\dots,c_{T-h+1}]$ — the filter's response *at every position*. Then comes the key trick: **max-over-time pooling**, $\hat{c} = \max_i c_i$, which keeps only the *strongest* activation across the whole sentence. This says, in effect, *"did this n-gram pattern appear anywhere?"* — and it conveniently produces a fixed-size output regardless of sentence length.
+
+> **Source / derivation:** the convolution-over-embeddings feature, the feature map, and max-over-time pooling are §2–3 of [Kim 2014, "Convolutional Neural Networks for Sentence Classification"](https://arxiv.org/abs/1408.5882) (Eqs. 1–3) — in the references.
 
 What do the filters **learn**? They become **n-gram detectors**: a width-3 filter might learn to fire on *"was not good"*, another on *"highly recommend it"*, another on *"a complete waste"*. By using **many** filters at **several widths** (2, 3, 4, 5) you build a bank of learned phrase detectors; max-pooling each one and concatenating gives a feature vector that feeds a softmax. This is how the CNN *fixes the order-blindness of rungs 1–2 for local patterns* — it can represent *"not good"* as a single firing feature, which bag-of-words never could.
 
@@ -194,30 +212,33 @@ The mechanics for classification are clean. BERT prepends a special **`[CLS]`** 
 
 $$\mathbf{h}_{\texttt{[CLS]}} \in \mathbb{R}^{768} \;\xrightarrow{\;\mathbf{W}\in\mathbb{R}^{K\times 768},\,\mathbf{b}\;}\; \text{softmax}\big(\mathbf{W}\,\mathbf{h}_{\texttt{[CLS]}} + \mathbf{b}\big) \in \Delta^{K}.$$
 
+> **Source / derivation:** the `[CLS]`-token pooled vector with a single linear softmax head, fine-tuned end to end, is the sentence-classification recipe of [Devlin et al. 2018, "BERT: Pre-training of Deep Bidirectional Transformers" §4.1 / §3](https://arxiv.org/abs/1810.04805) — in the references.
+
 You then train **the whole model end to end** (head *and* the pretrained weights, with a small learning rate) on your labels. Because the encoder already "knows language," fine-tuning needs comparatively few labeled examples to reach high accuracy — this is the transfer that **ULMFiT** ([Howard & Ruder 2018](https://arxiv.org/abs/1801.06146)) introduced for text and **BERT** ([Devlin et al. 2018](https://arxiv.org/abs/1810.04805)) perfected. It works because the `[CLS]` vector is a *context-aware* summary: it can represent that *"not good"* is negative in a way no bag-of-words ever could, because self-attention lets *"not"* and *"good"* interact.
 
 > **Tip:** for production you rarely fine-tune full BERT-large. **DistilBERT** (40% smaller, 60% faster, ~97% of BERT's accuracy) and **RoBERTa** (better-pretrained BERT) are the pragmatic choices. For sentiment specifically, off-the-shelf fine-tuned checkpoints (e.g. `distilbert-base-uncased-finetuned-sst-2-english`) exist — sometimes you don't need to train at all.
 
-> **Gotcha:** fine-tuning a transformer is **not free** — it needs a GPU, the inference is 10–100× slower and more expensive than a TF-IDF linear model, and on small/clean datasets the accuracy gain over the baseline can be **a couple of points** (see the measured comparison: 0.86 → 0.88 on this subset). Always ask whether those points are worth the cost. The honest answer is often *yes* for hard, nuanced tasks (sarcasm, nuanced toxicity) and *no* for clean topic/spam.
+> **Gotcha:** fine-tuning a transformer is **not free** — it needs a GPU, the inference is 10–100× slower and more expensive than a TF-IDF linear model, and on small/clean datasets the accuracy gain over the baseline is often **a few points** (a strong linear baseline in the low-0.90s vs a fine-tuned DistilBERT in the ~0.91–0.93 range on IMDb). Always ask whether those points are worth the cost. The honest answer is often *yes* for hard, nuanced tasks (sarcasm, nuanced toxicity) and *no* for clean topic/spam.
 
 ---
 
-## The measured ladder: NB vs linear models vs transformer
+## The measured ladder: NB vs linear models (runnable) and the transformer (published)
 
-Enough theory — here is the ladder **measured**. I trained all four on the same **IMDb** sentiment subset (4,000 reviews train, 2,000 test), TF-IDF with 1–2-grams for the linear models, and a DistilBERT fine-tuned for **one epoch on a 2,000-review subset** (deliberately small, to be honest about a quick fine-tune). Every number below came out of the verification script in Python 3.12.
+Enough theory — here is the bottom of the ladder **measured, end to end, on CPU in two seconds**, by the companion `text_classification.py`. To make the comparison honest *and* reproducible without a network download, the corpus is a **deterministic synthetic sentiment set** (720 train / 480 test) whose positive/negative reviews are built from polarity-word pools — crucially with **correlated word "bursts"** (clusters of co-occurring positive or negative words). That burst correlation is the knob that makes the data violate Naive Bayes' independence assumption, so the comparison shows the textbook effect: **LogReg edges out NB** because it down-weights the redundant, correlated features NB double-counts.
 
-![Measured accuracy and macro-F1 on the IMDb sentiment subset: Multinomial Naive Bayes 0.832, TF-IDF+LogReg 0.858, Linear SVM 0.860, fine-tuned DistilBERT 0.877. The transformer leads, but the linear baselines are within a few points.](../images/textcls_model_compare.png)
+![Measured accuracy and macro-F1 on the synthetic sentiment set: Multinomial Naive Bayes 0.906, TF-IDF+LogReg 0.919, Linear SVM 0.890. LogReg leads because it discounts the burst-correlated features NB double-counts; all three are strong, instant, CPU-only baselines.](../images/tc_model_compare.png)
 
-| Model | Representation | Accuracy | Macro-F1 | Train cost |
-|---|---|---|---|---|
-| Multinomial Naive Bayes | bag-of-counts (1–2 gram) | **0.832** | 0.831 | ~1 s, CPU |
-| TF-IDF + Logistic Regression | TF-IDF (1–2 gram) | **0.858** | 0.858 | ~2 s, CPU |
-| Linear SVM | TF-IDF (1–2 gram) | **0.860** | 0.860 | ~2 s, CPU |
-| DistilBERT (fine-tuned, 1 epoch, 2k) | contextual `[CLS]` | **0.877** | 0.877 | ~85 s, GPU |
+| Model | Representation | Accuracy | Macro-F1 | PR-AUC | Train cost |
+|---|---|---|---|---|---|
+| Multinomial Naive Bayes | bag-of-counts (1–2 gram) | **0.906** | 0.906 | 0.974 | ~0.5 s, CPU |
+| TF-IDF + Logistic Regression | TF-IDF (1–2 gram) | **0.919** | 0.919 | 0.977 | ~1 s, CPU |
+| Linear SVM | TF-IDF (1–2 gram) | **0.890** | 0.890 | 0.968 | ~1 s, CPU |
 
-Read this table like a senior engineer. The **bottom rung gets you to 0.86** in two seconds on a CPU. The transformer — even a quick, under-trained one — leads at **0.88**, and a *fully* fine-tuned DistilBERT on all 25k IMDb reviews reaches **~0.91–0.93**. So the realistic picture is: *the linear baseline captures the bulk of the achievable accuracy, and the transformer buys you the last ~5–7 points at 40× the training cost and ~50× the inference cost.* Whether that trade is worth it is the entire engineering decision — and it depends on how much each point of accuracy is worth in your product.
+Read this table like a senior engineer. All three baselines land in the **high-0.80s to low-0.90s** in about a second on a CPU, no GPU, no labels beyond a few hundred examples. LogReg's ~1-point lead over NB is the **discriminative-beats-generative-on-correlated-features** effect made concrete; the SVM trails here only because this particular small set rewards LogReg's probabilistic fit — *on your data the ranking may flip, which is exactly why you measure all three.*
 
-> **Note:** notice **accuracy ≈ macro-F1** for every model here. That's because IMDb is **perfectly balanced** (50/50 pos/neg). On a **skewed** dataset they diverge sharply, and that gap is the whole reason macro-F1 exists — more on this under evaluation and imbalance.
+**The transformer rung (published numbers, not run here).** Climbing to a fine-tuned **DistilBERT** on real **IMDb** (all 25k reviews) reaches **~0.91–0.93** accuracy in the literature — a few points above these linear baselines, bought at ~40× the training cost and ~50× the inference cost. We don't run it in the notebook (it needs a GPU and a model download), but the engineering takeaway is the durable one: *the linear baseline captures the bulk of the achievable accuracy; the transformer buys the last few points at a large cost.* Whether that trade is worth it is the entire decision — and it depends on how much each point is worth in your product.
+
+> **Note:** notice **accuracy ≈ macro-F1** for every model here. That's because this set is **balanced** (50/50 pos/neg). On a **skewed** dataset they diverge sharply, and that gap is the whole reason macro-F1 exists — we demonstrate exactly that divergence, measured, under *Class imbalance* below.
 
 ---
 
@@ -225,7 +246,7 @@ Read this table like a senior engineer. The **bottom rung gets you to 0.86** in 
 
 Topic and spam classification are comparatively easy — the presence of a few telltale words usually settles it. **Sentiment is harder**, because polarity is a property of *meaning in context*, and language has many ways to invert, qualify, or hide it. These are the issues an interviewer will probe, and the cases where the higher rungs of the ladder earn their cost.
 
-![Left: the measured confusion matrix for TF-IDF + LogReg on IMDb (867 true-neg, 849 true-pos, ~140 errors each way). Right: the hard cases — 'not good' (negation, BoW votes positive, wrong), 'not bad at all' (double negation, actually positive), 'great cast, dull plot' (two aspects, needs aspect-level), 'yeah, brilliant /s' (sarcasm, surface says positive), vs 'the movie was great' (clear polarity, easy).](../images/textcls_confusion.png)
+![Left: the measured confusion matrix for TF-IDF + LogReg on the synthetic test set (217 true-neg, 224 true-pos, 17 + 22 errors). Right: the hard cases — 'not good' (negation, BoW votes positive, wrong), 'not bad at all' (double negation, actually positive), 'great cast, dull plot' (two aspects, needs aspect-level), 'yeah, brilliant /s' (sarcasm, surface says positive), vs 'the movie was great' (clear polarity, easy).](../images/tc_confusion.png)
 
 - **Polarity vs intensity.** *"good"* and *"phenomenal"* are both positive but not equally so. Binary pos/neg throws intensity away; star ratings and regression-style sentiment keep it.
 - **Negation.** *"not good"*, *"hardly a masterpiece"*, *"I can't say I enjoyed it"* — a single negator flips polarity. **Bag-of-words is structurally blind to this**: it sees the positive word `good` and votes positive (the top-left of the hard-cases panel). Classic fixes prepend a `NOT_` tag to every token between a negator and the next punctuation (so `not good` → `not NOT_good`); CNNs and transformers learn it from data.
@@ -259,6 +280,8 @@ Train with **binary cross-entropy summed over labels**: $\mathcal{L} = -\sum_{k=
 
 $$\boxed{\;\text{one-of-}K \Rightarrow \text{softmax + cross-entropy}\qquad\text{any-subset} \Rightarrow K\ \text{sigmoids + BCE}\;}$$
 
+> **Source / derivation:** softmax + categorical cross-entropy for mutually-exclusive classes, and independent sigmoids + binary cross-entropy for multi-label outputs, are [Goodfellow, Bengio & Courville, *Deep Learning*, Ch. 6 §6.2.2 "Output Units"](https://www.deeplearningbook.org/contents/mlp.html) — in the references (the softmax/cross-entropy pairing is also [SLP3 Ch. 5](https://web.stanford.edu/~jurafsky/slp3/5.pdf)).
+
 > **Gotcha:** the most common bug in applied multi-label NLP is using **softmax + cross-entropy** on a problem where documents legitimately carry multiple labels. The symptom: the model can never confidently predict two labels at once (their probabilities are forced to trade off), so multi-tag recall collapses. The fix is the sigmoid+BCE head above. Conversely, using independent sigmoids on a genuinely mutually-exclusive problem wastes the helpful inductive bias that the classes compete.
 
 ---
@@ -267,7 +290,17 @@ $$\boxed{\;\text{one-of-}K \Rightarrow \text{softmax + cross-entropy}\qquad\text
 
 Real classification data is often **skewed** — 1% spam, 0.3% fraud, a rare toxic class among mostly-clean comments. Three things go wrong, and all are covered in depth in **[Classification Metrics](../../03.%20Supervised_Learning/concepts/14-Classification-Metrics.md)** (read it for the full treatment of the confusion matrix, precision/recall, and the metric choices) — here is the text-specific summary:
 
-1. **Accuracy lies.** A classifier that predicts "not-spam" for everything scores 99% accuracy on a 1%-spam stream while catching zero spam. Report **macro-F1** (averages the per-class F1, so the rare class counts equally) or **precision/recall/PR-AUC for the minority class**, never bare accuracy.
+1. **Accuracy lies.** A classifier that predicts "not-spam" for everything scores 99% accuracy on a 1%-spam stream while catching zero spam. Report **macro-F1** (averages the per-class F1, so the rare class counts equally) or **precision/recall/PR-AUC for the minority class**, never bare accuracy. Here it is *measured* on an **8%-positive** version of our corpus — a do-nothing "always negative" model versus a real class-weighted LogReg:
+
+![On an 8%-positive set, the 'always negative' model scores 0.919 accuracy yet 0.479 macro-F1 and 0.081 PR-AUC — a useless model that accuracy ranks as excellent. The real class-weighted LogReg scores 0.948 accuracy but 0.835 macro-F1 and 0.764 PR-AUC. Accuracy ranks the useless model nearly on par; macro-F1 and PR-AUC correctly separate them.](../images/tc_imbalance.png)
+
+The do-nothing model's **0.919 accuracy** looks excellent and is **completely useless** — it catches *zero* positives. Macro-F1 (0.479) and PR-AUC (0.081, which for a no-skill classifier equals the positive prevalence) both expose it instantly. That gap is the entire reason these metrics exist.
+
+   **And this is exactly where the PR-vs-ROC choice bites.** Feed the *same* model scores under heavy imbalance to a ROC curve and a PR curve and they tell different stories — ROC stays flattering, PR is honest:
+
+   ![Same scores on the 8%-positive set. Left: the ROC curve looks excellent (AUC 0.968) because its no-skill baseline is the diagonal regardless of skew. Right: the PR curve (AP 0.764) drops, and its no-skill baseline collapses to the 0.08 prevalence — exposing how much harder the rare-positive task really is. Saito & Rehmsmeier's point in one picture.](../images/tc_pr_vs_roc.png)
+
+   The mechanism is precise: ROC's x-axis is the **false-positive rate** = FP/(FP+TN), and under imbalance the **TN count is enormous**, so even many false positives barely move the FPR — ROC-AUC stays high. PR's precision = TP/(TP+FP) has **no TN term**, so those same false positives crater precision. When the positive class is rare, **trust the PR curve**.
 2. **The model under-learns the rare class.** Standard cross-entropy is dominated by the majority class's gradient. Fixes:
    - **Class weighting** — scale each class's loss by the inverse of its frequency (`class_weight="balanced"` in scikit-learn; `pos_weight` in a BCE head), so a rare-class mistake costs more.
    - **Resampling** — oversample the minority (or SMOTE-style synthesis, though it's awkward for text) or undersample the majority.
@@ -317,17 +350,34 @@ graph TD
 
 ---
 
-## Evaluation and calibration
+## Evaluation done right: precision, recall, F1, and the curves
 
-**Metrics.** Use the **confusion matrix** as the source of truth, then the metric matched to your problem (the full derivations are in **[Classification Metrics](../../03.%20Supervised_Learning/concepts/14-Classification-Metrics.md)** and the NLP-specific angle in **[NLP Evaluation Metrics](../18-NLP-Evaluation-Metrics/18-NLP-Evaluation-Metrics.md)**):
+The **confusion matrix** is the source of truth; every scalar metric is a summary of its four cells. For a positive class, those cells are **TP** (true positives), **FP** (false positives), **FN** (false negatives), **TN** (true negatives), and the three metrics that matter are:
 
-- **Accuracy** only when classes are balanced *and* errors cost the same.
-- **Macro-F1** as the default for multi-class/imbalanced (per-class F1 averaged, every class equal); **micro-F1** weights by support; **weighted-F1** is in between.
-- **Per-class precision/recall** when one class is the one that matters; **PR-AUC** for a rare positive class; **ROC-AUC** for balanced ranking quality.
+$$\text{precision} = \frac{\text{TP}}{\text{TP}+\text{FP}}, \qquad \text{recall} = \frac{\text{TP}}{\text{TP}+\text{FN}}, \qquad F_1 = \frac{2\cdot\text{precision}\cdot\text{recall}}{\text{precision}+\text{recall}}.$$
 
-**Threshold tuning & calibration.** A model outputs a *probability*; turning it into a *decision* needs a **threshold**. The default 0.5 is rarely optimal, especially under imbalance or asymmetric costs — sweep the threshold on a validation set to hit your target precision/recall (or maximize F1). Separately, **calibration** asks whether a predicted "0.8" really means "right 80% of the time." Naive Bayes is notoriously **over-confident** (its probabilities are unreliable even when its decisions are good — see the NB page); logistic regression is better calibrated by construction; transformers often need **temperature scaling** to be trustworthy. If you *act* on the probability (e.g. only auto-action above 0.95 confidence), calibrate it first.
+In one sentence each: **precision** is *"of the documents I flagged positive, what fraction truly were"* (the cost of false alarms); **recall** is *"of the documents that truly were positive, what fraction I caught"* (the cost of misses); **F1** is their **harmonic mean** — harmonic, not arithmetic, so that a model can't game it by acing one and tanking the other (50% precision + 100% recall gives F1 = 0.67, not 0.75).
 
-> **Note:** *accuracy is a decision metric (needs a threshold); AUC is a ranking metric (threshold-free).* A model can have great AUC (it ranks positives above negatives) but poor accuracy at the default threshold simply because the threshold is mis-set. Separating "is the ranking good?" from "is the threshold right?" is a senior-level distinction interviewers look for.
+> **Source / derivation:** precision, recall, and the F-measure as functions of the confusion-matrix counts are [Manning, Raghavan & Schütze, *Introduction to Information Retrieval*, Ch. 8 "Evaluation in information retrieval"](https://nlp.stanford.edu/IR-book/html/htmledition/evaluation-of-unranked-retrieval-sets-1.html) — in the references; the same definitions in the classification framing are on the [Classification Metrics](../../03.%20Supervised_Learning/concepts/14-Classification-Metrics.md) page.
+
+**Macro vs micro F1 — the distinction juniors blur.** With more than one class (or a positive/negative split you care about equally), you average per-class F1 two ways: **macro-F1** averages the per-class F1 scores *with equal weight per class*, so a rare class counts as much as a common one; **micro-F1** pools all TP/FP/FN across classes *before* computing one F1, so it is dominated by the **frequent** classes (and for single-label multi-class it equals accuracy). The rule: **report macro-F1 when the rare class matters** (the usual case for imbalanced sentiment/toxicity/fraud); micro-F1 when you genuinely care about overall per-instance correctness. Confusing them is a classic interview slip — and a real bug, because on a skewed set they can be 0.40 apart.
+
+**Threshold tuning.** A model outputs a *probability*; turning it into a *decision* needs a **threshold**. The default 0.5 is rarely optimal under imbalance or asymmetric costs — sweep it on a validation set to hit your target precision/recall (or maximize F1). Here is that sweep, measured, for the LogReg model on the balanced set:
+
+![Precision rises and recall falls as the decision threshold increases; F1 peaks in between (near 0.48 here), close to but not exactly the default 0.5. The default 0.5 is just one column of this whole table — raise it to buy precision, lower it to buy recall.](../images/tc_threshold_sweep.png)
+
+Read the curves: as you raise the threshold you flag fewer documents, so **precision rises** (the ones you do flag are surer) but **recall falls** (you miss more true positives). F1 peaks where the two cross — here near **0.48**, slightly under the default. For the rare-but-critical class (fraud, toxicity) you'd push the threshold to wherever your product's precision/recall target lands, *not* leave it at 0.5.
+
+**The threshold-free view — PR and ROC curves.** Sweeping the threshold over its whole range and plotting the trade-off gives a **curve**, and the area under it is a single threshold-free score. Two curves matter:
+
+- **Precision–Recall (PR) curve** — precision vs recall across thresholds; its area is **Average Precision (PR-AUC)**. Best when the **positive class is rare**.
+- **ROC curve** — true-positive rate vs false-positive rate across thresholds; its area is **ROC-AUC**. Best for **balanced** ranking quality.
+
+![Precision–Recall curve for the LogReg model (Average Precision 0.977); the dashed line is the no-skill baseline, which for PR sits at the positive prevalence (0.51 on this balanced set). Area under the PR curve is the PR-AUC.](../images/tc_pr_curve.png)
+
+> **Source / derivation:** *accuracy is a decision metric (needs a threshold); AUC is a ranking metric (threshold-free)*. The ROC/PR construction and the AUC interpretation are [Manning *et al.*, *IR* Ch. 8](https://nlp.stanford.edu/IR-book/html/htmledition/evaluation-of-ranked-retrieval-results-1.html); *which curve lies under imbalance* is the precise result of [Saito & Rehmsmeier 2015, "The Precision-Recall Plot Is More Informative than the ROC Plot When Evaluating Binary Classifiers on Imbalanced Datasets" (PLoS ONE)](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0118432) — both in the references.
+
+**Calibration.** Separately, calibration asks whether a predicted "0.8" really means "right 80% of the time." Naive Bayes is notoriously **over-confident** (its false independence assumption double-counts correlated evidence and pushes probabilities toward 0/1); logistic regression is better calibrated by construction; transformers often need **temperature scaling**. If you *act* on the probability (auto-action only above 0.95), calibrate it first.
 
 ---
 
@@ -369,13 +419,15 @@ sklearn:  jll_pos  = -3.3604   jll_neg  = -5.6630   -> pos
 match: True
 ```
 
-Bit-for-bit identical — the by-hand derivation *is* exactly what scikit-learn computes.
+Bit-for-bit identical — the by-hand derivation *is* exactly what scikit-learn computes. Here are those two log-posteriors side by side:
+
+![Multinomial NB log-posterior for the document 'great fun', computed by hand: positive scores -3.360, negative scores -5.663, so the model predicts positive. The 2.30 gap in log-space means positive is about 10x more probable. These are the exact numbers scikit-learn's joint log-likelihood returns.](../images/tc_nb_byhand.png)
 
 ---
 
 ## Worked example 2: TF-IDF + logistic regression on the same corpus
 
-Now the discriminative baseline on the identical tiny corpus, classifying the same `great fun`. The verification script fits a `TfidfVectorizer` + `LogisticRegression` and predicts:
+Now the discriminative baseline on the identical tiny corpus, classifying the same `great fun`. `logreg_tiny_pos_proba()` in `text_classification.py` fits a `TfidfVectorizer` + `LogisticRegression` on the four documents (seeded, `random_state=0`) and reads `predict_proba`:
 
 ```
 TF-IDF + LogReg:  P(pos | "great fun") = 0.620  -> pos
@@ -387,18 +439,18 @@ It agrees with Naive Bayes (**pos**), but notice the probability is a calmer **0
 
 ## Worked example 3: the measured ladder comparison
 
-This is the table and bar chart from earlier, produced end to end by the verification script on **IMDb** (4k train / 2k test for the linear models; 2k-review, 1-epoch DistilBERT fine-tune):
+This is the table and bar chart from earlier, produced end to end by `text_classification.py` on the **balanced synthetic set** (720 train / 480 test), every number printed by the script:
 
 ```
-Multinomial Naive Bayes   acc 0.832   macro-F1 0.831
-TF-IDF + LogReg           acc 0.858   macro-F1 0.858
-Linear SVM (TF-IDF)       acc 0.860   macro-F1 0.860
-DistilBERT (fine-tuned)   acc 0.877   macro-F1 0.877   [measured]
-confusion (LogReg): [[867, 148],
-                     [136, 849]]
+Multinomial NB      acc=0.906  macroF1=0.906  microF1=0.906  PR-AUC=0.974  ROC-AUC=0.971
+TF-IDF + LogReg     acc=0.919  macroF1=0.919  microF1=0.919  PR-AUC=0.977  ROC-AUC=0.972
+Linear SVM          acc=0.890  macroF1=0.890  microF1=0.890  PR-AUC=0.968  ROC-AUC=0.964
+confusion (LogReg) [rows=actual, cols=pred]:
+[[217  17]
+ [ 22 224]]
 ```
 
-The confusion matrix (also in the figure above) shows the TF-IDF+LogReg model getting **867** true-negatives and **849** true-positives, with a near-symmetric ~140 errors each way — exactly what you expect on a balanced set with no systematic bias toward either class. The ~5-point climb from NB to DistilBERT is the cost-vs-accuracy trade made concrete: each rung up buys a little more, the linear baseline already captures most of it, and a *fully* trained DistilBERT (all 25k reviews) would push to ~0.91–0.93.
+The confusion matrix (also in the figure above) shows the TF-IDF+LogReg model getting **217** true-negatives and **224** true-positives, with a near-symmetric 17 + 22 = 39 errors — exactly what you expect on a balanced set with no systematic bias toward either class. From those cells, precision/recall/F1 for the positive class fall straight out: $P = 224/(224{+}17) = 0.929$, $R = 224/(224{+}22) = 0.911$, $F_1 = 0.920$. The ~1-point edge of LogReg over NB is the discriminative-beats-generative-on-correlated-features effect; the transformer rung (published) would add a few more points at a large cost, as discussed above.
 
 ---
 
@@ -473,7 +525,7 @@ LogReg -> [1, 0, 1]
 LinearSVM -> [1, 0, 1]
 ```
 
-Both baselines correctly call *"a brilliant, wonderful film"* positive (`1`) and *"an awful waste of time"* negative (`0`) — they learned `brilliant`/`wonderful` and `awful`/`waste` from the six training docs. But both **miss** the third, *"this was not good at all"*, predicting positive (`1`): this six-document toy never saw the words `not` or `good`, so the model has **no signal** for that example and falls back toward the majority direction. That failure is the whole lesson in miniature — a linear model only knows the patterns its **training data** contains; give it thousands of real reviews (as in the IMDb comparison) and the 1–2-gram features *do* learn *"not good"* as a negative cue. To climb to the transformer rung — which carries negation knowledge from pretraining — the pattern is just as short:
+Both baselines correctly call *"a brilliant, wonderful film"* positive (`1`) and *"an awful waste of time"* negative (`0`) — they learned `brilliant`/`wonderful` and `awful`/`waste` from the six training docs. But both **miss** the third, *"this was not good at all"*, predicting positive (`1`): this six-document toy never saw the words `not` or `good`, so the model has **no signal** for that example and falls back toward the majority direction. That failure is the whole lesson in miniature — a linear model only knows the patterns its **training data** contains; give it the hundreds of reviews in the measured comparison and the 1–2-gram features *do* learn polarity cues. To climb to the transformer rung — which carries negation knowledge from pretraining — the pattern is just as short:
 
 ```python
 """Zero-shot sentiment with no training data, via NLI entailment.
@@ -485,7 +537,56 @@ out = clf("The plot was predictable and I nearly fell asleep.",
 print(out["labels"][0], round(out["scores"][0], 3))   # -> negative 0.86
 ```
 
-For a fine-tuned model, swap in `AutoModelForSequenceClassification.from_pretrained("distilbert-base-uncased", num_labels=2)` with the Hugging Face `Trainer` — the full, verified training loop lives in `tools/_verify_textcls.py` in this repo, and the diagrams in `tools/gen_text_classification_diagrams.py`.
+For a fine-tuned model, swap in `AutoModelForSequenceClassification.from_pretrained("distilbert-base-uncased", num_labels=2)` with the Hugging Face `Trainer`.
+
+> **Runnable project and a step-by-step notebook:** every number, table, and figure on this page is produced by the seeded, CPU-only code next to it — see the [step-by-step teaching notebook](code/10-Text-Classification-and-Sentiment-Analysis.ipynb), the [single source-of-truth module](code/text_classification.py) (run it with `python text_classification.py`), and the [figure generator](code/make_figures_10.py) (which imports the *same* functions, so the pictures can never drift from the prose).
+
+---
+
+## Pitfalls & failure modes
+
+These are the mistakes that actually cost accuracy points (or ship broken models) — each one named, with the fix.
+
+- **Accuracy under imbalance.** The single most common evaluation error: reporting bare accuracy on a skewed set. We *measured* it above — a do-nothing model scored **0.919 accuracy** and **0.081 PR-AUC**. The fix: report **macro-F1 and PR-AUC for the minority class**, and tune the threshold; never lead with accuracy when the classes aren't balanced.
+- **Train/test leakage by fitting the vectorizer on test.** The subtle, deadly one: calling `vectorizer.fit_transform(all_text)` *before* the split, or `fit`-ing on the test set, lets the IDF statistics and vocabulary "see" the test documents. Your reported accuracy is then optimistic and won't survive deployment. **Fit the vectorizer (and every preprocessing step) on the training fold only**, then `transform` test — ideally inside a `sklearn.Pipeline` so cross-validation can't leak. The companion code does exactly this: `fit` on train, `transform` on test, never the reverse.
+
+  ```python
+  # WRONG — IDF and vocabulary learned from test too (leakage):
+  X = TfidfVectorizer().fit_transform(all_texts)          # sees test
+  X_tr, X_te = X[:n_tr], X[n_tr:]
+  # RIGHT — fit on train only, transform test:
+  vec = TfidfVectorizer().fit(train_texts)                # train only
+  X_tr, X_te = vec.transform(train_texts), vec.transform(test_texts)
+  ```
+
+  How much does it cost you? `run_leakage_demo()` makes it unmistakable on a **pure-noise corpus** (the label is *independent* of the text, so the honest answer is chance). The honest pipeline correctly stays at 0.50; the leaky one — which fits its feature selection on train+test labels — "discovers" features that match the test labels by accident and reports a confidently-wrong **0.678**. The entire +0.178 is fabricated, and it vanishes in production:
+
+  ![Two bars on a pure-noise corpus: the honest pipeline (feature selection fit on train labels only) scores 0.500, exactly chance, because there is no real signal; the leaky pipeline (selection fit on train+test labels) scores 0.678 — a fabricated +0.178 of accuracy that comes entirely from peeking at the test labels.](../images/tc_leakage.png)
+
+- **The default 0.5 threshold.** A classifier outputs a *probability*; 0.5 is rarely the right cut, especially under imbalance or asymmetric costs. Our sweep peaked at **0.48**, and on a rare-positive task the optimum can be far lower. **Tune the threshold on a validation set** for your target precision/recall — don't inherit 0.5.
+- **Macro-vs-micro confusion.** Reporting micro-F1 (≈ accuracy for single-label) on an imbalanced task hides the rare class's failure; reporting macro-F1 when you genuinely care about per-instance correctness over-weights a tiny class. **Know which one your product wants** and say which you're reporting — they can differ by 0.40 on a skewed set.
+- **PR vs ROC mismatch.** Quoting a glowing ROC-AUC on a 1%-positive problem is technically true and practically misleading (the huge TN count keeps FPR low). **Use the PR curve / PR-AUC when the positive class is rare.**
+- **Naive Bayes' over-confident probabilities.** NB's decisions can be good while its *probabilities* are nonsense (it double-counts correlated words). If you **act** on the probability (auto-action, ranking, calibrated thresholds), prefer logistic regression or **calibrate** NB first — don't trust its raw 0.99.
+- **Order-blindness on negation.** A bag-of-words model sees `good` in *"not good"* and votes positive. If your errors cluster on negation/contrast, that's the signal to add **word n-grams** (cheap) or climb to a **CNN/transformer** (carries the order).
+
+---
+
+## Where it's used, and in production
+
+**Where it matters.** Text classification is the most *deployed* task in NLP, and the same pipeline powers wildly different products:
+
+- **Spam / abuse / toxicity filtering** — Gmail's spam filter, comment-moderation gates, content-policy classifiers. Often **imbalanced** (spam is rare-ish, egregious abuse is rarer), so macro-F1 / PR-AUC and threshold tuning are the whole game.
+- **Intent & ticket routing** — *"my card was charged twice"* → billing; *"where's my order"* → shipping. Usually **multi-class** with a fixed taxonomy; latency-sensitive, so a TF-IDF linear model or a small fine-tuned transformer wins on cost.
+- **Sentiment & opinion analytics** — brand dashboards, product-review mining, support-quality scoring. The famous instance, and where **aspect-based** sentiment earns its keep ("what do customers like vs dislike?").
+- **Topic / news / document tagging** — frequently **multi-label** (an article is both `politics` and `economy`), so per-label sigmoid + BCE, not softmax.
+- **Compliance / safety pre-filters** — a cheap classifier in front of an expensive LLM, gating which inputs even reach it.
+
+**In production, the things that decide the design:**
+
+- **Cost & latency pick the rung.** A TF-IDF linear model serves **thousands of docs/sec/CPU core** for effectively free; a fine-tuned DistilBERT is 10–100× heavier; an LLM API call per document is heavier still. High-QPS, on-prem, or offline workloads push you down the ladder; low-volume nuanced tasks tolerate the LLM.
+- **The distillation hybrid is now standard.** Use an **LLM to label** a few thousand examples once, then **fine-tune a small model** on those labels and serve *it* at scale — the LLM's quality at the linear model's cost.
+- **Domain drift is the silent killer.** A model trained on movie reviews degrades on financial news (*"unpredictable"* flips polarity). **Re-validate on the target domain**, monitor for drift, and re-train when the input distribution moves.
+- **Calibrate if you act on the score.** Auto-actioning only above 0.95 confidence requires the 0.95 to *mean* 95% — temperature-scale transformers, prefer LR over NB, and check a reliability curve before trusting probabilities.
 
 ---
 
