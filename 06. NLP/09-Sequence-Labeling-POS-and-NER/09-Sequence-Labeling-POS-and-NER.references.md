@@ -3,7 +3,7 @@ id: "06-nlp/sequence-labeling-pos-ner/references"
 topic: "Sequence Labeling — References"
 parent: "06-nlp/sequence-labeling-pos-ner"
 type: references
-updated: 2026-06-22
+updated: 2026-06-27
 ---
 
 # Sequence Labeling — references and further reading
@@ -38,6 +38,7 @@ updated: 2026-06-22
 
 **Key papers**:
 - [A Tutorial on Hidden Markov Models and Selected Applications in Speech Recognition](https://www.ece.ucsb.edu/Faculty/Rabiner/ece259/Reprints/tutorial%20on%20hmm%20and%20applications.pdf) — **Rabiner (1989)** — the classic HMM + Viterbi + forward–backward reference.
+- [The Viterbi Algorithm](https://www2.isye.gatech.edu/~yxie77/ece587/viterbi_algorithm.pdf) — **Forney (1973), Proc. IEEE 61(3):268–278** — the original max-sum trellis decoder; the source of the Viterbi recurrence and backpointer recovery used for HMM/CRF decoding.
 - [Maximum Entropy Markov Models for Information Extraction and Segmentation](https://courses.cs.washington.edu/courses/cse517/16wi/papers/mccallum2000.pdf) — **McCallum, Freitag & Pereira (2000)** — the MEMM, the discriminative per-state model (and the source of label bias).
 - [Conditional Random Fields: Probabilistic Models for Segmenting and Labeling Sequence Data](https://repository.upenn.edu/handle/20.500.14332/6188) — **Lafferty, McCallum & Pereira (2001)** — the CRF; introduces and diagnoses label bias, fixes it with global normalization.
 - [Bidirectional LSTM-CRF Models for Sequence Tagging](https://arxiv.org/abs/1508.01991) — **Huang, Xu & Yu (2015)** — the biLSTM-CRF that became the standard.

@@ -6,7 +6,7 @@ level: intermediate
 prereqs: ["probability", "text-preprocessing", "rnn-lstm"]
 interview_frequency: medium
 template: concept-deep
-updated: 2026-06-22
+updated: 2026-06-27
 ---
 
 # Sequence Labeling: a label for every token
@@ -69,7 +69,7 @@ A model emits **one tag per token**, but an entity is a **span** of one-or-more 
 
 **BIO / IOB2** — the standard. Each token gets `B-TYPE` (**B**egin a span of that type), `I-TYPE` (**I**nside/continue the current span), or `O` (**O**utside any entity). A span is a `B-` followed by zero or more `I-` of the same type. Decoding back: scan left to right, start a span at each `B-`, extend it through matching `I-`, close it at the next `B-`/`O`/type-change.
 
-![BIO tagging of a sentence: every token gets a tag; a B- begins a span and following I- of the same type continue it. Spans are recovered by merging each B…I run — here PERSON ("Jane Smith") and LOCATION ("New York City").](../images/seqlabel_bio_spans.png)
+![BIO tagging of a sentence: every token gets a tag; a B- begins a span and following I- of the same type continue it. Spans are recovered by merging each B…I run — here PERSON ("Jane Smith") and LOCATION ("New York City").](../images/sl_bio_spans.png)
 
 Worked mapping for *"Jane Smith flew to New York City ."*:
 
@@ -87,6 +87,8 @@ Two spans fall out: `PER = [Jane Smith]` (the `B-PER … I-PER` run) and `LOC = 
 |---|---|---|---|---|---|
 | BIO | `B-PER` | `I-PER` | `O` | `O` | `B-LOC` |
 | BIOES | `B-PER` | `E-PER` | `O` | `O` | `S-LOC` |
+
+![BIO vs BIOES on the same five tokens. BIOES turns the *last* token of a multi-token span into its own `E-` class ("Smith": `I-PER → E-PER`) and a lone single-token span into an `S-` class ("Paris": `B-LOC → S-LOC`), so span boundaries become directly learnable classes rather than implicit ones.](../images/sl_tagging_schemes.png)
 
 **Why BIOES helps.** It gives the model a *dedicated, learnable signal for span boundaries*. The end of a span (`E-`) and a lone single-token span (`S-`) become their own classes instead of being inferred. Empirically this gives a small but consistent F1 bump (Ratinov & Roth 2009 reported ~1 point on CoNLL), because the model can directly learn "what does the *last* token of a person name look like" rather than discovering it implicitly. The cost is more tags (≈ $4T+1$ instead of $2T+1$ for $T$ types), so it needs more data to estimate.
 
@@ -132,6 +134,8 @@ Two Markov assumptions make this tractable. **Transition**: the next tag depends
 
 $$p(y_{1:n},\, x_{1:n}) \;=\; \pi(y_1)\, b_{y_1}(x_1) \prod_{i=2}^{n} \underbrace{a_{y_{i-1},\,y_i}}_{\text{transition}} \cdot \underbrace{b_{y_i}(x_i)}_{\text{emission}}$$
 
+> **Source / derivation:** the HMM joint factorization for POS tagging is developed in [Jurafsky & Martin, *Speech and Language Processing* (3rd ed.), Ch. 17 "Sequence Labeling for Parts of Speech and Named Entities"](https://web.stanford.edu/~jurafsky/slp3/17.pdf) (the HMM tagger and its two Markov assumptions), and in [Rabiner (1989), *A Tutorial on Hidden Markov Models*](https://www.ece.ucsb.edu/Faculty/Rabiner/ece259/Reprints/tutorial%20on%20hmm%20and%20applications.pdf) (the three HMM problems). Both are in the references.
+
 The parameters are just three tables:
 
 - **transition** $a_{ij} = p(y_i = j \mid y_{i-1} = i)$ — "how often does a VERB follow a NOUN?"
@@ -162,6 +166,8 @@ The recurrence falls straight out of the factorization. To reach state $j$ at ti
 
 $$\boxed{\;\delta_t(j) \;=\; \Big[\max_{i} \; \delta_{t-1}(i)\, a_{ij}\Big] \cdot b_j(x_t)\;}$$
 
+> **Source / derivation:** the Viterbi recurrence $\delta_t(j)$ and its backpointer recovery are the original max-sum trellis decoder of [Forney (1973), *The Viterbi Algorithm* (Proc. IEEE 61(3):268–278)](https://www2.isye.gatech.edu/~yxie77/ece587/viterbi_algorithm.pdf), and are presented for HMM POS tagging in [Jurafsky & Martin, SLP3 Ch. 17](https://web.stanford.edu/~jurafsky/slp3/17.pdf) (the Viterbi-decoding section). Both are in the references.
+
 with initialization $\delta_1(j) = \pi_j\, b_j(x_1)$. The key insight — the **principle of optimality** — is that the best path *into* state $j$ at time $t$ must use the best path into *some* state at time $t-1$; we never need to remember any sub-optimal prefix. So at each cell we keep just one number ($\delta$) and one **backpointer** $\psi_t(j) = \arg\max_i \delta_{t-1}(i) a_{ij}$ (which previous state we came from). At the end we take $\max_j \delta_n(j)$ and follow backpointers to recover $y^\star$.
 
 > **Note:** Viterbi is *exactly* the shortest-path algorithm on a **trellis** — a layered graph with one node per (state, time) cell and edges weighted by $a_{ij} b_j(x_t)$. "Most probable path" = "highest-product path"; take $-\log$ of the weights and it's literally shortest-path / dynamic programming. Implementations work in **log-space** ($\log \delta$, adding log-probs) to avoid underflow from multiplying thousands of tiny probabilities.
@@ -188,11 +194,23 @@ $$y^\star = [\,N,\ V\,], \qquad p(y^\star, x) = 0.1050.$$
 
 *"fish"* is a **noun**, *"sleep"* is a **verb** — the reading "the fish sleep," which is exactly right. Notice the model got there by balancing emission *and* transition: even though a per-word guess might wobble, the high $a_{NV}$ transition (nouns are usually followed by verbs) plus the strong $b_V(\text{sleep})$ emission lock in the correct sequence. **That coupling is the whole point — and a per-token classifier would have missed it.**
 
-![Viterbi trellis on the 2-tag HMM for "fish sleep": each (tag, time) cell stores δ — the best path probability into that state — and we keep one backpointer per cell. The green path N→V (δ*=0.105) is the recovered most-probable tagging. Values are computed by the generator, not drawn by hand.](../images/seqlabel_viterbi_trellis.png)
+![Viterbi trellis on the 2-tag HMM for "fish sleep": each (tag, time) cell stores δ — the best path probability into that state — and we keep one backpointer per cell. δ₁(N)=0.30, δ₁(V)=0.08, then δ₂(N)=0.0090 and δ₂(V)=0.1050; the green path N→V (δ*=0.105) is the recovered most-probable tagging. Every number is computed by `viterbi()` in the chapter code, not drawn by hand — they match the derivation above term for term.](../images/sl_viterbi_trellis.png)
 
 > **Tip:** the interview-ready summary of Viterbi: *fill a (states × time) table left to right; each cell = best incoming path × emission; keep a backpointer; read the answer back from the last column. $O(nk^2)$ time, $O(nk)$ space.* The recurrence $\delta_t(j) = [\max_i \delta_{t-1}(i) a_{ij}]\, b_j(x_t)$ is the line they want you to write.
 
+### Why not just decode greedily? Viterbi beats per-token argmax
+
+The whole reason Viterbi exists is that the **locally-best tag at each step is not the globally-best sequence.** A *greedy* decoder walks left to right and at every position commits to whichever tag has the highest local score — never reconsidering. That early commitment is a trap whenever a tempting local emission leads into a worse continuation.
+
+Take the genuinely garden-path sentence *"time flies fast"* (every word can be Noun *or* Verb) under this HMM: $\pi_N=\pi_V=0.5$; transitions $a_{NN}=0.6,\,a_{NV}=0.4,\,a_{VN}=0.8,\,a_{VV}=0.2$; emissions $b_N(\text{time})=0.6,\,b_V(\text{time})=0.3$, $b_N(\text{flies})=0.3,\,b_V(\text{flies})=0.7$, $b_N(\text{fast})=0.2,\,b_V(\text{fast})=0.7$. Greedy reads *"time"* as N (0.6 > 0.3), then is **seduced at "flies"** by the high local verb emission $b_V(\text{flies})=0.7$ and commits to V — locking it into the path `N V N` with joint probability **0.01344**. Viterbi, scoring the *whole* sequence, instead reads *"time flies"* as a noun phrase and *"fast"* as the verb: `N N V`, joint probability **0.01512** — the true global maximum. Greedy landed on only the *second*-best tagging.
+
+![Greedy per-token decoding of "time flies fast" lands on N·V·N (joint p = 0.01344, the 2nd-best path) because it commits to V at "flies" on the strong local emission; Viterbi scores whole sequences and recovers the global best N·N·V (p = 0.01512). Both bars are computed by the chapter code, not asserted.](../images/sl_greedy_vs_viterbi.png)
+
+> **Note:** this is exactly why the decoder is a **dynamic program over sequences**, not a loop of independent argmaxes. The greedy walk has no way to "un-commit" to V once it sees that the *rest* of the sentence prefers N N V. Viterbi's backpointers let it keep, at every state, the best path *into* that state — so a locally-suboptimal early tag survives if it enables a better whole. The chapter notebook runs both and asserts `viterbi != greedy` on this HMM.
+
 > **Gotcha — Viterbi vs forward.** The **forward** algorithm uses the *same* trellis but replaces $\max$ with $\sum$: $\alpha_t(j) = [\sum_i \alpha_{t-1}(i) a_{ij}] b_j(x_t)$. That computes the *total* probability $p(x)$ (summing over all paths), which you need for *training* and for the CRF's partition function — **not** the single best path. Same DP skeleton, different semiring (max-product vs sum-product). Remember: **Viterbi = max, forward = sum.**
+
+![The same trellis, two semirings. Viterbi (max-product) keeps the single best path into each state — that is decoding, $\arg\max_y p(y\mid x)$. The forward algorithm (sum-product) sums over all paths into each state — that gives the total probability $p(x)$ and, in a CRF, the partition function $Z(x)$ needed for training. Identical DP skeleton; only max ↔ Σ changes.](../images/sl_forward_vs_viterbi.png)
 
 ---
 
@@ -203,6 +221,8 @@ The HMM is generative — it "wastes" capacity modeling $p(x)$ (how words are ge
 The **Maximum-Entropy Markov Model (MEMM)** (McCallum, Freitag & Pereira 2000) goes **discriminative**: model $p(y \mid x)$ directly, as a product of **per-state** locally-normalized classifiers:
 
 $$p(y_{1:n} \mid x_{1:n}) = \prod_{i=1}^{n} p(y_i \mid y_{i-1},\, x), \qquad p(y_i \mid y_{i-1}, x) = \frac{\exp\big(\sum_k w_k f_k(y_{i-1}, y_i, x, i)\big)}{Z(y_{i-1}, x, i)}.$$
+
+> **Source / derivation:** the per-state locally-normalized MEMM and its label-bias problem are introduced in [McCallum, Freitag & Pereira (2000), *Maximum Entropy Markov Models for Information Extraction and Segmentation*](https://courses.cs.washington.edu/courses/cse517/16wi/papers/mccallum2000.pdf), and the label-bias diagnosis is sharpened in [Lafferty, McCallum & Pereira (2001)](https://repository.upenn.edu/handle/20.500.14332/6188) (the CRF paper, §1). Both are in the references.
 
 Each step is a maximum-entropy (softmax/logistic) classifier that can use **arbitrary features** $f_k$ of the whole input and the previous tag — a big expressiveness win over the HMM. But look at the denominator: $Z(y_{i-1}, x, i)$ normalizes **locally**, over the next-tag choices *at this step only, conditioned on the previous tag*. That local normalization is the bug.
 
@@ -248,6 +268,8 @@ The **Conditional Random Field** (Lafferty, McCallum & Pereira 2001) keeps the M
 
 $$p(y_{1:n} \mid x_{1:n}) = \frac{1}{Z(x)} \exp\!\Big(\sum_{i=1}^{n} \sum_k w_k\, f_k(y_{i-1}, y_i, x, i)\Big) = \frac{\exp\big(\text{score}(y, x)\big)}{Z(x)}.$$
 
+> **Source / derivation:** the linear-chain CRF — its globally-normalized form, feature functions, the partition function $Z(x)$, and why global normalization removes label bias — is from [Lafferty, McCallum & Pereira (2001), *Conditional Random Fields: Probabilistic Models for Segmenting and Labeling Sequence Data* (ICML)](https://repository.upenn.edu/handle/20.500.14332/6188), with the full inference/training treatment in [Sutton & McCallum, *An Introduction to Conditional Random Fields*](https://homepages.inf.ed.ac.uk/csutton/publications/crftutv2.pdf). Both are in the references.
+
 Read the pieces:
 
 - **Feature functions** $f_k(y_{i-1}, y_i, x, i)$ come in two flavors. **Transition features** depend on the tag pair $(y_{i-1}, y_i)$ — e.g. "is this an `O` → `I-PER` transition?" (which should learn a large negative weight, since it's illegal). **Emission/state features** depend on $(y_i, x, i)$ — e.g. "is $y_i = $ `B-PER` *and* $x_i$ capitalized *and* the previous word is a title like 'Mr.'?". Features can look at the **whole input** $x$ and **any position**, which is the expressiveness the HMM lacked.
@@ -259,6 +281,8 @@ Read the pieces:
 $Z(x)$ sums over exponentially many sequences — but the linear-chain structure (features only couple *adjacent* tags) means we can compute it with the same DP as before, in **sum**-mode. Define forward scores $\alpha_t(j) = \sum_{\text{paths ending in } j \text{ at } t} \exp(\text{partial score})$. Writing $\psi_t(i, j) = \exp\!\big(\sum_k w_k f_k(i, j, x, t)\big)$ for the (exponentiated) local factor of transitioning $i \to j$ and emitting at $t$:
 
 $$\alpha_1(j) = \psi_1(\text{start}, j), \qquad \alpha_t(j) = \sum_i \alpha_{t-1}(i)\,\psi_t(i, j), \qquad Z(x) = \sum_j \alpha_n(j).$$
+
+> **Source / derivation:** the forward recursion for the partition function $Z(x)$ and the forward–backward computation of the CRF gradient are derived in [Sutton & McCallum, *An Introduction to Conditional Random Fields*](https://homepages.inf.ed.ac.uk/csutton/publications/crftutv2.pdf) (§4, inference and parameter estimation) and [Lafferty et al. (2001)](https://repository.upenn.edu/handle/20.500.14332/6188). Both are in the references. The chapter code implements this `forward_logZ` in log space alongside the `viterbi` max-pass, so you can see the two semirings on identical structure.
 
 That's the **forward algorithm** again — identical recurrence to the HMM forward pass, just with CRF factors $\psi$ instead of $a \cdot b$. So $Z(x)$ is computable in $O(nk^2)$, and **training** maximizes the log-likelihood $\log p(y \mid x) = \text{score}(y, x) - \log Z(x)$ by gradient ascent; the gradient of each weight is the familiar *(observed feature count) − (model-expected feature count)*, where the expectation comes from **forward–backward**.
 
@@ -273,6 +297,10 @@ $$\delta_t(j) = \max_i \Big[\delta_{t-1}(i) + \underbrace{\textstyle\sum_k w_k f
 ### Why global normalization fixes label bias
 
 Put the two side by side. In an MEMM, the per-step softmax forces $\sum_{y_i} p(y_i \mid y_{i-1}, x) = 1$ at **every state**, so a one-option state passes its mass forward unconditionally. In a CRF, the **only** normalization is the single $Z(x)$ over whole sequences. A transition from a low-entropy state earns **no free probability** — its score is just one additive term in the sequence score, and the *whole* sequence competes against every other sequence in $Z$. Evidence anywhere in the sentence can therefore down-weight a path that local normalization would have rewarded. The CRF can "change its mind" globally; the MEMM cannot. **That is the precise reason CRFs beat MEMMs on sequence labeling**, and why the CRF (not the MEMM) became the classical standard.
+
+The most visible payoff is **structural**: a globally-scored sequence can give an *illegal* transition like `O → I-PER` a score of $-\infty$, so Viterbi simply never routes through it — *even when the per-token emission for `I-PER` is the single highest score at that position.* A per-token classifier, blind to the previous label, would happily emit the illegal `I-PER` and corrupt the span.
+
+![Global scoring rules out an illegal transition. The per-token emission at token 1 ("Paris") wrongly tops out on `I-PER`, so a per-token argmax emits the structurally-illegal `O → I-PER`. The CRF transition matrix assigns `O → I-PER` a score of −∞, so Viterbi rules that path out entirely and backs off to the best *legal* tagging, `O, B-LOC` — the correct reading. Decoded by `crf_viterbi_decode` in the chapter code.](../images/sl_illegal_transition.png)
 
 > **Tip:** the one-liner interviewers reward: *An MEMM normalizes per state (locally) and so suffers label bias — low-entropy states pass mass forward regardless of the input. A CRF normalizes per sequence (globally, via $Z(x)$ computed with the forward algorithm), so every label sequence competes on equal footing and the bias vanishes. Both decode with Viterbi.*
 
@@ -292,9 +320,11 @@ But notice the failure: **independent per-token softmax has no model of label tr
 
 $$\text{score}(y, x) = \sum_{i=1}^{n} P_{i,\,y_i} \;+\; \sum_{i=1}^{n} A_{y_{i-1},\,y_i},$$
 
+> **Source / derivation:** the biLSTM-CRF sequence score (per-token biLSTM emissions $P_i$ plus a learned tag-to-tag transition matrix $A$, trained with the CRF log-likelihood) is from [Huang, Xu & Yu (2015), *Bidirectional LSTM-CRF Models for Sequence Tagging*](https://arxiv.org/abs/1508.01991) (§3), with the character-feature variants in [Lample et al. (2016)](https://arxiv.org/abs/1603.01360) and [Ma & Hovy (2016)](https://arxiv.org/abs/1603.01354). All three are in the references.
+
 and training maximizes $\text{score}(y, x) - \log Z(x)$ with $Z$ from the forward algorithm — exactly the CRF objective, but the emission scores $P_i$ now come from the **biLSTM** instead of hand features.
 
-![biLSTM-CRF architecture: character-level features and word embeddings feed a bidirectional LSTM, whose per-token emission scores P(y|·) are passed to a CRF layer that adds transition scores A(yᵢ₋₁→yᵢ) and decodes the best valid tag sequence with Viterbi. The CRF's global normalization is what enforces valid label sequences.](../images/seqlabel_bilstm_crf.png)
+![biLSTM-CRF architecture: character-level features and word embeddings feed a bidirectional LSTM, whose per-token emission scores Pᵢ are passed to a CRF layer that adds transition scores A(yᵢ₋₁→yᵢ) and decodes the best valid tag sequence with Viterbi. The biLSTM scores *which tag fits each token*; the CRF scores *which tag may follow which* — emissions and transitions, learned jointly. The CRF's global normalization is what enforces valid label sequences.](../images/sl_bilstm_crf.png)
 
 ### Why the CRF layer beats independent softmax
 
@@ -309,6 +339,10 @@ The win is concrete and worth stating precisely. A per-token softmax picks each 
 $$\text{score}(\dots\text{O}, \text{I-PER}) = \underbrace{1.5}_{\text{emission}} + \underbrace{(-8.0)}_{\text{transition}} = -6.5, \qquad \text{score}(\dots\text{O}, \text{O}) = \underbrace{1.0}_{\text{emission}} + \underbrace{0.5}_{\text{transition}} = +1.5.$$
 
 The CRF picks `O` (score $+1.5 \gg -6.5$) and **overrides the biLSTM's locally-wrong emission**, because the transition term makes the illegal sequence cost far more than the slightly-worse emission saves. A bare softmax, blind to transitions, would have emitted the invalid `O → I-PER` and corrupted the span. *That single comparison is why the CRF layer earns its 1–2 F1 points.*
+
+The same effect shows up on *span consistency*, not just illegal transitions. Consider a three-token person name *"Dr Jane Smith"* where the biLSTM emissions, taken token by token, slightly favour `B-PER` again on the last token — so an independent per-token argmax emits `B-PER, I-PER, B-PER`, **breaking one person into two adjacent spans**. The CRF, scoring the whole sequence with its learned transition preferences (continuing a span is common; gluing two same-type entities with no `O` between is rare), keeps a single clean `B-PER, I-PER, I-PER` span.
+
+![CRF sequence scoring vs independent per-token classification on "Dr Jane Smith". Left: the biLSTM emission scores P(tag | token) — the last token's emission slightly favours B-PER. Right: independent argmax follows those emissions and fragments the name into two spans (B-PER, I-PER, B-PER); the CRF's global score keeps one consistent 3-token PERSON span (B-PER, I-PER, I-PER). Decoded by `crf_viterbi_decode` in the chapter code.](../images/sl_crf_vs_independent.png)
 
 > **Note:** the clean mental model — *the biLSTM scores **what tag fits this token** (emissions); the CRF layer scores **which tag may follow which** (transitions) and decodes the best legal sequence with Viterbi. Emissions + transitions, learned jointly.* That sentence is the whole architecture.
 
@@ -353,11 +387,13 @@ Second — and subtler — **a span is all-or-nothing**, but token accuracy give
 
 $$\text{precision} = \frac{TP}{TP+FP} = \frac{1}{2} = 0.5, \quad \text{recall} = \frac{TP}{TP+FN} = \frac{1}{2} = 0.5, \quad F_1 = \frac{2PR}{P+R} = 0.5.$$
 
+> **Source / derivation:** entity-level (span-level) precision/recall/F1 with **exact** span+type match is the official CoNLL-2003 NER metric defined in [Tjong Kim Sang & De Meulder (2003), *Introduction to the CoNLL-2003 Shared Task*](https://aclanthology.org/W03-0419/), implemented by the `conlleval` script and its Python port [seqeval](https://github.com/chakki-works/seqeval). Both are in the references; the chapter code reimplements the same metric from scratch (`entity_prf`) and cross-checks it against `seqeval`.
+
 **One dropped token cut F1 in half while token accuracy barely moved.** That's the whole argument for entity-level scoring: the *entity* is the unit users care about, and a half-right span is a wrong span.
 
-![Measured: a model that drops one token of a three-token entity keeps token accuracy at 0.88 but its entity precision, recall, and F1 all collapse to 0.50 (computed with seqeval on the example above). Token accuracy is swamped by the easy O tokens and gives partial credit for spans; entity F1 is the honest metric.](../images/seqlabel_entity_vs_token.png)
+![Measured: a model that drops one token of a three-token entity keeps token accuracy at 0.875 but its entity precision, recall, and F1 all collapse to 0.50 (computed on the example above). Token accuracy is swamped by the easy O tokens and gives partial credit for spans; entity F1 is the honest metric.](../images/sl_entity_vs_token.png)
 
-> **Note:** the numbers in this figure are **computed**, not asserted — `seqeval`'s `f1_score([gold],[pred])` returns exactly 0.500 for the example, while raw token accuracy is 0.875. The runnable code at the bottom reproduces both.
+> **Note:** the numbers in this figure are **computed**, not asserted — both the from-scratch `entity_prf` in the chapter code and `seqeval`'s `f1_score([gold],[pred])` return exactly 0.500 for this example, while raw token accuracy is 0.875. The runnable code and notebook at the bottom reproduce both, and assert the two agree.
 
 **How CoNLL/seqeval scores it.** The reference implementation (the CoNLL-2003 `conlleval` script, mirrored by Python's `seqeval` library) does exactly this: it (1) converts the BIO tag stream into a set of `(type, start, end)` entity tuples for both gold and prediction, (2) counts a prediction as a **true positive only on exact tuple match** (same type *and* same boundaries), and (3) computes **micro-averaged** P/R/F1 over all entities in the corpus. Micro-averaging (pool all entities, then compute one P/R/F1) is standard because it weights by entity frequency; macro-averaging (P/R/F1 per type, then average) is reported when per-type fairness matters.
 
@@ -391,7 +427,9 @@ $$\text{precision} = \frac{TP}{TP+FP} = \frac{1}{2} = 0.5, \quad \text{recall} =
 
 ## Code: Viterbi from scratch, a real NER model, and entity-level F1
 
-This is runnable end-to-end on CPU. It (1) implements **Viterbi from scratch** and verifies it picks the right tags on our tiny HMM, (2) runs a **real pretrained NER model** (`dslim/bert-base-NER`) to extract entities, and (3) scores a span example with **`seqeval`** to show the token-vs-entity gap with real numbers. Verified in Python 3.12 (torch 2.12, transformers 5.10, seqeval 1.2).
+This is runnable end-to-end on CPU. It (1) implements **Viterbi from scratch** and verifies it picks the right tags on our tiny HMM, (2) runs a **real pretrained NER model** (`dslim/bert-base-NER`) to extract entities, and (3) scores a span example with **`seqeval`** to show the token-vs-entity gap with real numbers. Verified in Python 3.12 (numpy 2.4, torch 2.12, transformers 5.10, seqeval 1.2).
+
+> **Runnable project and a step-by-step notebook:** the structured-prediction backend used by every figure and demo above — the HMM tables, `viterbi`, `greedy_argmax`, `forward_logZ`, the linear-chain CRF scorer, BIO span decoding, and the entity-F1 metric — lives as one clean, seeded, pure-numpy module next to this page: the [runnable demo script](code/sequence_labeling.py) (`python sequence_labeling.py`) and the [step-by-step teaching notebook](code/09-Sequence-Labeling-POS-and-NER.ipynb), one idea per cell, each asserting its qualitative point before printing. The figures are regenerated from the *same* functions by [`make_figures_09.py`](code/make_figures_09.py), so the page, the notebook, and every figure cannot drift apart.
 
 ```python
 """Sequence labeling, end to end: Viterbi by hand, a real NER model, entity F1.
@@ -429,7 +467,8 @@ print("  PASS: balances emission AND transition to pick the right sequence\n")
 # ---- 2. a real pretrained NER model ----------------------------------------
 from transformers import pipeline
 ner = pipeline("token-classification", model="dslim/bert-base-NER",
-               aggregation_strategy="simple")           # merges B-/I- subwords -> spans
+               aggregation_strategy="first")            # merge subwords->spans; "first" takes the
+                                                         # first-subword label (the alignment convention)
 text = "Jane Smith flew from New York to the Acme Corporation office in Paris."
 print(f"NER on: {text}")
 for e in ner(text):
@@ -457,15 +496,19 @@ Viterbi('fish sleep') -> ['N', 'V']  (prob=0.10500)
 NER on: Jane Smith flew from New York to the Acme Corporation office in Paris.
   PER   Jane Smith            (score=0.999)
   LOC   New York              (score=1.000)
-  ORG   Acme Corporation      (score=0.854)
+  ORG   Acme Corporation      (score=0.999)
   LOC   Paris                 (score=1.000)
 
 token accuracy = 0.875   <- looks fine
 entity  P=0.500  R=0.500  F1=0.500   <- one dropped token halves it
               precision    recall  f1-score   support
+
          LOC       0.00      0.00      0.00         1
          PER       1.00      1.00      1.00         1
+
    micro avg       0.50      0.50      0.50         2
+   macro avg       0.50      0.50      0.50         2
+weighted avg       0.50      0.50      0.50         2
 ```
 
 > **Note:** three lessons in one run. (1) Viterbi recovers `N, V` for *"fish sleep"* — the right reading — by trading off emission against transition, which a per-token guess can't do. (2) A real BERT tagger cleanly extracts `PER/LOC/ORG/LOC` from a sentence. (3) The same dropped-token example from the metric section yields **token acc 0.875 but entity F1 0.500** — measured, not asserted. The `classification_report` shows the PER entity perfect and the LOC entity a total miss, which is exactly the all-or-nothing span behavior entity-level scoring is built to capture.
