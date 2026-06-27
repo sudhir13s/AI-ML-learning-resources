@@ -3,7 +3,7 @@ id: "06-nlp/sentence-document-embeddings/references"
 topic: "Sentence & Document Embeddings — References"
 parent: "06-nlp/sentence-document-embeddings"
 type: references
-updated: 2026-06-22
+updated: 2026-06-27
 ---
 
 # Sentence & Document Embeddings — references and further reading
@@ -40,6 +40,7 @@ updated: 2026-06-22
 **Key papers**:
 - [Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks](https://arxiv.org/abs/1908.10084) — **Reimers & Gurevych (2019)** — the siamese fine-tune (NLI classification / STS regression / triplet) that made BERT embeddings cosine-comparable.
 - [A Simple but Tough-to-Beat Baseline for Sentence Embeddings (SIF)](https://openreview.net/forum?id=SyK00v5xx) — **Arora, Liang & Ma (2017)** — the smooth-inverse-frequency weighting + common-component removal.
+- [Distributed Representations of Sentences and Documents (Doc2Vec / Paragraph Vectors)](https://arxiv.org/abs/1405.4053) — **Le & Mikolov (2014)** — PV-DM and PV-DBOW: the first widely-used *learned* document vector, the bridge from averaging word vectors to running an encoder.
 - [SimCSE: Simple Contrastive Learning of Sentence Embeddings](https://arxiv.org/abs/2104.08821) — **Gao, Yao & Chen (2021)** — dropout as the positive-pair augmentation; supervised NLI hard negatives; fixes anisotropy.
 - [On the Sentence Embeddings from Pre-trained Language Models (BERT-flow)](https://arxiv.org/abs/2011.05864) — **Li et al. (2020)** — the anisotropy analysis and a flow-based whitening fix for raw BERT vectors.
 - [Universal Sentence Encoder](https://arxiv.org/abs/1803.11175) — **Cer et al. (2018)** — transformer and DAN sentence encoders for transfer, predating SBERT.
