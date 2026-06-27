@@ -137,6 +137,7 @@ def train_bi_encoder(
     vocab: dict[str, int],
     steps: int = TRAIN_STEPS,
     seed: int = SEED,
+    temperature: float = TEMPERATURE,
 ) -> tuple[DenseBiEncoder, list[float]]:
     """Train the toy bi-encoder with InfoNCE; return the model and the per-step loss curve."""
     torch.manual_seed(seed)  # deterministic init + training -> identical numbers every run
@@ -147,12 +148,28 @@ def train_bi_encoder(
     losses: list[float] = []
     for _ in range(steps):
         q_emb, p_emb = model(queries), model(passages)  # encode both sides independently (the bi-encoder)
-        loss = info_nce_loss(q_emb, p_emb)
+        loss = info_nce_loss(q_emb, p_emb, temperature=temperature)
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
         losses.append(float(loss.item()))
     return model, losses
+
+
+def tau_sweep(
+    pairs: tuple[tuple[str, str], ...],
+    vocab: dict[str, int],
+    temperatures: tuple[float, ...] = (0.07, 1.0, 5.0),
+) -> dict[float, float]:
+    """Train at each temperature; return {temperature: final InfoNCE loss}.
+
+    Demonstrates WHY temperature matters: a large tau flattens the softmax over in-batch negatives,
+    so the gradient barely distinguishes the positive from the negatives and the loss stays high —
+    training makes far less progress. (On this tiny, easy 4-pair toy the positives still separate
+    even at large tau; on real data with hard negatives, a too-large tau visibly fails to separate
+    them. The loss-stays-high signal is the honest, reproducible part.)
+    """
+    return {tau: train_bi_encoder(pairs, vocab, temperature=tau)[1][-1] for tau in temperatures}
 
 
 def similarity_matrix(
@@ -183,12 +200,17 @@ def try_pretrained_demo(queries: list[str], passages: list[str]) -> np.ndarray |
         import contextlib
         import io
         import logging
+        import os
 
-        logging.getLogger("sentence_transformers").setLevel(logging.ERROR)  # quiet the load chatter
-        from sentence_transformers import SentenceTransformer
+        # Silence the HF/transformers load chatter (the "Loading weights" bar writes via a logger that
+        # ignores a plain stderr redirect under nbconvert) BEFORE importing, so notebook output is clean.
+        os.environ.setdefault("TRANSFORMERS_VERBOSITY", "error")
+        os.environ.setdefault("HF_HUB_DISABLE_PROGRESS_BARS", "1")
+        for logger_name in ("sentence_transformers", "transformers", "transformers.modeling_utils"):
+            logging.getLogger(logger_name).setLevel(logging.ERROR)
+        with contextlib.redirect_stderr(io.StringIO()):  # belt-and-suspenders for any residual stderr
+            from sentence_transformers import SentenceTransformer
 
-        # redirect the loader's progress bar (it writes to stderr) so the demo output stays clean
-        with contextlib.redirect_stderr(io.StringIO()):
             model = SentenceTransformer("all-MiniLM-L6-v2", device="cpu")
         q = model.encode(queries, normalize_embeddings=True, show_progress_bar=False)  # (n, 384) unit-norm
         p = model.encode(passages, normalize_embeddings=True, show_progress_bar=False)
@@ -239,6 +261,14 @@ def main() -> None:
     assert (dense_diag - dense_off) > (sparse_diag - sparse_off), "dense must beat sparse on the paraphrase gap"
     print("\ndense separates paraphrases from unrelated; sparse cannot: True")
     print(f"  paraphrase-vs-unrelated gap — sparse: {sparse_diag - sparse_off:+.3f}  dense: {dense_diag - dense_off:+.3f}")
+
+    # --- Temperature matters: a too-large tau flattens the softmax, so the loss stays high ---
+    print("\nTemperature sweep — final InfoNCE loss after training (lower = learned more):")
+    tau_losses = tau_sweep(PARAPHRASE_PAIRS, vocab)
+    for tau, final_loss in tau_losses.items():
+        print(f"  tau={tau:>4}: final loss {final_loss:.4f}")
+    # a larger temperature leaves the loss higher: the gradient can't push the positive past negatives
+    assert tau_losses[0.07] < tau_losses[1.0] < tau_losses[5.0], "larger tau must leave loss higher"
 
     # --- Optional: confirm on a real pretrained model (cached -> runs offline) ---
     print("\nPretrained confirmation (all-MiniLM-L6-v2, 384-dim) — if available:")

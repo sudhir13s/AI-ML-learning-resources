@@ -99,7 +99,7 @@ graph TD
 
 Three mechanism details matter:
 
-1. **Pooling.** A transformer emits one vector *per token*; retrieval needs *one vector per text*. Two standard ways to pool: take the special **`[CLS]`** token's vector (BERT-style), or **mean-pool** all token vectors. Sentence-BERT found mean-pooling works better for similarity, and it's the common default for retrieval embedders.
+1. **Pooling.** A transformer emits one vector *per token*; retrieval needs *one vector per text*. Two standard ways to pool: take the special **`[CLS]`** token's vector (BERT-style), or **mean-pool** all token vectors. Sentence-BERT ([Reimers & Gurevych 2019](https://arxiv.org/abs/1908.10084)) found mean-pooling works better for similarity, and it's the common default for retrieval embedders.
 2. **L2-normalization.** Divide each vector by its length so it sits on the unit sphere. Then cosine similarity *is* the dot product — fast, and the comparison depends only on **direction (meaning)**, not magnitude. (Forget this and your similarities are silently wrong; see Pitfalls.)
 3. **Independent encoding → precomputability.** Because the passage is encoded without seeing the query, you can **embed your whole corpus once, offline**, and at query time only encode the (short) query and do nearest-neighbour search. This is what makes dense retrieval scale to millions of documents.
 
@@ -117,17 +117,26 @@ From chapter 1: with L2-normalized vectors $\mathbf{q}, \mathbf{p} \in \mathbb{R
 
 Embedders are trained on **positive pairs** — a query and a passage that *should* match (a question and its answer, a sentence and its paraphrase). The trick that makes training cheap and effective is **in-batch negatives**: within a batch of $B$ pairs, each query's positive is its own paired passage, and *every other passage in the batch* serves as a negative. One batch gives you $B$ positives and $B(B{-}1)$ negatives for free.
 
-Let $\mathbf{q}_i$ be the embedding of query $i$ and $\mathbf{p}_j$ the embedding of passage $j$ (all L2-normalized). Define the scaled similarity score $s_{ij} = \mathbf{q}_i \cdot \mathbf{p}_j / \tau$. The **InfoNCE** loss treats "which passage matches query $i$?" as a $B$-way classification where the correct answer is $j=i$:
+Let $\mathbf{q}_i$ be the embedding of query $i$ and $\mathbf{p}_j$ the embedding of passage $j$ (all L2-normalized). Define the scaled similarity score $s_{ij} = \mathbf{q}_i \cdot \mathbf{p}_j / \tau$. The **InfoNCE** loss treats "which passage matches query $i$?" as a $B$-way classification where the correct answer is $j=i$. The query→passage direction is:
 
 $$
-\mathcal{L} = -\frac{1}{B}\sum_{i=1}^{B} \log \frac{\exp(\mathbf{q}_i \cdot \mathbf{p}_i / \tau)}{\sum_{j=1}^{B}\exp(\mathbf{q}_i \cdot \mathbf{p}_j / \tau)}.
+\mathcal{L}_{q\to p} = -\frac{1}{B}\sum_{i=1}^{B} \log \frac{\exp(\mathbf{q}_i \cdot \mathbf{p}_i / \tau)}{\sum_{j=1}^{B}\exp(\mathbf{q}_i \cdot \mathbf{p}_j / \tau)}.
 $$
 
 > **Source / derivation:** [van den Oord, Li & Vinyals (2018), *Representation Learning with Contrastive Predictive Coding* (arXiv:1807.03748)](https://arxiv.org/abs/1807.03748) — introduces the InfoNCE loss (Eq. 4): a softmax over one positive against a set of negatives, maximizing a lower bound on mutual information. Its use for sentence retrieval with in-batch negatives is [Karpukhin et al. (2020), *Dense Passage Retrieval* (arXiv:2004.04906)](https://arxiv.org/abs/2004.04906).
 
-Define every symbol: $B$ is the batch size; $\mathbf{q}_i, \mathbf{p}_j$ the unit-norm query/passage embeddings; $\mathbf{q}_i \cdot \mathbf{p}_j$ their cosine similarity; $\tau > 0$ the **temperature**. Read the loss: the numerator is the positive pair's score; the denominator sums the positive *and* all in-batch negatives. Minimizing $\mathcal{L}$ **maximizes the positive's score relative to the negatives** — exactly "pull positives together, push negatives apart." It's just cross-entropy with the identity matrix as labels (row $i$'s correct class is column $i$), which is precisely what the code computes.
+Define every symbol: $B$ is the batch size; $\mathbf{q}_i, \mathbf{p}_j$ the unit-norm query/passage embeddings; $\mathbf{q}_i \cdot \mathbf{p}_j$ their cosine similarity; $\tau > 0$ the **temperature**. Read the loss: the numerator is the positive pair's score; the denominator sums the positive *and* all in-batch negatives. Minimizing it **maximizes the positive's score relative to the negatives** — exactly "pull positives together, push negatives apart." It's just cross-entropy with the identity matrix as labels (row $i$'s correct class is column $i$). The equation above is the query→passage direction; the code computes the **symmetric** version, averaging $\mathcal{L}_{q\to p}$ with the mirror-image $\mathcal{L}_{p\to q}$ (the same loss on the *transposed* score matrix, asking "which query matches passage $j$?"), $\mathcal{L} = \tfrac{1}{2}(\mathcal{L}_{q\to p} + \mathcal{L}_{p\to q})$ — a standard stabilization that trains both encoding directions at once.
 
-**Why divide by $\tau$?** The temperature controls how *sharp* the softmax is. Small $\tau$ (e.g. 0.05) makes the loss punish a negative that scores near the positive very harshly (sharp contrast, hard negatives dominate the gradient); large $\tau$ softens it. It's a key hyperparameter — too small and training is unstable, too large and positives and negatives never separate cleanly. We use $\tau = 0.07$, a common value.
+**Why divide by $\tau$?** The temperature controls how *sharp* the softmax is. Small $\tau$ (e.g. 0.05) makes the loss punish a negative that scores near the positive very harshly (sharp contrast, hard negatives dominate the gradient); large $\tau$ flattens it, so the gradient barely distinguishes the positive from the negatives and training makes little progress. We use $\tau = 0.07$, a common value. You can *feel* this in our own trainer — same data, same steps, only $\tau$ changed:
+
+```
+Temperature sweep — final InfoNCE loss after training (lower = learned more):
+  tau=0.07: final loss 0.0000
+  tau= 1.0: final loss 0.5827
+  tau= 5.0: final loss 1.1933
+```
+
+The loss **stays high as $\tau$ grows** — at $\tau=5$ the softmax is too flat for the gradient to push the positive past the negatives, so the model barely learns. (On this tiny, easy 4-pair toy the positives still *eventually* separate even at large $\tau$; on real data with hard negatives, a too-large $\tau$ visibly fails to separate them. The loss-stays-high signal is the honest, reproducible part — and too *small* a $\tau$ makes training unstable on real data.)
 
 **Why L2-normalize before this?** Two reasons. (1) It bounds $\mathbf{q}\cdot\mathbf{p}$ to $[-1,1]$ so $\tau$ has a consistent meaning across batches. (2) Without it, the model could cheat by making *magnitudes* large instead of *directions* aligned — normalization forces it to encode meaning in **direction**, which is what cosine retrieval reads.
 
@@ -138,6 +147,8 @@ The embedding dimension $d$ is a capacity/cost knob: more dimensions can encode 
 > **Source / derivation:** [Kusupati et al. (2022), *Matryoshka Representation Learning* (arXiv:2205.13147)](https://arxiv.org/abs/2205.13147) — trains nested representations so a single embedding can be truncated to many shorter lengths; this is what powers the `dimensions` parameter in OpenAI's `text-embedding-3` models.
 
 ![Illustrative: embedding dimension vs retrieval quality (green, saturating — diminishing returns) and memory/compute cost (amber, linear). Quality climbs fast then plateaus while cost grows without bound, so a common sweet spot is 384–768 dims. Shape is illustrative; exact values are model-specific. Generated by `code/make_figures_03.py`.](../images/rag03_dim_quality_cost.png)
+
+*This tradeoff is the knob behind the model-selection rubric below: it's why a 384-dim model (all-MiniLM) is a strong default and why Matryoshka-truncatable models let you dial dimension down to cut storage with little quality loss.*
 
 ---
 
@@ -190,7 +201,9 @@ paraphrase sim 0.675 | unrelated sim -0.220 | gap +0.895
 
 The dense embedder pulls paraphrases to **0.675** and pushes unrelated pairs to **−0.220** — a gap of **+0.895**, versus the sparse model's **+0.009**. *Same sentences, same words (or lack of them); only the embedder changed.* The model learned, from the paraphrase pairs alone, that "reset password" and "forgot login credentials" belong together.
 
-![The query×passage cosine matrix under sparse (left) vs dense (right). The dense diagonal — each query against its own paraphrase — lights up (0.64–0.73), while the off-diagonal (unrelated pairs) stays low or negative; the sparse matrix is flat near zero everywhere, unable to distinguish paraphrases. Generated by `code/make_figures_03.py`.](../images/rag03_cosine_heatmap.png)
+> **Try it:** before you run anything, **predict** — the encoder trained on four *fixed* sentences. Feed it a **brand-new** query made of recombined known words, `"my vehicle will not turn on"`, and ask its cosine to each training passage. Does it land near the *car* passage ("my automobile won't turn on"), or does it fail because it only memorized the exact training sentences? Run `dense_fn("my vehicle will not turn on")` and compare. *(It lands at **+0.904** to the car passage and negative to the rest — it generalizes to recombinations of words it learned, even though "vehicle" itself was never in training. That word contributes nothing — the in-vocab "will/not/turn/on" carry it home. The OOV blind spot is exactly why real embedders use subword tokenization and train on massive corpora.)*
+
+![The query×passage cosine matrix under sparse (left) vs dense (right). The dense diagonal — each query against its own paraphrase — lights up (0.64–0.73), while the off-diagonal (unrelated pairs) stays low or negative; the sparse matrix is flat near zero everywhere, unable to distinguish paraphrases. (The one strongly-negative dense cell, query 2 vs passage 1 ≈ −0.66, is the model actively pushing an *unrelated* pair apart — a contrastive success, not a retrieval miss.) Generated by `code/make_figures_03.py`.](../images/rag03_cosine_heatmap.png)
 
 ![The InfoNCE loss falling to ~0 (left) and the similarity gap opening over training (right): paraphrase-pair similarity (green) climbs while unrelated-pair similarity (red) drops — contrastive learning literally pulling positives together and pushing negatives apart, step by step. Generated by `code/make_figures_03.py`.](../images/rag03_contrastive_training.png)
 
