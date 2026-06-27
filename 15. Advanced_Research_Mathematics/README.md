@@ -1,20 +1,58 @@
-# 🔬 Advanced Research Mathematics — Curriculum (Specialization)
+---
+id: "15-advanced-research-mathematics"
+topic: "Advanced Research Mathematics"
+level: advanced
+prereqs: ["foundations"]
+updated: 2026-06-27
+---
 
+# 🔬 Advanced Research Mathematics — Curriculum (Specialization)
 > Elective deep-dive track for research-grade ML math, absorbed and expanded from the retired
 > `math-for-AIML-Q5` research specialization. This is the *third tier*: study after the
 > [main curriculum's](../01.%20Foundations/Maths%20for%20AI-ML/README.md) phases and the corresponding
 > [AI-ML-intuition](../../AI-ML-intuition/) modules. Each row names the payoff that justifies it.
 
-## 📑 Per-concept resources
-
-Want curated **free, open** resources for a *single* topic — measure theory, RKHS, optimal transport,
-VC dimension, causal inference, and more? See the **[concept index → `concepts/README.md`](concepts/README.md)**.
-Each concept has its own gold-standard card: a short guided learning path plus the best free courses,
+## 📑 Concept Index
+Every chapter is a self-contained folder (`NN-Concept/NN-Concept.md`) with its gold-standard resource
+card — a short guided learning path plus the best **free, open** graduate / research-level courses,
 lectures, key papers, articles, and book chapters for that topic. This domain owns the
 *graduate / research-level* treatment; the *basics* (linear algebra, calculus, core probability,
-entropy/KL) live in [Foundations](../01.%20Foundations/concepts/README.md).
+entropy/KL) live in [Foundations](../01.%20Foundations/README.md). Treat each card like a semester,
+not an afternoon.
+> **✅ ready.** New here? Start with the field overview & track map below.
 
-### Core resource backbone
+### Foundations of rigor
+1. ✅ [Measure Theory & Probability Foundations](01-Measure-Theory-and-Probability-Foundations/01-Measure-Theory-and-Probability-Foundations.md)
+2. ✅ [Functional Analysis (Banach & operator theory)](02-Functional-Analysis/02-Functional-Analysis.md)
+3. ✅ [Hilbert Spaces & RKHS (the math of kernels)](03-Hilbert-Spaces-and-RKHS/03-Hilbert-Spaces-and-RKHS.md)
+4. ✅ [Convex Analysis & Duality](04-Convex-Analysis-and-Duality/04-Convex-Analysis-and-Duality.md)
+
+### Statistical learning theory
+5. ✅ [Statistical Learning Theory (PAC learning)](05-Statistical-Learning-Theory-PAC/05-Statistical-Learning-Theory-PAC.md)
+6. ✅ [VC Dimension](06-VC-Dimension/06-VC-Dimension.md)
+7. ✅ [Rademacher Complexity & Generalization Bounds](07-Rademacher-Complexity-and-Generalization-Bounds/07-Rademacher-Complexity-and-Generalization-Bounds.md)
+
+### Geometry, transport & spectra
+8. ✅ [Information Geometry (Fisher–Rao, natural gradient)](08-Information-Geometry/08-Information-Geometry.md)
+9. ✅ [Optimal Transport (Wasserstein distances)](09-Optimal-Transport-Wasserstein/09-Optimal-Transport-Wasserstein.md)
+10. ✅ [Differential Geometry & Manifolds](10-Differential-Geometry-and-Manifolds/10-Differential-Geometry-and-Manifolds.md)
+11. ✅ [Spectral Graph Theory](11-Spectral-Graph-Theory/11-Spectral-Graph-Theory.md)
+
+### Signals, matrices & decisions
+12. ✅ [Fourier Analysis & Signal Processing](12-Fourier-Analysis-and-Signal-Processing/12-Fourier-Analysis-and-Signal-Processing.md)
+13. ✅ [Random Matrix Theory](13-Random-Matrix-Theory/13-Random-Matrix-Theory.md)
+14. ✅ [Causal Inference](14-Causal-Inference/14-Causal-Inference.md)
+15. ✅ [Game Theory & Multi-Agent Math](15-Game-Theory-and-Multi-Agent-Math/15-Game-Theory-and-Multi-Agent-Math.md)
+
+### Related concepts (covered in another section)
+> These are the *basics* this domain builds on, or applications of it. They live where they're first
+> taught, to avoid repetition. This domain owns the **advanced** treatment; the links below own the core.
+- **Linear algebra · calculus · core probability · gradient-descent theory · entropy / KL** → [Foundations](../01.%20Foundations/README.md)
+- **Applied optimizers** — Momentum · Adam · AdamW · LR schedules · K-FAC in practice → [Deep Learning](../05.%20Deep_Learning/concepts/README.md)
+- **Clustering & dimensionality reduction** — k-means · GMM/EM · PCA · t-SNE · UMAP → [Unsupervised Learning](../04.%20Unsupervised_Learning/concepts/README.md)
+- **Reinforcement learning** — MDPs · Bellman operators · policy gradients · bandits → [Reinforcement Learning](../08.%20Reinforcement_Learning/concepts/README.md)
+
+## Core resource backbone
 - **Convex Optimization** (Boyd & Vandenberghe) — [free book + lectures](https://web.stanford.edu/~boyd/cvxbook/)
 - **All of Statistics** (Wasserman) — the compact rigorous bridge
 - **Mathematics for Machine Learning** (Deisenroth) — [free](https://mml-book.github.io/) — the on-ramp to everything below

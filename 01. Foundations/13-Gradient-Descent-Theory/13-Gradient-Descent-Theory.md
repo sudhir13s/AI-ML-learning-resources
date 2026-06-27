@@ -50,7 +50,7 @@ where $\eta$ is the **learning rate** (step size). Why is $-\nabla L$ the *steep
 
 The step size $\eta$ is the single most important hyperparameter, and the picture says it all:
 
-![Three panels of gradient descent on the parabola f(x)=x². With η=0.05 (too small) the iterates crawl down in many tiny steps. With η=0.4 (well-chosen) a few steps reach the minimum. With η=1.02 (too large) the iterates oscillate across the bowl and diverge outward.](images/gd_lr.png)
+![Three panels of gradient descent on the parabola f(x)=x². With η=0.05 (too small) the iterates crawl down in many tiny steps. With η=0.4 (well-chosen) a few steps reach the minimum. With η=1.02 (too large) the iterates oscillate across the bowl and diverge outward.](../images/gd_lr.png)
 
 - **Too small** — it converges, but agonizingly slowly (many steps, wasted compute).
 - **Well-chosen** — fast, smooth descent to the minimum.
@@ -106,7 +106,7 @@ The headline is that **conditioning**, captured by the **condition number** $\ka
 
 Picture the loss as a bowl. If it's round (well-conditioned, $\kappa \approx 1$), the negative gradient points straight at the minimum and you arrive in a few steps. If it's a long, narrow valley (ill-conditioned, $\kappa \gg 1$), the gradient mostly points *across* the valley, not *along* it — so you **zig-zag**, taking tiny progress down the long axis while bouncing between the steep walls:
 
-![Gradient descent on two 2D quadratics. Left, a well-conditioned bowl (κ=1) with near-circular contours: the path goes nearly straight to the minimum. Right, an ill-conditioned valley (κ=12) with elongated contours: the path zig-zags down the narrow direction, taking many more steps.](images/gd_conditioning.png)
+![Gradient descent on two 2D quadratics. Left, a well-conditioned bowl (κ=1) with near-circular contours: the path goes nearly straight to the minimum. Right, an ill-conditioned valley (κ=12) with elongated contours: the path zig-zags down the narrow direction, taking many more steps.](../images/gd_conditioning.png)
 
 The code makes the cost concrete: condition numbers of 1, 10, 100 take roughly **1, 63, 653** steps — the number of iterations scales with $\kappa$. This is the entire motivation for **momentum** and **adaptive** methods (Adam): they damp the zig-zag and accelerate along the valley floor.
 
