@@ -55,5 +55,5 @@ object-segmentation attention for free. Central to foundation-model and multimod
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 1.13 Contrastive Learning (SimCLR · InfoNCE)](../../../AI-ML-intuition/Module_1_Representation/1.13_Representation_Contrastive_Learning_SimCLR_InfoNCE.md) · [1.14 Triplet Loss](../../../AI-ML-intuition/Module_1_Representation/1.14_Triplet_Loss.md)
-- Foundation: [Vision Transformers](11-Vision-Transformers.md) (MAE/DINO backbone) · [Data Augmentation](06-Data-Augmentation.md) (defines contrastive views)
-- Related domain: [Deep Learning › Autoencoders](../../05.%20Deep_Learning/concepts/19-Autoencoders.md) (MAE is a masked autoencoder)
+- Foundation: [Vision Transformers](../11-Vision-Transformers/11-Vision-Transformers.md) (MAE/DINO backbone) · [Data Augmentation](../06-Data-Augmentation/06-Data-Augmentation.md) (defines contrastive views)
+- Related domain: [Deep Learning › Autoencoders](../../05.%20Deep_Learning/19-Autoencoders/19-Autoencoders.md) (MAE is a masked autoencoder)

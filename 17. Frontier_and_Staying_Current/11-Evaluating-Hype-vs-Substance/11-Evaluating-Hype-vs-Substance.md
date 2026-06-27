@@ -53,6 +53,6 @@ cherry-picked examples — is what makes you a trustworthy reader of the frontie
 - [Understanding Deep Learning](https://udlbook.github.io/udlbook/) — **Simon Prince** — grounding in what methods actually do, so you can judge what they're claimed to do.
 
 ## 🔗 In this platform
-- Per-concept index: [Frontier & Staying Current — concepts](README.md)
-- Pair with: [01 How to Read ML Papers](01-How-to-Read-ML-Papers.md) · [03 Key Conferences & Venues](03-Key-Conferences-and-Venues.md) · [06 Benchmarks & Leaderboards](06-Benchmarks-and-Leaderboards-to-Watch.md) · [07 Reproducing Papers](07-Reproducing-Papers-Code.md)
-- Evaluation rigor lives in: [09. LLMs](../../09.%20LLMs/README.md) · [12. Deployment & MLOps](../../14.%20Deployment_and_MLOps/concepts/README.md)
+- Per-concept index: [Frontier & Staying Current — concepts](../README.md)
+- Pair with: [01 How to Read ML Papers](../01-How-to-Read-ML-Papers/01-How-to-Read-ML-Papers.md) · [03 Key Conferences & Venues](../03-Key-Conferences-and-Venues/03-Key-Conferences-and-Venues.md) · [06 Benchmarks & Leaderboards](../06-Benchmarks-and-Leaderboards-to-Watch/06-Benchmarks-and-Leaderboards-to-Watch.md) · [07 Reproducing Papers](../07-Reproducing-Papers-Code/07-Reproducing-Papers-Code.md)
+- Evaluation rigor lives in: [09. LLMs](../../09.%20LLMs/README.md) · [12. Deployment & MLOps](../../14.%20Deployment_and_MLOps/README.md)

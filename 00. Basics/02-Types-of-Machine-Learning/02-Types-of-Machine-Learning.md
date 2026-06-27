@@ -55,7 +55,7 @@ real project.
 - [Reinforcement Learning: An Introduction (2nd ed.)](http://incompleteideas.net/book/the-book-2nd.html) — **Sutton & Barto** — free; the RL paradigm in full.
 
 ## 🔗 In this platform
-- Next concepts: [03 The ML Workflow & Lifecycle](03-The-ML-Workflow-and-Lifecycle.md) · [04 How Models Learn](04-How-Models-Learn.md)
-- Go deeper — supervised: [03. Supervised Learning](../../03.%20Supervised_Learning/concepts/README.md)
-- Go deeper — unsupervised: [04. Unsupervised Learning](../../04.%20Unsupervised_Learning/concepts/README.md)
-- Go deeper — reinforcement: [10. Reinforcement Learning](../../08.%20Reinforcement_Learning/concepts/README.md)
+- Next concepts: [03 The ML Workflow & Lifecycle](../03-The-ML-Workflow-and-Lifecycle/03-The-ML-Workflow-and-Lifecycle.md) · [04 How Models Learn](../04-How-Models-Learn/04-How-Models-Learn.md)
+- Go deeper — supervised: [03. Supervised Learning](../../03.%20Supervised_Learning/README.md)
+- Go deeper — unsupervised: [04. Unsupervised Learning](../../04.%20Unsupervised_Learning/README.md)
+- Go deeper — reinforcement: [10. Reinforcement Learning](../../08.%20Reinforcement_Learning/README.md)

@@ -52,5 +52,5 @@ implies, why saddle points stall training, and what Newton's step does.
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 2.03 Jacobian & Hessian](../../../AI-ML-intuition/Module_2_Optimization/2.03_Jacobian_and_Hessian.md)
 - Curriculum context: [Maths for AI-ML — Phase 2 (Calculus, row 2.3)](../Maths%20for%20AI-ML/README.md)
-- Prereqs: [08 Derivatives & Gradients](08-Derivatives-and-Gradients.md) · [09 The Chain Rule](09-The-Chain-Rule.md) · Related: [11 Taylor Expansion](11-Taylor-Expansion.md) · [12 Convexity](12-Convexity.md)
+- Prereqs: [08 Derivatives & Gradients](../08-Derivatives-and-Gradients/08-Derivatives-and-Gradients.md) · [09 The Chain Rule](../09-The-Chain-Rule/09-The-Chain-Rule.md) · Related: [11 Taylor Expansion](../11-Taylor-Expansion/11-Taylor-Expansion.md) · [12 Convexity](../12-Convexity/12-Convexity.md)
 </content>

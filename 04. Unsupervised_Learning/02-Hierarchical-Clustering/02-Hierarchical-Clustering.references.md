@@ -49,7 +49,7 @@ updated: 2026-06-22
 
 **In this platform**:
 - Concept page (full explanation): [Hierarchical Clustering](02-Hierarchical-Clustering.md)
-- Compare with the siblings: [K-Means Clustering](01-K-Means-Clustering.md) · [DBSCAN](03-DBSCAN.md) · [Gaussian Mixture Models & EM](04-Gaussian-Mixture-Models-and-EM.md) · [Spectral Clustering](05-Spectral-Clustering.md)
+- Compare with the siblings: [K-Means Clustering](../01-K-Means-Clustering/01-K-Means-Clustering.md) · [DBSCAN](../03-DBSCAN/03-DBSCAN.md) · [Gaussian Mixture Models & EM](../04-Gaussian-Mixture-Models-and-EM/04-Gaussian-Mixture-Models-and-EM.md) · [Spectral Clustering](../05-Spectral-Clustering/05-Spectral-Clustering.md)
 - Foundations (the *why* behind the distance): [AI-ML-intuition 1.07–1.08 Euclidean vs Cosine Distance](../../../AI-ML-intuition/Module_1_Representation/1.07-1.08_Similarities_Distances_Euclidean_vs_Cosine.md)
 - Prereq math: [Foundations — Linear Algebra (vectors & matrices)](../../01.%20Foundations/Maths%20for%20AI-ML/1.%20Linear%20Algebra/VectorsAndMatrices.md)
 - Field overview: [4. Unsupervised Learning](../README.md)

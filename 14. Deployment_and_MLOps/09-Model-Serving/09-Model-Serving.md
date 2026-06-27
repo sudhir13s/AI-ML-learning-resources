@@ -51,6 +51,6 @@ trade-off (latency vs throughput vs cost), REST vs gRPC, request batching, why p
 - [Machine Learning Engineering — **Ch. 8 "Model Deployment"** (serving patterns)](http://www.mlebook.com/wiki/doku.php) — **Andriy Burkov** — read-first chapters free.
 
 ## 🔗 In this platform
-- Builds on: [08 Model Packaging & Containerization](08-Model-Packaging-and-Containerization.md)
-- Next concepts: [10 Scaling Inference](10-Scaling-Inference.md) · [11 Model Monitoring & Observability](11-Model-Monitoring-and-Observability.md) · [14 A/B Testing · Shadow & Canary](14-AB-Testing-Shadow-and-Canary-Deployment.md)
+- Builds on: [08 Model Packaging & Containerization](../08-Model-Packaging-and-Containerization/08-Model-Packaging-and-Containerization.md)
+- Next concepts: [10 Scaling Inference](../10-Scaling-Inference/10-Scaling-Inference.md) · [11 Model Monitoring & Observability](../11-Model-Monitoring-and-Observability/11-Model-Monitoring-and-Observability.md) · [14 A/B Testing · Shadow & Canary](../14-AB-Testing-Shadow-and-Canary-Deployment/14-AB-Testing-Shadow-and-Canary-Deployment.md)
 - Related concept (covered elsewhere): LLM inference internals (KV-cache, paged attention) → [09. LLMs — Inference Optimization & Serving](../../09.%20LLMs/09-Inference-Optimization-and-Serving/09-Inference-Optimization-and-Serving.md)

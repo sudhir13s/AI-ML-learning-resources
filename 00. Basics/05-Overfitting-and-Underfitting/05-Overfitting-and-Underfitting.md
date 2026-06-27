@@ -55,6 +55,6 @@ use on every single project.
 - [Neural Networks and Deep Learning — Ch. 3 "Overfitting and regularization"](http://neuralnetworksanddeeplearning.com/chap3.html) — **Michael Nielsen** — free; intuition + the standard fixes.
 
 ## 🔗 In this platform
-- Prev/next: [04 How Models Learn](04-How-Models-Learn.md) · [12 Your First ML Project](12-Your-First-ML-Project.md)
-- Go deeper — regularization in linear models: [03. Supervised Learning](../../03.%20Supervised_Learning/concepts/README.md)
-- Go deeper — dropout, weight decay, early stopping: [05. Deep Learning](../../05.%20Deep_Learning/concepts/README.md)
+- Prev/next: [04 How Models Learn](../04-How-Models-Learn/04-How-Models-Learn.md) · [12 Your First ML Project](../12-Your-First-ML-Project/12-Your-First-ML-Project.md)
+- Go deeper — regularization in linear models: [03. Supervised Learning](../../03.%20Supervised_Learning/README.md)
+- Go deeper — dropout, weight decay, early stopping: [05. Deep Learning](../../05.%20Deep_Learning/README.md)

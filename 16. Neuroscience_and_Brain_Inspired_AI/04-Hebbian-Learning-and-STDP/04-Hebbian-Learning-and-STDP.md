@@ -52,6 +52,6 @@ the chain rule — is the single most important idea connecting neuroscience to 
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 2.02 Backpropagation — The Chain Rule](../../../AI-ML-intuition/Module_2_Optimization/2.02_Backpropagation_The_Chain_Rule.md) — the global learning rule Hebbian/STDP is contrasted against.
-- Prereqs in this section: [01 Biological Neurons & Synapses](01-Biological-Neurons-and-Synapses.md) · [02 Neural Coding](02-Neural-Coding.md)
-- Next concepts: [09 Dopamine & RL in the Brain](09-Dopamine-and-RL-in-the-Brain.md) · [14 Biologically-Plausible Backprop Alternatives](14-Biologically-Plausible-Backprop-Alternatives.md)
-- Related domain: [05. Deep Learning](../../05.%20Deep_Learning/concepts/README.md)
+- Prereqs in this section: [01 Biological Neurons & Synapses](../01-Biological-Neurons-and-Synapses/01-Biological-Neurons-and-Synapses.md) · [02 Neural Coding](../02-Neural-Coding/02-Neural-Coding.md)
+- Next concepts: [09 Dopamine & RL in the Brain](../09-Dopamine-and-RL-in-the-Brain/09-Dopamine-and-RL-in-the-Brain.md) · [14 Biologically-Plausible Backprop Alternatives](../14-Biologically-Plausible-Backprop-Alternatives/14-Biologically-Plausible-Backprop-Alternatives.md)
+- Related domain: [05. Deep Learning](../../05.%20Deep_Learning/README.md)

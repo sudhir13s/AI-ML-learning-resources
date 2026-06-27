@@ -54,7 +54,7 @@ modes — **posterior collapse** and blurry samples from the Gaussian likelihood
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 5.02 Latent-Variable Models · ELBO · VAEs](../../../AI-ML-intuition/Module_5_Generation/5.02_Latent_Variable_Models_ELBO_VAEs.md) · [5.01 Entropy & KL Divergence](../../../AI-ML-intuition/Module_5_Generation/5.01_Information_Theory_Entropy_KL_Divergence.md)
-- Prereq: [Deep Learning — Autoencoders](../../05.%20Deep_Learning/concepts/19-Autoencoders.md) (the deterministic precursor)
-- Compare with: [04 GMMs & EM](../../04.%20Unsupervised_Learning/concepts/04-Gaussian-Mixture-Models-and-EM.md) (latent-variable model fit by EM rather than amortized inference)
-- Next concepts: [02 GANs & DCGAN](02-GANs-and-DCGAN.md) · [05 Diffusion Models (DDPM)](05-Diffusion-Models-DDPM.md)
+- Prereq: [Deep Learning — Autoencoders](../../05.%20Deep_Learning/19-Autoencoders/19-Autoencoders.md) (the deterministic precursor)
+- Compare with: [04 GMMs & EM](../../04.%20Unsupervised_Learning/04-Gaussian-Mixture-Models-and-EM/04-Gaussian-Mixture-Models-and-EM.md) (latent-variable model fit by EM rather than amortized inference)
+- Next concepts: [02 GANs & DCGAN](../02-GANs-and-DCGAN/02-GANs-and-DCGAN.md) · [05 Diffusion Models (DDPM)](../05-Diffusion-Models-DDPM/05-Diffusion-Models-DDPM.md)
 - Field overview: [9. Generative AI](../README.md)

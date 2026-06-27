@@ -50,5 +50,5 @@ canary/deploy. Tools: GitHub Actions, CML, and pipeline orchestrators.
 - [Machine Learning Engineering — **Ch. 8 "Model Deployment"** (CI/CD & retraining)](http://www.mlebook.com/wiki/doku.php) — **Andriy Burkov** — read-first chapters free.
 
 ## 🔗 In this platform
-- Builds on: [01 ML Lifecycle & MLOps Maturity](01-ML-Lifecycle-and-MLOps-Maturity.md) · [06 ML Pipelines & Orchestration](06-ML-Pipelines-and-Orchestration.md)
-- Next concepts: [12 Data & Concept Drift Detection](12-Data-and-Concept-Drift-Detection.md) · [14 A/B Testing · Shadow & Canary](14-AB-Testing-Shadow-and-Canary-Deployment.md)
+- Builds on: [01 ML Lifecycle & MLOps Maturity](../01-ML-Lifecycle-and-MLOps-Maturity/01-ML-Lifecycle-and-MLOps-Maturity.md) · [06 ML Pipelines & Orchestration](../06-ML-Pipelines-and-Orchestration/06-ML-Pipelines-and-Orchestration.md)
+- Next concepts: [12 Data & Concept Drift Detection](../12-Data-and-Concept-Drift-Detection/12-Data-and-Concept-Drift-Detection.md) · [14 A/B Testing · Shadow & Canary](../14-AB-Testing-Shadow-and-Canary-Deployment/14-AB-Testing-Shadow-and-Canary-Deployment.md)

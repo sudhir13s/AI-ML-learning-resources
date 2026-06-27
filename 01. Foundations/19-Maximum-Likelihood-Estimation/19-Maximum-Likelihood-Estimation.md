@@ -52,5 +52,5 @@ relates to MAP (add a prior).
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 3.04 Maximum Likelihood Estimation](../../../AI-ML-intuition/Module_3_Evaluation/3.04_Maximum_Likelihood_Estimation.md) · [3.03 Cross-Entropy / NLL](../../../AI-ML-intuition/Module_3_Evaluation/3.03_Categorical_Cross-Entropy_NLL.md)
 - Curriculum context: [Maths for AI-ML — Phase 4 (Statistics, row 4.1)](../Maths%20for%20AI-ML/README.md)
-- Prereqs: [16 Random Variables & Distributions](16-Random-Variables-and-Distributions.md) · [08 Derivatives & Gradients](08-Derivatives-and-Gradients.md) · Next: [20 Bayesian Inference](20-Bayesian-Inference.md) · Related: [23 Cross-Entropy & KL Divergence](23-Cross-Entropy-and-KL-Divergence.md)
+- Prereqs: [16 Random Variables & Distributions](../16-Random-Variables-and-Distributions/16-Random-Variables-and-Distributions.md) · [08 Derivatives & Gradients](../08-Derivatives-and-Gradients/08-Derivatives-and-Gradients.md) · Next: [20 Bayesian Inference](../20-Bayesian-Inference/20-Bayesian-Inference.md) · Related: [23 Cross-Entropy & KL Divergence](../23-Cross-Entropy-and-KL-Divergence/23-Cross-Entropy-and-KL-Divergence.md)
 </content>

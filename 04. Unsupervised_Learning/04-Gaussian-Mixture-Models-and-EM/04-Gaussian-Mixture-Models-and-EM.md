@@ -11,7 +11,7 @@ updated: 2026-06-22
 
 # Gaussian Mixture Models & EM: soft clustering you can actually reason about
 
-[K-means](01-K-Means-Clustering.md) draws a hard line: every point belongs to exactly one cluster, full stop. But real data is rarely that decisive. A point sitting halfway between two groups isn't *definitely* in one of them — it's *probably* in this one, *possibly* in that one. And k-means has another, quieter problem: it can only find **round, equal-sized blobs**, because the only thing it knows how to do is measure straight-line distance to a center. Hand it two long, overlapping, cigar-shaped clusters and it slices straight across both, getting the answer badly wrong.
+[K-means](../01-K-Means-Clustering/01-K-Means-Clustering.md) draws a hard line: every point belongs to exactly one cluster, full stop. But real data is rarely that decisive. A point sitting halfway between two groups isn't *definitely* in one of them — it's *probably* in this one, *possibly* in that one. And k-means has another, quieter problem: it can only find **round, equal-sized blobs**, because the only thing it knows how to do is measure straight-line distance to a center. Hand it two long, overlapping, cigar-shaped clusters and it slices straight across both, getting the answer badly wrong.
 
 A **Gaussian Mixture Model (GMM)** fixes both problems at once by doing something more honest: it says the data was *generated* by a handful of **Gaussian distributions** — each with its own location, its own elliptical shape and orientation, and its own share of the data — and it figures out, for every point, the **probability** that each Gaussian produced it. Those probabilities are **soft assignments**, and they're the whole point. A GMM is "k-means with shapes and shades of grey": clusters can be tilted ellipses, and a point can be 70% this cluster and 30% that one.
 
@@ -46,7 +46,7 @@ both come back as "cluster 2," with no hint that the second one was a coin-flip.
 
 The deeper problem is **shape**. K-means minimizes within-cluster squared Euclidean distance, which is mathematically equivalent to assuming every cluster is an **isotropic (spherical) Gaussian of equal size**. The moment your clusters are elongated, tilted, or differently sized, that assumption breaks and k-means carves the space with straight perpendicular bisectors that ignore the real geometry.
 
-![On three strongly elongated, tilted clusters, k-means (left) assigns by nearest center and slices straight across the cigars, scrambling the groups (ARI 0.57). A full-covariance GMM (right) fits a tilted ellipse to each cluster and recovers them almost perfectly (ARI 0.98). The ellipses ARE the model's learned covariances; capturing the tilt is exactly what k-means cannot do.](images/gmm_vs_kmeans.png)
+![On three strongly elongated, tilted clusters, k-means (left) assigns by nearest center and slices straight across the cigars, scrambling the groups (ARI 0.57). A full-covariance GMM (right) fits a tilted ellipse to each cluster and recovers them almost perfectly (ARI 0.98). The ellipses ARE the model's learned covariances; capturing the tilt is exactly what k-means cannot do.](../images/gmm_vs_kmeans.png)
 
 > **Tip:** the one-line interview framing — *"k-means assumes round, equal clusters and gives hard labels; a GMM models each cluster as its own full Gaussian (location + shape + orientation) and gives soft, probabilistic labels. When clusters overlap or are elliptical, the GMM wins; when they're well-separated spheres, the two agree and k-means is faster."*
 
@@ -102,7 +102,7 @@ Picture a dark stage lit by $K$ soft, fuzzy **spotlights**, each an ellipse of l
 
 That's a **soft assignment**: instead of a hard "you belong to cluster 2," every point carries a little probability vector over the components. K-means is the degenerate case where the spotlights are infinitely sharp pinpoints — each point is lit by exactly one, and you're back to hard labels. EM is the process of *aiming and shaping the spotlights*: nudge each one to best illuminate the points that currently consider it most responsible, recompute who's lit by what, and repeat until nothing moves.
 
-![EM fitting a 3-component GMM, left to right. Iteration 0: the ellipses are randomly initialized and point colors (a responsibility-weighted blend of the three component colors) are muddy and uncertain. Iteration 2: the ellipses have begun migrating toward real clusters and colors sharpen. Iteration 25 (converged): each ellipse hugs its cluster's true location, shape, and tilt, and points are confidently colored except in the genuine overlap regions, where they stay blended — exactly the soft assignment a GMM is built to express.](images/gmm_em_iterations.png)
+![EM fitting a 3-component GMM, left to right. Iteration 0: the ellipses are randomly initialized and point colors (a responsibility-weighted blend of the three component colors) are muddy and uncertain. Iteration 2: the ellipses have begun migrating toward real clusters and colors sharpen. Iteration 25 (converged): each ellipse hugs its cluster's true location, shape, and tilt, and points are confidently colored except in the genuine overlap regions, where they stay blended — exactly the soft assignment a GMM is built to express.](../images/gmm_em_iterations.png)
 
 ---
 
@@ -224,7 +224,7 @@ $$
 
 Stringing them together, $\ell(\theta^{t+1})\ge\ell(\theta^{t})$: **the observed-data log-likelihood never decreases.** It's bounded above (a probability can't exceed 1, so its log can't exceed 0), and a monotone bounded sequence converges — so EM is guaranteed to converge to a **stationary point** of the likelihood.
 
-![The observed-data log-likelihood, measured per EM iteration on a 4-component fit, climbs monotonically (verified True) from a poor random initialization and plateaus at convergence. Each iteration provably cannot decrease it — the convergence guarantee, seen in the data. The steep early gains then flattening is the typical EM signature.](images/gmm_loglik.png)
+![The observed-data log-likelihood, measured per EM iteration on a 4-component fit, climbs monotonically (verified True) from a poor random initialization and plateaus at convergence. Each iteration provably cannot decrease it — the convergence guarantee, seen in the data. The steep early gains then flattening is the typical EM signature.](../images/gmm_loglik.png)
 
 > **Gotcha:** "converges" means to a **local** optimum, **not** the global one — the likelihood surface is riddled with them, and a bad init can trap EM in a poor solution. The standard defense (and scikit-learn's default) is `n_init` random restarts, keeping the run with the highest final likelihood. EM is also **not** guaranteed to be fast; near a plateau it can crawl. (It guarantees the likelihood goes *up*, never that it goes up *quickly*.)
 
@@ -249,7 +249,7 @@ The covariance $\Sigma_k$ is where a GMM spends most of its parameters and most 
 
 > **Tip:** the picker — **`full`** when clusters are tilted/correlated and you have enough data; **`diag`** in high dimensions where `full`'s $d^2$ growth would overfit (it's also Gaussian-Naive-Bayes' axis-aligned assumption); **`tied`** when clusters plausibly share a shape (this is exactly **Linear Discriminant Analysis**' assumption); **`spherical`** as the cheapest, k-means-like option. More structure = fewer parameters = less overfitting but less flexibility.
 
-> **Note:** the diagonal-covariance GMM is precisely the [Gaussian Naive Bayes](../../03.%20Supervised_Learning/concepts/05-Naive-Bayes.md) density assumption (features independent *within* a component → axis-aligned ellipse), and the tied-full-covariance case is the generative model behind **LDA**. GMMs sit in the same Gaussian family — they just learn the component memberships *unsupervised* via EM instead of being handed labels.
+> **Note:** the diagonal-covariance GMM is precisely the [Gaussian Naive Bayes](../../03.%20Supervised_Learning/05-Naive-Bayes/05-Naive-Bayes.md) density assumption (features independent *within* a component → axis-aligned ellipse), and the tied-full-covariance case is the generative model behind **LDA**. GMMs sit in the same Gaussian family — they just learn the component memberships *unsupervised* via EM instead of being handed labels.
 
 The choice is a textbook **bias–variance tradeoff**, and the numbers make it vivid. In $d=50$ dimensions with $K=5$ components, a `full`-covariance model needs $5\times\frac{50\cdot51}{2}=6375$ parameters just for the covariances — fit that with only a few thousand points and each $\Sigma_k$ is estimated from far too little data, so it overfits wildly (and risks singularity). The same model with `diag` covariance needs only $5\times50=250$ covariance parameters — a **25× reduction** — trading the ability to model correlations for a fit you can actually estimate. In high dimensions `diag` (or first reducing dimensionality) is usually not a compromise but a *necessity*: a `full` model you can't estimate is worse than a `diag` model you can. Always check parameters-vs-data before reaching for `full`.
 
@@ -308,7 +308,7 @@ $$\mathrm{BIC} = -2\,\ell(\hat\theta) + p\log N, \qquad \mathrm{AIC} = -2\,\ell(
 
 where $\ell(\hat\theta)$ is the fitted log-likelihood, $p$ the number of free parameters (the count from the covariance table), and $N$ the sample size. **Lower is better.** Fit the GMM for a range of $K$ (and covariance types), compute the criterion for each, and pick the minimizer.
 
-![BIC and AIC swept over the number of components on data with three true clusters. Both fall sharply as k goes 1→3 (the model is still underfitting), and BIC reaches its minimum exactly at k=3 (circled, the true component count) then rises as extra components are penalized. AIC keeps drifting down slightly because its 2p penalty is weaker than BIC's p·log N — BIC's heavier penalty makes it more conservative and usually the better choice for picking k.](images/gmm_bic.png)
+![BIC and AIC swept over the number of components on data with three true clusters. Both fall sharply as k goes 1→3 (the model is still underfitting), and BIC reaches its minimum exactly at k=3 (circled, the true component count) then rises as extra components are penalized. AIC keeps drifting down slightly because its 2p penalty is weaker than BIC's p·log N — BIC's heavier penalty makes it more conservative and usually the better choice for picking k.](../images/gmm_bic.png)
 
 > **Note:** **BIC's $\log N$ penalty is harsher than AIC's $2$**, so BIC prefers *simpler* models and is the more common pick for choosing $K$ (it's consistent — it recovers the true model order as $N\to\infty$ if the true model is in the family). AIC tends to choose more components (it targets predictive accuracy, not the "true" $K$). When they disagree, BIC for parsimony, AIC if you mostly care about density quality.
 
@@ -520,10 +520,10 @@ Putting it together, here's the reasoning I'd actually run to fit a GMM to a rea
 
 - **Soft clustering / segmentation** — customer or user segmentation where a point can belong partly to several groups; image segmentation by pixel color/texture (a classic GMM application).
 - **Density estimation** — modeling a smooth $p(x)$ for downstream probability queries; GMMs are a standard flexible density when a single Gaussian is too rigid.
-- **Anomaly / novelty detection** — fit a GMM to "normal" data and flag points with low $p(x)$ (a common alternative to one-class SVM / isolation forest); see [Anomaly & Outlier Detection](09-Anomaly-Outlier-Detection.md).
+- **Anomaly / novelty detection** — fit a GMM to "normal" data and flag points with low $p(x)$ (a common alternative to one-class SVM / isolation forest); see [Anomaly & Outlier Detection](../09-Anomaly-Outlier-Detection/09-Anomaly-Outlier-Detection.md).
 - **Speech & audio** — GMMs (often GMM-HMMs) were the backbone of speaker recognition and pre-deep-learning ASR acoustic models for decades; speaker-verification i-vectors are GMM-based.
 - **Generative sampling** — draw a component by $\pi$, then sample its Gaussian, to synthesize new data from the learned density.
-- **Initialization & embeddings** — clustering learned embeddings (after [t-SNE](07-t-SNE.md)/[UMAP](08-UMAP.md) or an autoencoder) where soft, elliptical clusters beat hard spheres.
+- **Initialization & embeddings** — clustering learned embeddings (after [t-SNE](../07-t-SNE/07-t-SNE.md)/[UMAP](../08-UMAP/08-UMAP.md) or an autoencoder) where soft, elliptical clusters beat hard spheres.
 
 > **Tip:** the practitioner heuristic — *reach for a GMM over k-means when you need (1) soft/probabilistic assignments, (2) elliptical or differently-sized clusters, (3) a likelihood to compare model orders via BIC, or (4) a generative density to sample/score. Stay with k-means when clusters are well-separated spheres and you just want fast hard labels.*
 
@@ -533,7 +533,7 @@ Putting it together, here's the reasoning I'd actually run to fit a GMM to a rea
 
 It's easy to forget a GMM is a full **generative model** — once fit, you can sample brand-new data from it by literally re-running the two-stage process it assumes: **(1)** draw a component $z\sim\text{Categorical}(\pi)$ (roll the weighted die), then **(2)** draw $x\sim\mathcal N(\mu_z,\Sigma_z)$ from that component. Repeat for as many samples as you want. The samples will reproduce the **multimodal, elliptical** structure the GMM learned — something a single-Gaussian fit (one bump) could never do. In scikit-learn it's one call, `gm.sample(n)`.
 
-This matters in three ways. First, it's a **sanity check**: if samples from your fitted GMM look nothing like the real data, the model is wrong (too few components, wrong covariance type, or unconverged). Second, it's genuine **data augmentation / synthesis** for downstream tasks when real data is scarce. Third, it's the conceptual bridge to modern deep generative models — a [variational autoencoder](../../05.%20Deep_Learning/concepts/19-Autoencoders.md) is, loosely, a GMM-like latent-variable generator where the simple Gaussian components are replaced by a neural decoder and the EM E-step by an amortized encoder. The "draw a latent, then decode it" recipe is the same; only the pieces got more powerful.
+This matters in three ways. First, it's a **sanity check**: if samples from your fitted GMM look nothing like the real data, the model is wrong (too few components, wrong covariance type, or unconverged). Second, it's genuine **data augmentation / synthesis** for downstream tasks when real data is scarce. Third, it's the conceptual bridge to modern deep generative models — a [variational autoencoder](../../05.%20Deep_Learning/19-Autoencoders/19-Autoencoders.md) is, loosely, a GMM-like latent-variable generator where the simple Gaussian components are replaced by a neural decoder and the EM E-step by an amortized encoder. The "draw a latent, then decode it" recipe is the same; only the pieces got more powerful.
 
 > **Note:** this generative view also explains *why* GMMs give you a real probability $p(x)$ while k-means gives you nothing of the sort. K-means has no density — only centroids and a distance — so it can't sample, can't score how likely a point is, and can't be compared across model orders with a likelihood-based criterion. The GMM's density is exactly what BIC, anomaly scores, and sampling all draw on.
 
@@ -543,10 +543,10 @@ This matters in three ways. First, it's a **sanity check**: if samples from your
 
 A GMM is the right tool for *Gaussian-ish, possibly-elliptical, possibly-overlapping* clusters where you want soft assignments and a density. It's the **wrong** tool in several cases worth naming so you don't force it:
 
-- **Non-convex / weird shapes** (crescents, rings, intertwined spirals): a GMM tries to wrap ellipses around them and fails. Use **density-based** [DBSCAN](03-DBSCAN.md) (follows arbitrary shapes, no $K$ needed) or [spectral clustering](05-Spectral-Clustering.md) (clusters by graph connectivity).
+- **Non-convex / weird shapes** (crescents, rings, intertwined spirals): a GMM tries to wrap ellipses around them and fails. Use **density-based** [DBSCAN](../03-DBSCAN/03-DBSCAN.md) (follows arbitrary shapes, no $K$ needed) or [spectral clustering](../05-Spectral-Clustering/05-Spectral-Clustering.md) (clusters by graph connectivity).
 - **Unknown, possibly-large number of clusters with noise**: DBSCAN finds clusters *and* labels noise points; a GMM forces every point into some component unless you model an explicit outlier component.
-- **Very high dimensions**: `full` covariance's $d^2$ parameters explode and overfit; either restrict to `diag`/`tied`, reduce dimensionality first ([dimensionality reduction](06-Dimensionality-Reduction-Overview.md)/[UMAP](08-UMAP.md)), or use a different model.
-- **Purely hard labels, speed-critical**: if you don't need soft assignments or a density and clusters are roundish, plain [k-means](01-K-Means-Clustering.md) is simpler and faster.
+- **Very high dimensions**: `full` covariance's $d^2$ parameters explode and overfit; either restrict to `diag`/`tied`, reduce dimensionality first ([dimensionality reduction](../06-Dimensionality-Reduction-Overview/06-Dimensionality-Reduction-Overview.md)/[UMAP](../08-UMAP/08-UMAP.md)), or use a different model.
+- **Purely hard labels, speed-critical**: if you don't need soft assignments or a density and clusters are roundish, plain [k-means](../01-K-Means-Clustering/01-K-Means-Clustering.md) is simpler and faster.
 - **Strongly non-Gaussian components** (heavy tails, skew): a Gaussian mixture mis-models tails; consider a mixture of $t$-distributions (robust to outliers) or a different component family — EM still applies, just swap the component density.
 
 > **Tip:** the clean decision tree — *round hard clusters, fast → k-means; elliptical/overlapping/soft + a density → GMM; arbitrary shapes or noise → DBSCAN; connectivity-defined → spectral; hierarchy/dendrogram → agglomerative.* Knowing **when not to use a GMM** is as much a signal of mastery as knowing how it works.
@@ -559,7 +559,7 @@ A GMM is the right tool for *Gaussian-ish, possibly-elliptical, possibly-overlap
 - **Singularities** → a component collapsing onto one point sends the likelihood to ∞. **Always keep `reg_covar` on** (covariance regularization).
 - **Wrong covariance type** → `full` overfits in high dimensions (its $d^2$ params explode); drop to `diag`/`tied`/`spherical`. Too restrictive a type underfits elliptical clusters.
 - **Choosing K by likelihood alone** → it always rises with K. Use **BIC/AIC** (or a Bayesian GMM), not raw likelihood.
-- **Non-Gaussian or non-convex clusters** → GMMs assume Gaussian components; for crescents/rings/arbitrary shapes use density-based ([DBSCAN](03-DBSCAN.md)) or [spectral clustering](05-Spectral-Clustering.md) instead.
+- **Non-Gaussian or non-convex clusters** → GMMs assume Gaussian components; for crescents/rings/arbitrary shapes use density-based ([DBSCAN](../03-DBSCAN/03-DBSCAN.md)) or [spectral clustering](../05-Spectral-Clustering/05-Spectral-Clustering.md) instead.
 - **Raw-probability underflow** → in high dimensions the densities underflow; compute in **log-space** with log-sum-exp (libraries do this; from-scratch code must too).
 - **Unscaled features** → like k-means, GMMs are sensitive to feature scale (it warps the covariances); standardize first unless the scales are meaningful.
 

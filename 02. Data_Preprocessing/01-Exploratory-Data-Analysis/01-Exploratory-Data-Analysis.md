@@ -51,5 +51,5 @@ real applied experience.
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 0.02 Distributions & the Gaussian](../../../AI-ML-intuition/Module_0_Foundations/0.02_Distributions_and_the_Gaussian.md) · [0.03 Expectation, Variance, Covariance](../../../AI-ML-intuition/Module_0_Foundations/0.03_Expectation_Variance_Covariance.md)
-- Next concepts: [02 Feature Scaling & Normalization](02-Feature-Scaling-and-Normalization.md) · [05 Outlier Detection & Treatment](05-Outlier-Detection-and-Treatment.md)
-- Related domain: [04. Unsupervised Learning](../../04.%20Unsupervised_Learning/concepts/README.md)
+- Next concepts: [02 Feature Scaling & Normalization](../02-Feature-Scaling-and-Normalization/02-Feature-Scaling-and-Normalization.md) · [05 Outlier Detection & Treatment](../05-Outlier-Detection-and-Treatment/05-Outlier-Detection-and-Treatment.md)
+- Related domain: [04. Unsupervised Learning](../../04.%20Unsupervised_Learning/README.md)

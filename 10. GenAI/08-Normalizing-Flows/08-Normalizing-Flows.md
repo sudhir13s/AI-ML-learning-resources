@@ -58,6 +58,6 @@ probability-flow ODE.
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 5.05 Autoregressive Generation & Sampling](../../../AI-ML-intuition/Module_5_Generation/5.05_Autoregressive_Generation_Sampling.md) · [5.01 Entropy & KL Divergence](../../../AI-ML-intuition/Module_5_Generation/5.01_Information_Theory_Entropy_KL_Divergence.md)
-- Compare with: [01 Variational Autoencoders](01-Variational-Autoencoders-VAE-ELBO.md) (lower-bound likelihood) · [06 Score-Based & SDE Diffusion](06-Score-Based-and-SDE-Diffusion.md) (the probability-flow ODE is a continuous flow)
-- Related: [10 Autoregressive Image Generation (PixelCNN)](10-Autoregressive-Image-Generation-PixelCNN.md) (another exact-likelihood model)
+- Compare with: [01 Variational Autoencoders](../01-Variational-Autoencoders-VAE-ELBO/01-Variational-Autoencoders-VAE-ELBO.md) (lower-bound likelihood) · [06 Score-Based & SDE Diffusion](../06-Score-Based-and-SDE-Diffusion/06-Score-Based-and-SDE-Diffusion.md) (the probability-flow ODE is a continuous flow)
+- Related: [10 Autoregressive Image Generation (PixelCNN)](../10-Autoregressive-Image-Generation-PixelCNN/10-Autoregressive-Image-Generation-PixelCNN.md) (another exact-likelihood model)
 - Field overview: [9. Generative AI](../README.md)

@@ -25,7 +25,7 @@ diagonalize operators. This is the connective tissue under cards 3, 11, and 12.
 2. **Get to Hilbert spaces** — watch [Lecture 14: Basic Hilbert Space Theory](https://www.youtube.com/watch?v=EBdgFFf54U0). *Inner products, orthogonality, projections — the setting for least-squares, Fourier, and RKHS.*
 3. **Read it carefully** — work the MIT [18.102 course materials](https://ocw.mit.edu/courses/18-102-introduction-to-functional-analysis-spring-2021/) alongside the lectures. *Notes + problem sets are where the definitions become reflexes.*
 4. **See the key theorems** — focus on Riesz representation, Hahn–Banach, and the open-mapping theorem in [Salamon's free text](https://people.math.ethz.ch/~salamon/PREPRINTS/funcana.pdf). *These four theorems are the "big results" everything else cites.*
-5. **Aim at the payoff** — read the spectral-theorem chapter, then jump to [RKHS (card 3)](03-Hilbert-Spaces-and-RKHS.md). *Spectral theory + Riesz is exactly what kernels need.*
+5. **Aim at the payoff** — read the spectral-theorem chapter, then jump to [RKHS (card 3)](../03-Hilbert-Spaces-and-RKHS/03-Hilbert-Spaces-and-RKHS.md). *Spectral theory + Riesz is exactly what kernels need.*
 
 ## 🎓 Courses (free)
 - [MIT 18.102 — Introduction to Functional Analysis (Spring 2021)](https://ocw.mit.edu/courses/18-102-introduction-to-functional-analysis-spring-2021/) — **Casey Rodriguez (MIT OCW)** — full video course + notes + problem sets, Banach → Hilbert → spectral theory.
@@ -51,7 +51,7 @@ diagonalize operators. This is the connective tissue under cards 3, 11, and 12.
 - [Mathematics for Machine Learning — **Ch. 3 (Analytic Geometry: inner products, norms, projections)**](https://mml-book.github.io/book/mml-book.pdf) — **Deisenroth, Faisal & Ong** — the finite-dimensional on-ramp before infinite dimensions.
 
 ## 🔗 In this platform
-- Foundations (the basics this builds on): [Norms, Inner Products & Orthogonality](../../01.%20Foundations/concepts/03-Norms-Inner-Products-and-Orthogonality.md) · [Eigenvalues & Eigenvectors](../../01.%20Foundations/concepts/04-Eigenvalues-and-Eigenvectors.md) · [SVD](../../01.%20Foundations/concepts/06-Singular-Value-Decomposition.md)
+- Foundations (the basics this builds on): [Norms, Inner Products & Orthogonality](../../01.%20Foundations/03-Norms-Inner-Products-and-Orthogonality/03-Norms-Inner-Products-and-Orthogonality.md) · [Eigenvalues & Eigenvectors](../../01.%20Foundations/04-Eigenvalues-and-Eigenvectors/04-Eigenvalues-and-Eigenvectors.md) · [SVD](../../01.%20Foundations/06-Singular-Value-Decomposition/06-Singular-Value-Decomposition.md)
 - Concept depth (the *why*): [AI-ML-intuition 1.05 Spectral Methods (PCA/SVD)](../../../AI-ML-intuition/Module_1_Representation/1.05_Spectral_Methods_PCA_SVD.md)
-- Next concepts: [03 Hilbert Spaces & RKHS](03-Hilbert-Spaces-and-RKHS.md) · [12 Fourier Analysis & Signal Processing](12-Fourier-Analysis-and-Signal-Processing.md)
+- Next concepts: [03 Hilbert Spaces & RKHS](../03-Hilbert-Spaces-and-RKHS/03-Hilbert-Spaces-and-RKHS.md) · [12 Fourier Analysis & Signal Processing](../12-Fourier-Analysis-and-Signal-Processing/12-Fourier-Analysis-and-Signal-Processing.md)
 </content>

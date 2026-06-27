@@ -56,7 +56,7 @@ updated: 2026-06-27
 - Concept page (full explanation): [Sequence Labeling — POS & NER](09-Sequence-Labeling-POS-and-NER.md)
 - Foundations (the *why* behind probabilities): [Probability & Bayes Theorem](../../../AI-ML-intuition/Module_0_Foundations/0.01_Probability_and_Bayes_Theorem.md)
 - The encoder used today: [Contextual Embeddings (ELMo, BERT)](../06-Contextual-Embeddings-ELMo-BERT/06-Contextual-Embeddings-ELMo-BERT.md) — BERT token-classification heads.
-- The recurrent backbone of biLSTM-CRF: [RNN, LSTM & GRU](../../05.%20Deep_Learning/concepts/14-RNN-LSTM-GRU.md)
+- The recurrent backbone of biLSTM-CRF: [RNN, LSTM & GRU](../../05.%20Deep_Learning/14-RNN-LSTM-GRU/14-RNN-LSTM-GRU.md)
 - How you score it: [NLP Evaluation Metrics](../18-NLP-Evaluation-Metrics/18-NLP-Evaluation-Metrics.md) — entity-level precision/recall/F1.
 - Related task (span extraction): [Question Answering](../11-Question-Answering/11-Question-Answering.md) — extractive QA as span labeling.
 - Prior step: [Text Preprocessing & Normalization](../01-Text-Preprocessing-and-Normalization/01-Text-Preprocessing-and-Normalization.md) — tokenization that defines the units to label.

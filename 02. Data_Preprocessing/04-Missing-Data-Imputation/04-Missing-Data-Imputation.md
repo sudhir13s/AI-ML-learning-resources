@@ -51,5 +51,5 @@ rule: **fit the imputer on training data only** (compute fill values from train,
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 0.01 Probability & Bayes](../../../AI-ML-intuition/Module_0_Foundations/0.01_Probability_and_Bayes_Theorem.md) · [0.03 Expectation, Variance, Covariance](../../../AI-ML-intuition/Module_0_Foundations/0.03_Expectation_Variance_Covariance.md)
-- Next concepts: [05 Outlier Detection & Treatment](05-Outlier-Detection-and-Treatment.md) · [13 Data Pipelines](13-Data-Pipelines.md)
-- Related domain: [03. Supervised Learning](../../03.%20Supervised_Learning/concepts/README.md)
+- Next concepts: [05 Outlier Detection & Treatment](../05-Outlier-Detection-and-Treatment/05-Outlier-Detection-and-Treatment.md) · [13 Data Pipelines](../13-Data-Pipelines/13-Data-Pipelines.md)
+- Related domain: [03. Supervised Learning](../../03.%20Supervised_Learning/README.md)

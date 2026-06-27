@@ -162,10 +162,10 @@ A single decision tree is the textbook **low-bias, high-variance** model. Grown 
 
 That high variance is exactly what ensembles attack, in two complementary ways:
 
-- **Bagging / Random Forests cut variance.** [Bagging](08-Bagging.md) trains many deep trees on **bootstrap resamples** and **averages** them; averaging $B$ roughly-independent estimators divides variance by up to $B$. [Random forests](09-Random-Forests.md) go further by also sampling a random subset of features at each split, **de-correlating** the trees so the averaging is more effective. Each tree stays low-bias; the ensemble's variance collapses.
-- **Boosting cuts bias.** [Gradient boosting](10-Gradient-Boosting-XGBoost.md) does the opposite: it adds many **shallow** (high-bias, low-variance) trees **sequentially**, each correcting the residual errors of the running sum. Stacking weak learners drives bias down while keeping variance controlled.
+- **Bagging / Random Forests cut variance.** [Bagging](../08-Bagging/08-Bagging.md) trains many deep trees on **bootstrap resamples** and **averages** them; averaging $B$ roughly-independent estimators divides variance by up to $B$. [Random forests](../09-Random-Forests/09-Random-Forests.md) go further by also sampling a random subset of features at each split, **de-correlating** the trees so the averaging is more effective. Each tree stays low-bias; the ensemble's variance collapses.
+- **Boosting cuts bias.** [Gradient boosting](../10-Gradient-Boosting-XGBoost/10-Gradient-Boosting-XGBoost.md) does the opposite: it adds many **shallow** (high-bias, low-variance) trees **sequentially**, each correcting the residual errors of the running sum. Stacking weak learners drives bias down while keeping variance controlled.
 
-Decision trees are the base learner of choice *precisely because* they're flexible but high-variance — they give the ensemble something to tame. (See [Bias–Variance Tradeoff](12-Bias-Variance-Tradeoff.md) for the decomposition.)
+Decision trees are the base learner of choice *precisely because* they're flexible but high-variance — they give the ensemble something to tame. (See [Bias–Variance Tradeoff](../12-Bias-Variance-Tradeoff/12-Bias-Variance-Tradeoff.md) for the decomposition.)
 
 ```mermaid
 graph TD

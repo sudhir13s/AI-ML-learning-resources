@@ -56,7 +56,7 @@ coverage, and exact-ish likelihood.
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 5.03 Diffusion Models](../../../AI-ML-intuition/Module_5_Generation/5.03_Diffusion_Models.md) · [5.02 ELBO & VAEs](../../../AI-ML-intuition/Module_5_Generation/5.02_Latent_Variable_Models_ELBO_VAEs.md)
-- Prereq: [01 Variational Autoencoders](01-Variational-Autoencoders-VAE-ELBO.md) (diffusion is a deep, fixed-encoder VAE)
-- Next concepts: [06 Score-Based & SDE Diffusion](06-Score-Based-and-SDE-Diffusion.md) · [07 Latent Diffusion & Stable Diffusion](07-Latent-Diffusion-Stable-Diffusion.md) · [13 Sampling & Guidance Techniques](13-Sampling-and-Guidance-Techniques.md)
-- Compare with: [02 GANs & DCGAN](02-GANs-and-DCGAN.md) (adversarial, faster sampling, less stable)
+- Prereq: [01 Variational Autoencoders](../01-Variational-Autoencoders-VAE-ELBO/01-Variational-Autoencoders-VAE-ELBO.md) (diffusion is a deep, fixed-encoder VAE)
+- Next concepts: [06 Score-Based & SDE Diffusion](../06-Score-Based-and-SDE-Diffusion/06-Score-Based-and-SDE-Diffusion.md) · [07 Latent Diffusion & Stable Diffusion](../07-Latent-Diffusion-Stable-Diffusion/07-Latent-Diffusion-Stable-Diffusion.md) · [13 Sampling & Guidance Techniques](../13-Sampling-and-Guidance-Techniques/13-Sampling-and-Guidance-Techniques.md)
+- Compare with: [02 GANs & DCGAN](../02-GANs-and-DCGAN/02-GANs-and-DCGAN.md) (adversarial, faster sampling, less stable)
 - Field overview: [9. Generative AI](../README.md)

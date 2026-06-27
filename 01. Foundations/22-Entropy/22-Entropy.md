@@ -52,5 +52,5 @@ functions you train with.
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 5.01 Information Theory: Entropy & KL](../../../AI-ML-intuition/Module_5_Generation/5.01_Information_Theory_Entropy_KL_Divergence.md)
 - Curriculum context: [Maths for AI-ML — Phase 3 (Information Theory, row 3.5)](../Maths%20for%20AI-ML/README.md)
-- Prereq: [16 Random Variables & Distributions](16-Random-Variables-and-Distributions.md) · Next: [23 Cross-Entropy & KL Divergence](23-Cross-Entropy-and-KL-Divergence.md) · [24 Mutual Information](24-Mutual-Information.md)
+- Prereq: [16 Random Variables & Distributions](../16-Random-Variables-and-Distributions/16-Random-Variables-and-Distributions.md) · Next: [23 Cross-Entropy & KL Divergence](../23-Cross-Entropy-and-KL-Divergence/23-Cross-Entropy-and-KL-Divergence.md) · [24 Mutual Information](../24-Mutual-Information/24-Mutual-Information.md)
 </content>

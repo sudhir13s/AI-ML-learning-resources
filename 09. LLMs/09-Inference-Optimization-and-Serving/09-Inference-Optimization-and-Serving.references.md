@@ -58,4 +58,4 @@ updated: 2026-06-26
 - The decode loop being served: [Decoder-only Architecture](../04-Decoder-only-Architecture/04-Decoder-only-Architecture.md) · [Decoding & Sampling](../18-Decoding-and-Sampling/18-Decoding-and-Sampling.md)
 - The kernels under the engine: [Efficient Attention (FlashAttention)](../06-Efficient-Attention-FlashAttention/06-Efficient-Attention-FlashAttention.md)
 - Cutting the bytes streamed: [Quantization](../10-Quantization/10-Quantization.md)
-- Foundations (the *why* behind K, Q, V): [Attention Mechanism](../../05.%20Deep_Learning/concepts/15-Attention-Mechanism.md) · [Transformer Architecture](../../05.%20Deep_Learning/concepts/16-Transformer-Architecture.md)
+- Foundations (the *why* behind K, Q, V): [Attention Mechanism](../../05.%20Deep_Learning/15-Attention-Mechanism/15-Attention-Mechanism.md) · [Transformer Architecture](../../05.%20Deep_Learning/16-Transformer-Architecture/16-Transformer-Architecture.md)

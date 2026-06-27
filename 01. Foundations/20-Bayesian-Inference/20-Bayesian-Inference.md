@@ -52,5 +52,5 @@ posterior) matters versus a point estimate.
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 0.01 Probability & Bayes' Theorem](../../../AI-ML-intuition/Module_0_Foundations/0.01_Probability_and_Bayes_Theorem.md) · [5.02 Latent-Variable Models (ELBO/VAEs)](../../../AI-ML-intuition/Module_5_Generation/5.02_Latent_Variable_Models_ELBO_VAEs.md)
 - Curriculum context: [Maths for AI-ML — Phase 3 (Probability, row 3.6)](../Maths%20for%20AI-ML/README.md)
-- Prereqs: [15 Probability & Bayes' Theorem](15-Probability-and-Bayes-Theorem.md) · [19 Maximum Likelihood Estimation](19-Maximum-Likelihood-Estimation.md)
+- Prereqs: [15 Probability & Bayes' Theorem](../15-Probability-and-Bayes-Theorem/15-Probability-and-Bayes-Theorem.md) · [19 Maximum Likelihood Estimation](../19-Maximum-Likelihood-Estimation/19-Maximum-Likelihood-Estimation.md)
 </content>

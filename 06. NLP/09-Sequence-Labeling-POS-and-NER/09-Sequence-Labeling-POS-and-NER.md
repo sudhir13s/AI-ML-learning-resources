@@ -312,7 +312,7 @@ The most visible payoff is **structural**: a globally-scored sequence can give a
 
 CRFs needed **hand-engineered features** (capitalization, suffixes, gazetteers). The neural era replaces that feature engineering with **learned representations**, while keeping the CRF decoding machinery.
 
-**biLSTM tagger.** Run a [bidirectional LSTM](../../05.%20Deep_Learning/concepts/14-RNN-LSTM-GRU.md) over the token embeddings: the forward LSTM reads left-to-right, the backward LSTM right-to-left, and their hidden states are concatenated, so each token's representation $h_i$ encodes **both left and right context**. A per-token linear layer + softmax then predicts the tag: $p(y_i \mid x) = \text{softmax}(W h_i + b)$. This learns the *emission* scores end-to-end, and bidirectionality is exactly what tagging wants (the tag of *Smith* depends on *Jane* before and the verb after).
+**biLSTM tagger.** Run a [bidirectional LSTM](../../05.%20Deep_Learning/14-RNN-LSTM-GRU/14-RNN-LSTM-GRU.md) over the token embeddings: the forward LSTM reads left-to-right, the backward LSTM right-to-left, and their hidden states are concatenated, so each token's representation $h_i$ encodes **both left and right context**. A per-token linear layer + softmax then predicts the tag: $p(y_i \mid x) = \text{softmax}(W h_i + b)$. This learns the *emission* scores end-to-end, and bidirectionality is exactly what tagging wants (the tag of *Smith* depends on *Jane* before and the verb after).
 
 But notice the failure: **independent per-token softmax has no model of label transitions.** Each $y_i$ is predicted in isolation, so — just like the naive classifier we started with — it can emit `O → I-PER`. The biLSTM gives great *emissions* and *zero* sequence constraints.
 

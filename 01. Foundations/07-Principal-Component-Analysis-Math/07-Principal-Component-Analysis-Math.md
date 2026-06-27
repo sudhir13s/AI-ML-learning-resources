@@ -24,7 +24,7 @@ of the covariance) and minimize reconstruction error — and explain the SVD rou
 1. **Intuition first** — watch [StatQuest: PCA, Step-by-Step](https://www.youtube.com/watch?v=FgakZw6K1QQ) (or the [5-minute version](https://www.youtube.com/watch?v=HMOI_lkzW08)). *Builds the "rotate to variance axes" picture without heavy math.*
 2. **The two derivations** — read [MML Ch. 10 (Dimensionality Reduction with PCA)](https://mml-book.github.io/book/mml-book.pdf). *Max-variance and min-reconstruction-error views, both worked.*
 3. **The SVD route** — watch [Steve Brunton: PCA](https://www.youtube.com/watch?v=fkf4IBRSeEc). *Why PCA is just SVD of the centered data matrix.*
-4. **Pin the prerequisites** — review [04 Eigenvalues](04-Eigenvalues-and-Eigenvectors.md) + [06 SVD](06-Singular-Value-Decomposition.md). *PCA is their direct application; make sure the covariance-eigenvector link is solid.*
+4. **Pin the prerequisites** — review [04 Eigenvalues](../04-Eigenvalues-and-Eigenvectors/04-Eigenvalues-and-Eigenvectors.md) + [06 SVD](../06-Singular-Value-Decomposition/06-Singular-Value-Decomposition.md). *PCA is their direct application; make sure the covariance-eigenvector link is solid.*
 5. **Connect to ML** — read [AI-ML-intuition 1.05 Spectral Methods (PCA/SVD)](../../../AI-ML-intuition/Module_1_Representation/1.05_Spectral_Methods_PCA_SVD.md). *The ML payoff and how PCA sits next to t-SNE/UMAP.*
 
 ## 🎓 Courses (free)
@@ -52,6 +52,6 @@ of the covariance) and minimize reconstruction error — and explain the SVD rou
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 1.05 Spectral Methods (PCA/SVD)](../../../AI-ML-intuition/Module_1_Representation/1.05_Spectral_Methods_PCA_SVD.md) · [1.11–1.12 t-SNE/UMAP](../../../AI-ML-intuition/Module_1_Representation/1.11-1.12_Dimensionality_Reduction_for_Representation_t-SNE_UMAP.md)
 - Curriculum context: [Maths for AI-ML — Phase 1 (Linear Algebra, row 1.6)](../Maths%20for%20AI-ML/README.md)
-- Prereqs: [04 Eigenvalues](04-Eigenvalues-and-Eigenvectors.md) · [06 SVD](06-Singular-Value-Decomposition.md)
-- Applied: nonlinear dimensionality reduction (t-SNE/UMAP) → [Unsupervised Learning](../../04.%20Unsupervised_Learning/concepts/README.md)
+- Prereqs: [04 Eigenvalues](../04-Eigenvalues-and-Eigenvectors/04-Eigenvalues-and-Eigenvectors.md) · [06 SVD](../06-Singular-Value-Decomposition/06-Singular-Value-Decomposition.md)
+- Applied: nonlinear dimensionality reduction (t-SNE/UMAP) → [Unsupervised Learning](../../04.%20Unsupervised_Learning/README.md)
 </content>

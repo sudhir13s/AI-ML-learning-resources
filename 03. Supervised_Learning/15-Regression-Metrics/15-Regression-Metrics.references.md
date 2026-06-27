@@ -51,6 +51,6 @@ updated: 2026-06-22
 **In this platform**:
 - Concept page (full explanation): [Regression Metrics](15-Regression-Metrics.md)
 - Concept depth (the *why*): [AI-ML-intuition 3.01 Mean Squared Error (MSE / L2)](../../../AI-ML-intuition/Module_3_Evaluation/3.01_Mean_Squared_Error_MSE_L2_Loss.md) · [3.02 Mean Absolute Error (MAE / L1)](../../../AI-ML-intuition/Module_3_Evaluation/3.02_Mean_Absolute_Error_MAE_L1_Loss.md)
-- Related: [Linear Regression](01-Linear-Regression.md) (the model these score) · [Classification Metrics](14-Classification-Metrics.md) (the discrete-target counterpart) · [Cross-Validation](13-Cross-Validation.md) (how you estimate these reliably) · [Bias–Variance Tradeoff](12-Bias-Variance-Tradeoff.md)
-- Math prerequisites: [01. Foundations](../../01.%20Foundations/concepts/README.md) — variance, residuals, L1 vs L2 norms
-- Related domain: [5. Deep Learning](../../05.%20Deep_Learning/concepts/README.md) — MSE/MAE are the standard regression losses for neural nets too
+- Related: [Linear Regression](../01-Linear-Regression/01-Linear-Regression.md) (the model these score) · [Classification Metrics](../14-Classification-Metrics/14-Classification-Metrics.md) (the discrete-target counterpart) · [Cross-Validation](../13-Cross-Validation/13-Cross-Validation.md) (how you estimate these reliably) · [Bias–Variance Tradeoff](../12-Bias-Variance-Tradeoff/12-Bias-Variance-Tradeoff.md)
+- Math prerequisites: [01. Foundations](../../01.%20Foundations/README.md) — variance, residuals, L1 vs L2 norms
+- Related domain: [5. Deep Learning](../../05.%20Deep_Learning/README.md) — MSE/MAE are the standard regression losses for neural nets too

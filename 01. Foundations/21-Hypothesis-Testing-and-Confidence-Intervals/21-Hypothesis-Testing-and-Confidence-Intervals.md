@@ -52,5 +52,5 @@ comparisons inflate false positives.
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 0.05 Hypothesis Testing & Confidence Intervals](../../../AI-ML-intuition/Module_0_Foundations/0.05_Hypothesis_Testing_Confidence_Intervals.md)
 - Curriculum context: [Maths for AI-ML — Phase 4 (Statistics, row 4.2)](../Maths%20for%20AI-ML/README.md)
-- Prereq: [18 Law of Large Numbers & the CLT](18-LLN-and-CLT.md)
+- Prereq: [18 Law of Large Numbers & the CLT](../18-LLN-and-CLT/18-LLN-and-CLT.md)
 </content>

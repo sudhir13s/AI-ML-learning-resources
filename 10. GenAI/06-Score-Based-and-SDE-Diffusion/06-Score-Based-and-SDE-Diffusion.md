@@ -56,7 +56,7 @@ deterministic, invertible map.
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 5.03 Diffusion Models](../../../AI-ML-intuition/Module_5_Generation/5.03_Diffusion_Models.md)
-- Prereq: [05 Diffusion Models (DDPM)](05-Diffusion-Models-DDPM.md) (the equivalent noise-prediction view)
-- Next concepts: [07 Latent Diffusion & Stable Diffusion](07-Latent-Diffusion-Stable-Diffusion.md) · [13 Sampling & Guidance Techniques](13-Sampling-and-Guidance-Techniques.md) (DDIM / ODE samplers)
-- Compare with: [09 Energy-Based Models](09-Energy-Based-Models.md) (also score/energy-based, sampled by Langevin)
+- Prereq: [05 Diffusion Models (DDPM)](../05-Diffusion-Models-DDPM/05-Diffusion-Models-DDPM.md) (the equivalent noise-prediction view)
+- Next concepts: [07 Latent Diffusion & Stable Diffusion](../07-Latent-Diffusion-Stable-Diffusion/07-Latent-Diffusion-Stable-Diffusion.md) · [13 Sampling & Guidance Techniques](../13-Sampling-and-Guidance-Techniques/13-Sampling-and-Guidance-Techniques.md) (DDIM / ODE samplers)
+- Compare with: [09 Energy-Based Models](../09-Energy-Based-Models/09-Energy-Based-Models.md) (also score/energy-based, sampled by Langevin)
 - Field overview: [9. Generative AI](../README.md)

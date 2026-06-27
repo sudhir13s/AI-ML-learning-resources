@@ -51,8 +51,8 @@ updated: 2026-06-22
 
 **In this platform**:
 - Concept page (full explanation): [Spectral Clustering](05-Spectral-Clustering.md)
-- Compare with the siblings: [K-Means Clustering](01-K-Means-Clustering.md) (runs *inside* the spectral embedding) · [Hierarchical Clustering](02-Hierarchical-Clustering.md) · [DBSCAN](03-DBSCAN.md) (the other arbitrary-shape method) · [Gaussian Mixture Models & EM](04-Gaussian-Mixture-Models-and-EM.md)
-- Manifold cousins (same Laplacian-eigenvector machinery): [t-SNE](07-t-SNE.md) · [UMAP](08-UMAP.md)
+- Compare with the siblings: [K-Means Clustering](../01-K-Means-Clustering/01-K-Means-Clustering.md) (runs *inside* the spectral embedding) · [Hierarchical Clustering](../02-Hierarchical-Clustering/02-Hierarchical-Clustering.md) · [DBSCAN](../03-DBSCAN/03-DBSCAN.md) (the other arbitrary-shape method) · [Gaussian Mixture Models & EM](../04-Gaussian-Mixture-Models-and-EM/04-Gaussian-Mixture-Models-and-EM.md)
+- Manifold cousins (same Laplacian-eigenvector machinery): [t-SNE](../07-t-SNE/07-t-SNE.md) · [UMAP](../08-UMAP/08-UMAP.md)
 - Foundations (the eigendecomposition it relies on): [AI-ML-intuition 1.05 Spectral Methods (PCA / SVD)](../../../AI-ML-intuition/Module_1_Representation/1.05_Spectral_Methods_PCA_SVD.md)
 - Prereq math: [Foundations — Linear Algebra (vectors & matrices)](../../01.%20Foundations/Maths%20for%20AI-ML/1.%20Linear%20Algebra/VectorsAndMatrices.md)
 - Field overview: [4. Unsupervised Learning](../README.md)

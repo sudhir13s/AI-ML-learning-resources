@@ -51,5 +51,5 @@ justify capping vs removal vs a log transform — and to do detection **using tr
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 0.02 Distributions & the Gaussian](../../../AI-ML-intuition/Module_0_Foundations/0.02_Distributions_and_the_Gaussian.md) · [1.10 Mahalanobis Distance](../../../AI-ML-intuition/Module_1_Representation/1.10_Mahalanobis_Distance.md)
-- Next concepts: [02 Feature Scaling & Normalization](02-Feature-Scaling-and-Normalization.md) · [06 Feature Engineering](06-Feature-Engineering.md)
-- Related domain: [04. Unsupervised Learning](../../04.%20Unsupervised_Learning/concepts/README.md)
+- Next concepts: [02 Feature Scaling & Normalization](../02-Feature-Scaling-and-Normalization/02-Feature-Scaling-and-Normalization.md) · [06 Feature Engineering](../06-Feature-Engineering/06-Feature-Engineering.md)
+- Related domain: [04. Unsupervised Learning](../../04.%20Unsupervised_Learning/README.md)

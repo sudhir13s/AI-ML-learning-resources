@@ -52,5 +52,5 @@ step-back, why HyDE embeds a *generated answer*, and the latency/cost of extra L
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 8.01 In-Context Learning & Prompting](../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.01_In-Context_Learning_and_Prompting.md) · [8.02 Retrieval-Augmented Generation](../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.02_Retrieval_Augmented_Generation.md)
-- Prereqs: [01 RAG Fundamentals](01-RAG-Fundamentals.md) · [03 Embedding Models for Retrieval](03-Embedding-Models-for-Retrieval.md) · Next: [08 Advanced RAG](08-Advanced-RAG-Parent-Doc-Fusion-Self-RAG.md)
+- Prereqs: [01 RAG Fundamentals](../01-RAG-Fundamentals/01-RAG-Fundamentals.md) · [03 Embedding Models for Retrieval](../03-Embedding-Models-for-Retrieval/03-Embedding-Models-for-Retrieval.md) · Next: [08 Advanced RAG](../08-Advanced-RAG-Parent-Doc-Fusion-Self-RAG/08-Advanced-RAG-Parent-Doc-Fusion-Self-RAG.md)
 - Related domain: [09. LLMs — Prompting & In-Context Learning](../../09.%20LLMs/16-Prompting-and-In-Context-Learning/16-Prompting-and-In-Context-Learning.md) · [09. LLMs — Chain-of-Thought Reasoning](../../09.%20LLMs/17-Chain-of-Thought-Reasoning/17-Chain-of-Thought-Reasoning.md)

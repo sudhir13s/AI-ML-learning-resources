@@ -52,5 +52,5 @@ backbones get reused (transfer learning) for detection and segmentation.
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 4.14 Activation Functions & Softmax](../../../AI-ML-intuition/Module_4_Stabilization/4D_Nonlinearities/4.14_Activation_Functions_and_Softmax.md) · [3.05 Precision / Recall / F1](../../../AI-ML-intuition/Module_3_Evaluation/3.05_Classification_Metrics_Precision_Recall_F1.md)
-- Foundation: [Deep Learning › Loss Functions](../../05.%20Deep_Learning/concepts/04-Loss-Functions.md) · [Deep Learning › CNNs & Convolution](../../05.%20Deep_Learning/concepts/13-CNNs-and-Convolution.md)
-- Next concepts: [05 Transfer Learning for Vision](05-Transfer-Learning-for-Vision.md) · [06 Data Augmentation](06-Data-Augmentation.md)
+- Foundation: [Deep Learning › Loss Functions](../../05.%20Deep_Learning/04-Loss-Functions/04-Loss-Functions.md) · [Deep Learning › CNNs & Convolution](../../05.%20Deep_Learning/13-CNNs-and-Convolution/13-CNNs-and-Convolution.md)
+- Next concepts: [05 Transfer Learning for Vision](../05-Transfer-Learning-for-Vision/05-Transfer-Learning-for-Vision.md) · [06 Data Augmentation](../06-Data-Augmentation/06-Data-Augmentation.md)

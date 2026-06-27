@@ -54,8 +54,8 @@ updated: 2026-06-22
 **In this platform**:
 - Concept page (full explanation): [Autoencoders](19-Autoencoders.md)
 - Prerequisites: [02 Backpropagation & Computational Graphs](../02-Backpropagation-and-Computational-Graphs/02-Backpropagation-and-Computational-Graphs.md) · [04 Loss Functions](../04-Loss-Functions/04-Loss-Functions.md) · [03 Activation Functions](../03-Activation-Functions/03-Activation-Functions.md)
-- The linear baseline (PCA): [04. Unsupervised — Dimensionality Reduction Overview](../../04.%20Unsupervised_Learning/concepts/06-Dimensionality-Reduction-Overview.md)
-- Visualization neighbors: [t-SNE](../../04.%20Unsupervised_Learning/concepts/07-t-SNE.md) · [UMAP](../../04.%20Unsupervised_Learning/concepts/08-UMAP.md)
-- Puts it to work: [Anomaly / Outlier Detection (reconstruction error)](../../04.%20Unsupervised_Learning/concepts/09-Anomaly-Outlier-Detection.md) · [Contrastive / Self-Supervised Learning](../../04.%20Unsupervised_Learning/concepts/12-Contrastive-Self-Supervised-Learning.md)
-- The generative deep-dive: [10. GenAI — Variational Autoencoders (VAE · ELBO)](../../10.%20GenAI/concepts/01-Variational-Autoencoders-VAE-ELBO.md) · [Latent Diffusion / Stable Diffusion](../../10.%20GenAI/concepts/07-Latent-Diffusion-Stable-Diffusion.md)
+- The linear baseline (PCA): [04. Unsupervised — Dimensionality Reduction Overview](../../04.%20Unsupervised_Learning/06-Dimensionality-Reduction-Overview/06-Dimensionality-Reduction-Overview.md)
+- Visualization neighbors: [t-SNE](../../04.%20Unsupervised_Learning/07-t-SNE/07-t-SNE.md) · [UMAP](../../04.%20Unsupervised_Learning/08-UMAP/08-UMAP.md)
+- Puts it to work: [Anomaly / Outlier Detection (reconstruction error)](../../04.%20Unsupervised_Learning/09-Anomaly-Outlier-Detection/09-Anomaly-Outlier-Detection.md) · [Contrastive / Self-Supervised Learning](../../04.%20Unsupervised_Learning/12-Contrastive-Self-Supervised-Learning/12-Contrastive-Self-Supervised-Learning.md)
+- The generative deep-dive: [10. GenAI — Variational Autoencoders (VAE · ELBO)](../../10.%20GenAI/01-Variational-Autoencoders-VAE-ELBO/01-Variational-Autoencoders-VAE-ELBO.md) · [Latent Diffusion / Stable Diffusion](../../10.%20GenAI/07-Latent-Diffusion-Stable-Diffusion/07-Latent-Diffusion-Stable-Diffusion.md)
 - Field overview: [Deep Learning](../README.md)

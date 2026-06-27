@@ -40,7 +40,7 @@ Every chapter is a self-contained folder (`NN-Concept/NN-Concept.md`) with its p
 ### Related concepts (canonical home is another section)
 > These topics are used across many areas, so they're kept in one place to avoid repetition.
 - **PCA / SVD (the math)** — eigendecomposition, variance maximization, the SVD view → [Foundations — Maths for AI-ML](../01.%20Foundations/Maths%20for%20AI-ML/README.md)
-- **Autoencoders** — non-linear, learned dimensionality reduction → [Deep Learning](../05.%20Deep_Learning/concepts/README.md)
+- **Autoencoders** — non-linear, learned dimensionality reduction → [Deep Learning](../05.%20Deep_Learning/README.md)
 - **Word / sentence embeddings** — representation learning over text → [NLP](../06.%20NLP/README.md)
 
 ## 🎓 Courses (free)

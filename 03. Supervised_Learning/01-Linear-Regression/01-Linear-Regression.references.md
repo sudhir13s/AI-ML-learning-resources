@@ -51,5 +51,5 @@ updated: 2026-06-22
 **In this platform**:
 - Concept page (full explanation): [Linear Regression](01-Linear-Regression.md)
 - Concept depth (the *why*): [AI-ML-intuition 3.01 MSE / L2 Loss](../../../AI-ML-intuition/Module_3_Evaluation/3.01_Mean_Squared_Error_MSE_L2_Loss.md) · [2.05 Gradient Descent & SGD](../../../AI-ML-intuition/Module_2_Optimization/2.05_Gradient_Descent_and_SGD.md)
-- Related: [Logistic Regression](02-Logistic-Regression.md) (linear regression through a sigmoid) · [Loss Functions](../../05.%20Deep_Learning/concepts/04-Loss-Functions.md) (MSE = Gaussian MLE) · [Regularization (Linear Models)](03-Regularization-Linear-Models.md) (Ridge/Lasso)
-- Math prerequisites: [01. Foundations](../../01.%20Foundations/concepts/README.md) — linear algebra, gradient descent, maximum likelihood
+- Related: [Logistic Regression](../02-Logistic-Regression/02-Logistic-Regression.md) (linear regression through a sigmoid) · [Loss Functions](../../05.%20Deep_Learning/04-Loss-Functions/04-Loss-Functions.md) (MSE = Gaussian MLE) · [Regularization (Linear Models)](../03-Regularization-Linear-Models/03-Regularization-Linear-Models.md) (Ridge/Lasso)
+- Math prerequisites: [01. Foundations](../../01.%20Foundations/README.md) — linear algebra, gradient descent, maximum likelihood

@@ -52,6 +52,6 @@ practitioners in interviews.
 - [Dive into Deep Learning](https://d2l.ai/) — **Zhang et al.** — runnable code that pairs with models you pull from the Hub.
 
 ## 🔗 In this platform
-- Per-concept index: [Frontier & Staying Current — concepts](README.md)
-- Pair with: [02 arXiv & Papers with Code](02-arXiv-and-Papers-with-Code.md) · [07 Reproducing Papers (code)](07-Reproducing-Papers-Code.md) · [11 Evaluating Hype vs Substance](11-Evaluating-Hype-vs-Substance.md)
-- Build on these models: [09. LLMs](../../09.%20LLMs/README.md) · [10. GenAI](../../10.%20GenAI/concepts/README.md) · [16. RAG & LLM Applications](../../11.%20RAG_and_LLM_Applications/README.md)
+- Per-concept index: [Frontier & Staying Current — concepts](../README.md)
+- Pair with: [02 arXiv & Papers with Code](../02-arXiv-and-Papers-with-Code/02-arXiv-and-Papers-with-Code.md) · [07 Reproducing Papers (code)](../07-Reproducing-Papers-Code/07-Reproducing-Papers-Code.md) · [11 Evaluating Hype vs Substance](../11-Evaluating-Hype-vs-Substance/11-Evaluating-Hype-vs-Substance.md)
+- Build on these models: [09. LLMs](../../09.%20LLMs/README.md) · [10. GenAI](../../10.%20GenAI/README.md) · [16. RAG & LLM Applications](../../11.%20RAG_and_LLM_Applications/README.md)

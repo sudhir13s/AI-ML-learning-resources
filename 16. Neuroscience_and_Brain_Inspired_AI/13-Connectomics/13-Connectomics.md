@@ -54,5 +54,5 @@ honest caveat — a static map doesn't give you the dynamics.
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 1.04 Graph Representations](../../../AI-ML-intuition/Module_1_Representation/1.04_Graph_Representations.md) — the graph formalism a connectome is analyzed with.
-- Prereqs in this section: [01 Biological Neurons & Synapses](01-Biological-Neurons-and-Synapses.md)
-- Related domains: [05. Deep Learning](../../05.%20Deep_Learning/concepts/README.md) · [07. Computer Vision](../../07.%20Computer%20Vision/concepts/README.md)
+- Prereqs in this section: [01 Biological Neurons & Synapses](../01-Biological-Neurons-and-Synapses/01-Biological-Neurons-and-Synapses.md)
+- Related domains: [05. Deep Learning](../../05.%20Deep_Learning/README.md) · [07. Computer Vision](../../07.%20Computer%20Vision/README.md)

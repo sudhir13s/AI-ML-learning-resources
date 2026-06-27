@@ -54,6 +54,6 @@ stay untouched, you understand the engine under every algorithm in the rest of t
 - [An Introduction to Statistical Learning — Ch. 5 "Resampling Methods"](https://www.statlearning.com/) — **James et al.** — free PDF; cross-validation and honest error estimation.
 
 ## 🔗 In this platform
-- Next concepts: [05 Overfitting & Underfitting](05-Overfitting-and-Underfitting.md) · [12 Your First ML Project](12-Your-First-ML-Project.md)
-- Go deeper — the math (calculus, optimization): [01. Foundations](../../01.%20Foundations/concepts/README.md)
-- Go deeper — backprop & optimizers: [05. Deep Learning](../../05.%20Deep_Learning/concepts/README.md)
+- Next concepts: [05 Overfitting & Underfitting](../05-Overfitting-and-Underfitting/05-Overfitting-and-Underfitting.md) · [12 Your First ML Project](../12-Your-First-ML-Project/12-Your-First-ML-Project.md)
+- Go deeper — the math (calculus, optimization): [01. Foundations](../../01.%20Foundations/README.md)
+- Go deeper — backprop & optimizers: [05. Deep Learning](../../05.%20Deep_Learning/README.md)

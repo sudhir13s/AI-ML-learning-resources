@@ -34,7 +34,7 @@ Intuition and pictures first, then the linkage math (with sources), then four wo
 
 ## The problem: you don't always know k, and the data is often nested
 
-[K-means](01-K-Means-Clustering.md) is fast and excellent — when you know $k$ and your clusters are roughly spherical blobs of similar size. But two things break that bargain constantly:
+[K-means](../01-K-Means-Clustering/01-K-Means-Clustering.md) is fast and excellent — when you know $k$ and your clusters are roughly spherical blobs of similar size. But two things break that bargain constantly:
 
 1. **You don't know $k$.** In exploratory work — a new gene-expression dataset, a fresh customer base, an unlabeled corpus — the *number* of natural groups is exactly what you're trying to discover. Re-running k-means for every candidate $k$ and squinting at an elbow plot is a workaround, not an answer.
 2. **The structure is a hierarchy, not a partition.** Biological taxa nest (species → genus → family → order). Documents nest (a sub-topic inside a topic inside a field). A flat list of $k$ clusters throws that nesting away. You want the *tree*.
@@ -108,7 +108,7 @@ flowchart TD
 
 The merge sequence on a tiny 2-D set looks like this — singletons progressively absorb their nearest neighbours until only the requested number of clusters remain:
 
-![Four panels showing agglomerative clustering on eight 2-D points. Panel 1 has eight separate singleton points. By panel 2 (six clusters) and panel 3 (four clusters), nearby points have merged into small groups linked to their centroid. By panel 4 (two clusters) the points have resolved into one lower-left group and one upper-right group, each drawn as points connected to a shared centroid.](images/hier_merge_sequence.png)
+![Four panels showing agglomerative clustering on eight 2-D points. Panel 1 has eight separate singleton points. By panel 2 (six clusters) and panel 3 (four clusters), nearby points have merged into small groups linked to their centroid. By panel 4 (two clusters) the points have resolved into one lower-left group and one upper-right group, each drawn as points connected to a shared centroid.](../images/hier_merge_sequence.png)
 
 > **Note:** the merge produces $n-1$ rows — exactly the contents of SciPy's **linkage matrix** $Z$. Each row is `[i, j, height, size]`: the two clusters merged, the linkage **distance at which they merged** (the *height*), and the size of the resulting cluster. That matrix *is* the dendrogram; `dendrogram(Z)` just draws it and `fcluster(Z, …)` just cuts it.
 
@@ -150,7 +150,7 @@ graph TD
 
 > **Note:** **single** asks "are the two clusters touching *anywhere*?" — one short edge is enough to merge. **Complete** asks "are they close *everywhere*?" — the worst-case pair must be close. They sit at opposite extremes; **average** and **Ward** live in between. This is why the *same data at the same $k$* gives different clusterings under different linkages:
 
-![Three side-by-side scatter plots of the same two-moons dataset, each cut at k equals 2. Single linkage cleanly separates the two interleaving crescent moons by colour. Complete linkage and Ward linkage instead split the data into two compact left/right blobs that cut straight across the moons, ignoring the crescent shape.](images/hier_linkage_compare.png)
+![Three side-by-side scatter plots of the same two-moons dataset, each cut at k equals 2. Single linkage cleanly separates the two interleaving crescent moons by colour. Complete linkage and Ward linkage instead split the data into two compact left/right blobs that cut straight across the moons, ignoring the crescent shape.](../images/hier_linkage_compare.png)
 
 On these interleaving crescents, **single linkage recovers the true moons** (it follows the thin curved shape), while **complete and Ward carve compact blobs** straight across them — because compactness, not connectivity, is what they optimize. Neither is "right"; they encode different notions of what a cluster *is*. Choosing the linkage *is* choosing your definition of a cluster.
 
@@ -207,7 +207,7 @@ Plug in the coefficients and you recover each linkage exactly (let $n_i = |C_i|$
 
 The output is a **dendrogram** — a binary tree where each leaf is a data point and each internal node is a merge, drawn at a **height equal to the linkage distance** at which that merge happened. It is the single most information-dense object in clustering:
 
-![A Ward-linkage dendrogram of thirty 2-D points. Leaves at the bottom merge into four coloured low subtrees, which join at much greater heights into two big subtrees and finally one root near height 51. A red dashed horizontal cut line at height 11 crosses exactly four vertical links, and a label reads cut at h equals 11 yields 4 clusters.](images/hier_dendrogram_cut.png)
+![A Ward-linkage dendrogram of thirty 2-D points. Leaves at the bottom merge into four coloured low subtrees, which join at much greater heights into two big subtrees and finally one root near height 51. A red dashed horizontal cut line at height 11 crosses exactly four vertical links, and a label reads cut at h equals 11 yields 4 clusters.](../images/hier_dendrogram_cut.png)
 
 Read it like this:
 
@@ -296,7 +296,7 @@ The silhouette **peaks at $k=2$**, not the biologically correct $k=3$ — becaus
 
 Where it sits among the clustering families:
 
-| | **Hierarchical (agglomerative)** | **[K-means](01-K-Means-Clustering.md)** | **[DBSCAN](03-DBSCAN.md)** | **[GMM / EM](04-Gaussian-Mixture-Models-and-EM.md)** |
+| | **Hierarchical (agglomerative)** | **[K-means](../01-K-Means-Clustering/01-K-Means-Clustering.md)** | **[DBSCAN](../03-DBSCAN/03-DBSCAN.md)** | **[GMM / EM](../04-Gaussian-Mixture-Models-and-EM/04-Gaussian-Mixture-Models-and-EM.md)** |
 |---|---|---|---|---|
 | **Pick $k$ upfront?** | **No** — cut the tree after | Yes | No ($\varepsilon$, minPts instead) | Yes |
 | **Cluster shape** | depends on linkage (Ward→spherical, single→arbitrary) | spherical, equal-ish size | arbitrary, density-defined | ellipsoidal (full covariance) |
@@ -500,7 +500,7 @@ complete != ward labels:   True
 
 The chaining gotcha is worth seeing once more on harder data. On two interleaving moons, **single linkage follows the crescents** (chaining is exactly the right behaviour for a thin, connected, non-convex shape), while **Ward — wanting compact blobs — slices the moons vertically**, putting half of each moon in each cluster:
 
-![Two scatter plots of the two-moons dataset cut at k equals 2. Left, single linkage: the two crescent moons are cleanly separated into a green upper moon and a blue lower moon. Right, Ward linkage: the same points are split into a left blue group and a right green group by a roughly vertical boundary that cuts straight across both moons.](images/hier_chaining.png)
+![Two scatter plots of the two-moons dataset cut at k equals 2. Left, single linkage: the two crescent moons are cleanly separated into a green upper moon and a blue lower moon. Right, Ward linkage: the same points are split into a left blue group and a right green group by a roughly vertical boundary that cuts straight across both moons.](../images/hier_chaining.png)
 
 > **Gotcha:** this is the whole linkage trade-off in one image. Single linkage's connectivity bias is a *feature* on clean non-convex data and a *bug* the instant noise bridges two real clusters. Ward's compactness bias is the opposite. Neither is universally correct — **match the linkage to the geometry you expect**, and when in doubt, build a couple of trees and compare their cophenetic correlations and silhouettes.
 

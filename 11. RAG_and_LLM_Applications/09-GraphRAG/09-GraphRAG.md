@@ -53,5 +53,5 @@ indexing, graph maintenance) versus standard RAG.
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 8.02 Retrieval-Augmented Generation](../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.02_Retrieval_Augmented_Generation.md) · [1.04 Graph Representations](../../../AI-ML-intuition/Module_1_Representation/1.04_Graph_Representations.md)
-- Prereqs: [08 Advanced RAG](08-Advanced-RAG-Parent-Doc-Fusion-Self-RAG.md) · Next: [10 Agentic RAG](10-Agentic-RAG.md)
+- Prereqs: [08 Advanced RAG](../08-Advanced-RAG-Parent-Doc-Fusion-Self-RAG/08-Advanced-RAG-Parent-Doc-Fusion-Self-RAG.md) · Next: [10 Agentic RAG](../10-Agentic-RAG/10-Agentic-RAG.md)
 - Related domain: [06. NLP — Sequence Labeling (POS & NER)](../../06.%20NLP/09-Sequence-Labeling-POS-and-NER/09-Sequence-Labeling-POS-and-NER.md) (entity extraction feeds the graph)

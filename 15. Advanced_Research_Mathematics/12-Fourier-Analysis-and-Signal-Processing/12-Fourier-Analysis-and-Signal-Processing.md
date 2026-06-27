@@ -54,7 +54,7 @@ theory (card 11).
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 1.03 Positional Encoding](../../../AI-ML-intuition/Module_1_Representation/1.03_Positional_Encoding.md)
-- Foundations (the basics this builds on): [Norms, Inner Products & Orthogonality](../../01.%20Foundations/concepts/03-Norms-Inner-Products-and-Orthogonality.md) · [Eigenvalues & Eigenvectors](../../01.%20Foundations/concepts/04-Eigenvalues-and-Eigenvectors.md)
-- Prerequisite & related: [02 Functional Analysis](02-Functional-Analysis.md) · [11 Spectral Graph Theory (graph Fourier)](11-Spectral-Graph-Theory.md) · [13 Random Matrix Theory](13-Random-Matrix-Theory.md)
-- Related domain: [05. Deep Learning](../../05.%20Deep_Learning/concepts/README.md)
+- Foundations (the basics this builds on): [Norms, Inner Products & Orthogonality](../../01.%20Foundations/03-Norms-Inner-Products-and-Orthogonality/03-Norms-Inner-Products-and-Orthogonality.md) · [Eigenvalues & Eigenvectors](../../01.%20Foundations/04-Eigenvalues-and-Eigenvectors/04-Eigenvalues-and-Eigenvectors.md)
+- Prerequisite & related: [02 Functional Analysis](../02-Functional-Analysis/02-Functional-Analysis.md) · [11 Spectral Graph Theory (graph Fourier)](../11-Spectral-Graph-Theory/11-Spectral-Graph-Theory.md) · [13 Random Matrix Theory](../13-Random-Matrix-Theory/13-Random-Matrix-Theory.md)
+- Related domain: [05. Deep Learning](../../05.%20Deep_Learning/README.md)
 </content>

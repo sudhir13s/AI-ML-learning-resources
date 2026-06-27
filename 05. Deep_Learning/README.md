@@ -46,9 +46,9 @@ Every chapter is a self-contained folder (`NN-Concept/NN-Concept.md`) with its p
 ### Related concepts (canonical home is another section)
 > These topics are used across many areas, so they're kept in one place to avoid repetition.
 - **Word / sentence embeddings** — Word2Vec · GloVe · contextual embeddings → [NLP](../06.%20NLP/README.md)
-- **Vision architectures in depth** — ResNet/Inception, detection, segmentation → [Computer Vision](../07.%20Computer%20Vision/concepts/README.md)
+- **Vision architectures in depth** — ResNet/Inception, detection, segmentation → [Computer Vision](../07.%20Computer%20Vision/README.md)
 - **Pretraining & LLM-scale models** — BERT · GPT · scaling laws · RLHF → [LLMs](../09.%20LLMs/README.md)
-- **Pure math** — PCA/SVD · probability · optimization theory → [Foundations · Maths for AI-ML](../01.%20Foundations/concepts/README.md)
+- **Pure math** — PCA/SVD · probability · optimization theory → [Foundations · Maths for AI-ML](../01.%20Foundations/README.md)
 
 ## 🎓 Courses (free)
 - [Neural Networks: Zero to Hero](https://karpathy.ai/zero-to-hero.html) — **Andrej Karpathy** — builds backprop → GPT from scratch in plain Python; the best hands-on course in existence.

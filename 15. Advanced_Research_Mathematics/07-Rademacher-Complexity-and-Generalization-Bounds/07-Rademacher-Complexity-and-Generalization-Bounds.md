@@ -55,6 +55,6 @@ is the right tool when VC dimension is infinite or vacuous (e.g. over-parameteri
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 3.07 Bias–Variance & Generalization](../../../AI-ML-intuition/Module_3_Evaluation/3.07_Bias_Variance_and_Generalization.md)
-- Foundations (the basics this builds on): [Law of Large Numbers & the CLT](../../01.%20Foundations/concepts/18-LLN-and-CLT.md) · [Expectation, Variance & Covariance](../../01.%20Foundations/concepts/17-Expectation-Variance-Covariance.md)
-- Prerequisite & next: [05 Statistical Learning Theory (PAC)](05-Statistical-Learning-Theory-PAC.md) · [06 VC Dimension](06-VC-Dimension.md) · [01 Measure Theory & Probability](01-Measure-Theory-and-Probability-Foundations.md)
+- Foundations (the basics this builds on): [Law of Large Numbers & the CLT](../../01.%20Foundations/18-LLN-and-CLT/18-LLN-and-CLT.md) · [Expectation, Variance & Covariance](../../01.%20Foundations/17-Expectation-Variance-Covariance/17-Expectation-Variance-Covariance.md)
+- Prerequisite & next: [05 Statistical Learning Theory (PAC)](../05-Statistical-Learning-Theory-PAC/05-Statistical-Learning-Theory-PAC.md) · [06 VC Dimension](../06-VC-Dimension/06-VC-Dimension.md) · [01 Measure Theory & Probability](../01-Measure-Theory-and-Probability-Foundations/01-Measure-Theory-and-Probability-Foundations.md)
 </content>

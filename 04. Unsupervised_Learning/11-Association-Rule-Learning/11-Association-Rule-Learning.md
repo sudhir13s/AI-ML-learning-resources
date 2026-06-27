@@ -154,7 +154,7 @@ $$\operatorname{conf}(\text{beer}\to\text{diapers}) = \tfrac{0.6}{0.6} = 1.00 \;
 
 > **Note:** there is no single "best" metric — they answer different questions. **Support** = is it frequent? **Confidence** = how reliable, but popularity-biased. **Lift** = how much better than chance (symmetric). **Leverage** = lift's absolute, volume-aware twin. **Conviction** = directional implication strength. A practical pipeline filters on **support + confidence**, then **ranks** the survivors by **lift** (or leverage/conviction). Michael Hahsler's [survey of interestingness measures](https://mhahsler.github.io/arules/docs/measures) catalogs *dozens* more — these five are the load-bearing ones.
 
-![Every rule mined from a small grocery database plotted on the confidence–lift plane. Bubble size is support. The dashed line is lift = 1 (independence). Points in the shaded band below it are the confidence trap — rules with respectable confidence but lift ≤ 1, manufactured by a popular consequent and carrying no real signal. The strongest genuine rule sits high above the baseline.](images/support_conf_lift.png)
+![Every rule mined from a small grocery database plotted on the confidence–lift plane. Bubble size is support. The dashed line is lift = 1 (independence). Points in the shaded band below it are the confidence trap — rules with respectable confidence but lift ≤ 1, manufactured by a popular consequent and carrying no real signal. The strongest genuine rule sits high above the baseline.](../images/support_conf_lift.png)
 
 ---
 
@@ -185,7 +185,7 @@ With $d$ distinct items there are $2^d - 1$ non-empty itemsets. For $d = 100$ th
 
 This is called **anti-monotonicity** of the "is infrequent" predicate: infrequency only *grows* as you add items. The payoff is enormous: **the moment you discover an itemset is infrequent, you can delete its entire upward cone — all of its supersets — without ever counting them.** That single rule is what turns $2^d$ into something tractable.
 
-![The itemset lattice over items A, B, C, D for an 8-transaction database with min_support = 0.25. Green nodes are frequent; the red node {A,B} is infrequent (A and B co-occur in just one basket). Because {A,B} is infrequent, downward closure prunes its entire upward cone — {A,B,C}, {A,B,D}, and {A,B,C,D} are shown in slate and are never counted at all. The red dashed edges are the candidates the principle let us skip.](images/apriori_lattice.png)
+![The itemset lattice over items A, B, C, D for an 8-transaction database with min_support = 0.25. Green nodes are frequent; the red node {A,B} is infrequent (A and B co-occur in just one basket). Because {A,B} is infrequent, downward closure prunes its entire upward cone — {A,B,C}, {A,B,D}, and {A,B,C,D} are shown in slate and are never counted at all. The red dashed edges are the candidates the principle let us skip.](../images/apriori_lattice.png)
 
 ### The level-wise algorithm
 
@@ -250,7 +250,7 @@ Apriori's two pains — *many* candidates and *many* scans — both come from th
 
 The idea has two moves. **First, compress the database into a tree.** Scan once to count single-item frequencies and drop the infrequent ones. Scan again, and for each transaction, sort its (frequent) items in **descending frequency order** and insert that ordered list as a path into a prefix tree — the **FP-tree** — where transactions sharing a prefix **share a path** and each node carries a count. Frequent items, being common, land near the root and get shared heavily, so the whole database collapses into a compact structure. A **header table** links all nodes of the same item together so you can find every occurrence quickly.
 
-![An FP-tree built from a 5-transaction database (min_support_count = 3) after reordering each transaction by descending item frequency. Because the most frequent items (c, f, a) sit near the root, the transactions share the long prefix path c→f→a — that sharing is the compression. The amber dashed arrows are the header-table node-links that chain together every occurrence of the same item across the tree.](images/fp_tree.png)
+![An FP-tree built from a 5-transaction database (min_support_count = 3) after reordering each transaction by descending item frequency. Because the most frequent items (c, f, a) sit near the root, the transactions share the long prefix path c→f→a — that sharing is the compression. The amber dashed arrows are the header-table node-links that chain together every occurrence of the same item across the tree.](../images/fp_tree.png)
 
 **Second, mine the tree recursively by pattern growth.** For each item (starting from the least frequent in the header table), follow its node-links to gather its **conditional pattern base** — the set of prefix paths that co-occur with it, each weighted by the item's count there. From those paths build a smaller **conditional FP-tree**, and recurse: every frequent itemset is grown by *prefixing* the current item onto the patterns found in its conditional tree. No candidates are ever generated and tested; frequent itemsets emerge directly from the structure of the tree.
 
@@ -537,7 +537,7 @@ The itemsets are **bit-for-bit identical** — exactly the guarantee we want. No
 
 > **Gotcha:** don't over-generalize micro-benchmarks. "FP-Growth is faster than Apriori" is true in the regime FP-Growth was designed for (huge databases, many scans), and can be *false* on small vectorized in-memory cases. Always benchmark on data shaped like your real workload, and remember the correctness guarantee (identical itemsets) holds regardless.
 
-![The top association rules from the grocery database, ranked by lift (mlxtend, measured). Every bar clears the lift = 1 independence line; support and confidence are annotated on each. Ranking by lift surfaces the genuine cross-sell patterns instead of rules that merely point at a popular item.](images/top_rules_lift.png)
+![The top association rules from the grocery database, ranked by lift (mlxtend, measured). Every bar clears the lift = 1 independence line; support and confidence are annotated on each. Ranking by lift surfaces the genuine cross-sell patterns instead of rules that merely point at a popular item.](../images/top_rules_lift.png)
 
 ---
 

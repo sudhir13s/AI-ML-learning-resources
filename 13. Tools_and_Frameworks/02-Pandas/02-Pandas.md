@@ -49,5 +49,5 @@ reshaping (pivot/melt). Fluency here is what makes the modeling part possible.
 - [Python Data Science Handbook](https://jakevdp.github.io/PythonDataScienceHandbook/) — **Jake VanderPlas** — entire book free; Ch. 3 is the Pandas reference.
 
 ## 🔗 In this platform
-- Related domain: [02. Data_Preprocessing](../../02.%20Data_Preprocessing/) · [03. Supervised Learning](../../03.%20Supervised_Learning/concepts/README.md)
-- Pairs with: [01 NumPy](01-NumPy.md) · [03 Data Visualization](03-Data-Visualization.md) · [04 scikit-learn](04-scikit-learn.md)
+- Related domain: [02. Data_Preprocessing](../../02.%20Data_Preprocessing/) · [03. Supervised Learning](../../03.%20Supervised_Learning/README.md)
+- Pairs with: [01 NumPy](../01-NumPy/01-NumPy.md) · [03 Data Visualization](../03-Data-Visualization/03-Data-Visualization.md) · [04 scikit-learn](../04-scikit-learn/04-scikit-learn.md)

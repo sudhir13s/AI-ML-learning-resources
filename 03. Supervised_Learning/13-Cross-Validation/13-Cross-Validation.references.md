@@ -51,5 +51,5 @@ updated: 2026-06-22
 **In this platform**:
 - Concept page (full explanation): [Cross-Validation](13-Cross-Validation.md)
 - Concept depth (the *why*): [AI-ML-intuition 3.07 Bias–Variance & Generalization](../../../AI-ML-intuition/Module_3_Evaluation/3.07_Bias_Variance_and_Generalization.md) · [3.05 Classification Metrics](../../../AI-ML-intuition/Module_3_Evaluation/3.05_Classification_Metrics_Precision_Recall_F1.md)
-- Related: [Bias–Variance Tradeoff](12-Bias-Variance-Tradeoff.md) (CV measures where you sit on the curve) · [Classification Metrics](14-Classification-Metrics.md) (what you score per fold) · [Stacking & Blending](11-Stacking-and-Blending.md) (out-of-fold predictions power stacking)
-- Math prerequisites: [01. Foundations](../../01.%20Foundations/concepts/README.md) — sampling, variance of an estimator, generalization
+- Related: [Bias–Variance Tradeoff](../12-Bias-Variance-Tradeoff/12-Bias-Variance-Tradeoff.md) (CV measures where you sit on the curve) · [Classification Metrics](../14-Classification-Metrics/14-Classification-Metrics.md) (what you score per fold) · [Stacking & Blending](../11-Stacking-and-Blending/11-Stacking-and-Blending.md) (out-of-fold predictions power stacking)
+- Math prerequisites: [01. Foundations](../../01.%20Foundations/README.md) — sampling, variance of an estimator, generalization

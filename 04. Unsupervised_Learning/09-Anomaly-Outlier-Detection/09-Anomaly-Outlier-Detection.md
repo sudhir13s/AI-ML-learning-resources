@@ -167,7 +167,7 @@ That gives you a threshold with a *meaning*: pick a false-positive rate, look up
 
 The diagram below shows *why this matters*. Two test points sit at the **same Euclidean distance** (3.20) from the mean of a correlated cloud. The one **along** the correlation ridge has $D_M = 1.38$ — comfortably inside the 95% ellipse, a normal point. The one **across** the ridge has $D_M = 4.13$ — far outside it, a clear anomaly. Same Euclidean distance, opposite verdicts. That's the whole reason to whiten.
 
-![Mahalanobis vs Euclidean on correlated data: two points at identical Euclidean distance (3.20) from the mean get opposite verdicts once covariance is accounted for — the point ALONG the correlation axis has Mahalanobis distance 1.38 (inside the red 95% chi-square ellipse, normal); the point ACROSS it has Mahalanobis distance 4.13 (outside, anomalous).](images/anom_mahalanobis.png)
+![Mahalanobis vs Euclidean on correlated data: two points at identical Euclidean distance (3.20) from the mean get opposite verdicts once covariance is accounted for — the point ALONG the correlation axis has Mahalanobis distance 1.38 (inside the red 95% chi-square ellipse, normal); the point ACROSS it has Mahalanobis distance 4.13 (outside, anomalous).](../images/anom_mahalanobis.png)
 
 Let's see the χ² verdict come out of the algebra by hand. Take the covariance from the figure, $\Sigma = \left[\begin{smallmatrix}3.0 & 2.4\\ 2.4 & 3.0\end{smallmatrix}\right]$, centred at the origin. Its inverse is
 
@@ -207,7 +207,7 @@ The "local outlier" (red star) sits just outside a dense cluster; its nearest-ne
 
 So a global distance threshold low enough to flag the 0.62 outlier would *also* flag the 0.87 inlier, and every other sparse-cluster point besides. Global distance is simply the wrong ruler for this data — it has no way to express "unusual *for around here*."
 
-![Why LOF's local density ratio beats a global distance threshold: the local outlier near the dense cluster has a SMALLER nearest-neighbour distance (0.62) than a normal point in the sparse cluster (0.87), so no single global distance threshold can separate them — but LOF flags the local outlier with a score of 2.34 by comparing each point's density to its neighbours' density.](images/anom_lof_local.png)
+![Why LOF's local density ratio beats a global distance threshold: the local outlier near the dense cluster has a SMALLER nearest-neighbour distance (0.62) than a normal point in the sparse cluster (0.87), so no single global distance threshold can separate them — but LOF flags the local outlier with a score of 2.34 by comparing each point's density to its neighbours' density.](../images/anom_lof_local.png)
 
 ### LOF: the local outlier factor, derived
 
@@ -281,7 +281,7 @@ The measured figure proves it directly.
 
 A planted outlier is isolated in an average of **2.1** random splits across 400 trees. A point at the centre of the normal cloud needs **12.1** splits to fence off. That **6× gap** in isolation depth is the raw signal; the score (below) just normalizes it into a bounded number. No distances were computed anywhere — only random cuts and counting.
 
-![The isolation intuition: across 400 random axis-parallel split trees, the planted outlier is isolated in an average of 2.1 splits while a point at the centre of the normal cloud needs 12.1 — shorter path length means more anomalous, which is exactly what Isolation Forest scores.](images/anom_isolation_paths.png)
+![The isolation intuition: across 400 random axis-parallel split trees, the planted outlier is isolated in an average of 2.1 splits while a point at the centre of the normal cloud needs 12.1 — shorter path length means more anomalous, which is exactly what Isolation Forest scores.](../images/anom_isolation_paths.png)
 
 ### Deriving the score
 
@@ -393,7 +393,7 @@ Exactly as the derivation predicts: the **outlier fraction sits just below $\nu$
 
 If you've already clustered the data, anomalies fall out as a by-product:
 
-- **DBSCAN noise points.** DBSCAN labels points in low-density regions as **noise** (label `-1`), and *that label is itself anomaly detection.* A point that joins no dense cluster is, by DBSCAN's own definition, an outlier — you get the anomaly flag for free as a by-product of the clustering, with no separate scoring step. (See the [DBSCAN page](03-DBSCAN.md) for how the noise label is derived from `eps` and `min_samples`.)
+- **DBSCAN noise points.** DBSCAN labels points in low-density regions as **noise** (label `-1`), and *that label is itself anomaly detection.* A point that joins no dense cluster is, by DBSCAN's own definition, an outlier — you get the anomaly flag for free as a by-product of the clustering, with no separate scoring step. (See the [DBSCAN page](../03-DBSCAN/03-DBSCAN.md) for how the noise label is derived from `eps` and `min_samples`.)
 - **Distance to nearest centroid.** After K-Means, score each point by its distance to its assigned centroid; the far-from-any-centroid points are candidates. Cheap, but inherits K-Means' assumptions (spherical, similar-size clusters) and its sensitivity to the outliers it's trying to find.
 
 ---
@@ -404,7 +404,7 @@ Theory is cheap; let's *measure* it.
 
 The figure below runs **Isolation Forest, LOF, and One-Class SVM** on the **same** 2-D dataset — two normal Gaussian blobs plus 20 uniformly-scattered planted outliers — and draws each method's learned boundary around "normal" (the solid contour). Because the outliers are *planted*, we know the ground truth and can score each detector honestly. The number that matters is the **PR-AUC** at recovering those planted outliers (the next section derives *why* PR-AUC and not accuracy).
 
-![Isolation Forest vs LOF vs One-Class SVM on the same 2-D data with 20 planted outliers: each panel shows the learned boundary around the two normal blobs and the PR-AUC at catching the planted outliers — LOF 0.800, One-Class SVM 0.753, Isolation Forest 0.738 on this dataset.](images/anom_decision_surfaces.png)
+![Isolation Forest vs LOF vs One-Class SVM on the same 2-D data with 20 planted outliers: each panel shows the learned boundary around the two normal blobs and the PR-AUC at catching the planted outliers — LOF 0.800, One-Class SVM 0.753, Isolation Forest 0.738 on this dataset.](../images/anom_decision_surfaces.png)
 
 On this particular dataset the scores come out **LOF 0.800, One-Class SVM 0.753, Isolation Forest 0.738** — all far above the random baseline of 0.083 (the positive rate), and close enough that *the choice between them is dataset-dependent, not absolute.*
 
@@ -433,7 +433,7 @@ What to use instead, and *why*:
 
   And the PR baseline isn't a fixed 0.5 — it's the **positive rate** itself (0.083 in our comparison, ~0.01 in real fraud), so even a small PR-AUC can be a large *lift over baseline*. When positives are rare, **PR-AUC is the honest scoreboard**, because it measures exactly the question operations cares about: *when we raise an alert, are we usually right?*
 
-> **Tip:** the relationship to remember in an interview: **ROC-AUC answers "can the model rank a random anomaly above a random normal?"; PR-AUC answers "when the model raises an alert, is it usually right?"** Under 1% prevalence the second question is the one your business is actually asking. (This connects directly to the [Classification Metrics page](../../03.%20Supervised_Learning/concepts/14-Classification-Metrics.md), which derives the ROC vs PR contrast in the supervised setting.)
+> **Tip:** the relationship to remember in an interview: **ROC-AUC answers "can the model rank a random anomaly above a random normal?"; PR-AUC answers "when the model raises an alert, is it usually right?"** Under 1% prevalence the second question is the one your business is actually asking. (This connects directly to the [Classification Metrics page](../../03.%20Supervised_Learning/14-Classification-Metrics/14-Classification-Metrics.md), which derives the ROC vs PR contrast in the supervised setting.)
 
 ### Contamination and the threshold
 

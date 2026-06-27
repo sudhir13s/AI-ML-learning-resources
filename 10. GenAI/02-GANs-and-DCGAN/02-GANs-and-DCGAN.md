@@ -19,7 +19,7 @@ to write the **minimax value function**, explain what `D` and `G` each optimize,
 optimal discriminator is `D*(x)=p_data/(p_data+p_g)` and that the global optimum minimizes the
 **Jensen–Shannon divergence**, and explain the **non-saturating** generator loss (why `−log D(G(z))`
 is used in practice instead of `log(1−D(G(z)))`). DCGAN gives the concrete architectural choices that
-"just work." (Training pathologies and the Wasserstein fix live in the [next card](03-GAN-Training-and-WGAN.md).)
+"just work." (Training pathologies and the Wasserstein fix live in the [next card](../03-GAN-Training-and-WGAN/03-GAN-Training-and-WGAN.md).)
 
 **⭐ Start here — suggested path:**
 
@@ -54,7 +54,7 @@ is used in practice instead of `log(1−D(G(z)))`). DCGAN gives the concrete arc
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 5.04 GANs & WGAN](../../../AI-ML-intuition/Module_5_Generation/5.04_GANs_and_WGAN.md) · [5.01 Entropy & KL Divergence](../../../AI-ML-intuition/Module_5_Generation/5.01_Information_Theory_Entropy_KL_Divergence.md)
-- Prereq: [Deep Learning — CNNs & Convolution](../../05.%20Deep_Learning/concepts/13-CNNs-and-Convolution.md) (DCGAN is all convolutions)
-- Next concepts: [03 GAN Training & WGAN](03-GAN-Training-and-WGAN.md) · [04 Conditional Generation & Classifier-Free Guidance](04-Conditional-Generation-and-Classifier-Free-Guidance.md)
-- Compare with: [01 Variational Autoencoders](01-Variational-Autoencoders-VAE-ELBO.md) (likelihood-based, not adversarial)
+- Prereq: [Deep Learning — CNNs & Convolution](../../05.%20Deep_Learning/13-CNNs-and-Convolution/13-CNNs-and-Convolution.md) (DCGAN is all convolutions)
+- Next concepts: [03 GAN Training & WGAN](../03-GAN-Training-and-WGAN/03-GAN-Training-and-WGAN.md) · [04 Conditional Generation & Classifier-Free Guidance](../04-Conditional-Generation-and-Classifier-Free-Guidance/04-Conditional-Generation-and-Classifier-Free-Guidance.md)
+- Compare with: [01 Variational Autoencoders](../01-Variational-Autoencoders-VAE-ELBO/01-Variational-Autoencoders-VAE-ELBO.md) (likelihood-based, not adversarial)
 - Field overview: [9. Generative AI](../README.md)

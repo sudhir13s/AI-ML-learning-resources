@@ -52,5 +52,5 @@ add back. Expected for any role touching modern vision or multimodal models.
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 4.15 The Transformer Block](../../../AI-ML-intuition/Module_4_Stabilization/4D_Nonlinearities/4.15_The_Transformer_Block.md) · [4.08 Multi-Head Attention](../../../AI-ML-intuition/Module_4_Stabilization/4B_Architectural_Motifs/4.08_Multi-Head_Attention_Routing.md)
-- Foundation: [Deep Learning › Transformer Architecture](../../05.%20Deep_Learning/concepts/16-Transformer-Architecture.md) · [Deep Learning › Attention Mechanism](../../05.%20Deep_Learning/concepts/15-Attention-Mechanism.md)
-- Next concepts: [12 Self-Supervised Vision](12-Self-Supervised-Vision.md) (MAE/DINO build on ViT)
+- Foundation: [Deep Learning › Transformer Architecture](../../05.%20Deep_Learning/16-Transformer-Architecture/16-Transformer-Architecture.md) · [Deep Learning › Attention Mechanism](../../05.%20Deep_Learning/15-Attention-Mechanism/15-Attention-Mechanism.md)
+- Next concepts: [12 Self-Supervised Vision](../12-Self-Supervised-Vision/12-Self-Supervised-Vision.md) (MAE/DINO build on ViT)

@@ -24,7 +24,7 @@ hyperparameters produced this artifact). The discipline that separates a demo fr
 2. **Get the checklist** — read [CMU ML Blog: Reproducibility](https://blog.ml.cmu.edu/2020/08/31/5-reproducibility/) and the [ML Reproducibility Checklist (paper)](https://arxiv.org/abs/2003.12206). *Concrete things to pin: code, data, environment, seeds, compute.*
 3. **Separate the layers** — read [The Gradient: Independently Reproducible ML](https://thegradient.pub/independently-reproducible-machine-learning/). *Distinguishes "re-run my code" from "someone reproduces my result" — interviewers love this distinction.*
 4. **Pin the environment** — read [Made With ML: Versioning](https://madewithml.com/courses/mlops/versioning/) and pin deps + data + model. *Turns the principles into code + DVC + a reproducible run.*
-5. **Containerize it** — make the run a deterministic function of a pinned image; see [08 Model Packaging & Containerization](08-Model-Packaging-and-Containerization.md). *Environment parity is the last reproducibility gap.*
+5. **Containerize it** — make the run a deterministic function of a pinned image; see [08 Model Packaging & Containerization](../08-Model-Packaging-and-Containerization/08-Model-Packaging-and-Containerization.md). *Environment parity is the last reproducibility gap.*
 
 ## 🎓 Courses (free)
 - [Made With ML — Versioning & Reproducibility](https://madewithml.com/courses/mlops/versioning/) — **Goku Mohandas** — pin code, data, and models so a run is reproducible end-to-end.
@@ -51,5 +51,5 @@ hyperparameters produced this artifact). The discipline that separates a demo fr
 - [Machine Learning Engineering — **Ch. 5–6** (experiment management & reproducible training)](http://www.mlebook.com/wiki/doku.php) — **Andriy Burkov** — read-first chapters free online.
 
 ## 🔗 In this platform
-- Builds on: [01 ML Lifecycle & MLOps Maturity](01-ML-Lifecycle-and-MLOps-Maturity.md)
-- Next concepts: [03 Experiment Tracking](03-Experiment-Tracking.md) · [04 Data & Model Versioning](04-Data-and-Model-Versioning.md) · [08 Model Packaging & Containerization](08-Model-Packaging-and-Containerization.md)
+- Builds on: [01 ML Lifecycle & MLOps Maturity](../01-ML-Lifecycle-and-MLOps-Maturity/01-ML-Lifecycle-and-MLOps-Maturity.md)
+- Next concepts: [03 Experiment Tracking](../03-Experiment-Tracking/03-Experiment-Tracking.md) · [04 Data & Model Versioning](../04-Data-and-Model-Versioning/04-Data-and-Model-Versioning.md) · [08 Model Packaging & Containerization](../08-Model-Packaging-and-Containerization/08-Model-Packaging-and-Containerization.md)

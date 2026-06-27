@@ -65,6 +65,6 @@ updated: 2026-06-21
 
 **In this platform**:
 - Concept page (full explanation): [KV Cache](05-KV-Cache.md)
-- Foundations (the *why* behind K, Q, V): [Attention Mechanism](../../05.%20Deep_Learning/concepts/15-Attention-Mechanism.md) · [Transformer Architecture](../../05.%20Deep_Learning/concepts/16-Transformer-Architecture.md)
+- Foundations (the *why* behind K, Q, V): [Attention Mechanism](../../05.%20Deep_Learning/15-Attention-Mechanism/15-Attention-Mechanism.md) · [Transformer Architecture](../../05.%20Deep_Learning/16-Transformer-Architecture/16-Transformer-Architecture.md)
 - Builds on this: [Decoder-only Architecture](../04-Decoder-only-Architecture/04-Decoder-only-Architecture.md) · [Efficient Attention (FlashAttention)](../06-Efficient-Attention-FlashAttention/06-Efficient-Attention-FlashAttention.md) · [Long-Context Methods](../08-Long-Context-Methods/08-Long-Context-Methods.md) · [Quantization](../10-Quantization/10-Quantization.md)
 - Puts it to work: [Inference Optimization & Serving](../09-Inference-Optimization-and-Serving/09-Inference-Optimization-and-Serving.md)

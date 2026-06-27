@@ -34,13 +34,13 @@ I'll build it the way I'd explain it to a teammate who just typed `TSNE()` and g
 
 > **Note:** t-SNE is a **visualization** technique, full stop. It is *not* a general-purpose dimensionality reducer — you do not feed its 2-D output into a downstream model as features, you do not use it to compress data for storage, and (by default) you cannot even apply it to new points. Its one job is to turn high-D structure into a picture a human can read. Keep that framing and most of the "gotchas" below stop being surprising.
 
-![The headline result. The same 1,797 handwritten digits (each a point in 64-D) projected to 2-D two ways. Left: PCA, a linear projection — the ten digit classes smear into one overlapping blob. Right: t-SNE — the same classes fall into ten cleanly separated islands. We measured it: a 10-NN classifier scores 61% on the PCA map but 97% on the t-SNE map, confirming t-SNE preserves the local neighborhoods PCA destroys.](images/tsne_vs_pca.png)
+![The headline result. The same 1,797 handwritten digits (each a point in 64-D) projected to 2-D two ways. Left: PCA, a linear projection — the ten digit classes smear into one overlapping blob. Right: t-SNE — the same classes fall into ten cleanly separated islands. We measured it: a 10-NN classifier scores 61% on the PCA map but 97% on the t-SNE map, confirming t-SNE preserves the local neighborhoods PCA destroys.](../images/tsne_vs_pca.png)
 
 ---
 
 ## The problem: PCA is linear, but data lives on a curved manifold
 
-The reason we need t-SNE at all is a limitation of [PCA](06-Dimensionality-Reduction-Overview.md), the linear workhorse. PCA finds the directions of greatest variance and **projects** the data onto the top two of them. A projection is a *rigid, linear* operation — it is, geometrically, shining a flashlight at the cloud of points and reading the shadow on a wall. That works beautifully when the data's interesting structure is genuinely flat: when the classes are separated by straight lines through the original space.
+The reason we need t-SNE at all is a limitation of [PCA](../06-Dimensionality-Reduction-Overview/06-Dimensionality-Reduction-Overview.md), the linear workhorse. PCA finds the directions of greatest variance and **projects** the data onto the top two of them. A projection is a *rigid, linear* operation — it is, geometrically, shining a flashlight at the cloud of points and reading the shadow on a wall. That works beautifully when the data's interesting structure is genuinely flat: when the classes are separated by straight lines through the original space.
 
 But high-dimensional data rarely lays itself out flat. The **manifold hypothesis** says real data of dimension $D$ usually concentrates on a much-lower-dimensional, *curved* surface (a manifold) embedded in that $D$-space. The 64-D digit vectors don't fill all of $\mathbb{R}^{64}$; they live on a thin, folded sheet shaped by the few real degrees of freedom in a handwritten digit (slant, stroke width, loop size). When you flatten a curved sheet with a single linear projection, distant parts of the fold land on top of each other — exactly the overlapping smear you see in the PCA panel above.
 
@@ -48,7 +48,7 @@ The classic intuition is the **Swiss roll**: take a 2-D sheet, roll it up in 3-D
 
 To unroll it you need a method that respects **which points are neighbors along the manifold**, not which points are close as the crow flies. That is the entire design goal of t-SNE: **preserve local neighborhood structure**, and let global geometry bend however it must to make that possible in 2-D.
 
-![The manifold motivation, measured. A Swiss roll (left) is a flat 2-D sheet rolled up in 3-D; color encodes position *along* the sheet. PCA (middle) projects linearly and overlays distant strands — points that are far apart along the sheet but near in 3-D land on top of each other, smearing the color gradient. t-SNE (right) follows local neighborhoods and pulls the strands apart into separated bands. (t-SNE doesn't perfectly "unroll" the sheet — that's Isomap/LLE/UMAP's stronger suit — but it cleanly separates by neighborhood where the linear projection cannot.)](images/tsne_swiss_roll.png)
+![The manifold motivation, measured. A Swiss roll (left) is a flat 2-D sheet rolled up in 3-D; color encodes position *along* the sheet. PCA (middle) projects linearly and overlays distant strands — points that are far apart along the sheet but near in 3-D land on top of each other, smearing the color gradient. t-SNE (right) follows local neighborhoods and pulls the strands apart into separated bands. (t-SNE doesn't perfectly "unroll" the sheet — that's Isomap/LLE/UMAP's stronger suit — but it cleanly separates by neighborhood where the linear projection cannot.)](../images/tsne_swiss_roll.png)
 
 > **Note:** "preserve local structure" is the load-bearing phrase. t-SNE tries hard to keep *each point's near neighbors near* in the map. It makes **no** promise to keep *far things at the right far distance*. That single asymmetry — faithful locally, free to distort globally — explains almost every property and every caveat of the method.
 
@@ -92,7 +92,7 @@ Every symbol: $\lVert x_i - x_j\rVert^2$ is the squared Euclidean distance betwe
 
 > *Where this comes from: the conditional-probability formulation of neighbor affinities is **Stochastic Neighbor Embedding** (Hinton & Roweis 2002, §2). t-SNE inherits the high-D side unchanged from SNE; what it changes is the low-D side (Step 3) and the symmetrization below.*
 
-![The high-D affinity kernel. p_{j|i} as a function of distance from the center point x_i, for three Gaussian widths σ. A small σ (green) only counts very close points as neighbors; a large σ (red) reaches far. Perplexity is the knob that picks σ for each point so the effective neighborhood has a target size.](images/tsne_neighbor_kernel.png)
+![The high-D affinity kernel. p_{j|i} as a function of distance from the center point x_i, for three Gaussian widths σ. A small σ (green) only counts very close points as neighbors; a large σ (red) reaches far. Perplexity is the knob that picks σ for each point so the effective neighborhood has a target size.](../images/tsne_neighbor_kernel.png)
 
 **Worked example 1 — a conditional probability by hand.** Put three points on a line: $x_1=0,\ x_2=1,\ x_3=3$, and center on $x_1$ with $\sigma_1 = 1$. The squared distances from $x_1$ are $0, 1, 9$. The unnormalized Gaussian affinities are $\exp(0)=1$ (dropped, since $p_{1|1}=0$), $\exp(-1/2)=0.6065$, and $\exp(-9/2)=0.0111$. Normalize over the two real neighbors:
 
@@ -224,7 +224,7 @@ The magic is in the **tail**. A Gaussian's tail decays like $e^{-d^2/2}$ — it 
 
 At $d=3$ the t-distribution assigns **9× more affinity** than the Gaussian; at $d=5$, over **10,000×** more. Read that as a *force*: to give a pair of moderately-distant points the same affinity $q_{ij}$ that their high-D $p_{ij}$ demands, the **Gaussian map must crush them very close together**, while the **t-map is content to leave them comfortably far apart**. The heavy tail buys room. Moderate-distance points in high-D map to *genuinely separated* points in 2-D — which is exactly why t-SNE produces clusters with clean gaps between them instead of one crowded blob.
 
-![Why the heavy tail works. Both kernels peak at d=0, but the Student-t (red) keeps far more mass at moderate and large distance than the Gaussian (blue). The shaded region is the extra affinity the t-tail grants — the room that lets clusters spread apart instead of collapsing to the center.](images/tsne_crowding.png)
+![Why the heavy tail works. Both kernels peak at d=0, but the Student-t (red) keeps far more mass at moderate and large distance than the Gaussian (blue). The shaded region is the extra affinity the t-tail grants — the room that lets clusters spread apart instead of collapsing to the center.](../images/tsne_crowding.png)
 
 > **Tip:** there's a second, free benefit. The t-kernel $(1+d^2)^{-1}$ has no $\exp$ and no per-point $\sigma$ in the low-D space — it's algebraically simple, which makes the gradient (next) clean and cheap to evaluate. t-SNE deliberately uses a *fixed* heavy-tailed kernel in 2-D while keeping the adaptive Gaussians only in high-D.
 
@@ -369,7 +369,7 @@ Computed exactly, every gradient step sums over **all pairs** — $O(n^2)$ in bo
 
 Combined with restricting the **attractive** forces to a sparse set of nearest neighbors (only large $p_{ij}$ matter, so the high-D affinities are computed only within an approximate k-NN graph), this drops the cost to $O(n\log n)$ and makes t-SNE practical on hundreds of thousands of points. It's the default in scikit-learn (`method="barnes_hut"`).
 
-> **Tip:** for *very* large or repeated runs, modern alternatives go further: **FFT-accelerated** t-SNE (FIt-SNE) interpolates the repulsive forces on a grid for near-linear scaling, and **openTSNE** / GPU implementations (`tsne-cuda`) push to millions of points in seconds. For datasets that large, though, most practitioners reach for [UMAP](08-UMAP.md) instead.
+> **Tip:** for *very* large or repeated runs, modern alternatives go further: **FFT-accelerated** t-SNE (FIt-SNE) interpolates the repulsive forces on a grid for near-linear scaling, and **openTSNE** / GPU implementations (`tsne-cuda`) push to millions of points in seconds. For datasets that large, though, most practitioners reach for [UMAP](../08-UMAP/08-UMAP.md) instead.
 
 ---
 
@@ -387,7 +387,7 @@ This is the section interviewers actually probe, and it's worth as much as all t
 
 5. **Random clouds can look structured, and shapes can be artifacts.** t-SNE will happily impose apparent clusters or curves on data that has none. Let it run to convergence (too few iterations leaves "pinched" half-formed blobs), and corroborate any visual finding with a non-visual check.
 
-![Perplexity reshapes the map. The same digits embedded at perplexity 5, 30, and 50. At perplexity 5 the algorithm sees only the nearest few neighbors and fragments classes into sub-clumps; at 30 it finds the clean ten-cluster structure; at 50 broader neighborhoods pull the clusters into a tighter global arrangement. The KL cost printed on each panel falls as perplexity rises — a lower KL does NOT mean a better plot, only a different trade-off. This is exactly why you must try several.](images/tsne_perplexity.png)
+![Perplexity reshapes the map. The same digits embedded at perplexity 5, 30, and 50. At perplexity 5 the algorithm sees only the nearest few neighbors and fragments classes into sub-clumps; at 30 it finds the clean ten-cluster structure; at 50 broader neighborhoods pull the clusters into a tighter global arrangement. The KL cost printed on each panel falls as perplexity rises — a lower KL does NOT mean a better plot, only a different trade-off. This is exactly why you must try several.](../images/tsne_perplexity.png)
 
 ### Reading our own digit map responsibly
 
@@ -414,7 +414,7 @@ The Distill experiments are worth internalizing because each maps to a specific 
 Being honest about the limits is the difference between using t-SNE and misusing it:
 
 - **Visualization only.** t-SNE targets 2-D (or 3-D) for human eyes. It is **not** a feature extractor — don't pipe its output into a classifier. Its objective optimizes a *picture*, not a representation that preserves information for downstream tasks.
-- **No out-of-sample transform (by default).** t-SNE places a *fixed* set of points; there is no learned function you can apply to a new point. Add data and you must re-run the whole embedding. (Parametric t-SNE, which trains a neural net to do the mapping, exists but is rarely used; [UMAP](08-UMAP.md) provides a `transform` for new points out of the box.)
+- **No out-of-sample transform (by default).** t-SNE places a *fixed* set of points; there is no learned function you can apply to a new point. Add data and you must re-run the whole embedding. (Parametric t-SNE, which trains a neural net to do the mapping, exists but is rarely used; [UMAP](../08-UMAP/08-UMAP.md) provides a `transform` for new points out of the box.)
 - **Non-deterministic.** Different seeds → different maps. Pin `random_state`.
 - **Global geometry is unreliable.** Inter-cluster distances and cluster sizes are not faithful (see the reading rules). Use it to see *what groups exist*, not *how far apart* they are.
 - **Sensitive to perplexity and to preprocessing.** No single perplexity is right; features should be scaled, and PCA-preprocessing to ~30–50 dims first is usually wise.
@@ -441,7 +441,7 @@ The three live on a spectrum. Know the trade-offs cold:
 | Main knob | # components | **perplexity** | `n_neighbors`, `min_dist` |
 | Use it for | Compression, denoising, features, a quick linear look | A faithful **local** 2-D picture | The modern default visualization + light preprocessing |
 
-The practical decision tree: need **features or compression or a reusable linear transform** → [PCA](06-Dimensionality-Reduction-Overview.md). Need the **clearest possible local 2-D picture** and you'll read it responsibly → **t-SNE**. Need **speed, scale, a `transform` for new points, or better global structure** → [UMAP](08-UMAP.md). And very often: **PCA → (t-SNE or UMAP)** as a two-stage pipeline.
+The practical decision tree: need **features or compression or a reusable linear transform** → [PCA](../06-Dimensionality-Reduction-Overview/06-Dimensionality-Reduction-Overview.md). Need the **clearest possible local 2-D picture** and you'll read it responsibly → **t-SNE**. Need **speed, scale, a `transform` for new points, or better global structure** → [UMAP](../08-UMAP/08-UMAP.md). And very often: **PCA → (t-SNE or UMAP)** as a two-stage pipeline.
 
 > **Note:** "t-SNE vs UMAP" is the standard follow-up question. The crisp answer: **UMAP is usually faster, scales better, keeps more global structure, and can transform new points; t-SNE is the older, extremely well-understood method whose *local* fidelity is excellent.** Both share the same humility — don't over-read cluster sizes or distances. UMAP earns its spot as the default; t-SNE remains the canonical teaching example and a superb local visualizer.
 
@@ -453,7 +453,7 @@ t-SNE shows up wherever someone needs to **eyeball the structure of a high-dimen
 
 - **Inspecting learned embeddings.** The most common use today: project the embedding layer of a neural net — word embeddings, sentence/document embeddings, the penultimate layer of an image classifier, the latent space of an autoencoder — to 2-D to *see* whether the model has learned to separate classes or concepts. If the classes already cluster in the embedding, t-SNE makes that obvious at a glance.
 - **Single-cell genomics.** t-SNE (and now UMAP) is a staple of single-cell RNA-seq analysis: each cell is a point in thousands of gene-expression dimensions, and the 2-D map reveals distinct cell types as separated clusters. This is one of the fields that made t-SNE famous.
-- **Quality-checking clusters.** After running [k-means](01-K-Means-Clustering.md) or [DBSCAN](03-DBSCAN.md) on high-D data, color a t-SNE plot by the cluster label to sanity-check whether the clusters look coherent and well-separated in neighborhood space.
+- **Quality-checking clusters.** After running [k-means](../01-K-Means-Clustering/01-K-Means-Clustering.md) or [DBSCAN](../03-DBSCAN/03-DBSCAN.md) on high-D data, color a t-SNE plot by the cluster label to sanity-check whether the clusters look coherent and well-separated in neighborhood space.
 - **Debugging and exploration.** Spotting outliers, mislabeled examples (a red dot deep inside a blue cluster), or unexpected sub-structure in a dataset before you model it.
 
 > **Gotcha:** never run t-SNE on **raw pixel/token space** and conclude "the data has no structure" if the plot looks like mush — run it on a **learned representation** (or at least PCA-reduced, scaled features). t-SNE visualizes whatever geometry you hand it; garbage geometry in, garbage picture out. The famous clean digit-clusters above come from 64-D feature vectors, not from a model that failed to learn.
@@ -477,7 +477,7 @@ The end-to-end recipe I actually follow, given "make a 2-D map of this high-D da
 5. **Read only what's robust.** Trust a cluster that appears across perplexities and seeds. Ignore cluster sizes, inter-cluster distances, and absolute orientation. Color by a known label or by a candidate cluster assignment to interpret.
 6. **Confirm before you claim.** If you'll act on "there are $k$ groups," corroborate with a non-visual method on the *original* features (silhouette scores, a clustering algorithm, downstream accuracy) — the t-SNE picture is the hypothesis, not the proof.
 
-> **Tip:** if you need any of {a transform for new points, much larger $n$, more faithful global structure, or to use the embedding as preprocessing for clustering}, switch to [UMAP](08-UMAP.md) — it's a near drop-in (`umap.UMAP().fit_transform(X)`) and was built to address exactly those t-SNE limitations.
+> **Tip:** if you need any of {a transform for new points, much larger $n$, more faithful global structure, or to use the embedding as preprocessing for clustering}, switch to [UMAP](../08-UMAP/08-UMAP.md) — it's a near drop-in (`umap.UMAP().fit_transform(X)`) and was built to address exactly those t-SNE limitations.
 
 ---
 

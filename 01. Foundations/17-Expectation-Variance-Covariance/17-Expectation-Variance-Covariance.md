@@ -52,5 +52,5 @@ their algebra (e.g. `Var(X) = E[X²] − E[X]²`).
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 0.03 Expectation, Variance, Covariance](../../../AI-ML-intuition/Module_0_Foundations/0.03_Expectation_Variance_Covariance.md) · [1.05 Spectral Methods (covariance → PCA)](../../../AI-ML-intuition/Module_1_Representation/1.05_Spectral_Methods_PCA_SVD.md)
 - Curriculum context: [Maths for AI-ML — Phase 3 (Probability, row 3.3)](../Maths%20for%20AI-ML/README.md)
-- Prereq: [16 Random Variables & Distributions](16-Random-Variables-and-Distributions.md) · Next: [18 LLN & CLT](18-LLN-and-CLT.md) · Related: [07 PCA — the math](07-Principal-Component-Analysis-Math.md)
+- Prereq: [16 Random Variables & Distributions](../16-Random-Variables-and-Distributions/16-Random-Variables-and-Distributions.md) · Next: [18 LLN & CLT](../18-LLN-and-CLT/18-LLN-and-CLT.md) · Related: [07 PCA — the math](../07-Principal-Component-Analysis-Math/07-Principal-Component-Analysis-Math.md)
 </content>

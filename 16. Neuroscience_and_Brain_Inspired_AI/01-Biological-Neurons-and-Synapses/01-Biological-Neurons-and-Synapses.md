@@ -52,5 +52,5 @@ where the analogy holds and breaks is the whole point of this domain.
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 4.14 Activation Functions & Softmax](../../../AI-ML-intuition/Module_4_Stabilization/4D_Nonlinearities/4.14_Activation_Functions_and_Softmax.md) — the artificial neuron a LIF neuron is a caricature of.
-- Next concepts: [02 Neural Coding](02-Neural-Coding.md) · [03 Spiking Neural Networks](03-Spiking-Neural-Networks.md)
-- Related domain: [05. Deep Learning](../../05.%20Deep_Learning/concepts/README.md)
+- Next concepts: [02 Neural Coding](../02-Neural-Coding/02-Neural-Coding.md) · [03 Spiking Neural Networks](../03-Spiking-Neural-Networks/03-Spiking-Neural-Networks.md)
+- Related domain: [05. Deep Learning](../../05.%20Deep_Learning/README.md)

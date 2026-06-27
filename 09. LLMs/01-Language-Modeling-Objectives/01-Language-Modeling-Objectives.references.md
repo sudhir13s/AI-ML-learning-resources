@@ -60,7 +60,7 @@ updated: 2026-06-26
 
 **In this platform**:
 - Concept page (full explanation): [Language Modeling Objectives](01-Language-Modeling-Objectives.md)
-- Foundations (the *why* behind transformers and softmax): [Transformer Architecture](../../05.%20Deep_Learning/concepts/16-Transformer-Architecture.md) · [Attention Mechanism](../../05.%20Deep_Learning/concepts/15-Attention-Mechanism.md)
+- Foundations (the *why* behind transformers and softmax): [Transformer Architecture](../../05.%20Deep_Learning/16-Transformer-Architecture/16-Transformer-Architecture.md) · [Attention Mechanism](../../05.%20Deep_Learning/15-Attention-Mechanism/15-Attention-Mechanism.md)
 - The pre-neural baseline: [N-gram Language Models and Smoothing](../../06.%20NLP/04-N-gram-Language-Models-and-Smoothing/04-N-gram-Language-Models-and-Smoothing.md) · the masked-LM encoders: [Contextual Embeddings (ELMo / BERT)](../../06.%20NLP/06-Contextual-Embeddings-ELMo-BERT/06-Contextual-Embeddings-ELMo-BERT.md)
 - Builds on this: [Decoder-only Architecture](../04-Decoder-only-Architecture/04-Decoder-only-Architecture.md) · [Pretraining at Scale](../02-Pretraining-at-Scale/02-Pretraining-at-Scale.md) · [Scaling Laws](../03-Scaling-Laws/03-Scaling-Laws.md)
 - Puts it to work: [Decoding and Sampling](../18-Decoding-and-Sampling/18-Decoding-and-Sampling.md) · [LLM Evaluation and Benchmarks](../19-LLM-Evaluation-and-Benchmarks/19-LLM-Evaluation-and-Benchmarks.md)

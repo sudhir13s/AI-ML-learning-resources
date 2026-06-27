@@ -52,6 +52,6 @@ optimizations (fusion, constant folding), and how it enables hardware-specific e
 - [ONNX Runtime documentation (full)](https://onnxruntime.ai/docs/) — **Microsoft** — a book-length, free guide to deployment and optimization.
 
 ## 🔗 In this platform
-- Related domain: [12. Deployment & MLOps](../../14.%20Deployment_and_MLOps/concepts/README.md) · [05. Deep Learning](../../05.%20Deep_Learning/concepts/README.md)
-- Pairs with: [05 PyTorch](05-PyTorch.md) · [06 TensorFlow & Keras](06-TensorFlow-and-Keras.md)
-- Deeper concept (the *why*): model serving & optimization → [Deployment & MLOps](../../14.%20Deployment_and_MLOps/concepts/README.md)
+- Related domain: [12. Deployment & MLOps](../../14.%20Deployment_and_MLOps/README.md) · [05. Deep Learning](../../05.%20Deep_Learning/README.md)
+- Pairs with: [05 PyTorch](../05-PyTorch/05-PyTorch.md) · [06 TensorFlow & Keras](../06-TensorFlow-and-Keras/06-TensorFlow-and-Keras.md)
+- Deeper concept (the *why*): model serving & optimization → [Deployment & MLOps](../../14.%20Deployment_and_MLOps/README.md)

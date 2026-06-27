@@ -15,7 +15,7 @@ updated: 2026-06-22
 2. **See it move** — play with [Setosa: PCA, interactive](https://setosa.io/ev/principal-component-analysis/). *Drag the cloud and watch the principal axes rotate to follow it; the best visual intuition, fully free.*
 3. **Get the math (two views)** — read [Shlens, "A Tutorial on PCA"](https://arxiv.org/abs/1404.1100). *Derives PCA from variance maximization AND from the SVD — exactly the two derivations interviews want.*
 4. **Map the landscape** — skim the [scikit-learn comparison of manifold methods](https://scikit-learn.org/stable/auto_examples/manifold/plot_compare_methods.html). *See PCA (linear) next to t-SNE / Isomap / LLE / UMAP on the same data.*
-5. **Make it concrete** — apply PCA with the [scikit-learn decomposition guide](https://scikit-learn.org/stable/modules/decomposition.html#pca), inspect the explained-variance ratio, then jump to the [t-SNE](07-t-SNE.md) / [UMAP](08-UMAP.md) pages for the non-linear methods.
+5. **Make it concrete** — apply PCA with the [scikit-learn decomposition guide](https://scikit-learn.org/stable/modules/decomposition.html#pca), inspect the explained-variance ratio, then jump to the [t-SNE](../07-t-SNE/07-t-SNE.md) / [UMAP](../08-UMAP/08-UMAP.md) pages for the non-linear methods.
 
 **Videos:**
 - [PCA, main ideas in only 5 minutes](https://www.youtube.com/watch?v=HMOI_lkzW08) — **StatQuest (Josh Starmer)** — the fastest correct mental model of components and scree.
@@ -55,9 +55,9 @@ updated: 2026-06-22
 
 **In this platform:**
 - Concept page (full explanation): [Dimensionality Reduction — Overview](06-Dimensionality-Reduction-Overview.md)
-- Non-linear siblings (the manifold methods): [t-SNE](07-t-SNE.md) · [UMAP](08-UMAP.md)
+- Non-linear siblings (the manifold methods): [t-SNE](../07-t-SNE/07-t-SNE.md) · [UMAP](../08-UMAP/08-UMAP.md)
 - The PCA/SVD math foundations (the *why*): [Foundations — Maths for AI-ML](../../01.%20Foundations/Maths%20for%20AI-ML/README.md) · [AI-ML-intuition 1.05 Spectral Methods (PCA / SVD)](../../../AI-ML-intuition/Module_1_Representation/1.05_Spectral_Methods_PCA_SVD.md)
-- The failure mode that motivates reduction: [k-Nearest Neighbors (curse of dimensionality)](../../03.%20Supervised_Learning/concepts/04-k-Nearest-Neighbors.md)
-- Learned non-linear compression: [Autoencoders → Deep Learning](../../05.%20Deep_Learning/concepts/README.md)
-- Acutely relevant preprocessing: [2. Data Preprocessing](../../02.%20Data_Preprocessing/concepts/README.md) — scaling/standardization, which PCA depends on
+- The failure mode that motivates reduction: [k-Nearest Neighbors (curse of dimensionality)](../../03.%20Supervised_Learning/04-k-Nearest-Neighbors/04-k-Nearest-Neighbors.md)
+- Learned non-linear compression: [Autoencoders → Deep Learning](../../05.%20Deep_Learning/README.md)
+- Acutely relevant preprocessing: [2. Data Preprocessing](../../02.%20Data_Preprocessing/README.md) — scaling/standardization, which PCA depends on
 - Field overview: [4. Unsupervised Learning](../README.md)

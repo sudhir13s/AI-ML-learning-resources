@@ -53,5 +53,5 @@ training folds only** — never before the split.
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 3.05 Precision, Recall, F1](../../../AI-ML-intuition/Module_3_Evaluation/3.05_Classification_Metrics_Precision_Recall_F1.md) · [3.06 ROC/AUC & PR Curves](../../../AI-ML-intuition/Module_3_Evaluation/3.06_ROC_AUC_PR_Curves.md)
-- Next concepts: [10 Train/Validation/Test Splits](10-Train-Validation-Test-Splits.md) · [11 Data Leakage](11-Data-Leakage.md)
-- Related domain: [03. Supervised Learning](../../03.%20Supervised_Learning/concepts/README.md)
+- Next concepts: [10 Train/Validation/Test Splits](../10-Train-Validation-Test-Splits/10-Train-Validation-Test-Splits.md) · [11 Data Leakage](../11-Data-Leakage/11-Data-Leakage.md)
+- Related domain: [03. Supervised Learning](../../03.%20Supervised_Learning/README.md)

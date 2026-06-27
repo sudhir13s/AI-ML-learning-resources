@@ -49,8 +49,8 @@ updated: 2026-06-22
 
 **In this platform**:
 - Concept page (full explanation): [Kernel Density Estimation](10-Kernel-Density-Estimation.md)
-- Parametric counterpart (the contrast): [Gaussian Mixture Models & EM](04-Gaussian-Mixture-Models-and-EM.md) — KDE is a GMM with one fixed bump per point
-- Puts it to work: [Anomaly / Outlier Detection](09-Anomaly-Outlier-Detection.md) — low estimated density = outlier
+- Parametric counterpart (the contrast): [Gaussian Mixture Models & EM](../04-Gaussian-Mixture-Models-and-EM/04-Gaussian-Mixture-Models-and-EM.md) — KDE is a GMM with one fixed bump per point
+- Puts it to work: [Anomaly / Outlier Detection](../09-Anomaly-Outlier-Detection/09-Anomaly-Outlier-Detection.md) — low estimated density = outlier
 - Method tie: [The Kernel Trick (intuition)](../../../AI-ML-intuition/Module_1_Representation/1.16_The_Kernel_Trick.md) — the same Gaussian bump, used for inner products rather than density
 - Foundations (the *why*): [Distributions & the Gaussian (intuition)](../../../AI-ML-intuition/Module_0_Foundations/0.02_Distributions_and_the_Gaussian.md) — the kernel is usually a Gaussian bump
 - Prereq math: [Foundations — Linear Algebra (vectors & matrices)](../../01.%20Foundations/Maths%20for%20AI-ML/1.%20Linear%20Algebra/VectorsAndMatrices.md)

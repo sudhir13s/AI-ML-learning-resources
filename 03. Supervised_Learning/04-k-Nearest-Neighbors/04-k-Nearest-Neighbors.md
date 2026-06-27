@@ -225,7 +225,7 @@ $$\mathbb{E}\big[(\hat{f}(x^\star) - y)^2\big] = \underbrace{\Big(\tfrac{1}{k}\t
 
 This is the **bias–variance decomposition** with kNN's two terms moving in opposite directions in k — minimizing their sum gives the U-curve you measured in Example 3, and the variance term $\sigma^2/k$ is the precise sense in which complexity scales like $1/k$ (so $\approx n/k$ regions over the whole space). This is the ESL Ch. 13.3 / 7 argument; sources in the references.
 
-> **Note:** the same $\sigma^2/k$ shows up in [Bagging](08-Bagging.md), where averaging $B$ models divides variance by up to $B$. kNN is "averaging k neighbors"; bagging is "averaging B models" — both are variance reduction by averaging, and both pay for it in a different currency (bias from distant neighbors here; correlation between models there).
+> **Note:** the same $\sigma^2/k$ shows up in [Bagging](../08-Bagging/08-Bagging.md), where averaging $B$ models divides variance by up to $B$. kNN is "averaging k neighbors"; bagging is "averaging B models" — both are variance reduction by averaging, and both pay for it in a different currency (bias from distant neighbors here; correlation between models there).
 
 ---
 
@@ -331,7 +331,7 @@ The trade is **flexibility vs. cost and dimensionality**. kNN wins when the boun
 
 It's worth placing kNN in the larger **taxonomy of classifiers**, because the contrast sharpens what kNN is:
 
-- **Generative** (e.g. [Naive Bayes](05-Naive-Bayes.md)) — model how each class *generates* features, $P(x \mid y)$, then invert with Bayes' rule. Strong assumptions, very data-efficient, great with few samples.
+- **Generative** (e.g. [Naive Bayes](../05-Naive-Bayes/05-Naive-Bayes.md)) — model how each class *generates* features, $P(x \mid y)$, then invert with Bayes' rule. Strong assumptions, very data-efficient, great with few samples.
 - **Discriminative parametric** (e.g. logistic regression, linear SVM) — model the boundary $P(y \mid x)$ directly with a fixed functional form. Few parameters, fast, robust in high dimensions, but constrained in shape.
 - **Discriminative non-parametric / instance-based** (**kNN**) — model $P(y \mid x)$ *locally* with no global form, letting the data shape the boundary. Maximally flexible, but hungry for data and fragile in high dimensions.
 

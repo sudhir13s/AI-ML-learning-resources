@@ -54,5 +54,5 @@ defense, and when to make the model refuse rather than guess.
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 8.02 Retrieval-Augmented Generation](../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.02_Retrieval_Augmented_Generation.md) · [8.01 In-Context Learning & Prompting](../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.01_In-Context_Learning_and_Prompting.md)
-- Prereqs: [11 RAG Evaluation](11-RAG-Evaluation.md) · [13 Citations & Attribution](13-Citations-and-Attribution.md) · Next: [15 LLM App Orchestration](15-LLM-App-Orchestration.md)
+- Prereqs: [11 RAG Evaluation](../11-RAG-Evaluation/11-RAG-Evaluation.md) · [13 Citations & Attribution](../13-Citations-and-Attribution/13-Citations-and-Attribution.md) · Next: [15 LLM App Orchestration](../15-LLM-App-Orchestration/15-LLM-App-Orchestration.md)
 - Related domain: [09. LLMs — Hallucination & Alignment Basics](../../09.%20LLMs/20-Hallucination-and-Alignment-Basics/20-Hallucination-and-Alignment-Basics.md)

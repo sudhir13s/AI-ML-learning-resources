@@ -26,7 +26,7 @@ shatter a set? what's the VC dimension of intervals / half-spaces?"). It's the b
 2. **See where it comes from** — watch [Lecture 5: Training vs Testing](https://www.youtube.com/watch?v=SEYAnnLazMU) and [Lecture 6: Theory of Generalization](https://www.youtube.com/watch?v=6FWRijsmLtE). *The growth function and Sauer's lemma that VC dimension controls.*
 3. **Read it rigorously** — work [Understanding Machine Learning, Ch. 6 (VC dimension)](https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/understanding-machine-learning-theory-algorithms.pdf). *Sauer–Shelah lemma and the fundamental theorem of PAC learning.*
 4. **Prove the bound** — derive the VC generalization bound and Sauer's lemma from those chapters. *The polynomial-bound-from-finite-VC argument is the technical core.*
-5. **Push to data-dependent capacity** — see why VC can be loose for deep nets, then move to [Rademacher complexity](07-Rademacher-Complexity-and-Generalization-Bounds.md). *VC is worst-case; Rademacher is the tighter, distribution-aware successor.*
+5. **Push to data-dependent capacity** — see why VC can be loose for deep nets, then move to [Rademacher complexity](../07-Rademacher-Complexity-and-Generalization-Bounds/07-Rademacher-Complexity-and-Generalization-Bounds.md). *VC is worst-case; Rademacher is the tighter, distribution-aware successor.*
 
 ## 🎓 Courses (free)
 - [Learning From Data (Caltech CS156) — VC lectures](https://work.caltech.edu/telecourse.html) — **Yaser Abu-Mostafa (Caltech)** — the canonical lectures on shattering, growth function, and VC bounds, free.
@@ -54,6 +54,6 @@ shatter a set? what's the VC dimension of intervals / half-spaces?"). It's the b
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 3.07 Bias–Variance & Generalization](../../../AI-ML-intuition/Module_3_Evaluation/3.07_Bias_Variance_and_Generalization.md) · [3.08 Ensembles (Bagging/Boosting)](../../../AI-ML-intuition/Module_3_Evaluation/3.08_Ensembles_Bagging_Boosting.md)
-- Prerequisite & next: [05 Statistical Learning Theory (PAC)](05-Statistical-Learning-Theory-PAC.md) · [07 Rademacher Complexity & Generalization Bounds](07-Rademacher-Complexity-and-Generalization-Bounds.md)
-- Related domain: [03. Supervised Learning](../../03.%20Supervised_Learning/concepts/README.md)
+- Prerequisite & next: [05 Statistical Learning Theory (PAC)](../05-Statistical-Learning-Theory-PAC/05-Statistical-Learning-Theory-PAC.md) · [07 Rademacher Complexity & Generalization Bounds](../07-Rademacher-Complexity-and-Generalization-Bounds/07-Rademacher-Complexity-and-Generalization-Bounds.md)
+- Related domain: [03. Supervised Learning](../../03.%20Supervised_Learning/README.md)
 </content>

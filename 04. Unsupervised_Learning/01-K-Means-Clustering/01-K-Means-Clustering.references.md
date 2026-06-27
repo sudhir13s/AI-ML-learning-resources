@@ -53,6 +53,6 @@ updated: 2026-06-22
 **In this platform**:
 - Concept page (full explanation): [K-Means Clustering](01-K-Means-Clustering.md)
 - Concept depth (the *why*): [AI-ML-intuition 1.18 K-Means Clustering](../../../AI-ML-intuition/Module_1_Representation/1.18_KMeans_Clustering.md)
-- Next concepts: [02 Hierarchical Clustering](02-Hierarchical-Clustering.md) · [03 DBSCAN](03-DBSCAN.md) · [04 Gaussian Mixture Models & EM](04-Gaussian-Mixture-Models-and-EM.md) · [05 Spectral Clustering](05-Spectral-Clustering.md)
+- Next concepts: [02 Hierarchical Clustering](../02-Hierarchical-Clustering/02-Hierarchical-Clustering.md) · [03 DBSCAN](../03-DBSCAN/03-DBSCAN.md) · [04 Gaussian Mixture Models & EM](../04-Gaussian-Mixture-Models-and-EM/04-Gaussian-Mixture-Models-and-EM.md) · [05 Spectral Clustering](../05-Spectral-Clustering/05-Spectral-Clustering.md)
 - Prereq math: [Foundations — Linear Algebra (vectors & matrices)](../../01.%20Foundations/Maths%20for%20AI-ML/1.%20Linear%20Algebra/VectorsAndMatrices.md)
 - Field overview: [4. Unsupervised Learning](../README.md)

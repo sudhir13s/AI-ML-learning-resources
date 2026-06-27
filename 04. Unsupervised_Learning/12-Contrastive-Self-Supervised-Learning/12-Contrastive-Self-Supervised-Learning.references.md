@@ -63,5 +63,5 @@ updated: 2026-06-22
 - Concept page (full explanation): [Contrastive / Self-Supervised Learning](12-Contrastive-Self-Supervised-Learning.md)
 - Foundations (the *why*): [AI-ML-intuition 1.13 Contrastive Learning (SimCLR / InfoNCE)](../../../AI-ML-intuition/Module_1_Representation/1.13_Representation_Contrastive_Learning_SimCLR_InfoNCE.md) · [1.14 Triplet Loss](../../../AI-ML-intuition/Module_1_Representation/1.14_Triplet_Loss.md) · [1.02 Dense Embeddings](../../../AI-ML-intuition/Module_1_Representation/1.02_Dense_Embeddings.md)
 - Loss foundations: [AI-ML-intuition 5.01 Entropy & KL Divergence](../../../AI-ML-intuition/Module_5_Generation/5.01_Information_Theory_Entropy_KL_Divergence.md) — InfoNCE is a cross-entropy / MI-bound loss
-- Evaluating the representation: [k-Nearest Neighbors](../../03.%20Supervised_Learning/concepts/04-k-Nearest-Neighbors.md) — the k-NN probe for self-supervised embeddings
-- Where it leads: [4. Unsupervised Learning](../README.md) · [Deep Learning concepts](../../05.%20Deep_Learning/concepts/README.md)
+- Evaluating the representation: [k-Nearest Neighbors](../../03.%20Supervised_Learning/04-k-Nearest-Neighbors/04-k-Nearest-Neighbors.md) — the k-NN probe for self-supervised embeddings
+- Where it leads: [4. Unsupervised Learning](../README.md) · [Deep Learning concepts](../../05.%20Deep_Learning/README.md)

@@ -61,7 +61,7 @@ updated: 2026-06-27
 **In this platform**:
 - Concept page (full explanation): [Sentence & Document Embeddings](07-Sentence-and-Document-Embeddings.md)
 - Builds on: [Word Embeddings (Word2Vec · GloVe · FastText)](../05-Word-Embeddings-Word2Vec-GloVe-FastText/05-Word-Embeddings-Word2Vec-GloVe-FastText.md) — the static vectors we average · [Contextual Embeddings (ELMo · BERT)](../06-Contextual-Embeddings-ELMo-BERT/06-Contextual-Embeddings-ELMo-BERT.md) — the token-level vectors we pool, and the anisotropy source.
-- The training engine: [Contrastive / Self-Supervised Learning](../../04.%20Unsupervised_Learning/concepts/12-Contrastive-Self-Supervised-Learning.md) — InfoNCE, positives/negatives, alignment & uniformity behind SimCSE.
+- The training engine: [Contrastive / Self-Supervised Learning](../../04.%20Unsupervised_Learning/12-Contrastive-Self-Supervised-Learning/12-Contrastive-Self-Supervised-Learning.md) — InfoNCE, positives/negatives, alignment & uniformity behind SimCSE.
 - Puts it to work: [Information Retrieval & Semantic Search](../16-Information-Retrieval-and-Semantic-Search/16-Information-Retrieval-and-Semantic-Search.md) — BM25, dense retrieval, ANN indexing, and retrieve-then-rerank.
 - Related building blocks: [Bag-of-Words & TF-IDF](../03-Bag-of-Words-and-TF-IDF/03-Bag-of-Words-and-TF-IDF.md) — the lexical baseline (and the IDF instinct SIF echoes).
 - Concept depth (the *why*): [AI-ML-intuition 1.02 Dense Embeddings](../../../AI-ML-intuition/Module_1_Representation/1.02_Dense_Embeddings.md) · [1.13 Contrastive Learning (SimCLR · InfoNCE)](../../../AI-ML-intuition/Module_1_Representation/1.13_Representation_Contrastive_Learning_SimCLR_InfoNCE.md)

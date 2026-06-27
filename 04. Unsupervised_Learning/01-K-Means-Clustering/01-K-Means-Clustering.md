@@ -34,7 +34,7 @@ Supervised learning hands you $(x, y)$ pairs and asks you to predict $y$. **Clus
 
 That immediately raises a question: *what makes a partition good?* You have to commit to a definition before you can optimize anything. K-means makes one specific, consequential choice: **a good cluster is a compact, round blob around a center point.** Concretely, it measures a cluster's quality by how tightly its points hug a single representative point — the **centroid** — using squared Euclidean distance. Everything else in k-means follows mechanically from that one decision, including all of its strengths *and* every one of its failure modes.
 
-> **Gotcha:** because k-means has to be *told* how many groups to find — the **k** is an input, not something it discovers — choosing k is a first-class problem, not an afterthought. We give it a whole section below. Algorithms like [DBSCAN](03-DBSCAN.md) discover the number of clusters from density instead; that's their main selling point against k-means.
+> **Gotcha:** because k-means has to be *told* how many groups to find — the **k** is an input, not something it discovers — choosing k is a first-class problem, not an afterthought. We give it a whole section below. Algorithms like [DBSCAN](../03-DBSCAN/03-DBSCAN.md) discover the number of clusters from density instead; that's their main selling point against k-means.
 
 ---
 
@@ -81,7 +81,7 @@ graph TD
 
 That's the whole loop. Two cheap steps, alternated. The picture below shows it running on four blobs — watch the X-marked centroids slide into place and the inertia $J$ fall on every panel:
 
-![Lloyd's algorithm on four blobs across three snapshots — initialization (iter 0), after one assign+update step (iter 1), and at convergence (iter 5). The inertia J printed above each panel falls monotonically: 12,901 → 4,770 → 2,500. The centroids (X marks) start poorly placed and migrate to the true cluster centers.](images/kmeans_lloyd_iters.png)
+![Lloyd's algorithm on four blobs across three snapshots — initialization (iter 0), after one assign+update step (iter 1), and at convergence (iter 5). The inertia J printed above each panel falls monotonically: 12,901 → 4,770 → 2,500. The centroids (X marks) start poorly placed and migrate to the true cluster centers.](../images/kmeans_lloyd_iters.png)
 
 > **Note:** people call this loop **EM-like**, and the analogy is exact: the assign step is the "E" (figure out which cluster each point belongs to) and the update step is the "M" (re-estimate the parameters given those memberships). We make the connection to Gaussian mixtures and real EM rigorous in a later section — k-means is the *hard-assignment* special case.
 
@@ -147,7 +147,7 @@ A bad initialization is easy to construct: drop two centroids inside one true cl
 - **Random restarts.** Run Lloyd's from many random initializations and keep the result with the **lowest $J$**. scikit-learn does this by default — that's what `n_init=10` means: ten independent starts, best inertia wins.
 - **Smart seeding (k-means++).** Spread the initial centers out *on purpose* so they're unlikely to start clumped. This single idea, below, is so effective it's the default initializer everywhere.
 
-![Distribution of final inertia over 60 single-start runs on a six-blob layout: random initialization (red) versus k-means++ (green). Random init scatters widely (mean 2,474, up to 8,903 — those are bad local optima). k-means++ piles tightly near the optimum (mean 743, best 727). Smart seeding lands near the global optimum far more reliably.](images/kmeans_init.png)
+![Distribution of final inertia over 60 single-start runs on a six-blob layout: random initialization (red) versus k-means++ (green). Random init scatters widely (mean 2,474, up to 8,903 — those are bad local optima). k-means++ piles tightly near the optimum (mean 743, best 727). Smart seeding lands near the global optimum far more reliably.](../images/kmeans_init.png)
 
 The histogram makes the case viscerally: with **random** seeding, most starts land at terrible local optima (inertia in the thousands), and you'd need many restarts to stumble onto a good one. With **k-means++**, nearly every single start lands near the optimum. Same Lloyd's loop afterward — only the starting point differs.
 
@@ -197,7 +197,7 @@ Read it: $s(i) \approx 1$ means $i$ is much closer to its own cluster than to an
 
 **4. Davies–Bouldin index.** The average over clusters of each cluster's worst-case ratio of (within-cluster scatter) to (between-cluster separation) with its most-similar neighbor. **Lower is better**, and you pick the $k$ that **minimizes** it.
 
-![Two panels for choosing k on a clean four-blob dataset. Left: the elbow method — inertia J falls steeply through k=4 then flattens, with a visible bend (elbow) circled at k=4. Right: the mean silhouette score, which peaks (not bends) at k=4 with s=0.791. Both methods independently select the true k=4.](images/kmeans_elbow_silhouette.png)
+![Two panels for choosing k on a clean four-blob dataset. Left: the elbow method — inertia J falls steeply through k=4 then flattens, with a visible bend (elbow) circled at k=4. Right: the mean silhouette score, which peaks (not bends) at k=4 with s=0.791. Both methods independently select the true k=4.](../images/kmeans_elbow_silhouette.png)
 
 On a clean four-blob dataset both methods agree: the elbow bends at $k=4$ and the silhouette **peaks** at $k=4$ ($s=0.791$). Note the difference in *shape* you're hunting — the elbow is a **bend** in a monotone-falling curve (somewhat subjective), while the silhouette is an actual **maximum** (less ambiguous). When they disagree, trust the silhouette and your knowledge of the domain.
 
@@ -251,13 +251,13 @@ Every strength of k-means traces back to one decision: *a cluster is a round blo
 
 And one structural limit on top of those: k-means only ever produces **convex, linearly-separable (Voronoi) partitions** — each cluster is the region closest to its center, so the boundaries between clusters are straight lines (hyperplanes). It **cannot** represent a non-convex shape like a crescent or a ring.
 
-![Four panels showing k-means failing on non-spherical structure. Top row: two interleaving moons — the TRUE clusters are the two crescents, but k-means (k=2) cuts straight across both, splitting each moon. Bottom row: three anisotropic (sheared, stretched) blobs — the TRUE clusters are diagonal stripes, but k-means (k=3) carves them into round Voronoi cells that cut across the stripes. K-means assumes round, equal clusters and breaks on curved or stretched structure.](images/kmeans_failure.png)
+![Four panels showing k-means failing on non-spherical structure. Top row: two interleaving moons — the TRUE clusters are the two crescents, but k-means (k=2) cuts straight across both, splitting each moon. Bottom row: three anisotropic (sheared, stretched) blobs — the TRUE clusters are diagonal stripes, but k-means (k=3) carves them into round Voronoi cells that cut across the stripes. K-means assumes round, equal clusters and breaks on curved or stretched structure.](../images/kmeans_failure.png)
 
 The figure is the lesson. On the **two moons**, the true clusters are interleaving crescents — non-convex — and k-means slices a straight line through both because it can only draw convex boundaries. On the **anisotropic blobs**, the true clusters are diagonal stripes, but k-means' round-cluster bias carves them into Voronoi cells that cut *across* the stripes. Neither failure is a bug; both are the *direct, predictable consequence* of the spherical-equal-cluster assumption. This is exactly the setup for the next algorithms you learn:
 
-- **[DBSCAN](03-DBSCAN.md)** clusters by *density* and recovers arbitrary shapes (the moons) — and discovers $k$ itself.
-- **[Gaussian Mixture Models](04-Gaussian-Mixture-Models-and-EM.md)** give each cluster its own *covariance* (shape + orientation), handling the anisotropic blobs.
-- **[Spectral clustering](05-Spectral-Clustering.md)** maps the data into a space where non-convex clusters become separable, then runs k-means there.
+- **[DBSCAN](../03-DBSCAN/03-DBSCAN.md)** clusters by *density* and recovers arbitrary shapes (the moons) — and discovers $k$ itself.
+- **[Gaussian Mixture Models](../04-Gaussian-Mixture-Models-and-EM/04-Gaussian-Mixture-Models-and-EM.md)** give each cluster its own *covariance* (shape + orientation), handling the anisotropic blobs.
+- **[Spectral clustering](../05-Spectral-Clustering/05-Spectral-Clustering.md)** maps the data into a space where non-convex clusters become separable, then runs k-means there.
 
 > **Tip:** the clean interview answer to "when does k-means fail?" is the trio — **non-spherical** shapes (moons, rings), **unequal sizes/densities**, and anything **non-convex** — *because* the algorithm minimizes squared distance to a mean and therefore can only draw convex, equal-ish round cells. Naming the *cause* (the objective), not just the symptoms, is what separates a good answer from a great one.
 
@@ -303,7 +303,7 @@ So k-means is GMM-EM with the modeling power stripped down to bare bones. That s
 
 $$O(n \cdot k \cdot d \cdot i),$$
 
-**linear in the number of points** — which is exactly why k-means scales to large datasets where pairwise-distance methods (like [hierarchical clustering](02-Hierarchical-Clustering.md) at $O(n^2)$) don't. That linear cost, plus the simplicity, is why k-means endures as a baseline.
+**linear in the number of points** — which is exactly why k-means scales to large datasets where pairwise-distance methods (like [hierarchical clustering](../02-Hierarchical-Clustering/02-Hierarchical-Clustering.md) at $O(n^2)$) don't. That linear cost, plus the simplicity, is why k-means endures as a baseline.
 
 > **Tip:** a quick decision guide. Big data → **mini-batch**. Outliers or a non-Euclidean metric → **k-medoids/k-medians**. Need cluster shapes or soft memberships → **GMM**. Non-convex shapes or unknown $k$ → **DBSCAN / spectral**. Plain round blobs and you know $k$ → **k-means** is the right, fast default.
 
@@ -455,7 +455,7 @@ our inertia = 948.9   sklearn inertia = 948.9   (match)
 
 > **Note:** every claim on this page is in that output. **(1)** $J$ falls $1900.5 \to 949.1 \to 948.9$ and then *holds* — monotonic decrease and convergence, with the `assert` guaranteeing it never rises. **(2)** k-means++ averages **1187.7** versus random's **2571.6**, and is **4× tighter** (std 716 vs 2930) — random seeding leaves many starts trapped in bad local optima while k-means++ reliably lands near the optimum. **(3)** the silhouette **peaks at $k=4$** (0.791) — the true cluster count. **(4)** our from-scratch inertia equals sklearn's to the decimal (948.9 = 948.9). The theory isn't aspirational; it's reproducible.
 
-> **Tip:** to feel the failure modes, swap `make_blobs` for `make_moons(noise=0.05)` and rerun — the silhouette will *refuse* to strongly prefer the true $k=2$, because k-means can't represent crescents. That refusal is the algorithm honestly telling you it's the wrong tool. Then try [DBSCAN](03-DBSCAN.md) on the same data and watch it nail both moons.
+> **Tip:** to feel the failure modes, swap `make_blobs` for `make_moons(noise=0.05)` and rerun — the silhouette will *refuse* to strongly prefer the true $k=2$, because k-means can't represent crescents. That refusal is the algorithm honestly telling you it's the wrong tool. Then try [DBSCAN](../03-DBSCAN/03-DBSCAN.md) on the same data and watch it nail both moons.
 
 ---
 

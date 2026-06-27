@@ -41,11 +41,11 @@ and books for that topic.
 
 ### Related concepts (covered in another section)
 > These topics are used across many areas, so they're kept in one place to avoid repetition.
-- **PCA / SVD math & dimensionality reduction** → [01. Foundations](../01.%20Foundations/concepts/README.md)
-- **Clustering · t-SNE · UMAP** → [04. Unsupervised Learning](../04.%20Unsupervised_Learning/concepts/README.md)
+- **PCA / SVD math & dimensionality reduction** → [01. Foundations](../01.%20Foundations/README.md)
+- **Clustering · t-SNE · UMAP** → [04. Unsupervised Learning](../04.%20Unsupervised_Learning/README.md)
 - **Tokenization · text normalization · subword algorithms** → [06. NLP](../06.%20NLP/README.md)
-- **Image augmentation & vision-specific preprocessing** → [07. Computer Vision](../07.%20Computer%20Vision/concepts/README.md)
-- **Feature stores & serving-time feature pipelines** → [14. Deployment & MLOps](../14.%20Deployment_and_MLOps/concepts/README.md)
+- **Image augmentation & vision-specific preprocessing** → [07. Computer Vision](../07.%20Computer%20Vision/README.md)
+- **Feature stores & serving-time feature pipelines** → [14. Deployment & MLOps](../14.%20Deployment_and_MLOps/README.md)
 - **Bias–variance & generalization** → [03. Supervised Learning](../03.%20Supervised_Learning/README.md)
 
 ## 🎓 Courses (free)

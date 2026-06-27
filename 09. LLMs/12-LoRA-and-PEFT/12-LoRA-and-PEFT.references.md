@@ -58,6 +58,6 @@ updated: 2026-06-26
 
 **In this platform**:
 - Concept page (full explanation): [LoRA & PEFT](12-LoRA-and-PEFT.md)
-- Foundations (the *why* behind the weights LoRA adapts): [Attention Mechanism](../../05.%20Deep_Learning/concepts/15-Attention-Mechanism.md) · [Transformer Architecture](../../05.%20Deep_Learning/concepts/16-Transformer-Architecture.md)
+- Foundations (the *why* behind the weights LoRA adapts): [Attention Mechanism](../../05.%20Deep_Learning/15-Attention-Mechanism/15-Attention-Mechanism.md) · [Transformer Architecture](../../05.%20Deep_Learning/16-Transformer-Architecture/16-Transformer-Architecture.md)
 - Builds on this: [Quantization](../10-Quantization/10-Quantization.md) (NF4 / 4-bit, the base of QLoRA) · [Pretraining at Scale](../02-Pretraining-at-Scale/02-Pretraining-at-Scale.md) (the base LoRA adapts) · [Decoder-only Architecture](../04-Decoder-only-Architecture/04-Decoder-only-Architecture.md)
 - Puts it to work: [Supervised Fine-Tuning](../13-Supervised-Fine-Tuning/13-Supervised-Fine-Tuning.md) · [Instruction Tuning](../14-Instruction-Tuning/14-Instruction-Tuning.md) · [RLHF and DPO](../15-RLHF-and-DPO/15-RLHF-and-DPO.md)

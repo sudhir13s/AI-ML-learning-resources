@@ -56,6 +56,6 @@ in production than diffusion.
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 5.01 Entropy & KL Divergence](../../../AI-ML-intuition/Module_5_Generation/5.01_Information_Theory_Entropy_KL_Divergence.md)
-- Closely related: [06 Score-Based & SDE Diffusion](06-Score-Based-and-SDE-Diffusion.md) (the score is the negative energy gradient; both sample by Langevin)
-- Compare with: [02 GANs & DCGAN](02-GANs-and-DCGAN.md) (the discriminator is an implicit energy) · [08 Normalizing Flows](08-Normalizing-Flows.md)
+- Closely related: [06 Score-Based & SDE Diffusion](../06-Score-Based-and-SDE-Diffusion/06-Score-Based-and-SDE-Diffusion.md) (the score is the negative energy gradient; both sample by Langevin)
+- Compare with: [02 GANs & DCGAN](../02-GANs-and-DCGAN/02-GANs-and-DCGAN.md) (the discriminator is an implicit energy) · [08 Normalizing Flows](../08-Normalizing-Flows/08-Normalizing-Flows.md)
 - Field overview: [9. Generative AI](../README.md)

@@ -52,5 +52,5 @@ optimization.
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 2.01 Partial Derivatives & the Gradient](../../../AI-ML-intuition/Module_2_Optimization/2.01_Partial_Derivatives_and_the_Gradient.md)
 - Curriculum context: [Maths for AI-ML — Phase 2 (Calculus, row 2.1)](../Maths%20for%20AI-ML/README.md)
-- Prereq: [01 Vectors & Vector Spaces](01-Vectors-and-Vector-Spaces.md) · Next: [09 The Chain Rule](09-The-Chain-Rule.md) · [10 Jacobian & Hessian](10-Jacobian-and-Hessian.md) · [13 Gradient Descent — theory](13-Gradient-Descent-Theory.md)
+- Prereq: [01 Vectors & Vector Spaces](../01-Vectors-and-Vector-Spaces/01-Vectors-and-Vector-Spaces.md) · Next: [09 The Chain Rule](../09-The-Chain-Rule/09-The-Chain-Rule.md) · [10 Jacobian & Hessian](../10-Jacobian-and-Hessian/10-Jacobian-and-Hessian.md) · [13 Gradient Descent — theory](../13-Gradient-Descent-Theory/13-Gradient-Descent-Theory.md)
 </content>

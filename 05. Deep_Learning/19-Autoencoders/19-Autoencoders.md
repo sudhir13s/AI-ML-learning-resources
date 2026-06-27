@@ -36,7 +36,7 @@ The autoencoder's answer is a trick of remarkable economy: **make the network re
 
 > **Note:** "reconstruct the input" sounds circular and useless until you add the bottleneck. The constraint is everything. An autoencoder with no constraint (or capacity to spare) learns the identity function — a perfect reconstruction that teaches you nothing. Every interesting autoencoder is defined by **what stops it from learning the identity**: a narrow bottleneck (undercomplete), a sparsity penalty, input corruption, a Jacobian penalty, or a probabilistic prior.
 
-This is the same goal as **[dimensionality reduction](../../04.%20Unsupervised_Learning/concepts/06-Dimensionality-Reduction-Overview.md)** — re-express data in fewer coordinates while keeping what matters. PCA does it *linearly*; an autoencoder does it with a *learned, nonlinear* map, which is why we'll spend real effort pinning down exactly when (and how much) the nonlinearity helps.
+This is the same goal as **[dimensionality reduction](../../04.%20Unsupervised_Learning/06-Dimensionality-Reduction-Overview/06-Dimensionality-Reduction-Overview.md)** — re-express data in fewer coordinates while keeping what matters. PCA does it *linearly*; an autoencoder does it with a *learned, nonlinear* map, which is why we'll spend real effort pinning down exactly when (and how much) the nonlinearity helps.
 
 ---
 
@@ -72,7 +72,7 @@ Two analogies make the bottleneck click.
 
 **The lossy compressor.** An autoencoder is a **learned, data-specific JPEG**. JPEG uses a fixed basis (the discrete cosine transform) that works okay on all images; an autoencoder *learns* a basis tailored to *your* data — faces, or digits, or ECG traces — so it compresses *those* far better than a generic codec, at the cost of being useless on anything else. The encoder is the compressor, the code is the compressed file, the decoder is the decompressor.
 
-> **Tip:** the "data-specific codec" framing also explains a key failure mode: an autoencoder trained on cats reconstructs cats beautifully and dogs *poorly* — it never learned dog structure. That very weakness is the engine of **[anomaly detection](../../04.%20Unsupervised_Learning/concepts/09-Anomaly-Outlier-Detection.md)**: train on normal data, and anything the autoencoder reconstructs *badly* (high reconstruction error) is, by definition, unlike the training distribution — i.e. an anomaly. We return to this.
+> **Tip:** the "data-specific codec" framing also explains a key failure mode: an autoencoder trained on cats reconstructs cats beautifully and dogs *poorly* — it never learned dog structure. That very weakness is the engine of **[anomaly detection](../../04.%20Unsupervised_Learning/09-Anomaly-Outlier-Detection/09-Anomaly-Outlier-Detection.md)**: train on normal data, and anything the autoencoder reconstructs *badly* (high reconstruction error) is, by definition, unlike the training distribution — i.e. an anomaly. We return to this.
 
 ---
 
@@ -81,7 +81,7 @@ Two analogies make the bottleneck click.
 Autoencoders earn their place on three fronts at once:
 
 - **Representation learning / dimensionality reduction.** The learned code $\mathbf{z}$ is a compact, nonlinear feature vector you can feed to a downstream classifier, cluster, or visualize. Hinton & Salakhutdinov (2006) showed deep autoencoders beat PCA at this — recovering 2-D codes that separate classes PCA smears together.
-- **Generative modeling.** Make the latent **probabilistic** (the VAE) and you can *sample* new data by drawing a code from the prior and decoding it. This is the conceptual root of **[latent diffusion](../../10.%20GenAI/concepts/07-Latent-Diffusion-Stable-Diffusion.md)** — Stable Diffusion runs diffusion inside a VAE's latent space because it's far cheaper than pixel space.
+- **Generative modeling.** Make the latent **probabilistic** (the VAE) and you can *sample* new data by drawing a code from the prior and decoding it. This is the conceptual root of **[latent diffusion](../../10.%20GenAI/07-Latent-Diffusion-Stable-Diffusion/07-Latent-Diffusion-Stable-Diffusion.md)** — Stable Diffusion runs diffusion inside a VAE's latent space because it's far cheaper than pixel space.
 - **Robustness, denoising, and detection.** Denoising autoencoders clean corrupted inputs; reconstruction error flags anomalies; masked autoencoders pretrain vision backbones (He et al. 2022).
 
 That breadth — one simple idea (reconstruct through a bottleneck) spawning compression, generation, denoising, detection, and pretraining — is why autoencoders are a perennial interview topic and a foundational building block.
@@ -273,7 +273,7 @@ $$\mathcal{L}_{\text{CAE}} \;=\; \frac{1}{N}\sum_i \lVert \mathbf{x}^{(i)} - \ha
 
 So far the code $\mathbf{z}$ is just a point — a deterministic summary. That's great for compression and features, but it doesn't give you a **generative model**: if you pick a random point in latent space and decode it, you usually get garbage, because the trained codes occupy a few scattered islands with empty space (no training signal) between them. There's no *distribution* over $\mathbf{z}$ you can sample from to get new, realistic data.
 
-The **variational autoencoder (VAE)** of Kingma & Welling (2013) fixes this by making the latent **probabilistic** and **regularizing it toward a known prior** you *can* sample. This is the leap from "autoencoder as compressor" to "autoencoder as generative model." We derive the full objective here; the [GenAI VAE page](../../10.%20GenAI/concepts/01-Variational-Autoencoders-VAE-ELBO.md) carries the generative deep-dive (sampling, posterior collapse, the diffusion connection).
+The **variational autoencoder (VAE)** of Kingma & Welling (2013) fixes this by making the latent **probabilistic** and **regularizing it toward a known prior** you *can* sample. This is the leap from "autoencoder as compressor" to "autoencoder as generative model." We derive the full objective here; the [GenAI VAE page](../../10.%20GenAI/01-Variational-Autoencoders-VAE-ELBO/01-Variational-Autoencoders-VAE-ELBO.md) carries the generative deep-dive (sampling, posterior collapse, the diffusion connection).
 
 **The generative model.** Posit that data is generated in two steps: draw a latent $\mathbf{z} \sim p(\mathbf{z}) = \mathcal{N}(\mathbf{0}, I)$ from a simple **prior**, then draw $\mathbf{x} \sim p_\phi(\mathbf{x}\mid\mathbf{z})$ from a **decoder** (a neural net outputting, say, a Gaussian or Bernoulli over $\mathbf{x}$). To *train* this by maximum likelihood we'd want to maximize the data's marginal log-likelihood:
 
@@ -351,7 +351,7 @@ with $\beta > 1$. A stronger KL pressure forces the posterior closer to the *fac
 
 > **Tip:** $\beta$ is a **dial on the reconstruction-vs-structure trade-off**. $\beta = 1$ is the standard VAE. $\beta > 1$ buys disentanglement and smoother latents at the cost of blurrier reconstructions (the model spends capacity satisfying KL). $\beta \to 0$ recovers a plain autoencoder (no latent regularization). The same dial appears as the $\lambda$ in regularized AEs: trade reconstruction fidelity against how *structured* the code is.
 
-> **Gotcha:** crank $\beta$ (or KL) too high and you get **posterior collapse** — the encoder gives up and outputs the prior $\mathcal{N}(0,I)$ for *every* input ($\mathrm{KL}\to 0$), so $\mathbf{z}$ carries no information about $\mathbf{x}$ and the decoder ignores it. The KL term won; reconstruction lost entirely. Mitigations (KL annealing, free bits) are covered on the [GenAI VAE page](../../10.%20GenAI/concepts/01-Variational-Autoencoders-VAE-ELBO.md).
+> **Gotcha:** crank $\beta$ (or KL) too high and you get **posterior collapse** — the encoder gives up and outputs the prior $\mathcal{N}(0,I)$ for *every* input ($\mathrm{KL}\to 0$), so $\mathbf{z}$ carries no information about $\mathbf{x}$ and the decoder ignores it. The KL term won; reconstruction lost entirely. Mitigations (KL annealing, free bits) are covered on the [GenAI VAE page](../../10.%20GenAI/01-Variational-Autoencoders-VAE-ELBO/01-Variational-Autoencoders-VAE-ELBO.md).
 
 ---
 
@@ -361,7 +361,7 @@ The denoising idea — corrupt the input, reconstruct it — reaches its modern 
 
 What makes MAE land are two design choices: (1) the **high mask ratio** makes the task hard enough that solving it *requires* real understanding of image structure — you can't interpolate 75% of an image from neighbors, you have to know what objects look like; and (2) the **asymmetric** design runs the heavy encoder on *only the visible 25%* of patches (cheap), with a lightweight decoder reconstructing the rest — so pretraining is fast. After pretraining you throw away the decoder and use the encoder as a powerful vision backbone for downstream tasks.
 
-> **Note:** MAE is the vision analogue of **BERT**'s masked-language-modeling — both are "hide part of the input, predict it from the context," which is **exactly the denoising-autoencoder objective**. The lineage is direct: denoising AE (2008) → masked language modeling / BERT (2018) → masked autoencoder for vision (2022). The plain autoencoder you started this page with is the great-grandparent of modern self-supervised pretraining. (This is also where autoencoders meet **[contrastive self-supervised learning](../../04.%20Unsupervised_Learning/concepts/12-Contrastive-Self-Supervised-Learning.md)** — two families of "invent your own label," reconstructive vs contrastive.)
+> **Note:** MAE is the vision analogue of **BERT**'s masked-language-modeling — both are "hide part of the input, predict it from the context," which is **exactly the denoising-autoencoder objective**. The lineage is direct: denoising AE (2008) → masked language modeling / BERT (2018) → masked autoencoder for vision (2022). The plain autoencoder you started this page with is the great-grandparent of modern self-supervised pretraining. (This is also where autoencoders meet **[contrastive self-supervised learning](../../04.%20Unsupervised_Learning/12-Contrastive-Self-Supervised-Learning/12-Contrastive-Self-Supervised-Learning.md)** — two families of "invent your own label," reconstructive vs contrastive.)
 
 ---
 
@@ -386,10 +386,10 @@ The clean mental model: **PCA** is the linear baseline; an **autoencoder** is it
 
 - **Dimensionality reduction & feature learning.** A trained encoder is a nonlinear feature extractor; its code feeds classifiers, clustering, or visualization. (Hinton & Salakhutdinov 2006 — deep AEs beat PCA.)
 - **Denoising.** Train a DAE to map corrupted → clean: image/audio denoising, missing-value imputation, signal cleanup.
-- **[Anomaly / outlier detection](../../04.%20Unsupervised_Learning/concepts/09-Anomaly-Outlier-Detection.md).** Train on normal data only; at test time, **reconstruction error is the anomaly score** — points the AE rebuilds poorly are unlike the training distribution. A workhorse for fraud, fault detection, and intrusion detection.
+- **[Anomaly / outlier detection](../../04.%20Unsupervised_Learning/09-Anomaly-Outlier-Detection/09-Anomaly-Outlier-Detection.md).** Train on normal data only; at test time, **reconstruction error is the anomaly score** — points the AE rebuilds poorly are unlike the training distribution. A workhorse for fraud, fault detection, and intrusion detection.
 - **Representation learning / pretraining.** Denoising and masked autoencoders pretrain backbones from unlabeled data (DAE → BERT intuition; MAE → vision backbones).
 - **Generative modeling (VAE).** Sample $\mathbf{z}\sim p(\mathbf{z})$, decode → new data; interpolate in latent space for smooth morphs.
-- **[Latent diffusion](../../10.%20GenAI/concepts/07-Latent-Diffusion-Stable-Diffusion.md).** A VAE compresses images into a small latent grid; the diffusion model then operates in that latent space (Stable Diffusion). The VAE's job is to make the space the diffuser works in **small and smooth** — a direct industrial use of the autoencoder.
+- **[Latent diffusion](../../10.%20GenAI/07-Latent-Diffusion-Stable-Diffusion/07-Latent-Diffusion-Stable-Diffusion.md).** A VAE compresses images into a small latent grid; the diffusion model then operates in that latent space (Stable Diffusion). The VAE's job is to make the space the diffuser works in **small and smooth** — a direct industrial use of the autoencoder.
 
 > **Note:** the **anomaly-detection** use deserves a second look because it inverts the usual goal. Everywhere else we *want* low reconstruction error; in anomaly detection a **high** error is the *signal*. Same model, opposite reading of the same number — train on normal, alarm on the unreconstructable.
 

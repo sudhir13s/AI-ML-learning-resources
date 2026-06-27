@@ -52,6 +52,6 @@ updated: 2026-06-22
 **In this platform**:
 - Concept page (full explanation): [Regularization for Linear Models](03-Regularization-Linear-Models.md)
 - Concept depth (the *why*): [AI-ML-intuition 2.10 Regularization L1/L2](../../../AI-ML-intuition/Module_2_Optimization/2.10_Regularization_L1_L2.md) · [3.07 Bias–Variance & Generalization](../../../AI-ML-intuition/Module_3_Evaluation/3.07_Bias_Variance_and_Generalization.md)
-- Prior / related concepts: [Linear Regression](01-Linear-Regression.md) (the OLS baseline this modifies) · [Logistic Regression](02-Logistic-Regression.md) (same penalties, classification) · [Bias–Variance Tradeoff](12-Bias-Variance-Tradeoff.md) (what the penalty trades) · [Cross-Validation](13-Cross-Validation.md) (how $\lambda$ is chosen)
-- Math prerequisites: [01. Foundations](../../01.%20Foundations/concepts/README.md) — norms, convex optimization, the SVD, and MAP estimation
-- Related domain: [Regularization (deep nets)](../../05.%20Deep_Learning/concepts/09-Regularization.md) — L2 reappears as weight decay; dropout is its neural-net cousin
+- Prior / related concepts: [Linear Regression](../01-Linear-Regression/01-Linear-Regression.md) (the OLS baseline this modifies) · [Logistic Regression](../02-Logistic-Regression/02-Logistic-Regression.md) (same penalties, classification) · [Bias–Variance Tradeoff](../12-Bias-Variance-Tradeoff/12-Bias-Variance-Tradeoff.md) (what the penalty trades) · [Cross-Validation](../13-Cross-Validation/13-Cross-Validation.md) (how $\lambda$ is chosen)
+- Math prerequisites: [01. Foundations](../../01.%20Foundations/README.md) — norms, convex optimization, the SVD, and MAP estimation
+- Related domain: [Regularization (deep nets)](../../05.%20Deep_Learning/09-Regularization/09-Regularization.md) — L2 reappears as weight decay; dropout is its neural-net cousin

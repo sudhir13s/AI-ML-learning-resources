@@ -54,6 +54,6 @@ knowing *why* we switched from rules to learning from data — is the foundation
 - [Neural Networks and Deep Learning — Ch. 1](http://neuralnetworksanddeeplearning.com/chap1.html) — **Michael Nielsen** — free online book; gentle, complete intro to what NNs do.
 
 ## 🔗 In this platform
-- Next concepts: [02 Types of Machine Learning](02-Types-of-Machine-Learning.md) · [03 The ML Workflow & Lifecycle](03-The-ML-Workflow-and-Lifecycle.md)
-- Go deeper on the algorithms: [03. Supervised Learning](../../03.%20Supervised_Learning/concepts/README.md) · [04. Unsupervised Learning](../../04.%20Unsupervised_Learning/concepts/README.md)
-- Go deeper on deep learning: [05. Deep Learning](../../05.%20Deep_Learning/concepts/README.md)
+- Next concepts: [02 Types of Machine Learning](../02-Types-of-Machine-Learning/02-Types-of-Machine-Learning.md) · [03 The ML Workflow & Lifecycle](../03-The-ML-Workflow-and-Lifecycle/03-The-ML-Workflow-and-Lifecycle.md)
+- Go deeper on the algorithms: [03. Supervised Learning](../../03.%20Supervised_Learning/README.md) · [04. Unsupervised Learning](../../04.%20Unsupervised_Learning/README.md)
+- Go deeper on deep learning: [05. Deep Learning](../../05.%20Deep_Learning/README.md)

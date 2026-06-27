@@ -27,7 +27,7 @@ always exist?" is a recurring interview question.
 2. **Nail Nash equilibrium** — watch [Game Theory 101 (#5): What Is a Nash Equilibrium?](https://www.youtube.com/watch?v=5TcYV6CZ7mI). *The single most important solution concept, cleanly.*
 3. **See mixed strategies** — watch [What Is a Nash Equilibrium? (Stoplight Game)](https://www.youtube.com/watch?v=0i7p9DNvtjk). *Why randomizing can be optimal — the bridge to minimax.*
 4. **Read the reference** — work [Multiagent Systems (Shoham & Leyton-Brown), Ch. 3–5](https://www.masfoundations.org/mas.pdf). *Normal/extensive games, equilibria, and computation, the free standard text.*
-5. **Connect to ML** — read [GANs](https://arxiv.org/abs/1406.2661) and link to [bandits/RL](../../08.%20Reinforcement_Learning/concepts/README.md). *Minimax games, self-play, and learning dynamics in modern ML.*
+5. **Connect to ML** — read [GANs](https://arxiv.org/abs/1406.2661) and link to [bandits/RL](../../08.%20Reinforcement_Learning/README.md). *Minimax games, self-play, and learning dynamics in modern ML.*
 
 ## 🎓 Courses (free)
 - [Game Theory (Open Yale ECON-159)](https://oyc.yale.edu/economics/econ-159) — **Ben Polak (Yale)** — the legendary full course: dominance, Nash, mixed strategies, signaling, free video + transcripts.
@@ -56,6 +56,6 @@ always exist?" is a recurring interview question.
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 5.04 GANs & WGAN](../../../AI-ML-intuition/Module_5_Generation/5.04_GANs_and_WGAN.md) · [6.04 MDPs & Exploration](../../../AI-ML-intuition/Module_6_Reinforcement_Learning/6.04_MDPs_and_Exploration.md)
-- Prerequisite & related: [04 Convex Analysis & Duality (minimax)](04-Convex-Analysis-and-Duality.md) · [14 Causal Inference (interventions)](14-Causal-Inference.md) · [09 Optimal Transport (WGAN)](09-Optimal-Transport-Wasserstein.md)
-- Related domain (multi-agent decisions): [10. Reinforcement Learning](../../08.%20Reinforcement_Learning/concepts/README.md)
+- Prerequisite & related: [04 Convex Analysis & Duality (minimax)](../04-Convex-Analysis-and-Duality/04-Convex-Analysis-and-Duality.md) · [14 Causal Inference (interventions)](../14-Causal-Inference/14-Causal-Inference.md) · [09 Optimal Transport (WGAN)](../09-Optimal-Transport-Wasserstein/09-Optimal-Transport-Wasserstein.md)
+- Related domain (multi-agent decisions): [10. Reinforcement Learning](../../08.%20Reinforcement_Learning/README.md)
 </content>

@@ -27,7 +27,7 @@ By the end you'll be able to:
 
 Intuition and pictures first, then the math (every step shown), then runnable, verified code.
 
-> **Note:** Naive Bayes is a **generative** classifier — it models *how each class generates the features*, $P(x\mid c)$, then inverts that with Bayes' rule to get $P(c\mid x)$. That is the opposite of [logistic regression](02-Logistic-Regression.md), which models $P(c\mid x)$ **directly**. "Generative vs discriminative" is a recurring interview theme, and Naive Bayes is the textbook generative example — we'll prove later that the two estimate the *same shape* of decision boundary by different means.
+> **Note:** Naive Bayes is a **generative** classifier — it models *how each class generates the features*, $P(x\mid c)$, then inverts that with Bayes' rule to get $P(c\mid x)$. That is the opposite of [logistic regression](../02-Logistic-Regression/02-Logistic-Regression.md), which models $P(c\mid x)$ **directly**. "Generative vs discriminative" is a recurring interview theme, and Naive Bayes is the textbook generative example — we'll prove later that the two estimate the *same shape* of decision boundary by different means.
 
 ---
 
@@ -324,7 +324,7 @@ Why this helps with imbalance: the complement of a **small** class is a **large*
 
 **A concrete imbalance sketch.** Suppose 1,000 ham docs and 50 spam docs. The word "refinance" appears 40 times in spam (a strong spam signal) but, because spam has so few documents, Multinomial NB's spam estimates are noisy and the heavy ham prior ($\log\frac{1000}{1050}\approx-0.05$ vs $\log\frac{50}{1050}\approx-3.0$, a $-2.95$ head start for ham) makes borderline messages default to ham. Complement NB estimates the spam class from the **1,000 ham documents** (where "refinance" is rare), so the *contrast* "refinance is unexpected under not-spam" is estimated stably — and the decision sharpens toward spam where it should.
 
-> **Tip:** the imbalance toolkit for NB: (1) try **Complement NB**; (2) **tune `alpha`** (small classes need careful smoothing); (3) consider adjusting the decision **threshold** rather than relying on the argmax (because NB's probabilities are mis-calibrated — see next), or set `class_prior` explicitly; (4) evaluate with **precision/recall/F1**, not accuracy, which a majority-class predictor games. See [Classification Metrics](14-Classification-Metrics.md).
+> **Tip:** the imbalance toolkit for NB: (1) try **Complement NB**; (2) **tune `alpha`** (small classes need careful smoothing); (3) consider adjusting the decision **threshold** rather than relying on the argmax (because NB's probabilities are mis-calibrated — see next), or set `class_prior` explicitly; (4) evaluate with **precision/recall/F1**, not accuracy, which a majority-class predictor games. See [Classification Metrics](../14-Classification-Metrics/14-Classification-Metrics.md).
 
 ---
 
@@ -540,7 +540,7 @@ Putting the whole page to work, here's the order of operations I'd actually foll
 2. **Pick the variant by feature type.** TF-IDF / counts → **Multinomial** (or **Complement** if classes are imbalanced); binary present/absent on short texts → **Bernoulli**; genuinely continuous features → **Gaussian**. (Section: *the four variants* + *Complement NB*.)
 3. **Compute in log-space, always smoothed.** This is built into scikit-learn, but if you implement it, sum `log P(w|c)` and start from `alpha=1.0`. (Sections: *log-space*, *Laplace smoothing*.)
 4. **Tune `alpha` on validation.** Grid-search it on a log scale (`1e-3 … 10`) with cross-validation; the alpha curve showed real accuracy on the line. (Section: *tuning $\alpha$*.)
-5. **Score with the right metric.** Accuracy for balanced classes; **precision/recall/F1** for imbalanced ones (a spam filter cares about false positives differently than false negatives). (Cross-link: [Classification Metrics](14-Classification-Metrics.md).)
+5. **Score with the right metric.** Accuracy for balanced classes; **precision/recall/F1** for imbalanced ones (a spam filter cares about false positives differently than false negatives). (Cross-link: [Classification Metrics](../14-Classification-Metrics/14-Classification-Metrics.md).)
 6. **Distrust the probabilities; calibrate if you ship them.** If you only need the *label*, NB's argmax is fine. If you threshold on confidence or rank by it, wrap in `CalibratedClassifierCV` or switch to logistic regression. (Section: *calibration*.)
 7. **Set the baseline, then climb.** NB is your floor. Compare logistic regression / linear SVM next; reach for a fine-tuned transformer only when the metric (and the budget) justify it. (Section: *when NB beats / loses*.)
 

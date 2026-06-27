@@ -53,5 +53,5 @@ Relevant for video, robotics, AR, and autonomous-driving roles.
 - [Dive into Deep Learning — **Ch. 14 (Computer Vision)**](https://d2l.ai/chapter_computer-vision/index.html) — **Zhang et al.** — the CNN backbone video models extend, with code.
 
 ## 🔗 In this platform
-- Foundation: [Image Representation & Filtering](01-Image-Representation-and-Filtering.md) (flow uses image gradients) · [Deep Learning › CNNs & Convolution](../../05.%20Deep_Learning/concepts/13-CNNs-and-Convolution.md)
-- Related: [Pose Estimation](13-Pose-Estimation.md) (pose tracking over frames) · [3D & Depth Estimation](16-3D-and-Depth-Estimation.md)
+- Foundation: [Image Representation & Filtering](../01-Image-Representation-and-Filtering/01-Image-Representation-and-Filtering.md) (flow uses image gradients) · [Deep Learning › CNNs & Convolution](../../05.%20Deep_Learning/13-CNNs-and-Convolution/13-CNNs-and-Convolution.md)
+- Related: [Pose Estimation](../13-Pose-Estimation/13-Pose-Estimation.md) (pose tracking over frames) · [3D & Depth Estimation](../16-3D-and-Depth-Estimation/16-3D-and-Depth-Estimation.md)

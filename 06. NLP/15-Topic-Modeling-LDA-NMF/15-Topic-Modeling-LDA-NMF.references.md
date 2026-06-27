@@ -58,7 +58,7 @@ updated: 2026-06-27
 - Concept page (full explanation): [Topic Modeling (LDA · NMF)](15-Topic-Modeling-LDA-NMF.md)
 - Runnable code: [teaching notebook](code/15-Topic-Modeling-LDA-NMF.ipynb) (executed, assert-before-print) · [source module](code/topic_modeling.py) (from-scratch Gibbs LDA, NMF, coherence) · [figure generator](code/make_figures_15.py)
 - Prior step (the input matrix): [Bag-of-Words & TF-IDF](../03-Bag-of-Words-and-TF-IDF/03-Bag-of-Words-and-TF-IDF.md) — the document–term matrix topic models factorize.
-- The latent-variable / EM foundation: [Gaussian Mixture Models & EM](../../04.%20Unsupervised_Learning/concepts/04-Gaussian-Mixture-Models-and-EM.md) — same soft-assignment fitting, on continuous data.
-- The dimensionality-reduction framing: [Dimensionality Reduction — Overview (PCA · SVD)](../../04.%20Unsupervised_Learning/concepts/06-Dimensionality-Reduction-Overview.md) — NMF/LSA as reductions of the term matrix.
+- The latent-variable / EM foundation: [Gaussian Mixture Models & EM](../../04.%20Unsupervised_Learning/04-Gaussian-Mixture-Models-and-EM/04-Gaussian-Mixture-Models-and-EM.md) — same soft-assignment fitting, on continuous data.
+- The dimensionality-reduction framing: [Dimensionality Reduction — Overview (PCA · SVD)](../../04.%20Unsupervised_Learning/06-Dimensionality-Reduction-Overview/06-Dimensionality-Reduction-Overview.md) — NMF/LSA as reductions of the term matrix.
 - The modern embedding route: [Sentence & Document Embeddings](../07-Sentence-and-Document-Embeddings/07-Sentence-and-Document-Embeddings.md) — what BERTopic clusters instead of counts.
 - Where LSA connects: [Information Retrieval & Semantic Search](../16-Information-Retrieval-and-Semantic-Search/16-Information-Retrieval-and-Semantic-Search.md) — latent semantic indexing links the two.

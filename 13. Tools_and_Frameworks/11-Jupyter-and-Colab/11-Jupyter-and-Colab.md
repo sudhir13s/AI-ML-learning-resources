@@ -51,5 +51,5 @@ data/ML role, and Colab's free GPUs make deep-learning tutorials runnable by any
 - [JupyterLab docs (full)](https://jupyterlab.readthedocs.io/en/latest/) — **Project Jupyter** — comprehensive, free, chapter-structured guide.
 
 ## 🔗 In this platform
-- Related domain: [01. Foundations](../../01.%20Foundations/concepts/README.md) · [02. Data_Preprocessing](../../02.%20Data_Preprocessing/)
-- Pairs with: [01 NumPy](01-NumPy.md) · [02 Pandas](02-Pandas.md) · [03 Data Visualization](03-Data-Visualization.md)
+- Related domain: [01. Foundations](../../01.%20Foundations/README.md) · [02. Data_Preprocessing](../../02.%20Data_Preprocessing/)
+- Pairs with: [01 NumPy](../01-NumPy/01-NumPy.md) · [02 Pandas](../02-Pandas/02-Pandas.md) · [03 Data Visualization](../03-Data-Visualization/03-Data-Visualization.md)

@@ -52,6 +52,6 @@ the judgment interviewers probe with "is this result trustworthy?"
 - [Dive into Deep Learning](https://d2l.ai/) — **Zhang et al.** — an open, community-maintained book; its forums discuss the methods you'll see researchers post about.
 
 ## 🔗 In this platform
-- Per-concept index: [Frontier & Staying Current — concepts](README.md)
-- Pair with: [04 Newsletters & Blogs to Follow](04-Newsletters-and-Blogs-to-Follow.md) · [09 Building a Stay-Current Routine](09-Building-a-Stay-Current-Routine.md) · [10 Open Model Hubs & Demos](10-Open-Model-Hubs-and-Demos.md)
-- Apply to a frontier area: [09. LLMs](../../09.%20LLMs/README.md) · [15. Agentic AI](../../12.%20Agentic_AI/concepts/README.md)
+- Per-concept index: [Frontier & Staying Current — concepts](../README.md)
+- Pair with: [04 Newsletters & Blogs to Follow](../04-Newsletters-and-Blogs-to-Follow/04-Newsletters-and-Blogs-to-Follow.md) · [09 Building a Stay-Current Routine](../09-Building-a-Stay-Current-Routine/09-Building-a-Stay-Current-Routine.md) · [10 Open Model Hubs & Demos](../10-Open-Model-Hubs-and-Demos/10-Open-Model-Hubs-and-Demos.md)
+- Apply to a frontier area: [09. LLMs](../../09.%20LLMs/README.md) · [15. Agentic AI](../../12.%20Agentic_AI/README.md)

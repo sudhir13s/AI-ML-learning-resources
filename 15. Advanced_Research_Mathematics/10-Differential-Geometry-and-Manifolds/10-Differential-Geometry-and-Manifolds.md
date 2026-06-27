@@ -26,7 +26,7 @@ and geometric deep learning (card 11) reuse.
 2. **Nail the tangent space** — watch [Differential structures: tangent vector spaces (Schuller, Lec 09)](https://www.youtube.com/watch?v=UPGoXBfm6Js). *The rigorous definition — derivations vs curves — that everything else builds on.*
 3. **Read a gentle text** — work [MML Ch. 3 (geometry) + Pennsylvania's Riemannian notes, early chapters](https://www.cis.upenn.edu/~cis6100/Riemann.pdf). *Metrics, geodesics, and the exponential map.*
 4. **See it in ML** — connect to the manifold hypothesis via the [t-SNE/UMAP intuition](../../../AI-ML-intuition/Module_1_Representation/1.11-1.12_Dimensionality_Reduction_for_Representation_t-SNE_UMAP.md). *Where "data on a manifold" stops being a metaphor.*
-5. **Optimize on manifolds** — read the Riemannian-optimization chapter (gradient → retraction), then bridge to [information geometry](08-Information-Geometry.md). *Natural gradient is Riemannian gradient descent on a statistical manifold.*
+5. **Optimize on manifolds** — read the Riemannian-optimization chapter (gradient → retraction), then bridge to [information geometry](../08-Information-Geometry/08-Information-Geometry.md). *Natural gradient is Riemannian gradient descent on a statistical manifold.*
 
 ## 🎓 Courses (free)
 - [An Introduction to Riemannian Geometry — lecture notes](https://www.cis.upenn.edu/~cis6100/Riemann.pdf) — **Jean Gallier (UPenn)** — manifolds, metrics, geodesics, and connections aimed at CS/ML readers, free PDF.
@@ -53,7 +53,7 @@ and geometric deep learning (card 11) reuse.
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 1.11–1.12 Dimensionality Reduction (t-SNE/UMAP)](../../../AI-ML-intuition/Module_1_Representation/1.11-1.12_Dimensionality_Reduction_for_Representation_t-SNE_UMAP.md) · [1.10 Mahalanobis Distance](../../../AI-ML-intuition/Module_1_Representation/1.10_Mahalanobis_Distance.md)
-- Foundations (the basics this builds on): [Derivatives & Gradients](../../01.%20Foundations/concepts/08-Derivatives-and-Gradients.md) · [Jacobian & Hessian](../../01.%20Foundations/concepts/10-Jacobian-and-Hessian.md)
-- Prerequisite & next: [08 Information Geometry](08-Information-Geometry.md) · [11 Spectral Graph Theory](11-Spectral-Graph-Theory.md)
-- Related domain (dimensionality reduction): [04. Unsupervised Learning](../../04.%20Unsupervised_Learning/concepts/README.md)
+- Foundations (the basics this builds on): [Derivatives & Gradients](../../01.%20Foundations/08-Derivatives-and-Gradients/08-Derivatives-and-Gradients.md) · [Jacobian & Hessian](../../01.%20Foundations/10-Jacobian-and-Hessian/10-Jacobian-and-Hessian.md)
+- Prerequisite & next: [08 Information Geometry](../08-Information-Geometry/08-Information-Geometry.md) · [11 Spectral Graph Theory](../11-Spectral-Graph-Theory/11-Spectral-Graph-Theory.md)
+- Related domain (dimensionality reduction): [04. Unsupervised Learning](../../04.%20Unsupervised_Learning/README.md)
 </content>

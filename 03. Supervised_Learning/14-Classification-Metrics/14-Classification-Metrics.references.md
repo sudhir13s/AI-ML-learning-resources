@@ -54,5 +54,5 @@ updated: 2026-06-22
 **In this platform**:
 - Concept page (full explanation): [Classification Metrics](14-Classification-Metrics.md)
 - Concept depth (the *why*): [AI-ML-intuition 3.05 Classification Metrics](../../../AI-ML-intuition/Module_3_Evaluation/3.05_Classification_Metrics_Precision_Recall_F1.md) · [3.06 ROC, AUC & PR Curves](../../../AI-ML-intuition/Module_3_Evaluation/3.06_ROC_AUC_PR_Curves.md)
-- Related: [Logistic Regression](02-Logistic-Regression.md) (produces the probabilities you threshold) · [Regression Metrics](15-Regression-Metrics.md) (continuous-target counterpart) · [Cross-Validation](13-Cross-Validation.md) (how you estimate these reliably) · [Bias–Variance Tradeoff](12-Bias-Variance-Tradeoff.md)
-- Math prerequisites: [01. Foundations](../../01.%20Foundations/concepts/README.md) — conditional probability, base rates, thresholds
+- Related: [Logistic Regression](../02-Logistic-Regression/02-Logistic-Regression.md) (produces the probabilities you threshold) · [Regression Metrics](../15-Regression-Metrics/15-Regression-Metrics.md) (continuous-target counterpart) · [Cross-Validation](../13-Cross-Validation/13-Cross-Validation.md) (how you estimate these reliably) · [Bias–Variance Tradeoff](../12-Bias-Variance-Tradeoff/12-Bias-Variance-Tradeoff.md)
+- Math prerequisites: [01. Foundations](../../01.%20Foundations/README.md) — conditional probability, base rates, thresholds

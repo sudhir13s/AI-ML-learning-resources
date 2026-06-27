@@ -68,5 +68,5 @@ updated: 2026-06-26
 - Concept page (full explanation): [Pretraining at Scale](02-Pretraining-at-Scale.md)
 - The objective being trained (don't re-derive it): [Language Modeling Objectives](../01-Language-Modeling-Objectives/01-Language-Modeling-Objectives.md)
 - The budget allocation (6ND derived, Chinchilla compute-optimal split): [Scaling Laws](../03-Scaling-Laws/03-Scaling-Laws.md)
-- Foundations: [Transformer Architecture](../../05.%20Deep_Learning/concepts/16-Transformer-Architecture.md) · [Tokenization & Subword Algorithms](../../06.%20NLP/02-Tokenization-and-Subword-Algorithms/02-Tokenization-and-Subword-Algorithms.md)
+- Foundations: [Transformer Architecture](../../05.%20Deep_Learning/16-Transformer-Architecture/16-Transformer-Architecture.md) · [Tokenization & Subword Algorithms](../../06.%20NLP/02-Tokenization-and-Subword-Algorithms/02-Tokenization-and-Subword-Algorithms.md)
 - What pretraining produces, then what's done to it: [Decoder-only Architecture](../04-Decoder-only-Architecture/04-Decoder-only-Architecture.md) · [Supervised Fine-Tuning](../13-Supervised-Fine-Tuning/13-Supervised-Fine-Tuning.md) · [RLHF and DPO](../15-RLHF-and-DPO/15-RLHF-and-DPO.md)

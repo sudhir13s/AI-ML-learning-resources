@@ -53,6 +53,6 @@ overfitting to the leaderboard — so you don't mistake a high score for real ca
 - [Speech and Language Processing, 3rd ed. — Ch. on evaluation](https://web.stanford.edu/~jurafsky/slp3/) — **Jurafsky & Martin** — the reference on NLP metrics (BLEU, F1, perplexity) that underlie many leaderboards.
 
 ## 🔗 In this platform
-- Per-concept index: [Frontier & Staying Current — concepts](README.md)
-- Pair with: [02 arXiv & Papers with Code](02-arXiv-and-Papers-with-Code.md) · [11 Evaluating Hype vs Substance](11-Evaluating-Hype-vs-Substance.md)
-- Evaluation depth lives in: [09. LLMs](../../09.%20LLMs/README.md) · [12. Deployment & MLOps](../../14.%20Deployment_and_MLOps/concepts/README.md)
+- Per-concept index: [Frontier & Staying Current — concepts](../README.md)
+- Pair with: [02 arXiv & Papers with Code](../02-arXiv-and-Papers-with-Code/02-arXiv-and-Papers-with-Code.md) · [11 Evaluating Hype vs Substance](../11-Evaluating-Hype-vs-Substance/11-Evaluating-Hype-vs-Substance.md)
+- Evaluation depth lives in: [09. LLMs](../../09.%20LLMs/README.md) · [12. Deployment & MLOps](../../14.%20Deployment_and_MLOps/README.md)
