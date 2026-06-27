@@ -53,5 +53,5 @@ the whole value of this card.
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 4.08 Multi-Head Attention Routing](../../../AI-ML-intuition/Module_4_Stabilization/4B_Architectural_Motifs/4.08_Multi-Head_Attention_Routing.md) · [4.07 Gating Mechanisms (LSTM/GRU)](../../../AI-ML-intuition/Module_4_Stabilization/4B_Architectural_Motifs/4.07_Gating_Mechanisms_LSTM_GRU.md) — the ML attention/memory mechanisms biological attention is contrasted with.
-- Prereqs in this section: [10 Memory Systems (hippocampus · replay)](10-Memory-Systems-Hippocampus-Replay.md) · [02 Neural Coding](02-Neural-Coding.md)
-- Related domain: [05. Deep Learning](../../05.%20Deep_Learning/concepts/README.md)
+- Prereqs in this section: [10 Memory Systems (hippocampus · replay)](../10-Memory-Systems-Hippocampus-Replay/10-Memory-Systems-Hippocampus-Replay.md) · [02 Neural Coding](../02-Neural-Coding/02-Neural-Coding.md)
+- Related domain: [05. Deep Learning](../../05.%20Deep_Learning/README.md)

@@ -46,9 +46,9 @@ topic.
 ### Related concepts (covered in another section)
 > These topics are the *machine-learning* counterparts of the biology above — the brain inspired
 > them, so the deep dives live in their home sections and we link out to avoid repetition.
-- **Convolutional Neural Networks** — the architecture inspired by the visual cortex's hierarchy → [05. Deep Learning](../05.%20Deep_Learning/concepts/README.md)
-- **Attention (ML mechanism)** — the routing operation loosely analogous to biological attention → [05. Deep Learning](../05.%20Deep_Learning/concepts/README.md)
-- **RL & Temporal-Difference learning** — the algorithmic side of the dopamine-as-TD-error story → [08. Reinforcement Learning](../08.%20Reinforcement_Learning/concepts/README.md)
+- **Convolutional Neural Networks** — the architecture inspired by the visual cortex's hierarchy → [05. Deep Learning](../05.%20Deep_Learning/README.md)
+- **Attention (ML mechanism)** — the routing operation loosely analogous to biological attention → [05. Deep Learning](../05.%20Deep_Learning/README.md)
+- **RL & Temporal-Difference learning** — the algorithmic side of the dopamine-as-TD-error story → [08. Reinforcement Learning](../08.%20Reinforcement_Learning/README.md)
 
 ## Core resource backbone
 - **Neuronal Dynamics** (Gerstner et al., EPFL) — [free book + course](https://neuronaldynamics.epfl.ch/) (the anchor)

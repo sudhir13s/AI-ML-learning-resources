@@ -52,6 +52,6 @@ deep pipelines (EasyOCR), and end-to-end transformers (TrOCR).
 - [Dive into Deep Learning — **Ch. 10 (RNNs)** + **Ch. 9 (Modern RNNs)**](https://d2l.ai/chapter_recurrent-neural-networks/index.html) — **Zhang et al.** — the sequence-modeling machinery CRNN/CTC build on, with code.
 
 ## 🔗 In this platform
-- Foundation: [Object Detection](07-Object-Detection.md) (text detection stage) · [Deep Learning › RNN / LSTM / GRU](../../05.%20Deep_Learning/concepts/14-RNN-LSTM-GRU.md) (CRNN's recurrent core)
-- Foundation: [Deep Learning › CNNs & Convolution](../../05.%20Deep_Learning/concepts/13-CNNs-and-Convolution.md)
+- Foundation: [Object Detection](../07-Object-Detection/07-Object-Detection.md) (text detection stage) · [Deep Learning › RNN / LSTM / GRU](../../05.%20Deep_Learning/14-RNN-LSTM-GRU/14-RNN-LSTM-GRU.md) (CRNN's recurrent core)
+- Foundation: [Deep Learning › CNNs & Convolution](../../05.%20Deep_Learning/13-CNNs-and-Convolution/13-CNNs-and-Convolution.md)
 - Related domain: [NLP › Sequence Labeling](../../06.%20NLP/09-Sequence-Labeling-POS-and-NER/09-Sequence-Labeling-POS-and-NER.md) (CTC is alignment-free sequence labeling)

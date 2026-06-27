@@ -41,10 +41,10 @@ Every chapter is a self-contained folder (`NN-Concept/NN-Concept.md`) with its p
 
 ### Related concepts (covered in another section)
 > These topics are foundational or generative and live in their canonical home to avoid repetition.
-- **CNNs & Convolution** (the operation, kernels, stride/padding math) → [Deep Learning › CNNs & Convolution](../05.%20Deep_Learning/concepts/13-CNNs-and-Convolution.md)
-- **Residual / skip connections · Batch & Group Norm** (the motifs deep vision backbones rely on) → [Deep Learning](../05.%20Deep_Learning/concepts/README.md)
+- **CNNs & Convolution** (the operation, kernels, stride/padding math) → [Deep Learning › CNNs & Convolution](../05.%20Deep_Learning/13-CNNs-and-Convolution/13-CNNs-and-Convolution.md)
+- **Residual / skip connections · Batch & Group Norm** (the motifs deep vision backbones rely on) → [Deep Learning](../05.%20Deep_Learning/README.md)
 - **Image generation** — GANs · Diffusion · text-to-image → [GenAI](../10.%20GenAI/README.md)
-- **Contrastive / embedding math** (InfoNCE, triplet loss reused by self-supervised vision) → [NLP](../06.%20NLP/README.md) · [Deep Learning](../05.%20Deep_Learning/concepts/README.md)
+- **Contrastive / embedding math** (InfoNCE, triplet loss reused by self-supervised vision) → [NLP](../06.%20NLP/README.md) · [Deep Learning](../05.%20Deep_Learning/README.md)
 
 ## 📐 Mathematics curriculum (specialization)
 

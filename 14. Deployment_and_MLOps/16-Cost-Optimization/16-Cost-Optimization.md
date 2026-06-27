@@ -52,5 +52,5 @@ together serving, scaling, and LLMOps.
 - [Machine Learning Engineering — **Ch. 8 "Model Deployment"** (efficiency & resource trade-offs)](http://www.mlebook.com/wiki/doku.php) — **Andriy Burkov** — read-first chapters free.
 
 ## 🔗 In this platform
-- Builds on: [09 Model Serving](09-Model-Serving.md) · [10 Scaling Inference](10-Scaling-Inference.md) · [15 LLMOps](15-LLMOps.md)
+- Builds on: [09 Model Serving](../09-Model-Serving/09-Model-Serving.md) · [10 Scaling Inference](../10-Scaling-Inference/10-Scaling-Inference.md) · [15 LLMOps](../15-LLMOps/15-LLMOps.md)
 - Related concept (covered elsewhere): LLM inference cost techniques (quantization, KV-cache, batching) → [09. LLMs — Inference Optimization & Serving](../../09.%20LLMs/09-Inference-Optimization-and-Serving/09-Inference-Optimization-and-Serving.md) · [Quantization](../../09.%20LLMs/10-Quantization/10-Quantization.md)

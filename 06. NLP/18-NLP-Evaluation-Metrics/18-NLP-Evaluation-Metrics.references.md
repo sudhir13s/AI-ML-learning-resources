@@ -76,7 +76,7 @@ updated: 2026-06-27
 
 **In this platform**:
 - Concept page (full explanation): [NLP Evaluation Metrics](18-NLP-Evaluation-Metrics.md)
-- Foundations (the metrics these build on): [Classification Metrics — precision/recall/F1](../../03.%20Supervised_Learning/concepts/14-Classification-Metrics.md) · [N-gram Language Models and Smoothing (perplexity)](../04-N-gram-Language-Models-and-Smoothing/04-N-gram-Language-Models-and-Smoothing.md)
+- Foundations (the metrics these build on): [Classification Metrics — precision/recall/F1](../../03.%20Supervised_Learning/14-Classification-Metrics/14-Classification-Metrics.md) · [N-gram Language Models and Smoothing (perplexity)](../04-N-gram-Language-Models-and-Smoothing/04-N-gram-Language-Models-and-Smoothing.md)
 - Tasks that use these metrics: [Machine Translation (BLEU/chrF/COMET)](../12-Machine-Translation/12-Machine-Translation.md) · [Text Summarization (ROUGE)](../13-Text-Summarization/13-Text-Summarization.md) · [Question Answering (EM/F1)](../11-Question-Answering/11-Question-Answering.md) · [Sequence Labeling: POS and NER (span F1)](../09-Sequence-Labeling-POS-and-NER/09-Sequence-Labeling-POS-and-NER.md)
 - Related: [Decoding Strategies (how the text being scored is produced)](../17-Decoding-Strategies/17-Decoding-Strategies.md) · [RLHF and Alignment (human preference data & A/B eval)](../../Practitioner-Workflows/RLHF-and-Alignment/RLHF-and-Alignment.md)
 - The *why* behind the building blocks: [AI-ML-intuition 3.05 Precision · Recall · F1](../../../AI-ML-intuition/Module_3_Evaluation/3.05_Classification_Metrics_Precision_Recall_F1.md) · [5.01 Entropy & KL (perplexity)](../../../AI-ML-intuition/Module_5_Generation/5.01_Information_Theory_Entropy_KL_Divergence.md)

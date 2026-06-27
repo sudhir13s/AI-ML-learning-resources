@@ -53,6 +53,6 @@ to *use* surveys (and their limits — they age fast and reflect the authors' fr
 - [Understanding Deep Learning](https://udlbook.github.io/udlbook/) — **Simon Prince** — a free textbook that consolidates many surveys into a coherent map.
 
 ## 🔗 In this platform
-- Per-concept index: [Frontier & Staying Current — concepts](README.md)
-- Pair with: [01 How to Read ML Papers](01-How-to-Read-ML-Papers.md) · [02 arXiv & Papers with Code](02-arXiv-and-Papers-with-Code.md) · [09 Building a Stay-Current Routine](09-Building-a-Stay-Current-Routine.md)
+- Per-concept index: [Frontier & Staying Current — concepts](../README.md)
+- Pair with: [01 How to Read ML Papers](../01-How-to-Read-ML-Papers/01-How-to-Read-ML-Papers.md) · [02 arXiv & Papers with Code](../02-arXiv-and-Papers-with-Code/02-arXiv-and-Papers-with-Code.md) · [09 Building a Stay-Current Routine](../09-Building-a-Stay-Current-Routine/09-Building-a-Stay-Current-Routine.md)
 - Surveys map onto frontier domains: [09. LLMs](../../09.%20LLMs/README.md) · [16. RAG & LLM Applications](../../11.%20RAG_and_LLM_Applications/README.md)

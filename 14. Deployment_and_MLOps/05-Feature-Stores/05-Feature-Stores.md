@@ -50,6 +50,6 @@ the architecture. Feast is the canonical open-source example.
 - [Machine Learning Engineering — **Ch. 4 "Feature Engineering"**](http://www.mlebook.com/wiki/doku.php) — **Andriy Burkov** — feature lifecycle and serving; read-first chapters free.
 
 ## 🔗 In this platform
-- Builds on: [04 Data & Model Versioning](04-Data-and-Model-Versioning.md)
-- Next concepts: [06 ML Pipelines & Orchestration](06-ML-Pipelines-and-Orchestration.md) · [11 Model Monitoring & Observability](11-Model-Monitoring-and-Observability.md)
-- Related concept (covered elsewhere): feature engineering theory → [02. Data_Preprocessing](../../02.%20Data_Preprocessing/concepts/README.md)
+- Builds on: [04 Data & Model Versioning](../04-Data-and-Model-Versioning/04-Data-and-Model-Versioning.md)
+- Next concepts: [06 ML Pipelines & Orchestration](../06-ML-Pipelines-and-Orchestration/06-ML-Pipelines-and-Orchestration.md) · [11 Model Monitoring & Observability](../11-Model-Monitoring-and-Observability/11-Model-Monitoring-and-Observability.md)
+- Related concept (covered elsewhere): feature engineering theory → [02. Data_Preprocessing](../../02.%20Data_Preprocessing/README.md)

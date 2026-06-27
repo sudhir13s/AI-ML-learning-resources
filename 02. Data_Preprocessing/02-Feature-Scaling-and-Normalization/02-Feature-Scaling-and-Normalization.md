@@ -50,5 +50,5 @@ only**, and when RobustScaler beats StandardScaler (heavy outliers).
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 0.03 Expectation, Variance, Covariance](../../../AI-ML-intuition/Module_0_Foundations/0.03_Expectation_Variance_Covariance.md) · [1.07–1.08 Distances: Euclidean vs Cosine](../../../AI-ML-intuition/Module_1_Representation/1.07-1.08_Similarities_Distances_Euclidean_vs_Cosine.md)
-- Next concepts: [13 Data Pipelines](13-Data-Pipelines.md) · [06 Feature Engineering](06-Feature-Engineering.md)
-- Related domain: [01. Foundations](../../01.%20Foundations/concepts/README.md)
+- Next concepts: [13 Data Pipelines](../13-Data-Pipelines/13-Data-Pipelines.md) · [06 Feature Engineering](../06-Feature-Engineering/06-Feature-Engineering.md)
+- Related domain: [01. Foundations](../../01.%20Foundations/README.md)

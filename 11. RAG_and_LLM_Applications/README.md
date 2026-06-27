@@ -47,10 +47,10 @@ Every chapter is a self-contained folder (`NN-Concept/NN-Concept.md`) with its p
 > These topics are foundations or neighbors of RAG, but their canonical home is another section —
 > linked here to avoid repetition.
 - **Word & sentence/document embeddings (the encoders RAG retrieves with)** → [NLP](../06.%20NLP/README.md) ([Word Embeddings](../06.%20NLP/05-Word-Embeddings-Word2Vec-GloVe-FastText/05-Word-Embeddings-Word2Vec-GloVe-FastText.md) · [Sentence & Document Embeddings](../06.%20NLP/07-Sentence-and-Document-Embeddings/07-Sentence-and-Document-Embeddings.md) · [Information Retrieval & Semantic Search](../06.%20NLP/16-Information-Retrieval-and-Semantic-Search/16-Information-Retrieval-and-Semantic-Search.md))
-- **Transformer architecture · Attention** (the generator's engine) → [Deep Learning](../05.%20Deep_Learning/concepts/README.md)
+- **Transformer architecture · Attention** (the generator's engine) → [Deep Learning](../05.%20Deep_Learning/README.md)
 - **LLM internals — prompting, fine-tuning, decoding, RLHF, KV-cache, long-context** → [LLMs](../09.%20LLMs/README.md) ([Prompting & In-Context Learning](../09.%20LLMs/16-Prompting-and-In-Context-Learning/16-Prompting-and-In-Context-Learning.md) · [Long-Context Methods](../09.%20LLMs/08-Long-Context-Methods/08-Long-Context-Methods.md) · [Hallucination & Alignment](../09.%20LLMs/20-Hallucination-and-Alignment-Basics/20-Hallucination-and-Alignment-Basics.md))
-- **Agents & tool use** (the broader agent loop that Agentic RAG specializes) → [Agentic AI](../12.%20Agentic_AI/concepts/README.md)
-- **ANN / clustering math** (the geometry under vector indexes) → [Unsupervised Learning](../04.%20Unsupervised_Learning/concepts/README.md)
+- **Agents & tool use** (the broader agent loop that Agentic RAG specializes) → [Agentic AI](../12.%20Agentic_AI/README.md)
+- **ANN / clustering math** (the geometry under vector indexes) → [Unsupervised Learning](../04.%20Unsupervised_Learning/README.md)
 
 ## 🎓 Courses (free)
 - [LangChain: Chat with Your Data](https://www.deeplearning.ai/short-courses/langchain-chat-with-your-data/) — **DeepLearning.AI** — the canonical free RAG short course.

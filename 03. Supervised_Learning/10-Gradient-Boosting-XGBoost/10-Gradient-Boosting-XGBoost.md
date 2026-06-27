@@ -13,7 +13,7 @@ updated: 2026-06-22
 
 Imagine you're forecasting house prices. You build a crude first model — just predict the average price for everyone — and of course it's wrong. But it's wrong in a *structured* way: it overshoots the cheap houses and undershoots the mansions. So you build a second little model whose only job is to predict that *error* — "+\$80k if it's a mansion, −\$40k if it's a shack" — and add it on top. Now the combined model is better, but it *still* makes errors, just smaller ones. So you build a third model to predict *those* errors, add it on, and keep going. Each model is weak on its own, but each one chips away at whatever mistakes are left, and the sum of them becomes formidable. **That is gradient boosting**, and when you implement it carefully — **XGBoost**, **LightGBM**, **CatBoost** — it is the reigning champion of tabular data and the single most common winning model on Kaggle.
 
-This is the mirror image of how [random forests](09-Random-Forests.md) work. A forest builds many deep trees *in parallel*, each on a different bootstrap sample, and **averages** them — that cancels the trees' independent errors and reduces **variance**. Boosting builds shallow trees *sequentially*, each one trained to fix the residual error the current ensemble still makes — that steadily reduces **bias**. Same building block (a decision tree), opposite ensemble philosophy. The deep insight, which we'll derive in full, is that "fit the residuals" is *exactly* **gradient descent — but in function space**: each tree approximates the *negative gradient* of the loss, so boosting descends the loss by adding functions instead of adjusting parameters.
+This is the mirror image of how [random forests](../09-Random-Forests/09-Random-Forests.md) work. A forest builds many deep trees *in parallel*, each on a different bootstrap sample, and **averages** them — that cancels the trees' independent errors and reduces **variance**. Boosting builds shallow trees *sequentially*, each one trained to fix the residual error the current ensemble still makes — that steadily reduces **bias**. Same building block (a decision tree), opposite ensemble philosophy. The deep insight, which we'll derive in full, is that "fit the residuals" is *exactly* **gradient descent — but in function space**: each tree approximates the *negative gradient* of the loss, so boosting descends the loss by adding functions instead of adjusting parameters.
 
 I'll walk this the way I'd actually teach it: feel the *why* (reduce bias by correcting errors), then build the additive model, then derive what the "gradient" really is (the pseudo-residual = negative-gradient identity, proven for both MSE and log-loss), then the shrinkage/early-stopping machinery, then **XGBoost's second-order objective derived from scratch** (the leaf-weight and split-gain formulas every interviewer asks about), then LightGBM and CatBoost, four worked numeric examples of increasing complexity, and runnable code that proves every claim. By the end you'll be able to:
 
@@ -32,9 +32,9 @@ Intuition and pictures first, then the math (with sources), then runnable code.
 
 ## The problem: reduce bias by correcting errors
 
-Recall the [bias–variance decomposition](12-Bias-Variance-Tradeoff.md). A single shallow tree — a "stump" or a depth-3 tree — is a **weak learner**: it can only carve the input into a handful of regions, so it **underfits**. It has **high bias, low variance**. A deep tree is the opposite: **low bias, high variance** (it can memorize the training set).
+Recall the [bias–variance decomposition](../12-Bias-Variance-Tradeoff/12-Bias-Variance-Tradeoff.md). A single shallow tree — a "stump" or a depth-3 tree — is a **weak learner**: it can only carve the input into a handful of regions, so it **underfits**. It has **high bias, low variance**. A deep tree is the opposite: **low bias, high variance** (it can memorize the training set).
 
-Now here's the key strategic question. If your model has too much **variance**, you average many of them — that's [bagging](08-Bagging.md), and it's exactly why [random forests](09-Random-Forests.md) average deep trees. But averaging does **nothing** for **bias**: the average of many underfit stumps is still an underfit stump. So how do you *reduce bias*?
+Now here's the key strategic question. If your model has too much **variance**, you average many of them — that's [bagging](../08-Bagging/08-Bagging.md), and it's exactly why [random forests](../09-Random-Forests/09-Random-Forests.md) average deep trees. But averaging does **nothing** for **bias**: the average of many underfit stumps is still an underfit stump. So how do you *reduce bias*?
 
 You make the weak learners **collaborate sequentially**. Each new tree looks at the examples the ensemble currently gets wrong and focuses its limited capacity *there*. The first tree captures the broad trend; the second captures what the first missed; the third captures what the first two missed together. The *combined* model steadily reduces bias and ends up fitting complex patterns that no single shallow tree could express. That is a fundamentally different ensemble philosophy from bagging — and it's the reason boosting and bagging sit at opposite ends of the bias–variance spectrum.
 
@@ -96,15 +96,15 @@ $$r = -\frac{\partial L}{\partial F} = +(y - F),$$
 
 **which is exactly the ordinary residual.** "Fit the residuals" and "fit the negative gradient" are *literally the same thing* for squared error. The code below confirms this identity to machine zero.
 
-**Case 2 — log-loss / binomial deviance (binary classification).** Here the model outputs a **log-odds** score $F$, and the probability is $p = \sigma(F) = \frac{1}{1+e^{-F}}$ (the [sigmoid](02-Logistic-Regression.md)). The per-example loss is the negative log-likelihood
+**Case 2 — log-loss / binomial deviance (binary classification).** Here the model outputs a **log-odds** score $F$, and the probability is $p = \sigma(F) = \frac{1}{1+e^{-F}}$ (the [sigmoid](../02-Logistic-Regression/02-Logistic-Regression.md)). The per-example loss is the negative log-likelihood
 
 $$L(y, F) = -\big[\,y\log p + (1-y)\log(1-p)\,\big], \qquad p = \sigma(F).$$
 
-Differentiating w.r.t. the score $F$ (using the standard result $\frac{\partial}{\partial F}[-y\log\sigma(F) - (1-y)\log(1-\sigma(F))] = \sigma(F) - y$, exactly as in [logistic regression](02-Logistic-Regression.md)):
+Differentiating w.r.t. the score $F$ (using the standard result $\frac{\partial}{\partial F}[-y\log\sigma(F) - (1-y)\log(1-\sigma(F))] = \sigma(F) - y$, exactly as in [logistic regression](../02-Logistic-Regression/02-Logistic-Regression.md)):
 
 $$\frac{\partial L}{\partial F} = \sigma(F) - y = p - y \quad\Longrightarrow\quad r = -\frac{\partial L}{\partial F} = y - p.$$
 
-So for classification **the pseudo-residual is $y - p$** — the gap between the true label (0 or 1) and the predicted probability. Same recipe, different loss: each tree fits $y - p$ instead of $y - F$. (For multiclass it generalizes to $y_k - p_k$ per class via the softmax — the same form you saw in the [softmax + cross-entropy](../../05.%20Deep_Learning/concepts/04-Loss-Functions.md) gradient.)
+So for classification **the pseudo-residual is $y - p$** — the gap between the true label (0 or 1) and the predicted probability. Same recipe, different loss: each tree fits $y - p$ instead of $y - F$. (For multiclass it generalizes to $y_k - p_k$ per class via the softmax — the same form you saw in the [softmax + cross-entropy](../../05.%20Deep_Learning/04-Loss-Functions/04-Loss-Functions.md) gradient.)
 
 ```mermaid
 graph TD
@@ -157,9 +157,9 @@ The same machine does classification — you just switch the loss and read the o
 2. **Each round, predict probabilities.** Compute $p_i = \sigma(F(x_i))$ for every example.
 3. **Pseudo-residuals are $y_i - p_i$** (derived above). Fit a regression tree to those — note it's a **regression** tree even though the task is classification, because it's fitting a continuous gradient.
 4. **Newton leaf values.** Set each leaf's value to $\gamma = \frac{\sum_{i \in \text{leaf}}(y_i - p_i)}{\sum_{i \in \text{leaf}} p_i(1-p_i)}$ (the Tip above) and update $F \leftarrow F + \eta\,\gamma$ in log-odds space.
-5. **Final prediction.** After $M$ rounds, $p = \sigma(F_M(x))$, and you threshold at 0.5 (or wherever your precision/recall tradeoff wants — see [Classification Metrics](14-Classification-Metrics.md)).
+5. **Final prediction.** After $M$ rounds, $p = \sigma(F_M(x))$, and you threshold at 0.5 (or wherever your precision/recall tradeoff wants — see [Classification Metrics](../14-Classification-Metrics/14-Classification-Metrics.md)).
 
-So a boosted classifier accumulates **log-odds** across trees and squashes the total through the sigmoid at the end — exactly like adding up the contributions of many [logistic-regression](02-Logistic-Regression.md) terms, but the terms are trees. For **multiclass**, you run $K$ parallel boosting series (one score $F_k$ per class), turn the scores into probabilities with the **softmax**, and each tree fits the per-class residual $y_{ik} - p_{ik}$ — the multiclass cross-entropy gradient, the same form as a neural net's softmax output layer.
+So a boosted classifier accumulates **log-odds** across trees and squashes the total through the sigmoid at the end — exactly like adding up the contributions of many [logistic-regression](../02-Logistic-Regression/02-Logistic-Regression.md) terms, but the terms are trees. For **multiclass**, you run $K$ parallel boosting series (one score $F_k$ per class), turn the scores into probabilities with the **softmax**, and each tree fits the per-class residual $y_{ik} - p_{ik}$ — the multiclass cross-entropy gradient, the same form as a neural net's softmax output layer.
 
 > **Gotcha:** the trees output **log-odds increments**, not probabilities. A common confusion is to expect a leaf value like 0.7 to mean "70% probability" — it doesn't; it's an additive bump to the score $F$, and only $\sigma(\sum \text{bumps})$ is a probability. This is also why boosted-tree probabilities can be **miscalibrated** (over-confident) and often benefit from a post-hoc calibration step (Platt scaling or isotonic regression) if you need trustworthy probabilities, not just rankings.
 
@@ -232,7 +232,7 @@ $$\tilde{\mathcal{L}}^{(t)}(\text{structure}) = -\frac{1}{2}\sum_{j=1}^{T}\frac{
 
 $$\boxed{\;\text{Gain} = \frac{1}{2}\left[\frac{G_L^2}{H_L + \lambda} + \frac{G_R^2}{H_R + \lambda} - \frac{(G_L+G_R)^2}{H_L + H_R + \lambda}\right] - \gamma\;}$$
 
-XGBoost scans candidate split points and **picks the one with the largest gain**; if the best gain is negative (the bracket is smaller than $\gamma$), it **prunes** — it doesn't make the split. This is the exact analogue of information gain / Gini reduction in a [plain decision tree](07-Decision-Trees.md), but derived from the *loss* via $g$ and $h$, with regularization built in.
+XGBoost scans candidate split points and **picks the one with the largest gain**; if the best gain is negative (the bracket is smaller than $\gamma$), it **prunes** — it doesn't make the split. This is the exact analogue of information gain / Gini reduction in a [plain decision tree](../07-Decision-Trees/07-Decision-Trees.md), but derived from the *loss* via $g$ and $h$, with regularization built in.
 
 > *Where this comes from: this entire derivation — regularized objective, second-order Taylor expansion, optimal leaf weight, structure score, and split gain — is **XGBoost: A Scalable Tree Boosting System** (Chen & Guestrin 2016, §2); StatQuest's "XGBoost Part 3" video walks the same algebra. Both in the references.*
 
@@ -346,7 +346,7 @@ The cost is a tiny accuracy loss from binning (usually negligible — the bins a
 
 ## The bias–variance view, made precise
 
-It's worth tying every knob back to the [bias–variance tradeoff](12-Bias-Variance-Tradeoff.md), because that's the lens that makes the hyperparameters stop feeling arbitrary.
+It's worth tying every knob back to the [bias–variance tradeoff](../12-Bias-Variance-Tradeoff/12-Bias-Variance-Tradeoff.md), because that's the lens that makes the hyperparameters stop feeling arbitrary.
 
 - **Each round reduces bias.** Every tree fits the current residual, so the ensemble's *training* error (a proxy for bias on the training distribution) falls monotonically. This is the engine: more rounds → less bias.
 - **But each round also adds a little variance.** A tree fit to residuals is itself a noisy estimate; stacking many of them lets the ensemble start tracking the noise. So as rounds increase, **bias keeps falling but variance creeps up** — and the *test* error, which is (roughly) bias² + variance + irreducible noise, traces a **U-shape**: down, then up. The minimum of that U is what early stopping finds.
@@ -376,7 +376,7 @@ The defining contrast — and a guaranteed interview question:
 
 Forests are the safe, low-tuning default; boosting squeezes out more accuracy but needs care. The one-liner to memorize: **bagging reduces variance by averaging independent trees in parallel; boosting reduces bias by adding corrective trees in sequence.**
 
-A useful mental model: a forest is a **committee of experts voting at once** — independent opinions averaged to cancel individual mistakes — while boosting is an **apprenticeship**, where each new learner studies exactly where the current team falls short and specializes in fixing it. Both build on the same [decision tree](07-Decision-Trees.md), and the [bias–variance tradeoff](12-Bias-Variance-Tradeoff.md) is the single lens that explains why each one is configured the way it is (deep-and-many for forests, shallow-and-shrunk for boosting). If you can hold those two pictures side by side, you understand tree ensembles.
+A useful mental model: a forest is a **committee of experts voting at once** — independent opinions averaged to cancel individual mistakes — while boosting is an **apprenticeship**, where each new learner studies exactly where the current team falls short and specializes in fixing it. Both build on the same [decision tree](../07-Decision-Trees/07-Decision-Trees.md), and the [bias–variance tradeoff](../12-Bias-Variance-Tradeoff/12-Bias-Variance-Tradeoff.md) is the single lens that explains why each one is configured the way it is (deep-and-many for forests, shallow-and-shrunk for boosting). If you can hold those two pictures side by side, you understand tree ensembles.
 
 ---
 
@@ -549,7 +549,7 @@ from-scratch log-loss = 0.0154   sklearn GBC = 0.0154
 
 **Why it still beats deep learning on tabular data.** Despite years of "tabular deep learning" research (TabNet, FT-Transformer, SAINT, and others), gradient-boosted trees remain the thing to beat on real-world tabular benchmarks. Several careful studies (e.g. Grinsztajn et al. 2022, "Why do tree-based models still outperform deep learning on tabular data?") trace it to properties trees handle naturally and nets struggle with: tabular features are often **non-smooth** (sharp thresholds, which axis-aligned splits capture exactly but smooth nets blur), **heterogeneous** (mixed scales and types, no useful spatial/sequential structure for a net to exploit), and contain **uninformative features** (trees ignore them via low gain; nets can be distracted). Trees are also rotation-*non*-invariant in a way that *matches* tabular data, where individual columns are meaningful. So the honest interview answer is: on images/text/audio, deep nets; on tabular data with meaningful columns, boosted trees — and that's not changing soon.
 
-> **Tip:** when *not* to reach for boosting: on **very high-dimensional sparse** data (raw text, raw pixels) or perceptual tasks, deep nets win — boosted trees shine on *tabular* data with meaningful features. And for a quick, robust baseline with almost no tuning, a [random forest](09-Random-Forests.md) is often the smarter first move; bring out boosting when you're optimizing for peak accuracy.
+> **Tip:** when *not* to reach for boosting: on **very high-dimensional sparse** data (raw text, raw pixels) or perceptual tasks, deep nets win — boosted trees shine on *tabular* data with meaningful features. And for a quick, robust baseline with almost no tuning, a [random forest](../09-Random-Forests/09-Random-Forests.md) is often the smarter first move; bring out boosting when you're optimizing for peak accuracy.
 
 ---
 

@@ -50,5 +50,5 @@ encoding (must be fit inside cross-validation / with smoothing).
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 1.01 One-Hot Encoding](../../../AI-ML-intuition/Module_1_Representation/1.01_One-Hot_Encoding.md) · [1.02 Dense Embeddings](../../../AI-ML-intuition/Module_1_Representation/1.02_Dense_Embeddings.md)
-- Next concepts: [06 Feature Engineering](06-Feature-Engineering.md) · [11 Data Leakage](11-Data-Leakage.md)
-- Related domain: [01. Foundations](../../01.%20Foundations/concepts/README.md)
+- Next concepts: [06 Feature Engineering](../06-Feature-Engineering/06-Feature-Engineering.md) · [11 Data Leakage](../11-Data-Leakage/11-Data-Leakage.md)
+- Related domain: [01. Foundations](../../01.%20Foundations/README.md)

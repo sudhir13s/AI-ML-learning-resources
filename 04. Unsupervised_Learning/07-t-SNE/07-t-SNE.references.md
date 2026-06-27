@@ -51,8 +51,8 @@ updated: 2026-06-22
 
 **In this platform**:
 - Concept page (full explanation): [t-SNE](07-t-SNE.md)
-- The linear baseline t-SNE is defined against: [06 Dimensionality Reduction — Overview (PCA / SVD)](06-Dimensionality-Reduction-Overview.md)
-- The modern alternative (faster, has a transform, more global): [08 UMAP](08-UMAP.md)
+- The linear baseline t-SNE is defined against: [06 Dimensionality Reduction — Overview (PCA / SVD)](../06-Dimensionality-Reduction-Overview/06-Dimensionality-Reduction-Overview.md)
+- The modern alternative (faster, has a transform, more global): [08 UMAP](../08-UMAP/08-UMAP.md)
 - The KL-divergence objective (the *why* of the cost): [AI-ML-intuition 5.01 Entropy & KL Divergence](../../../AI-ML-intuition/Module_5_Generation/5.01_Information_Theory_Entropy_KL_Divergence.md)
 - Concept depth (the *why*): [AI-ML-intuition 1.11–1.12 Dimensionality Reduction (t-SNE / UMAP)](../../../AI-ML-intuition/Module_1_Representation/1.11-1.12_Dimensionality_Reduction_for_Representation_t-SNE_UMAP.md)
 - Prereq math: [Foundations — Linear Algebra (vectors & matrices)](../../01.%20Foundations/Maths%20for%20AI-ML/1.%20Linear%20Algebra/VectorsAndMatrices.md)

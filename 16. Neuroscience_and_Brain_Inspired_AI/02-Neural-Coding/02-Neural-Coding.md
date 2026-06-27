@@ -52,5 +52,5 @@ efficient-coding view also rhymes directly with information bottleneck and entro
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 5.01 Information Theory — Entropy & KL](../../../AI-ML-intuition/Module_5_Generation/5.01_Information_Theory_Entropy_KL_Divergence.md) · [0.01 Probability & Bayes' Theorem](../../../AI-ML-intuition/Module_0_Foundations/0.01_Probability_and_Bayes_Theorem.md)
-- Next concepts: [03 Spiking Neural Networks](03-Spiking-Neural-Networks.md) · [04 Hebbian Learning & STDP](04-Hebbian-Learning-and-STDP.md)
-- Related domain: [05. Deep Learning](../../05.%20Deep_Learning/concepts/README.md)
+- Next concepts: [03 Spiking Neural Networks](../03-Spiking-Neural-Networks/03-Spiking-Neural-Networks.md) · [04 Hebbian Learning & STDP](../04-Hebbian-Learning-and-STDP/04-Hebbian-Learning-and-STDP.md)
+- Related domain: [05. Deep Learning](../../05.%20Deep_Learning/README.md)

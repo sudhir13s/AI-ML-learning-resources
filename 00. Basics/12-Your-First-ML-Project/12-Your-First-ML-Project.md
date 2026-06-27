@@ -53,7 +53,7 @@ interview take-home. "Walk me through a project you built" is a question you wan
 - [Approaching (Almost) Any Machine Learning Problem](https://github.com/abhishekkrthakur/approachingalmost) — **Abhishek Thakur** — free PDF; a practical project playbook.
 
 ## 🔗 In this platform
-- Prev: [11 Environments & Package Management](11-Environments-and-Package-Management.md) · Foundations: [01 What is AI / ML / DL](01-What-is-AI-ML-Deep-Learning.md)
-- Go deeper — clean the data first: [02. Data Preprocessing](../../02.%20Data_Preprocessing/concepts/README.md)
-- Go deeper — the algorithms you'll try: [03. Supervised Learning](../../03.%20Supervised_Learning/concepts/README.md) · [04. Unsupervised Learning](../../04.%20Unsupervised_Learning/concepts/README.md)
-- Go deeper — sklearn pipelines & frameworks: [11. Tools & Frameworks](../../13.%20Tools_and_Frameworks/concepts/README.md)
+- Prev: [11 Environments & Package Management](../11-Environments-and-Package-Management/11-Environments-and-Package-Management.md) · Foundations: [01 What is AI / ML / DL](../01-What-is-AI-ML-Deep-Learning/01-What-is-AI-ML-Deep-Learning.md)
+- Go deeper — clean the data first: [02. Data Preprocessing](../../02.%20Data_Preprocessing/README.md)
+- Go deeper — the algorithms you'll try: [03. Supervised Learning](../../03.%20Supervised_Learning/README.md) · [04. Unsupervised Learning](../../04.%20Unsupervised_Learning/README.md)
+- Go deeper — sklearn pipelines & frameworks: [11. Tools & Frameworks](../../13.%20Tools_and_Frameworks/README.md)

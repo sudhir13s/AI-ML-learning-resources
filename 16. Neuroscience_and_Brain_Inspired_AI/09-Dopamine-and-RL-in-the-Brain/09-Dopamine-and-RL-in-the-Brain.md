@@ -52,6 +52,6 @@ shows the brain may even encode a *distribution* of returns, mirroring distribut
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 6.01 Bellman Optimality & Q-Learning](../../../AI-ML-intuition/Module_6_Reinforcement_Learning/6.01_Bellman_Optimality_Q-Learning.md) — the TD error dopamine is hypothesized to compute.
-- Prereqs in this section: [04 Hebbian Learning & STDP](04-Hebbian-Learning-and-STDP.md) · [02 Neural Coding](02-Neural-Coding.md)
-- Next concepts: [10 Memory Systems (hippocampus · replay)](10-Memory-Systems-Hippocampus-Replay.md)
-- Related domain: [10. Reinforcement Learning](../../08.%20Reinforcement_Learning/concepts/README.md)
+- Prereqs in this section: [04 Hebbian Learning & STDP](../04-Hebbian-Learning-and-STDP/04-Hebbian-Learning-and-STDP.md) · [02 Neural Coding](../02-Neural-Coding/02-Neural-Coding.md)
+- Next concepts: [10 Memory Systems (hippocampus · replay)](../10-Memory-Systems-Hippocampus-Replay/10-Memory-Systems-Hippocampus-Replay.md)
+- Related domain: [10. Reinforcement Learning](../../08.%20Reinforcement_Learning/README.md)

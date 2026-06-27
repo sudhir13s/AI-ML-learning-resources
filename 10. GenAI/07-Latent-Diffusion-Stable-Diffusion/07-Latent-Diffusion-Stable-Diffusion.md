@@ -55,7 +55,7 @@ diffusion (speed and memory vs a slight quality ceiling from the autoencoder).
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 5.03 Diffusion Models](../../../AI-ML-intuition/Module_5_Generation/5.03_Diffusion_Models.md) · [5.02 ELBO & VAEs](../../../AI-ML-intuition/Module_5_Generation/5.02_Latent_Variable_Models_ELBO_VAEs.md)
-- Prereq: [05 Diffusion Models (DDPM)](05-Diffusion-Models-DDPM.md) · [01 Variational Autoencoders](01-Variational-Autoencoders-VAE-ELBO.md) (the latent compressor) · [04 Conditional Generation & CFG](04-Conditional-Generation-and-Classifier-Free-Guidance.md)
-- Related: [Deep Learning — Attention Mechanism](../../05.%20Deep_Learning/concepts/15-Attention-Mechanism.md) (cross-attention conditions the U-Net)
-- Next concepts: [11 Text-to-Image Systems](11-Text-to-Image-Systems.md) · [13 Sampling & Guidance Techniques](13-Sampling-and-Guidance-Techniques.md)
+- Prereq: [05 Diffusion Models (DDPM)](../05-Diffusion-Models-DDPM/05-Diffusion-Models-DDPM.md) · [01 Variational Autoencoders](../01-Variational-Autoencoders-VAE-ELBO/01-Variational-Autoencoders-VAE-ELBO.md) (the latent compressor) · [04 Conditional Generation & CFG](../04-Conditional-Generation-and-Classifier-Free-Guidance/04-Conditional-Generation-and-Classifier-Free-Guidance.md)
+- Related: [Deep Learning — Attention Mechanism](../../05.%20Deep_Learning/15-Attention-Mechanism/15-Attention-Mechanism.md) (cross-attention conditions the U-Net)
+- Next concepts: [11 Text-to-Image Systems](../11-Text-to-Image-Systems/11-Text-to-Image-Systems.md) · [13 Sampling & Guidance Techniques](../13-Sampling-and-Guidance-Techniques/13-Sampling-and-Guidance-Techniques.md)
 - Field overview: [9. Generative AI](../README.md)

@@ -121,7 +121,7 @@ The picture makes ELMo's signature claim concrete: because lower layers carry sy
 
 ## The shift to transformers, and BERT's central problem
 
-ELMo proved contextual representations were transformative, but it had two structural weaknesses. First, its bidirectionality was **shallow**: the forward and backward LMs are trained independently and only their *outputs* are concatenated, so no single representation was ever built while *jointly* attending left and right — each direction is blind to the other during encoding. Second, **LSTMs are sequential** — slow to train, and they struggle to carry information across long distances. The [Transformer](../../05.%20Deep_Learning/concepts/16-Transformer-Architecture.md) had just shown that **self-attention** beats recurrence on both counts: every token attends to every other in parallel, regardless of distance.
+ELMo proved contextual representations were transformative, but it had two structural weaknesses. First, its bidirectionality was **shallow**: the forward and backward LMs are trained independently and only their *outputs* are concatenated, so no single representation was ever built while *jointly* attending left and right — each direction is blind to the other during encoding. Second, **LSTMs are sequential** — slow to train, and they struggle to carry information across long distances. The [Transformer](../../05.%20Deep_Learning/16-Transformer-Architecture/16-Transformer-Architecture.md) had just shown that **self-attention** beats recurrence on both counts: every token attends to every other in parallel, regardless of distance.
 
 So the obvious next step was: build a deep contextual model on a transformer **encoder**. But this immediately runs into a wall, and the wall *is* the key insight of BERT.
 
@@ -233,7 +233,7 @@ The full input embedding for each token is the **sum of three** learned embeddin
 
 ## Encoder-only: what BERT *is* architecturally
 
-BERT is a stack of **transformer encoder** blocks — the *left half* of the original Transformer, with **no decoder and no causal mask**. (For the block internals — multi-head self-attention, residual + layer-norm, the position-wise FFN — see the [Transformer Architecture](../../05.%20Deep_Learning/concepts/16-Transformer-Architecture.md) page; I won't re-derive them here.) Two reference sizes:
+BERT is a stack of **transformer encoder** blocks — the *left half* of the original Transformer, with **no decoder and no causal mask**. (For the block internals — multi-head self-attention, residual + layer-norm, the position-wise FFN — see the [Transformer Architecture](../../05.%20Deep_Learning/16-Transformer-Architecture/16-Transformer-Architecture.md) page; I won't re-derive them here.) Two reference sizes:
 
 - **BERT-base** — 12 layers, hidden size 768, 12 attention heads, ~110M parameters.
 - **BERT-large** — 24 layers, hidden size 1024, 16 heads, ~340M parameters.

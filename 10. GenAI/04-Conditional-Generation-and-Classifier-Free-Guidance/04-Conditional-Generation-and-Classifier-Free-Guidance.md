@@ -58,6 +58,6 @@ higher `s` gives better prompt adherence but less diversity and possible artifac
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 5.03 Diffusion Models](../../../AI-ML-intuition/Module_5_Generation/5.03_Diffusion_Models.md) · [5.04 GANs & WGAN](../../../AI-ML-intuition/Module_5_Generation/5.04_GANs_and_WGAN.md)
-- Prereq: [02 GANs & DCGAN](02-GANs-and-DCGAN.md) · [05 Diffusion Models (DDPM)](05-Diffusion-Models-DDPM.md)
-- Next concepts: [07 Latent Diffusion & Stable Diffusion](07-Latent-Diffusion-Stable-Diffusion.md) · [11 Text-to-Image Systems](11-Text-to-Image-Systems.md) · [13 Sampling & Guidance Techniques](13-Sampling-and-Guidance-Techniques.md)
+- Prereq: [02 GANs & DCGAN](../02-GANs-and-DCGAN/02-GANs-and-DCGAN.md) · [05 Diffusion Models (DDPM)](../05-Diffusion-Models-DDPM/05-Diffusion-Models-DDPM.md)
+- Next concepts: [07 Latent Diffusion & Stable Diffusion](../07-Latent-Diffusion-Stable-Diffusion/07-Latent-Diffusion-Stable-Diffusion.md) · [11 Text-to-Image Systems](../11-Text-to-Image-Systems/11-Text-to-Image-Systems.md) · [13 Sampling & Guidance Techniques](../13-Sampling-and-Guidance-Techniques/13-Sampling-and-Guidance-Techniques.md)
 - Field overview: [9. Generative AI](../README.md)

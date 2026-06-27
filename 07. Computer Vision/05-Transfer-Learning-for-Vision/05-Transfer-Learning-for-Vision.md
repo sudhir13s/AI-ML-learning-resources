@@ -53,5 +53,5 @@ a classifier with only 500 labeled images?"
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 7.03 Transfer Learning & Fine-Tuning](../../../AI-ML-intuition/Module_7_Scaling_and_Adaptation/7.03_Transfer_Learning_and_Fine_Tuning.md) · [7.04 Knowledge Distillation](../../../AI-ML-intuition/Module_7_Scaling_and_Adaptation/7.04_Knowledge_Distillation.md)
-- Foundation: [Classic CNN Architectures](03-Classic-CNN-Architectures.md) (the backbones you transfer)
-- Next concepts: [06 Data Augmentation](06-Data-Augmentation.md) · [12 Self-Supervised Vision](12-Self-Supervised-Vision.md)
+- Foundation: [Classic CNN Architectures](../03-Classic-CNN-Architectures/03-Classic-CNN-Architectures.md) (the backbones you transfer)
+- Next concepts: [06 Data Augmentation](../06-Data-Augmentation/06-Data-Augmentation.md) · [12 Self-Supervised Vision](../12-Self-Supervised-Vision/12-Self-Supervised-Vision.md)

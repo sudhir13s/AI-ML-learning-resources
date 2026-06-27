@@ -51,5 +51,5 @@ leak and over-report performance.
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 1.05 PCA / SVD](../../../AI-ML-intuition/Module_1_Representation/1.05_Spectral_Methods_PCA_SVD.md) · [3.07 Bias–Variance & Generalization](../../../AI-ML-intuition/Module_3_Evaluation/3.07_Bias_Variance_and_Generalization.md)
-- Next concepts: [06 Feature Engineering](06-Feature-Engineering.md) · [11 Data Leakage](11-Data-Leakage.md)
-- Related domain: [03. Supervised Learning](../../03.%20Supervised_Learning/concepts/README.md)
+- Next concepts: [06 Feature Engineering](../06-Feature-Engineering/06-Feature-Engineering.md) · [11 Data Leakage](../11-Data-Leakage/11-Data-Leakage.md)
+- Related domain: [03. Supervised Learning](../../03.%20Supervised_Learning/README.md)

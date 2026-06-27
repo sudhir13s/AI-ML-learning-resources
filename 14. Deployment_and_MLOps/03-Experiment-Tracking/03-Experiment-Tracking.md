@@ -51,5 +51,5 @@ tracking feeds the model registry and CI/CD downstream.
 - [Machine Learning Engineering — **Ch. 5 "Supervised Model Training"** (experiment management)](http://www.mlebook.com/wiki/doku.php) — **Andriy Burkov** — read-first chapters free.
 
 ## 🔗 In this platform
-- Builds on: [01 ML Lifecycle & MLOps Maturity](01-ML-Lifecycle-and-MLOps-Maturity.md) · [02 Reproducibility](02-Reproducibility.md)
-- Next concepts: [04 Data & Model Versioning](04-Data-and-Model-Versioning.md) · [13 Model Registry & Governance](13-Model-Registry-and-Governance.md)
+- Builds on: [01 ML Lifecycle & MLOps Maturity](../01-ML-Lifecycle-and-MLOps-Maturity/01-ML-Lifecycle-and-MLOps-Maturity.md) · [02 Reproducibility](../02-Reproducibility/02-Reproducibility.md)
+- Next concepts: [04 Data & Model Versioning](../04-Data-and-Model-Versioning/04-Data-and-Model-Versioning.md) · [13 Model Registry & Governance](../13-Model-Registry-and-Governance/13-Model-Registry-and-Governance.md)

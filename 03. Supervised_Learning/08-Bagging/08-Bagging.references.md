@@ -50,5 +50,5 @@ updated: 2026-06-22
 **In this platform**:
 - Concept page (full explanation): [Bagging](08-Bagging.md)
 - Concept depth (the *why*): [AI-ML-intuition 3.08 Ensembles (Bagging/Boosting)](../../../AI-ML-intuition/Module_3_Evaluation/3.08_Ensembles_Bagging_Boosting.md) · [3.07 Bias–Variance & Generalization](../../../AI-ML-intuition/Module_3_Evaluation/3.07_Bias_Variance_and_Generalization.md)
-- Related: [Decision Trees](07-Decision-Trees.md) (the unstable learner you bag) · [Random Forests](09-Random-Forests.md) (bagging + feature subsampling) · [Bias–Variance Tradeoff](12-Bias-Variance-Tradeoff.md) · [Gradient Boosting](10-Gradient-Boosting-XGBoost.md) (boosting cuts bias; bagging cuts variance)
-- Math prerequisites: [01. Foundations](../../01.%20Foundations/concepts/README.md) — the bootstrap, variance of an average, independence
+- Related: [Decision Trees](../07-Decision-Trees/07-Decision-Trees.md) (the unstable learner you bag) · [Random Forests](../09-Random-Forests/09-Random-Forests.md) (bagging + feature subsampling) · [Bias–Variance Tradeoff](../12-Bias-Variance-Tradeoff/12-Bias-Variance-Tradeoff.md) · [Gradient Boosting](../10-Gradient-Boosting-XGBoost/10-Gradient-Boosting-XGBoost.md) (boosting cuts bias; bagging cuts variance)
+- Math prerequisites: [01. Foundations](../../01.%20Foundations/README.md) — the bootstrap, variance of an average, independence

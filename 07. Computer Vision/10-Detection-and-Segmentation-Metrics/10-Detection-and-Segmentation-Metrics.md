@@ -52,4 +52,4 @@ tests whether you actually understand how your model is scored, not just how it'
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 3.06 ROC / AUC / PR Curves](../../../AI-ML-intuition/Module_3_Evaluation/3.06_ROC_AUC_PR_Curves.md) (mAP = AP per class) · [3.05 Precision / Recall / F1](../../../AI-ML-intuition/Module_3_Evaluation/3.05_Classification_Metrics_Precision_Recall_F1.md)
-- Foundation: [Object Detection](07-Object-Detection.md) · [Instance Segmentation](09-Instance-Segmentation.md) · [Semantic Segmentation](08-Semantic-Segmentation.md)
+- Foundation: [Object Detection](../07-Object-Detection/07-Object-Detection.md) · [Instance Segmentation](../09-Instance-Segmentation/09-Instance-Segmentation.md) · [Semantic Segmentation](../08-Semantic-Segmentation/08-Semantic-Segmentation.md)

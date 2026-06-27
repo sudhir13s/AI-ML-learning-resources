@@ -54,6 +54,6 @@ You should be able to sketch how YOLO turns detection into a single grid regress
 - [Computer Vision: Algorithms and Applications, 2nd ed. — **Ch. 6.3 (Object detection)**](https://szeliski.org/Book/) — **Richard Szeliski** — detection in context, free.
 
 ## 🔗 In this platform
-- Foundation: [Classic CNN Architectures](03-Classic-CNN-Architectures.md) (detectors sit on these backbones) · [Deep Learning › CNNs & Convolution](../../05.%20Deep_Learning/concepts/13-CNNs-and-Convolution.md)
-- Metrics: [10 Detection & Segmentation Metrics (IoU · mAP)](10-Detection-and-Segmentation-Metrics.md)
-- Next concepts: [08 Semantic Segmentation](08-Semantic-Segmentation.md) · [09 Instance Segmentation](09-Instance-Segmentation.md)
+- Foundation: [Classic CNN Architectures](../03-Classic-CNN-Architectures/03-Classic-CNN-Architectures.md) (detectors sit on these backbones) · [Deep Learning › CNNs & Convolution](../../05.%20Deep_Learning/13-CNNs-and-Convolution/13-CNNs-and-Convolution.md)
+- Metrics: [10 Detection & Segmentation Metrics (IoU · mAP)](../10-Detection-and-Segmentation-Metrics/10-Detection-and-Segmentation-Metrics.md)
+- Next concepts: [08 Semantic Segmentation](../08-Semantic-Segmentation/08-Semantic-Segmentation.md) · [09 Instance Segmentation](../09-Instance-Segmentation/09-Instance-Segmentation.md)

@@ -50,5 +50,5 @@ test set during development. Get this wrong and every metric you report is optim
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 3.07 Bias–Variance & Generalization](../../../AI-ML-intuition/Module_3_Evaluation/3.07_Bias_Variance_and_Generalization.md)
-- Next concepts: [11 Data Leakage](11-Data-Leakage.md) · [12 Imbalanced Data](12-Imbalanced-Data.md)
-- Related domain: [03. Supervised Learning](../../03.%20Supervised_Learning/concepts/README.md)
+- Next concepts: [11 Data Leakage](../11-Data-Leakage/11-Data-Leakage.md) · [12 Imbalanced Data](../12-Imbalanced-Data/12-Imbalanced-Data.md)
+- Related domain: [03. Supervised Learning](../../03.%20Supervised_Learning/README.md)

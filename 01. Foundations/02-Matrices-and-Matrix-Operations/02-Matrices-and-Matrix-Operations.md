@@ -51,5 +51,5 @@ deficiency means for least squares, and why a layer `Wx + b` is just an affine m
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 1.02 Dense Embeddings](../../../AI-ML-intuition/Module_1_Representation/1.02_Dense_Embeddings.md) · [1.04 Graph Representations](../../../AI-ML-intuition/Module_1_Representation/1.04_Graph_Representations.md)
 - Curriculum context: [Maths for AI-ML — Phase 1 (Linear Algebra)](../Maths%20for%20AI-ML/README.md)
-- Prereq: [01 Vectors & Vector Spaces](01-Vectors-and-Vector-Spaces.md) · Next: [03 Norms, Inner Products & Orthogonality](03-Norms-Inner-Products-and-Orthogonality.md) · [04 Eigenvalues & Eigenvectors](04-Eigenvalues-and-Eigenvectors.md)
+- Prereq: [01 Vectors & Vector Spaces](../01-Vectors-and-Vector-Spaces/01-Vectors-and-Vector-Spaces.md) · Next: [03 Norms, Inner Products & Orthogonality](../03-Norms-Inner-Products-and-Orthogonality/03-Norms-Inner-Products-and-Orthogonality.md) · [04 Eigenvalues & Eigenvectors](../04-Eigenvalues-and-Eigenvectors/04-Eigenvalues-and-Eigenvectors.md)
 </content>

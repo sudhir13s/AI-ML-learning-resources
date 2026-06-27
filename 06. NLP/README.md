@@ -42,7 +42,7 @@ Every chapter is a self-contained folder (`NN-Concept/NN-Concept.md`) with its p
 
 ### Related concepts (canonical home is another section)
 > These topics are used across many areas, so they're kept in one place to avoid repetition.
-- **Architectures & mechanisms** — Attention · Transformers · Positional Encodings · RNN / LSTM / GRU → [Deep Learning](../05.%20Deep_Learning/concepts/README.md)
+- **Architectures & mechanisms** — Attention · Transformers · Positional Encodings · RNN / LSTM / GRU → [Deep Learning](../05.%20Deep_Learning/README.md)
 - **Large language models** — BERT · GPT · T5 / BART · Fine-tuning · Prompting · RLHF → [LLMs](../09.%20LLMs/README.md)
 - **Retrieval-augmented generation** → [RAG & LLM Applications](../11.%20RAG_and_LLM_Applications/README.md)
 

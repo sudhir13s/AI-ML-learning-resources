@@ -24,7 +24,7 @@ pushed all the way down to the silicon: co-design the algorithm (SNNs) and the s
 1. **Get the vision** — watch [How neuromorphic computing will change our world](https://www.youtube.com/watch?v=N9C3kJE7G-Q). *The energy/sparsity case from Intel's neuromorphic lead.*
 2. **See real silicon** — watch [Neuromorphic Computing on Intel's Loihi 2](https://www.youtube.com/watch?v=CxXTiHExBNc). *How SNNs map onto an actual neuromorphic chip.*
 3. **Read the landscape** — [Opportunities for neuromorphic computing algorithms and applications](https://www.nature.com/articles/s41928-020-00475-8). *The definitive open survey of where the field is and is going.*
-4. **Connect to SNNs** — review [03 Spiking Neural Networks](03-Spiking-Neural-Networks.md). *Neuromorphic hardware exists to run SNNs efficiently.*
+4. **Connect to SNNs** — review [03 Spiking Neural Networks](../03-Spiking-Neural-Networks/03-Spiking-Neural-Networks.md). *Neuromorphic hardware exists to run SNNs efficiently.*
 5. **Tie it to ML efficiency** — relate to [quantization](../../../AI-ML-intuition/Module_7_Scaling_and_Adaptation/7.05_Quantization.md). *Both chase energy-per-inference; neuromorphic does it via events, quantization via bits.*
 
 ## 🎓 Courses (free)
@@ -52,6 +52,6 @@ pushed all the way down to the silicon: co-design the algorithm (SNNs) and the s
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 7.05 Quantization](../../../AI-ML-intuition/Module_7_Scaling_and_Adaptation/7.05_Quantization.md) — the ML-side energy-efficiency lever, parallel to event-driven computation.
-- Prereqs in this section: [03 Spiking Neural Networks](03-Spiking-Neural-Networks.md)
-- Next concepts: [14 Biologically-Plausible Backprop Alternatives](14-Biologically-Plausible-Backprop-Alternatives.md)
-- Related domain: [05. Deep Learning](../../05.%20Deep_Learning/concepts/README.md)
+- Prereqs in this section: [03 Spiking Neural Networks](../03-Spiking-Neural-Networks/03-Spiking-Neural-Networks.md)
+- Next concepts: [14 Biologically-Plausible Backprop Alternatives](../14-Biologically-Plausible-Backprop-Alternatives/14-Biologically-Plausible-Backprop-Alternatives.md)
+- Related domain: [05. Deep Learning](../../05.%20Deep_Learning/README.md)

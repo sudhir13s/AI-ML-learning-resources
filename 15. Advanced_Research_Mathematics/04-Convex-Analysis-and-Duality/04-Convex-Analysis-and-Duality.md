@@ -52,8 +52,8 @@ saddle-point framing of GANs and Wasserstein distances (card 9).
 - [Understanding Machine Learning — **Ch. 12 (Convex Learning Problems)**](https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/) — **Shalev-Shwartz & Ben-David** — convexity from the learning-theory side, free PDF.
 
 ## 🔗 In this platform
-- Foundations (the basics this builds on): [Convexity & Convex Functions](../../01.%20Foundations/concepts/12-Convexity.md) · [Lagrange Multipliers & Constrained Optimization](../../01.%20Foundations/concepts/14-Lagrange-Multipliers-Constrained-Optimization.md) · [Gradient Descent — theory](../../01.%20Foundations/concepts/13-Gradient-Descent-Theory.md)
+- Foundations (the basics this builds on): [Convexity & Convex Functions](../../01.%20Foundations/12-Convexity/12-Convexity.md) · [Lagrange Multipliers & Constrained Optimization](../../01.%20Foundations/14-Lagrange-Multipliers-Constrained-Optimization/14-Lagrange-Multipliers-Constrained-Optimization.md) · [Gradient Descent — theory](../../01.%20Foundations/13-Gradient-Descent-Theory/13-Gradient-Descent-Theory.md)
 - Concept depth (the *why*): [AI-ML-intuition 2.05 Gradient Descent & SGD](../../../AI-ML-intuition/Module_2_Optimization/2.05_Gradient_Descent_and_SGD.md)
-- Next concepts: [09 Optimal Transport (Kantorovich duality)](09-Optimal-Transport-Wasserstein.md) · [05 Statistical Learning Theory](05-Statistical-Learning-Theory-PAC.md)
-- Related domain: [05. Deep Learning](../../05.%20Deep_Learning/concepts/README.md)
+- Next concepts: [09 Optimal Transport (Kantorovich duality)](../09-Optimal-Transport-Wasserstein/09-Optimal-Transport-Wasserstein.md) · [05 Statistical Learning Theory](../05-Statistical-Learning-Theory-PAC/05-Statistical-Learning-Theory-PAC.md)
+- Related domain: [05. Deep Learning](../../05.%20Deep_Learning/README.md)
 </content>

@@ -44,6 +44,6 @@ updated: 2026-06-21
 **In this platform**:
 - Concept page (full explanation): [Gradient Descent — theory & convergence](13-Gradient-Descent-Theory.md)
 - Concept depth (the *why*): [AI-ML-intuition 2.05 Gradient Descent & SGD](../../../AI-ML-intuition/Module_2_Optimization/2.05_Gradient_Descent_and_SGD.md)
-- Applied next layer: [Optimizers](../../05.%20Deep_Learning/concepts/07-Optimizers.md) (momentum, Adam, AdamW, LR schedules) — what fixes the zig-zag
-- Prereqs: [Derivatives & Gradients](08-Derivatives-and-Gradients.md) · [Convexity](12-Convexity.md)
+- Applied next layer: [Optimizers](../../05.%20Deep_Learning/07-Optimizers/07-Optimizers.md) (momentum, Adam, AdamW, LR schedules) — what fixes the zig-zag
+- Prereqs: [Derivatives & Gradients](../08-Derivatives-and-Gradients/08-Derivatives-and-Gradients.md) · [Convexity](../12-Convexity/12-Convexity.md)
 - Curriculum context: [Maths for AI-ML — Phase 5 (Optimization)](../Maths%20for%20AI-ML/README.md)

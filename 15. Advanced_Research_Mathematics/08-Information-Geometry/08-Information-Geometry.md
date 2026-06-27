@@ -53,7 +53,7 @@ behaves like squared distance locally" — a subtle point interviewers love.
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 5.01 Information Theory: Entropy & KL](../../../AI-ML-intuition/Module_5_Generation/5.01_Information_Theory_Entropy_KL_Divergence.md) · [2.07 Adam Optimizer](../../../AI-ML-intuition/Module_2_Optimization/2.07_Adam_Optimizer.md)
-- Foundations (the basics this builds on): [Cross-Entropy & KL Divergence](../../01.%20Foundations/concepts/23-Cross-Entropy-and-KL-Divergence.md) · [Maximum Likelihood Estimation](../../01.%20Foundations/concepts/19-Maximum-Likelihood-Estimation.md)
-- Prerequisite & next: [10 Differential Geometry & Manifolds](10-Differential-Geometry-and-Manifolds.md) · [03 Hilbert Spaces & RKHS](03-Hilbert-Spaces-and-RKHS.md)
-- Related domain (applied optimizers): [05. Deep Learning](../../05.%20Deep_Learning/concepts/README.md)
+- Foundations (the basics this builds on): [Cross-Entropy & KL Divergence](../../01.%20Foundations/23-Cross-Entropy-and-KL-Divergence/23-Cross-Entropy-and-KL-Divergence.md) · [Maximum Likelihood Estimation](../../01.%20Foundations/19-Maximum-Likelihood-Estimation/19-Maximum-Likelihood-Estimation.md)
+- Prerequisite & next: [10 Differential Geometry & Manifolds](../10-Differential-Geometry-and-Manifolds/10-Differential-Geometry-and-Manifolds.md) · [03 Hilbert Spaces & RKHS](../03-Hilbert-Spaces-and-RKHS/03-Hilbert-Spaces-and-RKHS.md)
+- Related domain (applied optimizers): [05. Deep Learning](../../05.%20Deep_Learning/README.md)
 </content>

@@ -57,7 +57,7 @@ updated: 2026-06-22
 
 **In this platform:**
 - Concept page (full explanation): [DBSCAN](03-DBSCAN.md)
-- Contrast with: [01 K-Means Clustering](01-K-Means-Clustering.md) (centroid vs density) · [02 Hierarchical Clustering](02-Hierarchical-Clustering.md) · [04 Gaussian Mixture Models & EM](04-Gaussian-Mixture-Models-and-EM.md) (soft, probabilistic clustering)
-- Builds on this: [09 Anomaly / Outlier Detection](09-Anomaly-Outlier-Detection.md) — DBSCAN's "noise" label is a form of outlier detection.
-- Prereqs (the *why* behind the metric): [k-Nearest Neighbors](../../03.%20Supervised_Learning/concepts/04-k-Nearest-Neighbors.md) (the same neighborhood/KD-tree machinery) · [AI-ML-intuition 1.07–1.08 Euclidean vs Cosine Distance](../../../AI-ML-intuition/Module_1_Representation/1.07-1.08_Similarities_Distances_Euclidean_vs_Cosine.md) — density/neighborhoods are defined by the distance metric.
+- Contrast with: [01 K-Means Clustering](../01-K-Means-Clustering/01-K-Means-Clustering.md) (centroid vs density) · [02 Hierarchical Clustering](../02-Hierarchical-Clustering/02-Hierarchical-Clustering.md) · [04 Gaussian Mixture Models & EM](../04-Gaussian-Mixture-Models-and-EM/04-Gaussian-Mixture-Models-and-EM.md) (soft, probabilistic clustering)
+- Builds on this: [09 Anomaly / Outlier Detection](../09-Anomaly-Outlier-Detection/09-Anomaly-Outlier-Detection.md) — DBSCAN's "noise" label is a form of outlier detection.
+- Prereqs (the *why* behind the metric): [k-Nearest Neighbors](../../03.%20Supervised_Learning/04-k-Nearest-Neighbors/04-k-Nearest-Neighbors.md) (the same neighborhood/KD-tree machinery) · [AI-ML-intuition 1.07–1.08 Euclidean vs Cosine Distance](../../../AI-ML-intuition/Module_1_Representation/1.07-1.08_Similarities_Distances_Euclidean_vs_Cosine.md) — density/neighborhoods are defined by the distance metric.
 - Field overview: [4. Unsupervised Learning](../README.md)

@@ -53,7 +53,7 @@ generative training. Kantorovich duality is a flagship use of the convex duality
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 5.04 GANs & WGAN](../../../AI-ML-intuition/Module_5_Generation/5.04_GANs_and_WGAN.md) · [1.10 Mahalanobis Distance](../../../AI-ML-intuition/Module_1_Representation/1.10_Mahalanobis_Distance.md)
-- Foundations (the basics this builds on): [Cross-Entropy & KL Divergence](../../01.%20Foundations/concepts/23-Cross-Entropy-and-KL-Divergence.md)
-- Prerequisite & next: [04 Convex Analysis & Duality](04-Convex-Analysis-and-Duality.md) · [08 Information Geometry](08-Information-Geometry.md)
-- Related domain: [05. Deep Learning](../../05.%20Deep_Learning/concepts/README.md)
+- Foundations (the basics this builds on): [Cross-Entropy & KL Divergence](../../01.%20Foundations/23-Cross-Entropy-and-KL-Divergence/23-Cross-Entropy-and-KL-Divergence.md)
+- Prerequisite & next: [04 Convex Analysis & Duality](../04-Convex-Analysis-and-Duality/04-Convex-Analysis-and-Duality.md) · [08 Information Geometry](../08-Information-Geometry/08-Information-Geometry.md)
+- Related domain: [05. Deep Learning](../../05.%20Deep_Learning/README.md)
 </content>

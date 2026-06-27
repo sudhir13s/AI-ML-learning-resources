@@ -52,5 +52,5 @@ is inner-products and norms.
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 1.06 Scaled Dot-Product](../../../AI-ML-intuition/Module_1_Representation/1.06_Vector_Similarities_The_Scaled_Dot-Product.md) · [1.07–1.08 Euclidean vs Cosine](../../../AI-ML-intuition/Module_1_Representation/1.07-1.08_Similarities_Distances_Euclidean_vs_Cosine.md) · [1.09 Manhattan/L1](../../../AI-ML-intuition/Module_1_Representation/1.09_Manhattan_L1_Distance.md)
 - Curriculum context: [Maths for AI-ML — Phase 1 (Linear Algebra)](../Maths%20for%20AI-ML/README.md)
-- Prereq: [01 Vectors & Vector Spaces](01-Vectors-and-Vector-Spaces.md) · Related: [12 Convexity](12-Convexity.md) (norm balls)
+- Prereq: [01 Vectors & Vector Spaces](../01-Vectors-and-Vector-Spaces/01-Vectors-and-Vector-Spaces.md) · Related: [12 Convexity](../12-Convexity/12-Convexity.md) (norm balls)
 </content>

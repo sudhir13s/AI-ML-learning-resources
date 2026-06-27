@@ -53,6 +53,6 @@ updated: 2026-06-26
 
 **In this platform**:
 - Concept page (full explanation): [Long-Context Methods](08-Long-Context-Methods.md)
-- Foundations (the *why* behind RoPE and attention): [Positional Encoding](../../05.%20Deep_Learning/concepts/17-Positional-Encoding.md) · [Attention Mechanism](../../05.%20Deep_Learning/concepts/15-Attention-Mechanism.md)
+- Foundations (the *why* behind RoPE and attention): [Positional Encoding](../../05.%20Deep_Learning/17-Positional-Encoding/17-Positional-Encoding.md) · [Attention Mechanism](../../05.%20Deep_Learning/15-Attention-Mechanism/15-Attention-Mechanism.md)
 - The other two walls: [Efficient Attention (FlashAttention)](../06-Efficient-Attention-FlashAttention/06-Efficient-Attention-FlashAttention.md) · [KV Cache](../05-KV-Cache/05-KV-Cache.md)
 - Builds on this: [Decoder-only Architecture](../04-Decoder-only-Architecture/04-Decoder-only-Architecture.md) (the modern RoPE recipe) · [Quantization](../10-Quantization/10-Quantization.md) (compressing the cache) · [Inference Optimization & Serving](../09-Inference-Optimization-and-Serving/09-Inference-Optimization-and-Serving.md)

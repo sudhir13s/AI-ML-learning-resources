@@ -52,5 +52,5 @@ PCA from the covariance eigenvectors" and "what does a negative/zero eigenvalue 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 1.05 Spectral Methods (PCA/SVD)](../../../AI-ML-intuition/Module_1_Representation/1.05_Spectral_Methods_PCA_SVD.md) · [1.04 Graph Representations (Laplacian spectrum)](../../../AI-ML-intuition/Module_1_Representation/1.04_Graph_Representations.md)
 - Curriculum context: [Maths for AI-ML — Phase 1 (Linear Algebra)](../Maths%20for%20AI-ML/README.md)
-- Prereq: [02 Matrices & Matrix Operations](02-Matrices-and-Matrix-Operations.md) · Next: [05 Matrix Decompositions](05-Matrix-Decompositions.md) · [06 SVD](06-Singular-Value-Decomposition.md) · [07 PCA (math)](07-Principal-Component-Analysis-Math.md)
+- Prereq: [02 Matrices & Matrix Operations](../02-Matrices-and-Matrix-Operations/02-Matrices-and-Matrix-Operations.md) · Next: [05 Matrix Decompositions](../05-Matrix-Decompositions/05-Matrix-Decompositions.md) · [06 SVD](../06-Singular-Value-Decomposition/06-Singular-Value-Decomposition.md) · [07 PCA (math)](../07-Principal-Component-Analysis-Math/07-Principal-Component-Analysis-Math.md)
 </content>

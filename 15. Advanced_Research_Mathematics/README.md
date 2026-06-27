@@ -48,9 +48,9 @@ not an afternoon.
 > These are the *basics* this domain builds on, or applications of it. They live where they're first
 > taught, to avoid repetition. This domain owns the **advanced** treatment; the links below own the core.
 - **Linear algebra · calculus · core probability · gradient-descent theory · entropy / KL** → [Foundations](../01.%20Foundations/README.md)
-- **Applied optimizers** — Momentum · Adam · AdamW · LR schedules · K-FAC in practice → [Deep Learning](../05.%20Deep_Learning/concepts/README.md)
-- **Clustering & dimensionality reduction** — k-means · GMM/EM · PCA · t-SNE · UMAP → [Unsupervised Learning](../04.%20Unsupervised_Learning/concepts/README.md)
-- **Reinforcement learning** — MDPs · Bellman operators · policy gradients · bandits → [Reinforcement Learning](../08.%20Reinforcement_Learning/concepts/README.md)
+- **Applied optimizers** — Momentum · Adam · AdamW · LR schedules · K-FAC in practice → [Deep Learning](../05.%20Deep_Learning/README.md)
+- **Clustering & dimensionality reduction** — k-means · GMM/EM · PCA · t-SNE · UMAP → [Unsupervised Learning](../04.%20Unsupervised_Learning/README.md)
+- **Reinforcement learning** — MDPs · Bellman operators · policy gradients · bandits → [Reinforcement Learning](../08.%20Reinforcement_Learning/README.md)
 
 ## Core resource backbone
 - **Convex Optimization** (Boyd & Vandenberghe) — [free book + lectures](https://web.stanford.edu/~boyd/cvxbook/)

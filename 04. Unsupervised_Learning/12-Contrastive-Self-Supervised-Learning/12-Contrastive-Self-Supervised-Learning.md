@@ -87,7 +87,7 @@ That's it. Run those two forces over a large dataset and the encoder is forced t
 
 The end-to-end pipeline that operationalizes this (the **SimCLR** template, Chen et al. 2020) has four stages:
 
-![SimCLR pipeline: one unlabeled image is augmented two ways; both views pass through the SAME encoder f (whose output h is the representation kept for downstream tasks) and a projection head g; the two embeddings zᵢ, zⱼ form a positive pair pulled together by NT-Xent while every other image in the batch is a negative pushed apart.](images/cssl_simclr_pipeline.png)
+![SimCLR pipeline: one unlabeled image is augmented two ways; both views pass through the SAME encoder f (whose output h is the representation kept for downstream tasks) and a projection head g; the two embeddings zᵢ, zⱼ form a positive pair pulled together by NT-Xent while every other image in the batch is a negative pushed apart.](../images/cssl_simclr_pipeline.png)
 
 1. **Augment.** Sample two random transformations $t, t'$ and produce two views $\tilde x_i = t(x)$, $\tilde x_j = t'(x)$ of the same image.
 2. **Encode.** Pass both through a **shared** encoder $f$ (e.g. a ResNet) to get representations $h_i = f(\tilde x_i)$, $h_j = f(\tilde x_j)$. **This $h$ is what you keep for downstream tasks.**
@@ -171,7 +171,7 @@ a negative gradient (we want to *increase* the positive's similarity), whose mag
 
 It's worth taking the two limits explicitly, since they're a common follow-up. As $\tau \to \infty$, all $\text{sim}/\tau \to 0$, so $p_k \to 1/(2N-1)$ (uniform) and *every* gradient $\to 0$ — the loss stops discriminating and learning stalls. As $\tau \to 0$, the softmax becomes a hard $\arg\max$: $p \to 1$ on the single most-similar candidate and $0$ on all others, so the loss looks **only** at the one hardest competitor and the gradient on it blows up like $1/\tau$ — informative but unstable. The useful regime ($\tau \approx 0.1$–$0.5$) lives between these, sharp enough to mine hard negatives but smooth enough to stay stable.
 
-![Temperature reshapes the contrastive softmax. Left: the softmax weights over one positive (sim 0.80) plus four negatives, for τ = 0.5 / 0.2 / 0.07 — as τ shrinks, mass piles onto the positive and the single hard negative (sim 0.65), starving the easy negatives. Right: the NT-Xent loss (purple) falls smoothly with τ, while the gradient magnitude on the hard negative (red, dashed) peaks at small τ — the quantitative signature of hard-negative mining.](images/cssl_temperature.png)
+![Temperature reshapes the contrastive softmax. Left: the softmax weights over one positive (sim 0.80) plus four negatives, for τ = 0.5 / 0.2 / 0.07 — as τ shrinks, mass piles onto the positive and the single hard negative (sim 0.65), starving the easy negatives. Right: the NT-Xent loss (purple) falls smoothly with τ, while the gradient magnitude on the hard negative (red, dashed) peaks at small τ — the quantitative signature of hard-negative mining.](../images/cssl_temperature.png)
 
 > **Gotcha:** τ is **not** a "set and forget" knob. Too small and training is unstable (the loss fixates on a handful of negatives and the gradient explodes); too large and the encoder never sharpens its boundaries (everything stays mushy). The SimCLR sweet spot is **τ ≈ 0.1–0.5** (they use 0.5 for the best ImageNet result with their batch/augmentation setup; many follow-ups use 0.07–0.2). It interacts with the number of negatives and the augmentation strength, so it must be **tuned**, not copied.
 
@@ -185,7 +185,7 @@ In a contrastive method, **the negatives are what prevent collapse.** The denomi
 
 > **Note:** this is why "how do you prevent collapse?" is the single highest-signal contrastive-learning interview question. For **contrastive** methods the answer is "negatives provide the repulsive force." For **non-contrastive** methods (next section) the answer is more subtle and method-specific — and being able to give the *right* answer for each method is what separates a memorized answer from real understanding.
 
-![Alignment + uniformity on the hypersphere (Wang & Isola). Left: a collapsed embedding — all points bunch together; alignment is tiny (positives trivially close) but the uniformity loss is HIGH (−0.03, bad), because nothing is spread. Right: a well-trained embedding — positive pairs (green links) are close while anchors spread evenly around the sphere; alignment stays low AND uniformity is much lower (−1.86, good). The two metrics together diagnose a healthy representation.](images/cssl_align_uniform.png)
+![Alignment + uniformity on the hypersphere (Wang & Isola). Left: a collapsed embedding — all points bunch together; alignment is tiny (positives trivially close) but the uniformity loss is HIGH (−0.03, bad), because nothing is spread. Right: a well-trained embedding — positive pairs (green links) are close while anchors spread evenly around the sphere; alignment stays low AND uniformity is much lower (−1.86, good). The two metrics together diagnose a healthy representation.](../images/cssl_align_uniform.png)
 
 ---
 
@@ -288,7 +288,7 @@ The intuition for *why this dodges collapse*: the online net chases a target tha
 
 **VICReg** (Bardes et al. 2022) makes the anti-collapse mechanism fully explicit with three additive terms: **Variance** (a hinge keeping each embedding dimension's std above a threshold — directly forbids collapse), **Invariance** (MSE pulling positive pairs together), and **Covariance** (decorrelating dimensions, like Barlow Twins). It's the most modular view: one term per force, easy to reason about.
 
-![Contrastive vs non-contrastive SSL methods (left): SimCLR, MoCo, BYOL, SimSiam, and Barlow Twins compared on negatives? / momentum encoder? / predictor? / stop-gradient? and the mechanism each uses to avoid collapse. Right (measured): a toy NT-Xent loss optimized on 6 instances descends from ~4.0 to ~0.04 as the positive pairs are pulled together — the loss working in miniature.](images/cssl_methods.png)
+![Contrastive vs non-contrastive SSL methods (left): SimCLR, MoCo, BYOL, SimSiam, and Barlow Twins compared on negatives? / momentum encoder? / predictor? / stop-gradient? and the mechanism each uses to avoid collapse. Right (measured): a toy NT-Xent loss optimized on 6 instances descends from ~4.0 to ~0.04 as the positive pairs are pulled together — the loss working in miniature.](../images/cssl_methods.png)
 
 > **Note:** the family splits cleanly by **how they avoid collapse**: contrastive methods (SimCLR, MoCo) use **explicit negatives** (repulsion); BYOL/SimSiam use **architectural asymmetry** (predictor + stop-gradient); Barlow Twins/VICReg use **statistical constraints** (decorrelation / variance). All four routes reach similar downstream quality — there are many ways to forbid the constant solution.
 
@@ -299,7 +299,7 @@ The intuition for *why this dodges collapse*: the online net chases a target tha
 You trained an encoder on unlabeled data — how do you measure if it learned anything useful? Three standard protocols, in increasing cost:
 
 - **Linear probe.** Freeze the encoder, train a **single linear layer** on top using labels. High linear-probe accuracy means the representation is **linearly separable** — the semantic structure is already laid out, the classifier just reads it off. This is the headline self-supervised benchmark (SimCLR/MoCo report ImageNet linear-probe top-1).
-- **k-NN evaluation.** Even simpler — no training at all. Embed the labeled set, classify each test point by a **k-nearest-neighbors** vote in embedding space ([k-NN](../../03.%20Supervised_Learning/concepts/04-k-Nearest-Neighbors.md)). A strong k-NN accuracy proves the geometry itself is meaningful: same-class points are genuinely neighbors.
+- **k-NN evaluation.** Even simpler — no training at all. Embed the labeled set, classify each test point by a **k-nearest-neighbors** vote in embedding space ([k-NN](../../03.%20Supervised_Learning/04-k-Nearest-Neighbors/04-k-Nearest-Neighbors.md)). A strong k-NN accuracy proves the geometry itself is meaningful: same-class points are genuinely neighbors.
 - **Fine-tuning / transfer.** Unfreeze and fine-tune the whole encoder on a downstream task, often with **few labels** (1%, 10%). This measures real-world transfer and is where self-supervised pretraining shows its **label efficiency** — matching fully-supervised models with a fraction of the labels.
 
 > **Tip:** linear probe and fine-tuning measure *different* things and can disagree. Linear probe rewards representations that are **already** linearly organized (what self-supervision is good at); fine-tuning lets the features **move**, so it can rescue a representation that's informative but tangled. Report both. A big gap (low probe, high fine-tune) means the information is there but not linearly accessible.

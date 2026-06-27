@@ -34,7 +34,7 @@ Intuition and pictures first, then the math (with sources), then runnable, verif
 You could try to fit a 0/1 label $y \in \{0, 1\}$ with ordinary linear regression — predict $\hat y = w\cdot x + b$ and call it the class probability. It breaks in three distinct ways, and seeing each one tells you exactly what the sigmoid + log-loss combination is *for*:
 
 - **The outputs aren't probabilities.** $w\cdot x + b$ ranges over all of $\mathbb{R}$, so you'd routinely predict $-0.4$ or $1.7$ — numbers that *cannot* be probabilities. There's no natural cap at 0 and 1.
-- **MSE is the wrong loss here.** Squared error on a 0/1 target is dominated by outliers, and — the deeper problem we'll *prove* below — once you wrap a sigmoid around the score, **MSE becomes non-convex** and its gradient **vanishes exactly on the confidently-wrong predictions** you most need to fix (see [Loss Functions](../../05.%20Deep_Learning/concepts/04-Loss-Functions.md)).
+- **MSE is the wrong loss here.** Squared error on a 0/1 target is dominated by outliers, and — the deeper problem we'll *prove* below — once you wrap a sigmoid around the score, **MSE becomes non-convex** and its gradient **vanishes exactly on the confidently-wrong predictions** you most need to fix (see [Loss Functions](../../05.%20Deep_Learning/04-Loss-Functions/04-Loss-Functions.md)).
 - **No notion of graded confidence.** A good classifier should say $P(y=1 \mid x)$ — a calibrated probability you can threshold, rank by, and plug into expected-value decisions — not an unbounded score with no probabilistic meaning.
 
 Logistic regression fixes all three at once: pass the linear score through the **sigmoid** to get a genuine probability in $(0,1)$, and fit with the **right probabilistic loss** (cross-entropy) that is convex and has a clean gradient.
@@ -51,7 +51,7 @@ $$p = \sigma(z) = \frac{1}{1 + e^{-z}}, \qquad p = P(y=1 \mid x)$$
 
 ![The sigmoid curve mapping the linear score z = w·x + b on the x-axis to a probability p = σ(z) on the y-axis. It is S-shaped, passing through 0.5 at z = 0. Where z < 0 the probability is below 0.5 (predict class 0); where z > 0 it is above 0.5 (predict class 1); the decision threshold sits at p = 0.5, z = 0.](../images/logreg_sigmoid.png)
 
-The sigmoid squashes any real score into $(0, 1)$: a large positive score $\to$ near 1, a large negative score $\to$ near 0, and $z = 0 \to$ exactly $0.5$. You then classify by thresholding (usually at $0.5$, but the threshold is yours to tune for the precision/recall trade-off — see [Classification Metrics](14-Classification-Metrics.md)).
+The sigmoid squashes any real score into $(0, 1)$: a large positive score $\to$ near 1, a large negative score $\to$ near 0, and $z = 0 \to$ exactly $0.5$. You then classify by thresholding (usually at $0.5$, but the threshold is yours to tune for the precision/recall trade-off — see [Classification Metrics](../14-Classification-Metrics/14-Classification-Metrics.md)).
 
 Two facts about the sigmoid you'll use constantly — and the second one is the algebraic key to the whole page:
 
@@ -112,7 +112,7 @@ $$\boxed{\;\mathcal{L}(w,b) = -\frac{1}{n}\sum_{i=1}^n \Big[\, y_i \log p_i + (1
 
 So **maximum likelihood and minimizing cross-entropy are literally the same objective** — there is nothing extra to assume. The intuition is also clean: $-\log p_i$ is the *surprise* of seeing label $y_i$; minimizing total surprise = making the labels unsurprising = fitting well. And critically, composed with the sigmoid this loss is **convex** in $(w,b)$, so gradient descent (or Newton's method / IRLS) reliably finds the *global* optimum — no bad local minima to get stuck in.
 
-> **Note:** cross-entropy here is the special two-class case of the general $-\sum_c y_c \log p_c$. For $K$ classes you swap the sigmoid for the softmax and get the multiclass cross-entropy of the [softmax output layer](../../05.%20Deep_Learning/concepts/04-Loss-Functions.md) — same idea, more classes. Binary logistic regression is the $K=2$ instance.
+> **Note:** cross-entropy here is the special two-class case of the general $-\sum_c y_c \log p_c$. For $K$ classes you swap the sigmoid for the softmax and get the multiclass cross-entropy of the [softmax output layer](../../05.%20Deep_Learning/04-Loss-Functions/04-Loss-Functions.md) — same idea, more classes. Binary logistic regression is the $K=2$ instance.
 
 > *Where this comes from: the MLE $\to$ cross-entropy derivation is **Speech and Language Processing** Ch. 5 and the **CS229** notes §1.2 (Classification and logistic regression); the convexity / IRLS treatment is **The Elements of Statistical Learning** Ch. 4 — references.*
 
@@ -138,7 +138,7 @@ $$\boxed{\;\frac{\partial \mathcal{L}}{\partial w} = \frac{1}{n}\sum_{i=1}^n (p_
 
 The gradient is the **prediction error $(\hat y - y)$ times the input** — *identical in form* to linear regression's gradient, just with $\hat y = \sigma(z)$ instead of $\hat y = z$. (The code confirms this against a numerical gradient to $10^{-12}$.)
 
-That cancellation is not a coincidence — it is **why cross-entropy is the right loss for the sigmoid**. The log in cross-entropy was *chosen* (via MLE) so that its derivative produces a $\frac{1}{p(1-p)}$ that annihilates the sigmoid's $p(1-p)$, leaving a clean error signal that does **not** saturate. This same algebra is what makes [softmax + cross-entropy](../../05.%20Deep_Learning/concepts/04-Loss-Functions.md) backprop so simple, and it's exactly why this model generalizes straight to a single neuron.
+That cancellation is not a coincidence — it is **why cross-entropy is the right loss for the sigmoid**. The log in cross-entropy was *chosen* (via MLE) so that its derivative produces a $\frac{1}{p(1-p)}$ that annihilates the sigmoid's $p(1-p)$, leaving a clean error signal that does **not** saturate. This same algebra is what makes [softmax + cross-entropy](../../05.%20Deep_Learning/04-Loss-Functions/04-Loss-Functions.md) backprop so simple, and it's exactly why this model generalizes straight to a single neuron.
 
 > **Gotcha:** there is **no closed-form solution** for $w$ (unlike linear regression's normal equations $w = (X^\top X)^{-1}X^\top y$). The sigmoid makes the score-to-label map nonlinear, so $\frac{\partial \mathcal{L}}{\partial w} = 0$ has no algebraic solution — you *must* solve it iteratively. The good news, again: the objective is **convex**, so any reasonable iterative method converges to the *unique* global optimum (when one exists — see perfect separation).
 
@@ -188,7 +188,7 @@ Because there's no closed form, we iterate. Two methods matter, and knowing both
 
 ## Regularization and the `C` knob
 
-Unregularized logistic regression can overfit — and, worse, on separable data its weights **diverge to infinity** (next section). The cure is a penalty on weight size, exactly as in [Regularization](../../05.%20Deep_Learning/concepts/09-Regularization.md):
+Unregularized logistic regression can overfit — and, worse, on separable data its weights **diverge to infinity** (next section). The cure is a penalty on weight size, exactly as in [Regularization](../../05.%20Deep_Learning/09-Regularization/09-Regularization.md):
 
 - **L2 (ridge)** adds $\frac{\lambda}{2}\lVert w\rVert_2^2$ to the loss, shrinking weights smoothly toward zero. It keeps the problem strictly convex, bounds the weights, and is the sensible default. From the Bayesian view, L2 is a **Gaussian prior** on $w$ (MAP estimation).
 - **L1 (lasso)** adds $\lambda\lVert w\rVert_1$, which drives some weights *exactly* to zero — giving **feature selection** / sparse models. It corresponds to a **Laplace prior**.
@@ -206,7 +206,7 @@ For $K > 2$ classes, replace the single sigmoid with the **softmax** over $K$ li
 
 $$P(y=k \mid x) = \frac{e^{z_k}}{\sum_{j=1}^K e^{z_j}}.$$
 
-This is **multinomial logistic regression** (a.k.a. **softmax regression**), fit by minimizing the multiclass cross-entropy $-\frac1n\sum_i \log P(y_i\mid x_i)$. The gradient keeps the *same clean form* — $(\hat y - y)x$ with one-hot $y$ — for the same reason the binary one did (softmax's Jacobian cancels the log's derivative). Binary logistic regression is exactly the $K=2$ special case. And this is *precisely* the [softmax + cross-entropy](../../05.%20Deep_Learning/concepts/04-Loss-Functions.md) **output layer of every classification neural network** — an image classifier's final layer *is* softmax regression on learned features.
+This is **multinomial logistic regression** (a.k.a. **softmax regression**), fit by minimizing the multiclass cross-entropy $-\frac1n\sum_i \log P(y_i\mid x_i)$. The gradient keeps the *same clean form* — $(\hat y - y)x$ with one-hot $y$ — for the same reason the binary one did (softmax's Jacobian cancels the log's derivative). Binary logistic regression is exactly the $K=2$ special case. And this is *precisely* the [softmax + cross-entropy](../../05.%20Deep_Learning/04-Loss-Functions/04-Loss-Functions.md) **output layer of every classification neural network** — an image classifier's final layer *is* softmax regression on learned features.
 
 > **Note:** an older alternative is **one-vs-rest (OvR)**: train $K$ independent binary logistic regressions ("class $k$ vs everything else") and pick the highest score. It's simple and parallel but its probabilities don't jointly normalize, so true **multinomial (softmax)** is usually preferred when you want coherent class probabilities. scikit-learn now defaults to multinomial.
 
@@ -216,7 +216,7 @@ This is **multinomial logistic regression** (a.k.a. **softmax regression**), fit
 
 ## The generative–discriminative pair with Naive Bayes
 
-Here's a connection worth carrying into any interview. [Naive Bayes](05-Naive-Bayes.md) (Multinomial/Bernoulli) produces a **linear log-odds** $w\cdot x + b$. Logistic regression *also* produces a linear log-odds — that's the whole "linear in the logit" result above. So the two fit the **same parametric form** for $P(\text{class}\mid x)$; they differ only in **how they estimate the weights**:
+Here's a connection worth carrying into any interview. [Naive Bayes](../05-Naive-Bayes/05-Naive-Bayes.md) (Multinomial/Bernoulli) produces a **linear log-odds** $w\cdot x + b$. Logistic regression *also* produces a linear log-odds — that's the whole "linear in the logit" result above. So the two fit the **same parametric form** for $P(\text{class}\mid x)$; they differ only in **how they estimate the weights**:
 
 | | Naive Bayes (generative) | Logistic Regression (discriminative) |
 |---|---|---|
@@ -348,7 +348,7 @@ sklearn train acc = 0.983
 
 - **Perfect (linear) separation $\to$ weights diverge.** If a feature (or combination) *perfectly* splits the classes, the MLE wants infinite confidence: pushing $|w|\to\infty$ makes the separable points' probabilities $\to 0/1$ and drives log-loss $\to 0$, so there is **no finite optimum** — unregularized gradient descent grows the weights forever. In a quick check, $100\to50{,}000$ steps on separable data sent $w_1$ from $3.4$ to $9.4$ and still climbing. **The fix is regularization:** any L2 penalty bounds the weights and restores a unique, finite solution (in that check, L2 with `C=1.0` pinned $w_1$ to a sane $\approx 1.0$). This is *the* reason scikit-learn regularizes by default — and why "what happens under perfect separation?" is a favorite interview probe.
 - **Unscaled features.** Gradient descent and the regularization penalty both assume comparable feature scales; a feature measured in the thousands will dominate the gradient and be penalized differently from one in $[0,1]$. **Standardize** (zero mean, unit variance) before fitting — and remember it changes the coefficients' units, so interpret odds ratios in standardized terms.
-- **Class imbalance and the threshold.** With $99\%$ negatives, a model that always predicts "negative" is $99\%$ accurate and useless. Don't trust raw accuracy: use class weights (`class_weight="balanced"`), resampling, and pick the **decision threshold** from a precision/recall or ROC analysis rather than blindly using $0.5$ (see [Classification Metrics](14-Classification-Metrics.md)). The model outputs a calibrated probability; *you* choose where to cut it.
+- **Class imbalance and the threshold.** With $99\%$ negatives, a model that always predicts "negative" is $99\%$ accurate and useless. Don't trust raw accuracy: use class weights (`class_weight="balanced"`), resampling, and pick the **decision threshold** from a precision/recall or ROC analysis rather than blindly using $0.5$ (see [Classification Metrics](../14-Classification-Metrics/14-Classification-Metrics.md)). The model outputs a calibrated probability; *you* choose where to cut it.
 - **Reading `C` backwards** — small `C` = *more* regularization (covered above); a perennial source of confusion.
 - **Multicollinearity.** Highly correlated features make individual coefficients unstable and hard to interpret (their effects trade off), even though predictions stay fine. L2 stabilizes them; L1 can pick one and zero the rest.
 
@@ -362,7 +362,7 @@ Given a fresh binary-classification problem, here's the end-to-end playbook — 
 2. **Fit with regularization on.** `LogisticRegression(C=..., class_weight="balanced" if imbalanced)`. Leave the default **L2 / `lbfgs`** unless you want **L1** for sparsity. Never fit unregularized on data that might be separable (the weights diverge).
 3. **Tune `C` by cross-validation.** Sweep `C` on a log grid (`LogisticRegressionCV` does this for you); remember **small `C` = more regularization**. Watch validation log-loss, not just accuracy.
 4. **Read the coefficients.** Exponentiate them ($e^{w_j}$) to report **odds ratios** — the interpretable payoff. Sanity-check signs against domain knowledge; unstable/huge coefficients flag multicollinearity or separation.
-5. **Pick the threshold deliberately.** The model gives a calibrated probability; choose the operating point from a **precision/recall or ROC** curve for *your* cost trade-off, not a reflexive $0.5$ (see [Classification Metrics](14-Classification-Metrics.md)).
+5. **Pick the threshold deliberately.** The model gives a calibrated probability; choose the operating point from a **precision/recall or ROC** curve for *your* cost trade-off, not a reflexive $0.5$ (see [Classification Metrics](../14-Classification-Metrics/14-Classification-Metrics.md)).
 6. **Check calibration** with a reliability diagram (`calibration_curve`) and the Brier score; if it has drifted under heavy regularization or shift, wrap in `CalibratedClassifierCV`.
 7. **Treat it as the baseline to beat.** Its log-loss/AUC is the number a boosted-tree or neural model must *clearly* exceed to justify the extra complexity.
 

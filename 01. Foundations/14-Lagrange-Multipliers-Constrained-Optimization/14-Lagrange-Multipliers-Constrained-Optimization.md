@@ -52,5 +52,5 @@ state the KKT conditions.
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 1.05 Spectral Methods (PCA as constrained variance max)](../../../AI-ML-intuition/Module_1_Representation/1.05_Spectral_Methods_PCA_SVD.md) · [1.16 The Kernel Trick (SVM context)](../../../AI-ML-intuition/Module_1_Representation/1.16_The_Kernel_Trick.md)
 - Curriculum context: [Maths for AI-ML — Phase 5 (Optimization for ML/DL)](../Maths%20for%20AI-ML/README.md)
-- Prereqs: [12 Convexity](12-Convexity.md) · Related: [07 PCA — the math](07-Principal-Component-Analysis-Math.md) (a constrained optimization)
+- Prereqs: [12 Convexity](../12-Convexity/12-Convexity.md) · Related: [07 PCA — the math](../07-Principal-Component-Analysis-Math/07-Principal-Component-Analysis-Math.md) (a constrained optimization)
 </content>

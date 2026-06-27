@@ -184,7 +184,7 @@ $$
 
 ## The cost of exact search, and approximate nearest neighbors
 
-Dense retrieval reduces "find relevant passages" to **find the vectors nearest the query vector** — a [k-nearest-neighbors](../../03.%20Supervised_Learning/concepts/04-k-Nearest-Neighbors.md) search in $d$-dimensional space. The trouble: doing it **exactly** means comparing the query against **every** stored vector.
+Dense retrieval reduces "find relevant passages" to **find the vectors nearest the query vector** — a [k-nearest-neighbors](../../03.%20Supervised_Learning/04-k-Nearest-Neighbors/04-k-Nearest-Neighbors.md) search in $d$-dimensional space. The trouble: doing it **exactly** means comparing the query against **every** stored vector.
 
 **Exact (brute-force) kNN** computes $N$ dot products of dimension $d$ each — $O(N \cdot d)$ per query. With $N = 10^7$ passages and $d = 768$, that's ~$7.7 \times 10^9$ multiply-adds **per query**. One query you can do; thousands per second over a growing corpus you cannot — and the **memory** to store $10^7 \times 768$ floats is ~30 GB before you've searched anything. Exact search has perfect recall and ruinous cost. (FAISS calls this index `IndexFlat`; it's the ground truth everything else is measured against.)
 

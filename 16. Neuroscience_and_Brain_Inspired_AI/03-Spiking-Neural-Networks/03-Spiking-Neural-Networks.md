@@ -52,6 +52,6 @@ energy savings — the efficiency argument that ties this card to quantization a
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 2.02 Backpropagation — The Chain Rule](../../../AI-ML-intuition/Module_2_Optimization/2.02_Backpropagation_The_Chain_Rule.md) — what surrogate gradients have to approximate.
-- Prereqs in this section: [01 Biological Neurons & Synapses](01-Biological-Neurons-and-Synapses.md) · [02 Neural Coding](02-Neural-Coding.md)
-- Next concepts: [05 Neuromorphic Computing](05-Neuromorphic-Computing.md) · [14 Biologically-Plausible Backprop Alternatives](14-Biologically-Plausible-Backprop-Alternatives.md)
-- Related domain: [05. Deep Learning](../../05.%20Deep_Learning/concepts/README.md)
+- Prereqs in this section: [01 Biological Neurons & Synapses](../01-Biological-Neurons-and-Synapses/01-Biological-Neurons-and-Synapses.md) · [02 Neural Coding](../02-Neural-Coding/02-Neural-Coding.md)
+- Next concepts: [05 Neuromorphic Computing](../05-Neuromorphic-Computing/05-Neuromorphic-Computing.md) · [14 Biologically-Plausible Backprop Alternatives](../14-Biologically-Plausible-Backprop-Alternatives/14-Biologically-Plausible-Backprop-Alternatives.md)
+- Related domain: [05. Deep Learning](../../05.%20Deep_Learning/README.md)

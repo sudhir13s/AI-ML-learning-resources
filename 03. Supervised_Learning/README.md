@@ -42,9 +42,9 @@ Every chapter is a self-contained folder (`NN-Concept/NN-Concept.md`) with its p
 
 ### Related concepts (covered in another section)
 > These topics are used across many areas, so they're kept in one place to avoid repetition.
-- **Math & optimization** — Gradient Descent · Maximum Likelihood · Convexity · Linear Algebra → [01. Foundations](../01.%20Foundations/concepts/README.md)
-- **Neural networks** — MLPs · Backpropagation · Activation functions · Regularization (dropout/BN) → [05. Deep Learning](../05.%20Deep_Learning/concepts/README.md)
-- **Clustering & dimensionality reduction** — k-Means · PCA · t-SNE · GMMs → [04. Unsupervised Learning](../04.%20Unsupervised_Learning/concepts/README.md)
+- **Math & optimization** — Gradient Descent · Maximum Likelihood · Convexity · Linear Algebra → [01. Foundations](../01.%20Foundations/README.md)
+- **Neural networks** — MLPs · Backpropagation · Activation functions · Regularization (dropout/BN) → [05. Deep Learning](../05.%20Deep_Learning/README.md)
+- **Clustering & dimensionality reduction** — k-Means · PCA · t-SNE · GMMs → [04. Unsupervised Learning](../04.%20Unsupervised_Learning/README.md)
 - **Feature engineering & data prep** — scaling · encoding · imputation · leakage → [02. Data Preprocessing](../02.%20Data_Preprocessing/README.md)
 
 ## 🎓 Courses (free)

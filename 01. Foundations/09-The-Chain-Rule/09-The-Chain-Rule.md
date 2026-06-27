@@ -51,5 +51,5 @@ chain rule.
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 2.02 Backpropagation (The Chain Rule)](../../../AI-ML-intuition/Module_2_Optimization/2.02_Backpropagation_The_Chain_Rule.md) · [2.04 Computational Graphs / Autograd](../../../AI-ML-intuition/Module_2_Optimization/2.04_Computational_Graphs_Autograd.md)
 - Curriculum context: [Maths for AI-ML — Phase 2 (Calculus, row 2.2)](../Maths%20for%20AI-ML/README.md)
-- Prereq: [08 Derivatives & Gradients](08-Derivatives-and-Gradients.md) · Next: [10 Jacobian & Hessian](10-Jacobian-and-Hessian.md)
+- Prereq: [08 Derivatives & Gradients](../08-Derivatives-and-Gradients/08-Derivatives-and-Gradients.md) · Next: [10 Jacobian & Hessian](../10-Jacobian-and-Hessian/10-Jacobian-and-Hessian.md)
 </content>

@@ -50,5 +50,5 @@ question. Expect the DAG model, idempotency and retries, why data pipelines diff
 - [Machine Learning Engineering — **Ch. 7–8** (model deployment & pipelines)](http://www.mlebook.com/wiki/doku.php) — **Andriy Burkov** — read-first chapters free.
 
 ## 🔗 In this platform
-- Builds on: [01 ML Lifecycle & MLOps Maturity](01-ML-Lifecycle-and-MLOps-Maturity.md) · [05 Feature Stores](05-Feature-Stores.md)
-- Next concepts: [07 CI/CD for ML & CT](07-CICD-for-ML-and-Continuous-Training.md) · [10 Scaling Inference](10-Scaling-Inference.md)
+- Builds on: [01 ML Lifecycle & MLOps Maturity](../01-ML-Lifecycle-and-MLOps-Maturity/01-ML-Lifecycle-and-MLOps-Maturity.md) · [05 Feature Stores](../05-Feature-Stores/05-Feature-Stores.md)
+- Next concepts: [07 CI/CD for ML & CT](../07-CICD-for-ML-and-Continuous-Training/07-CICD-for-ML-and-Continuous-Training.md) · [10 Scaling Inference](../10-Scaling-Inference/10-Scaling-Inference.md)

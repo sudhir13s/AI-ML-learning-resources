@@ -25,7 +25,7 @@ models of the primate ventral stream**, so the analogy flows both directions.
 2. **Read the source** — [Hubel & Wiesel (1968): Receptive fields of the cat striate cortex](https://www.cns.nyu.edu/~tony/vns/readings/hubel-wiesel-1968.pdf). *The Nobel-winning experiments themselves.*
 3. **Map biology → CNN** — review [4.13 Convolution](../../../AI-ML-intuition/Module_4_Stabilization/4B_Architectural_Motifs/4.13_Convolution.md). *Weight sharing = a receptive field tiled across the image.*
 4. **See the modern two-way street** — [Yamins & DiCarlo (2016): Goal-driven deep learning models of sensory cortex](https://www.nature.com/articles/nn.4244). *Trained CNNs predict ventral-stream neural responses.*
-5. **Go deeper on the hierarchy** — explore the [Computer Vision](../../07.%20Computer%20Vision/concepts/README.md) architectures that extend V1→IT into deep nets.
+5. **Go deeper on the hierarchy** — explore the [Computer Vision](../../07.%20Computer%20Vision/README.md) architectures that extend V1→IT into deep nets.
 
 ## 🎓 Courses (free)
 - [Neuromatch Academy — Computational Neuroscience](https://compneuro.neuromatch.io/) — **Neuromatch** — receptive fields, tuning, and the visual-system modeling tutorials.
@@ -52,6 +52,6 @@ models of the primate ventral stream**, so the analogy flows both directions.
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 4.13 Convolution](../../../AI-ML-intuition/Module_4_Stabilization/4B_Architectural_Motifs/4.13_Convolution.md) — weight sharing as a tiled biological receptive field.
-- Prereqs in this section: [01 Biological Neurons & Synapses](01-Biological-Neurons-and-Synapses.md)
-- Next concepts: [06 Predictive Coding](06-Predictive-Coding.md)
-- Related domains: [05. Deep Learning](../../05.%20Deep_Learning/concepts/README.md) · [07. Computer Vision](../../07.%20Computer%20Vision/concepts/README.md)
+- Prereqs in this section: [01 Biological Neurons & Synapses](../01-Biological-Neurons-and-Synapses/01-Biological-Neurons-and-Synapses.md)
+- Next concepts: [06 Predictive Coding](../06-Predictive-Coding/06-Predictive-Coding.md)
+- Related domains: [05. Deep Learning](../../05.%20Deep_Learning/README.md) · [07. Computer Vision](../../07.%20Computer%20Vision/README.md)

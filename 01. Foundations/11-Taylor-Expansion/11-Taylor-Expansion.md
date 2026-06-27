@@ -51,5 +51,5 @@ optimal step — pure Taylor.
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 2.03 Jacobian & Hessian](../../../AI-ML-intuition/Module_2_Optimization/2.03_Jacobian_and_Hessian.md) · [2.05 Gradient Descent & SGD](../../../AI-ML-intuition/Module_2_Optimization/2.05_Gradient_Descent_and_SGD.md)
 - Curriculum context: [Maths for AI-ML — Phase 2 (Calculus)](../Maths%20for%20AI-ML/README.md)
-- Prereqs: [08 Derivatives & Gradients](08-Derivatives-and-Gradients.md) · [10 Jacobian & Hessian](10-Jacobian-and-Hessian.md) · Next: [12 Convexity](12-Convexity.md) · [13 Gradient Descent — theory](13-Gradient-Descent-Theory.md)
+- Prereqs: [08 Derivatives & Gradients](../08-Derivatives-and-Gradients/08-Derivatives-and-Gradients.md) · [10 Jacobian & Hessian](../10-Jacobian-and-Hessian/10-Jacobian-and-Hessian.md) · Next: [12 Convexity](../12-Convexity/12-Convexity.md) · [13 Gradient Descent — theory](../13-Gradient-Descent-Theory/13-Gradient-Descent-Theory.md)
 </content>

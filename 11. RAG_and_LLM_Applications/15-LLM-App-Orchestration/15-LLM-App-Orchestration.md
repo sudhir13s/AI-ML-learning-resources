@@ -53,5 +53,5 @@ semantic routing, and when to reach for a state machine (LangGraph) over a linea
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 8.03 Agents & Tool Use](../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.03_Agents_and_Tool_Use.md) · [8.01 In-Context Learning & Prompting](../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.01_In-Context_Learning_and_Prompting.md)
-- Prereqs: [01 RAG Fundamentals](01-RAG-Fundamentals.md) · Next: [16 Caching & Cost Optimization](16-Caching-and-Cost-Optimization.md)
-- Related domain: [15. Agentic AI](../../12.%20Agentic_AI/concepts/README.md) (orchestration becomes agent loops) · [09. LLMs — Prompting & In-Context Learning](../../09.%20LLMs/16-Prompting-and-In-Context-Learning/16-Prompting-and-In-Context-Learning.md)
+- Prereqs: [01 RAG Fundamentals](../01-RAG-Fundamentals/01-RAG-Fundamentals.md) · Next: [16 Caching & Cost Optimization](../16-Caching-and-Cost-Optimization/16-Caching-and-Cost-Optimization.md)
+- Related domain: [15. Agentic AI](../../12.%20Agentic_AI/README.md) (orchestration becomes agent loops) · [09. LLMs — Prompting & In-Context Learning](../../09.%20LLMs/16-Prompting-and-In-Context-Learning/16-Prompting-and-In-Context-Learning.md)

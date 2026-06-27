@@ -27,7 +27,7 @@ assignment local, forward-forward removes the backward pass entirely.
 2. **Feedback alignment** — [Random synaptic feedback weights support error backpropagation](https://www.nature.com/articles/ncomms13276). *Random feedback weights still let learning work — no weight transport needed.*
 3. **Predictive coding route** — watch [Predictive Coding Approximates Backprop (paper explained)](https://www.youtube.com/watch?v=LB4B5FYvtdI). *Local error units recover the backprop gradient.*
 4. **Forward-Forward** — watch [This Algorithm Could Make a GPT-4 Toaster Possible](https://www.youtube.com/watch?v=rVzDRfO2sgs), then read [The Forward-Forward Algorithm](https://arxiv.org/abs/2212.13345). *Two forward passes, no backward pass at all (Hinton, 2022).*
-5. **See the local-learning contrast** — review [04 Hebbian Learning & STDP](04-Hebbian-Learning-and-STDP.md). *All these methods reach for local, biologically-realizable updates.*
+5. **See the local-learning contrast** — review [04 Hebbian Learning & STDP](../04-Hebbian-Learning-and-STDP/04-Hebbian-Learning-and-STDP.md). *All these methods reach for local, biologically-realizable updates.*
 
 ## 🎓 Courses (free)
 - [Neuromatch Academy — Deep Learning](https://deeplearning.neuromatch.io/) — **Neuromatch** — covers credit assignment and biologically-motivated learning rules.
@@ -55,5 +55,5 @@ assignment local, forward-forward removes the backward pass entirely.
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 2.02 Backpropagation — The Chain Rule](../../../AI-ML-intuition/Module_2_Optimization/2.02_Backpropagation_The_Chain_Rule.md) — the algorithm these methods aim to replace with local, plausible learning.
-- Prereqs in this section: [04 Hebbian Learning & STDP](04-Hebbian-Learning-and-STDP.md) · [06 Predictive Coding](06-Predictive-Coding.md)
-- Related domain: [05. Deep Learning](../../05.%20Deep_Learning/concepts/README.md)
+- Prereqs in this section: [04 Hebbian Learning & STDP](../04-Hebbian-Learning-and-STDP/04-Hebbian-Learning-and-STDP.md) · [06 Predictive Coding](../06-Predictive-Coding/06-Predictive-Coding.md)
+- Related domain: [05. Deep Learning](../../05.%20Deep_Learning/README.md)

@@ -51,6 +51,6 @@ distributed data-parallel training without the usual boilerplate.
 - [ray-project/ray (examples & docs source)](https://github.com/ray-project/ray) — **Anyscale** — runnable examples and the source, free on GitHub.
 
 ## 🔗 In this platform
-- Related domain: [12. Deployment & MLOps](../../14.%20Deployment_and_MLOps/concepts/README.md) · [10. Reinforcement Learning](../../08.%20Reinforcement_Learning/concepts/README.md) *(RLlib)*
-- Pairs with: [05 PyTorch](05-PyTorch.md) · [12 Weights & Biases](12-Weights-and-Biases.md)
-- Deeper concept (the *why*): distributed training & serving → [Deployment & MLOps](../../14.%20Deployment_and_MLOps/concepts/README.md)
+- Related domain: [12. Deployment & MLOps](../../14.%20Deployment_and_MLOps/README.md) · [10. Reinforcement Learning](../../08.%20Reinforcement_Learning/README.md) *(RLlib)*
+- Pairs with: [05 PyTorch](../05-PyTorch/05-PyTorch.md) · [12 Weights & Biases](../12-Weights-and-Biases/12-Weights-and-Biases.md)
+- Deeper concept (the *why*): distributed training & serving → [Deployment & MLOps](../../14.%20Deployment_and_MLOps/README.md)

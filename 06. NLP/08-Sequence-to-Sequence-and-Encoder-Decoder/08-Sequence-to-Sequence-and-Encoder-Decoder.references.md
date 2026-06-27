@@ -63,7 +63,7 @@ updated: 2026-06-27
 
 **In this platform**:
 - Concept page (full explanation): [Sequence-to-Sequence & Encoder–Decoder](08-Sequence-to-Sequence-and-Encoder-Decoder.md)
-- Foundations (the mechanisms this builds on): [RNN / LSTM / GRU](../../05.%20Deep_Learning/concepts/14-RNN-LSTM-GRU.md) · [Attention Mechanism](../../05.%20Deep_Learning/concepts/15-Attention-Mechanism.md) · [Transformer Architecture](../../05.%20Deep_Learning/concepts/16-Transformer-Architecture.md)
+- Foundations (the mechanisms this builds on): [RNN / LSTM / GRU](../../05.%20Deep_Learning/14-RNN-LSTM-GRU/14-RNN-LSTM-GRU.md) · [Attention Mechanism](../../05.%20Deep_Learning/15-Attention-Mechanism/15-Attention-Mechanism.md) · [Transformer Architecture](../../05.%20Deep_Learning/16-Transformer-Architecture/16-Transformer-Architecture.md)
 - Prior NLP step: [N-gram Language Models and Smoothing](../04-N-gram-Language-Models-and-Smoothing/04-N-gram-Language-Models-and-Smoothing.md) — the statistical predecessor neural seq2seq replaced.
 - Puts it to work: [Machine Translation](../12-Machine-Translation/12-Machine-Translation.md) · [Text Summarization](../13-Text-Summarization/13-Text-Summarization.md) · [Decoding Strategies](../17-Decoding-Strategies/17-Decoding-Strategies.md) · [NLP Evaluation Metrics](../18-NLP-Evaluation-Metrics/18-NLP-Evaluation-Metrics.md)
 - Connects forward: [KV Cache](../../09.%20LLMs/05-KV-Cache/05-KV-Cache.md) — how encoder–decoder (and decoder-only) inference caches K/V, including the cross-attention cache.

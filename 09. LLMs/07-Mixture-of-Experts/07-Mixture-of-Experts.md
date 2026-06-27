@@ -31,7 +31,7 @@ I'm going to build this the way I'd actually walk a teammate through it on a whi
 
 To feel why MoE exists, you have to feel the waste it removes — exactly as with the KV cache.
 
-A standard transformer block has two halves: **attention** (tokens exchange information) and a **feed-forward network (FFN)** (each token is transformed independently). As the [Transformer Architecture](../../05.%20Deep_Learning/concepts/16-Transformer-Architecture.md) page derives, the FFN — the $d \to 4d \to d$ expansion — holds roughly **two-thirds of every block's parameters**. It is where the model does most of its per-token "thinking," and it is the heaviest part of the compute. In a **dense** model, *that entire FFN runs for every single token.* Every token — the word "the", a closing bracket, a rare technical term — pushes through all $\sim\!\tfrac{2}{3}$ of the block's weights.
+A standard transformer block has two halves: **attention** (tokens exchange information) and a **feed-forward network (FFN)** (each token is transformed independently). As the [Transformer Architecture](../../05.%20Deep_Learning/16-Transformer-Architecture/16-Transformer-Architecture.md) page derives, the FFN — the $d \to 4d \to d$ expansion — holds roughly **two-thirds of every block's parameters**. It is where the model does most of its per-token "thinking," and it is the heaviest part of the compute. In a **dense** model, *that entire FFN runs for every single token.* Every token — the word "the", a closing bracket, a rare technical term — pushes through all $\sim\!\tfrac{2}{3}$ of the block's weights.
 
 That is the waste. Most tokens are easy and don't need the model's full representational firepower; but a dense model has no way to spend *less* compute on an easy token and *more* on a hard one. Compute is flat, regardless of difficulty, because **parameters and FLOPs are the same thing in a dense model**: to use a parameter is to multiply by it.
 
@@ -95,7 +95,7 @@ Hold three pictures and the rest follows.
 
 The magic number is the **ratio of total specialists to consulted specialists**. A hospital with 100 specialists that consults 2 per patient has $50\times$ the *knowledge* of a 2-specialist clinic but does the *same work per patient*. That ratio — $N/k$ — is exactly the **sparsity factor** that lets MoE models carry tens of times more parameters than they spend per token.
 
-> **Tip:** the dense transformer is *already* "a differentiable router" in disguise — that's the second framing on the [Transformer Architecture](../../05.%20Deep_Learning/concepts/16-Transformer-Architecture.md) page, where **attention** dynamically routes *information between positions*. MoE adds a *second* kind of routing: not "which tokens talk to which" but "**which parameters each token uses**." Once you see both, MoE stops feeling exotic — it's the same routing instinct applied to the FFN.
+> **Tip:** the dense transformer is *already* "a differentiable router" in disguise — that's the second framing on the [Transformer Architecture](../../05.%20Deep_Learning/16-Transformer-Architecture/16-Transformer-Architecture.md) page, where **attention** dynamically routes *information between positions*. MoE adds a *second* kind of routing: not "which tokens talk to which" but "**which parameters each token uses**." Once you see both, MoE stops feeling exotic — it's the same routing instinct applied to the FFN.
 
 ---
 

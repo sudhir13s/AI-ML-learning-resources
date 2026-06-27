@@ -58,6 +58,6 @@ and can over-saturate.
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 5.05 Autoregressive Generation & Sampling](../../../AI-ML-intuition/Module_5_Generation/5.05_Autoregressive_Generation_Sampling.md) · [5.03 Diffusion Models](../../../AI-ML-intuition/Module_5_Generation/5.03_Diffusion_Models.md)
-- Prereq: [05 Diffusion Models (DDPM)](05-Diffusion-Models-DDPM.md) · [06 Score-Based & SDE Diffusion](06-Score-Based-and-SDE-Diffusion.md) (the probability-flow ODE) · [04 Conditional Generation & CFG](04-Conditional-Generation-and-Classifier-Free-Guidance.md)
-- Related: [07 Latent Diffusion & Stable Diffusion](07-Latent-Diffusion-Stable-Diffusion.md) · [11 Text-to-Image Systems](11-Text-to-Image-Systems.md) (where guidance scale is the key knob)
+- Prereq: [05 Diffusion Models (DDPM)](../05-Diffusion-Models-DDPM/05-Diffusion-Models-DDPM.md) · [06 Score-Based & SDE Diffusion](../06-Score-Based-and-SDE-Diffusion/06-Score-Based-and-SDE-Diffusion.md) (the probability-flow ODE) · [04 Conditional Generation & CFG](../04-Conditional-Generation-and-Classifier-Free-Guidance/04-Conditional-Generation-and-Classifier-Free-Guidance.md)
+- Related: [07 Latent Diffusion & Stable Diffusion](../07-Latent-Diffusion-Stable-Diffusion/07-Latent-Diffusion-Stable-Diffusion.md) · [11 Text-to-Image Systems](../11-Text-to-Image-Systems/11-Text-to-Image-Systems.md) (where guidance scale is the key knob)
 - Field overview: [9. Generative AI](../README.md)

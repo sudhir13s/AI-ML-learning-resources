@@ -52,7 +52,7 @@ teeth* (convergence modes, Borel–Cantelli, dominated convergence) is exactly t
 - [Probability Theory: The Logic of Science — **Ch. 1–2 (foundations)**](https://bayes.wustl.edu/etj/prob/book.pdf) — **E. T. Jaynes** — the Bayesian/logical complement to the measure-theoretic view, free PDF.
 
 ## 🔗 In this platform
-- Foundations (the basics this builds on): [Probability & Bayes](../../01.%20Foundations/concepts/15-Probability-and-Bayes-Theorem.md) · [Random Variables & Distributions](../../01.%20Foundations/concepts/16-Random-Variables-and-Distributions.md) · [Law of Large Numbers & the CLT](../../01.%20Foundations/concepts/18-LLN-and-CLT.md)
+- Foundations (the basics this builds on): [Probability & Bayes](../../01.%20Foundations/15-Probability-and-Bayes-Theorem/15-Probability-and-Bayes-Theorem.md) · [Random Variables & Distributions](../../01.%20Foundations/16-Random-Variables-and-Distributions/16-Random-Variables-and-Distributions.md) · [Law of Large Numbers & the CLT](../../01.%20Foundations/18-LLN-and-CLT/18-LLN-and-CLT.md)
 - Concept depth (the *why*): [AI-ML-intuition 0.01 Probability & Bayes](../../../AI-ML-intuition/Module_0_Foundations/0.01_Probability_and_Bayes_Theorem.md) · [0.04 LLN & CLT](../../../AI-ML-intuition/Module_0_Foundations/0.04_Law_of_Large_Numbers_and_CLT.md)
-- Next concepts: [02 Functional Analysis](02-Functional-Analysis.md) · [07 Rademacher Complexity & Generalization Bounds](07-Rademacher-Complexity-and-Generalization-Bounds.md)
+- Next concepts: [02 Functional Analysis](../02-Functional-Analysis/02-Functional-Analysis.md) · [07 Rademacher Complexity & Generalization Bounds](../07-Rademacher-Complexity-and-Generalization-Bounds/07-Rademacher-Complexity-and-Generalization-Bounds.md)
 </content>

@@ -50,6 +50,6 @@ file-level tools (DVC) and data-lake/branching tools (lakeFS). Pairs with experi
 - [Machine Learning Engineering — **Ch. 3 "Data Collection & Preparation"** (data versioning)](http://www.mlebook.com/wiki/doku.php) — **Andriy Burkov** — read-first chapters free.
 
 ## 🔗 In this platform
-- Builds on: [02 Reproducibility](02-Reproducibility.md) · [03 Experiment Tracking](03-Experiment-Tracking.md)
-- Next concepts: [05 Feature Stores](05-Feature-Stores.md) · [13 Model Registry & Governance](13-Model-Registry-and-Governance.md)
-- Related concept (covered elsewhere): data preprocessing & feature engineering → [02. Data_Preprocessing](../../02.%20Data_Preprocessing/concepts/README.md)
+- Builds on: [02 Reproducibility](../02-Reproducibility/02-Reproducibility.md) · [03 Experiment Tracking](../03-Experiment-Tracking/03-Experiment-Tracking.md)
+- Next concepts: [05 Feature Stores](../05-Feature-Stores/05-Feature-Stores.md) · [13 Model Registry & Governance](../13-Model-Registry-and-Governance/13-Model-Registry-and-Governance.md)
+- Related concept (covered elsewhere): data preprocessing & feature engineering → [02. Data_Preprocessing](../../02.%20Data_Preprocessing/README.md)

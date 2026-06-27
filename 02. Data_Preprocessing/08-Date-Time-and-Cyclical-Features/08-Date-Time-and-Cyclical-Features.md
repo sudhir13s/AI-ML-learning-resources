@@ -51,5 +51,5 @@ features for time series, and the time-aware leakage trap (never use future rows
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 1.03 Positional Encoding](../../../AI-ML-intuition/Module_1_Representation/1.03_Positional_Encoding.md) — the same sine/cosine idea that encodes sequence position.
-- Next concepts: [06 Feature Engineering](06-Feature-Engineering.md) · [11 Data Leakage](11-Data-Leakage.md)
-- Related domain: [03. Supervised Learning](../../03.%20Supervised_Learning/concepts/README.md)
+- Next concepts: [06 Feature Engineering](../06-Feature-Engineering/06-Feature-Engineering.md) · [11 Data Leakage](../11-Data-Leakage/11-Data-Leakage.md)
+- Related domain: [03. Supervised Learning](../../03.%20Supervised_Learning/README.md)

@@ -56,6 +56,6 @@ interview hook: "what does the Marchenko–Pastur distribution tell you about a 
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 1.05 Spectral Methods (PCA/SVD)](../../../AI-ML-intuition/Module_1_Representation/1.05_Spectral_Methods_PCA_SVD.md)
-- Foundations (the basics this builds on): [Eigenvalues & Eigenvectors](../../01.%20Foundations/concepts/04-Eigenvalues-and-Eigenvectors.md) · [SVD](../../01.%20Foundations/concepts/06-Singular-Value-Decomposition.md) · [Expectation, Variance & Covariance](../../01.%20Foundations/concepts/17-Expectation-Variance-Covariance.md)
-- Prerequisite & related: [01 Measure Theory & Probability](01-Measure-Theory-and-Probability-Foundations.md) · [11 Spectral Graph Theory](11-Spectral-Graph-Theory.md) · [07 Rademacher Complexity & Generalization Bounds](07-Rademacher-Complexity-and-Generalization-Bounds.md)
+- Foundations (the basics this builds on): [Eigenvalues & Eigenvectors](../../01.%20Foundations/04-Eigenvalues-and-Eigenvectors/04-Eigenvalues-and-Eigenvectors.md) · [SVD](../../01.%20Foundations/06-Singular-Value-Decomposition/06-Singular-Value-Decomposition.md) · [Expectation, Variance & Covariance](../../01.%20Foundations/17-Expectation-Variance-Covariance/17-Expectation-Variance-Covariance.md)
+- Prerequisite & related: [01 Measure Theory & Probability](../01-Measure-Theory-and-Probability-Foundations/01-Measure-Theory-and-Probability-Foundations.md) · [11 Spectral Graph Theory](../11-Spectral-Graph-Theory/11-Spectral-Graph-Theory.md) · [07 Rademacher Complexity & Generalization Bounds](../07-Rademacher-Complexity-and-Generalization-Bounds/07-Rademacher-Complexity-and-Generalization-Bounds.md)
 </content>

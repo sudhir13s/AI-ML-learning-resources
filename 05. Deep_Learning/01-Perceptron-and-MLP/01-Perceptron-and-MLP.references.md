@@ -52,7 +52,7 @@ updated: 2026-06-22
 
 **In this platform**:
 - Concept page (full explanation): [Perceptron and MLP](01-Perceptron-and-MLP.md)
-- The smooth cousin (single sigmoid neuron): [Logistic Regression](../../03.%20Supervised_Learning/concepts/02-Logistic-Regression.md)
+- The smooth cousin (single sigmoid neuron): [Logistic Regression](../../03.%20Supervised_Learning/02-Logistic-Regression/02-Logistic-Regression.md)
 - How an MLP actually learns: [Backpropagation & Computational Graphs](../02-Backpropagation-and-Computational-Graphs/02-Backpropagation-and-Computational-Graphs.md)
 - The nonlinearity that makes it work: [Activation Functions](../03-Activation-Functions/03-Activation-Functions.md)
 - Why deep MLPs are hard to train: [Vanishing & Exploding Gradients](../06-Vanishing-Exploding-Gradients/06-Vanishing-Exploding-Gradients.md)

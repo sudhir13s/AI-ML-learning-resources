@@ -50,5 +50,5 @@ when binning helps tree-free models, and how to engineer **without leaking** fut
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 1.01 One-Hot Encoding](../../../AI-ML-intuition/Module_1_Representation/1.01_One-Hot_Encoding.md) · [1.17 BoW & TF-IDF](../../../AI-ML-intuition/Module_1_Representation/1.17_BoW_and_TF-IDF.md)
-- Next concepts: [07 Feature Selection](07-Feature-Selection.md) · [08 Date/Time & Cyclical Features](08-Date-Time-and-Cyclical-Features.md)
-- Related domain: [03. Supervised Learning](../../03.%20Supervised_Learning/concepts/README.md)
+- Next concepts: [07 Feature Selection](../07-Feature-Selection/07-Feature-Selection.md) · [08 Date/Time & Cyclical Features](../08-Date-Time-and-Cyclical-Features/08-Date-Time-and-Cyclical-Features.md)
+- Related domain: [03. Supervised Learning](../../03.%20Supervised_Learning/README.md)

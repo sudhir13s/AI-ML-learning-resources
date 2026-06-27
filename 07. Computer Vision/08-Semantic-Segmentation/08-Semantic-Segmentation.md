@@ -54,5 +54,5 @@ instances) and instance segmentation. U-Net in particular is ubiquitous in medic
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 4.13 Convolution](../../../AI-ML-intuition/Module_4_Stabilization/4B_Architectural_Motifs/4.13_Convolution.md) — atrous/transposed conv are convolution variants.
-- Foundation: [Pooling & Receptive Fields](02-Pooling-and-Receptive-Fields.md) (why we downsample then upsample) · [Classic CNN Architectures](03-Classic-CNN-Architectures.md)
-- Next concepts: [09 Instance Segmentation](09-Instance-Segmentation.md) · [10 Detection & Segmentation Metrics](10-Detection-and-Segmentation-Metrics.md)
+- Foundation: [Pooling & Receptive Fields](../02-Pooling-and-Receptive-Fields/02-Pooling-and-Receptive-Fields.md) (why we downsample then upsample) · [Classic CNN Architectures](../03-Classic-CNN-Architectures/03-Classic-CNN-Architectures.md)
+- Next concepts: [09 Instance Segmentation](../09-Instance-Segmentation/09-Instance-Segmentation.md) · [10 Detection & Segmentation Metrics](../10-Detection-and-Segmentation-Metrics/10-Detection-and-Segmentation-Metrics.md)

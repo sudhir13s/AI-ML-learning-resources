@@ -52,7 +52,7 @@ updated: 2026-06-22
 
 **In this platform**:
 - Concept page (full explanation): [Mixture-of-Experts](07-Mixture-of-Experts.md)
-- Foundations (the FFN MoE replaces): [Transformer Architecture](../../05.%20Deep_Learning/concepts/16-Transformer-Architecture.md)
+- Foundations (the FFN MoE replaces): [Transformer Architecture](../../05.%20Deep_Learning/16-Transformer-Architecture/16-Transformer-Architecture.md)
 - Why capacity matters: [Scaling Laws](../03-Scaling-Laws/03-Scaling-Laws.md) · [Pretraining at Scale](../02-Pretraining-at-Scale/02-Pretraining-at-Scale.md)
 - Builds on this: [Decoder-only Architecture](../04-Decoder-only-Architecture/04-Decoder-only-Architecture.md) · [KV Cache](../05-KV-Cache/05-KV-Cache.md) · [Quantization](../10-Quantization/10-Quantization.md)
 - Puts it to work: [Inference Optimization & Serving](../09-Inference-Optimization-and-Serving/09-Inference-Optimization-and-Serving.md)

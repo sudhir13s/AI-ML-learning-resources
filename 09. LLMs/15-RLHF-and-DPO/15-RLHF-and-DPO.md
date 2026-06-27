@@ -157,7 +157,7 @@ Read it: the update pushes $r_w$ **up** and $r_l$ **down**, and the size of the 
 
 ## PPO: optimize the reward, but stay on a leash
 
-With a reward model in hand, RLHF treats text generation as a **reinforcement-learning problem**: the **policy** $\pi_\theta$ (a copy of the SFT model) is the thing we train; given a prompt (the "state") it generates a response (a sequence of token "actions"); the frozen reward model scores the finished response. We optimize the policy with **PPO** (proximal policy optimization), a stable [policy-gradient](../../08.%20Reinforcement_Learning/concepts/README.md) method. But the objective is emphatically **not** just "maximize reward":
+With a reward model in hand, RLHF treats text generation as a **reinforcement-learning problem**: the **policy** $\pi_\theta$ (a copy of the SFT model) is the thing we train; given a prompt (the "state") it generates a response (a sequence of token "actions"); the frozen reward model scores the finished response. We optimize the policy with **PPO** (proximal policy optimization), a stable [policy-gradient](../../08.%20Reinforcement_Learning/README.md) method. But the objective is emphatically **not** just "maximize reward":
 
 $$\max_{\pi_\theta}\; \mathbb{E}_{x\sim\mathcal{D},\; y \sim \pi_\theta(\cdot\mid x)}\Big[\,r_\phi(x, y)\,\Big] \;-\; \beta\,\mathrm{KL}\big(\pi_\theta(y\mid x)\,\Vert\,\pi_{\text{ref}}(y\mid x)\big)$$
 

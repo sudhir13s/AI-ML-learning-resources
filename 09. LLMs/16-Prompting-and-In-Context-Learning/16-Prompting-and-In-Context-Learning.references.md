@@ -57,6 +57,6 @@ updated: 2026-06-27
 - Concept depth (the intuition): [Module 8.01 In-Context Learning & Prompting](../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.01_In-Context_Learning_and_Prompting.md)
 - The next step (a specific prompting technique): [Chain-of-Thought Reasoning](../17-Chain-of-Thought-Reasoning/17-Chain-of-Thought-Reasoning.md)
 - Contrast — methods that change weights: [Supervised Fine-Tuning](../13-Supervised-Fine-Tuning/13-Supervised-Fine-Tuning.md) · [Instruction Tuning](../14-Instruction-Tuning/14-Instruction-Tuning.md) · [RLHF & DPO](../15-RLHF-and-DPO/15-RLHF-and-DPO.md)
-- Foundations (the attention that induction heads exploit): [Attention Mechanism](../../05.%20Deep_Learning/concepts/15-Attention-Mechanism.md) · [Decoder-only Architecture](../04-Decoder-only-Architecture/04-Decoder-only-Architecture.md)
+- Foundations (the attention that induction heads exploit): [Attention Mechanism](../../05.%20Deep_Learning/15-Attention-Mechanism/15-Attention-Mechanism.md) · [Decoder-only Architecture](../04-Decoder-only-Architecture/04-Decoder-only-Architecture.md)
 - Where ICL is put to work: [RAG & LLM Applications](../../11.%20RAG_and_LLM_Applications/README.md) · the [KV cache](../05-KV-Cache/05-KV-Cache.md) and [long-context methods](../08-Long-Context-Methods/08-Long-Context-Methods.md) that make long few-shot prompts affordable
 - Decoding that turns the ICL-conditioned distribution into text: [Decoding & Sampling](../18-Decoding-and-Sampling/18-Decoding-and-Sampling.md)

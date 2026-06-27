@@ -52,5 +52,5 @@ updated: 2026-06-22
 **In this platform**:
 - Concept page (full explanation): [Gradient Boosting](10-Gradient-Boosting-XGBoost.md)
 - Concept depth (the *why*): [AI-ML-intuition 3.08 Ensembles (Bagging/Boosting)](../../../AI-ML-intuition/Module_3_Evaluation/3.08_Ensembles_Bagging_Boosting.md) · [2.05 Gradient Descent & SGD](../../../AI-ML-intuition/Module_2_Optimization/2.05_Gradient_Descent_and_SGD.md)
-- Related: [Decision Trees](07-Decision-Trees.md) (the base learner) · [Random Forests](09-Random-Forests.md) (variance vs bias) · [Bagging](08-Bagging.md) · [Bias–Variance Tradeoff](12-Bias-Variance-Tradeoff.md)
-- Math prerequisites: [01. Foundations](../../01.%20Foundations/concepts/README.md) — gradient descent, Taylor expansion, loss functions
+- Related: [Decision Trees](../07-Decision-Trees/07-Decision-Trees.md) (the base learner) · [Random Forests](../09-Random-Forests/09-Random-Forests.md) (variance vs bias) · [Bagging](../08-Bagging/08-Bagging.md) · [Bias–Variance Tradeoff](../12-Bias-Variance-Tradeoff/12-Bias-Variance-Tradeoff.md)
+- Math prerequisites: [01. Foundations](../../01.%20Foundations/README.md) — gradient descent, Taylor expansion, loss functions

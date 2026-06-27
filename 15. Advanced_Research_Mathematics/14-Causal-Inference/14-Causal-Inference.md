@@ -26,7 +26,7 @@ topic for applied/research roles.
 2. **See the two frameworks** — watch [VMLW 2021: A brief introduction to causal inference](https://www.youtube.com/watch?v=n8HFNel9xpU). *SCM/do-calculus vs potential outcomes, reconciled.*
 3. **Read the course** — work [Brady Neal's Introduction to Causal Inference (free book)](https://www.bradyneal.com/Introduction_to_Causal_Inference-Dec17_2020-Neal.pdf). *DAGs, backdoor/frontdoor, do-calculus, identification — the best free ML-flavored text.*
 4. **Master adjustment** — focus on the backdoor criterion and do-calculus chapters; read [Pearl's Causal Inference: an overview](https://ftp.cs.ucla.edu/pub/stat_ser/r350.pdf). *Identification is the central technical skill.*
-5. **Connect to ML & decisions** — watch [1.1 Intro & Outline](https://www.youtube.com/watch?v=CfzO4IEMVUk) and link to bandits/RL via the [Game Theory card](15-Game-Theory-and-Multi-Agent-Math.md). *Causality underpins off-policy evaluation and counterfactual learning.*
+5. **Connect to ML & decisions** — watch [1.1 Intro & Outline](https://www.youtube.com/watch?v=CfzO4IEMVUk) and link to bandits/RL via the [Game Theory card](../15-Game-Theory-and-Multi-Agent-Math/15-Game-Theory-and-Multi-Agent-Math.md). *Causality underpins off-policy evaluation and counterfactual learning.*
 
 ## 🎓 Courses (free)
 - [Introduction to Causal Inference](https://www.bradyneal.com/causal-inference-course) — **Brady Neal** — a complete free course (videos + [book PDF](https://www.bradyneal.com/Introduction_to_Causal_Inference-Dec17_2020-Neal.pdf)) from an ML perspective: SCMs, do-calculus, identification.
@@ -54,7 +54,7 @@ topic for applied/research roles.
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 0.01 Probability & Bayes](../../../AI-ML-intuition/Module_0_Foundations/0.01_Probability_and_Bayes_Theorem.md) · [6.04 MDPs & Exploration](../../../AI-ML-intuition/Module_6_Reinforcement_Learning/6.04_MDPs_and_Exploration.md)
-- Foundations (the basics this builds on): [Probability & Bayes' Theorem](../../01.%20Foundations/concepts/15-Probability-and-Bayes-Theorem.md) · [Bayesian Inference](../../01.%20Foundations/concepts/20-Bayesian-Inference.md) · [Hypothesis Testing & Confidence Intervals](../../01.%20Foundations/concepts/21-Hypothesis-Testing-and-Confidence-Intervals.md)
-- Prerequisite & next: [01 Measure Theory & Probability](01-Measure-Theory-and-Probability-Foundations.md) · [15 Game Theory & Multi-Agent Math](15-Game-Theory-and-Multi-Agent-Math.md)
-- Related domain (sequential decisions): [10. Reinforcement Learning](../../08.%20Reinforcement_Learning/concepts/README.md)
+- Foundations (the basics this builds on): [Probability & Bayes' Theorem](../../01.%20Foundations/15-Probability-and-Bayes-Theorem/15-Probability-and-Bayes-Theorem.md) · [Bayesian Inference](../../01.%20Foundations/20-Bayesian-Inference/20-Bayesian-Inference.md) · [Hypothesis Testing & Confidence Intervals](../../01.%20Foundations/21-Hypothesis-Testing-and-Confidence-Intervals/21-Hypothesis-Testing-and-Confidence-Intervals.md)
+- Prerequisite & next: [01 Measure Theory & Probability](../01-Measure-Theory-and-Probability-Foundations/01-Measure-Theory-and-Probability-Foundations.md) · [15 Game Theory & Multi-Agent Math](../15-Game-Theory-and-Multi-Agent-Math/15-Game-Theory-and-Multi-Agent-Math.md)
+- Related domain (sequential decisions): [10. Reinforcement Learning](../../08.%20Reinforcement_Learning/README.md)
 </content>

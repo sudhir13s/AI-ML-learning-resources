@@ -54,7 +54,7 @@ learning (card 10). Cheeger's inequality is a classic theory talking point.
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 1.04 Graph Representations](../../../AI-ML-intuition/Module_1_Representation/1.04_Graph_Representations.md) · [1.05 Spectral Methods (PCA/SVD)](../../../AI-ML-intuition/Module_1_Representation/1.05_Spectral_Methods_PCA_SVD.md)
-- Foundations (the basics this builds on): [Eigenvalues & Eigenvectors](../../01.%20Foundations/concepts/04-Eigenvalues-and-Eigenvectors.md) · [Matrix Decompositions](../../01.%20Foundations/concepts/05-Matrix-Decompositions.md)
-- Prerequisite & next: [10 Differential Geometry & Manifolds](10-Differential-Geometry-and-Manifolds.md) · [12 Fourier Analysis & Signal Processing](12-Fourier-Analysis-and-Signal-Processing.md) · [13 Random Matrix Theory](13-Random-Matrix-Theory.md)
-- Related domain (clustering): [04. Unsupervised Learning](../../04.%20Unsupervised_Learning/concepts/README.md)
+- Foundations (the basics this builds on): [Eigenvalues & Eigenvectors](../../01.%20Foundations/04-Eigenvalues-and-Eigenvectors/04-Eigenvalues-and-Eigenvectors.md) · [Matrix Decompositions](../../01.%20Foundations/05-Matrix-Decompositions/05-Matrix-Decompositions.md)
+- Prerequisite & next: [10 Differential Geometry & Manifolds](../10-Differential-Geometry-and-Manifolds/10-Differential-Geometry-and-Manifolds.md) · [12 Fourier Analysis & Signal Processing](../12-Fourier-Analysis-and-Signal-Processing/12-Fourier-Analysis-and-Signal-Processing.md) · [13 Random Matrix Theory](../13-Random-Matrix-Theory/13-Random-Matrix-Theory.md)
+- Related domain (clustering): [04. Unsupervised Learning](../../04.%20Unsupervised_Learning/README.md)
 </content>

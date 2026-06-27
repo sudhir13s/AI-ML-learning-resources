@@ -41,11 +41,11 @@ Every chapter is a self-contained folder (`NN-Concept/NN-Concept.md`) with its p
 
 ### Related concepts (covered in another section)
 > These topics are foundational or live in another domain, so they're kept in one place to avoid repetition.
-- **Autoencoders (plain / denoising / sparse)** — the deterministic precursor to the VAE → [Deep Learning · Autoencoders](../05.%20Deep_Learning/concepts/19-Autoencoders.md)
+- **Autoencoders (plain / denoising / sparse)** — the deterministic precursor to the VAE → [Deep Learning · Autoencoders](../05.%20Deep_Learning/19-Autoencoders/19-Autoencoders.md)
 - **LLM text generation & autoregressive language models** — GPT-style next-token generation → [LLMs](../09.%20LLMs/README.md)
 - **Decoding strategies for text** (greedy · beam · top-k · top-p) → [NLP · Decoding Strategies](../06.%20NLP/17-Decoding-Strategies/17-Decoding-Strategies.md)
 - **Gaussian Mixture Models & the EM algorithm** — the classic latent-variable model → [Unsupervised Learning · GMM & EM](../04.%20Unsupervised_Learning/04-Gaussian-Mixture-Models-and-EM/04-Gaussian-Mixture-Models-and-EM.md)
-- **Information theory** (entropy · cross-entropy · KL divergence) — the objective under every likelihood model → [Foundations](../01.%20Foundations/concepts/README.md)
+- **Information theory** (entropy · cross-entropy · KL divergence) — the objective under every likelihood model → [Foundations](../01.%20Foundations/README.md)
 
 ## 🎓 Courses (free)
 - [How Diffusion Models Work](https://www.deeplearning.ai/short-courses/how-diffusion-models-work/) — **DeepLearning.AI** — free short course, build one.

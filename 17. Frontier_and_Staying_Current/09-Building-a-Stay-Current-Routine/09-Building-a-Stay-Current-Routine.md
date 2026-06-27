@@ -52,6 +52,6 @@ interview answer instead of "I try to read Twitter."
 - [Understanding Deep Learning](https://udlbook.github.io/udlbook/) — **Simon Prince** — a free textbook that keeps your fundamentals sharp as the frontier moves.
 
 ## 🔗 In this platform
-- Per-concept index: [Frontier & Staying Current — concepts](README.md)
-- This card ties together: [01 How to Read Papers](01-How-to-Read-ML-Papers.md) · [02 arXiv & Papers with Code](02-arXiv-and-Papers-with-Code.md) · [04 Newsletters & Blogs](04-Newsletters-and-Blogs-to-Follow.md) · [05 Following Researchers](05-Following-Researchers-and-Communities.md)
-- Anchor to fundamentals: [05. Deep Learning](../../05.%20Deep_Learning/concepts/README.md) · [04. Unsupervised Learning](../../04.%20Unsupervised_Learning/)
+- Per-concept index: [Frontier & Staying Current — concepts](../README.md)
+- This card ties together: [01 How to Read Papers](../01-How-to-Read-ML-Papers/01-How-to-Read-ML-Papers.md) · [02 arXiv & Papers with Code](../02-arXiv-and-Papers-with-Code/02-arXiv-and-Papers-with-Code.md) · [04 Newsletters & Blogs](../04-Newsletters-and-Blogs-to-Follow/04-Newsletters-and-Blogs-to-Follow.md) · [05 Following Researchers](../05-Following-Researchers-and-Communities/05-Following-Researchers-and-Communities.md)
+- Anchor to fundamentals: [05. Deep Learning](../../05.%20Deep_Learning/README.md) · [04. Unsupervised Learning](../../04.%20Unsupervised_Learning/)

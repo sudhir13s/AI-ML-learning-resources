@@ -49,7 +49,7 @@ updated: 2026-06-22
 
 **In this platform**:
 - Concept page (full explanation): [Stacking & Blending](11-Stacking-and-Blending.md)
-- The three ensemble families: [Bagging](08-Bagging.md) (average copies → ↓variance) · [Random Forests](09-Random-Forests.md) (bagging + feature randomness) · [Gradient Boosting (XGBoost)](10-Gradient-Boosting-XGBoost.md) (chain copies → ↓bias) — stacking combines *different* algorithms via a learned meta-learner.
-- The heart of leak-free stacking: [Cross-Validation](13-Cross-Validation.md) — out-of-fold predictions are k-fold CV repurposed as meta-features.
-- The error-decomposition lens: [Bias–Variance Tradeoff](12-Bias-Variance-Tradeoff.md) — why decorrelated (diverse) base learners make combination pay off.
+- The three ensemble families: [Bagging](../08-Bagging/08-Bagging.md) (average copies → ↓variance) · [Random Forests](../09-Random-Forests/09-Random-Forests.md) (bagging + feature randomness) · [Gradient Boosting (XGBoost)](../10-Gradient-Boosting-XGBoost/10-Gradient-Boosting-XGBoost.md) (chain copies → ↓bias) — stacking combines *different* algorithms via a learned meta-learner.
+- The heart of leak-free stacking: [Cross-Validation](../13-Cross-Validation/13-Cross-Validation.md) — out-of-fold predictions are k-fold CV repurposed as meta-features.
+- The error-decomposition lens: [Bias–Variance Tradeoff](../12-Bias-Variance-Tradeoff/12-Bias-Variance-Tradeoff.md) — why decorrelated (diverse) base learners make combination pay off.
 - Concept depth (the *why*): [AI-ML-intuition 3.08 Ensembles (Bagging/Boosting)](../../../AI-ML-intuition/Module_3_Evaluation/3.08_Ensembles_Bagging_Boosting.md) · [3.07 Bias–Variance & Generalization](../../../AI-ML-intuition/Module_3_Evaluation/3.07_Bias_Variance_and_Generalization.md)

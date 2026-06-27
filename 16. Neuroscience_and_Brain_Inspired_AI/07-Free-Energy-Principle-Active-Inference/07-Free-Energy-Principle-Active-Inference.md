@@ -53,5 +53,5 @@ variational objectives you already know from generative modeling.
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 0.01 Probability & Bayes' Theorem](../../../AI-ML-intuition/Module_0_Foundations/0.01_Probability_and_Bayes_Theorem.md) · [5.01 Information Theory — Entropy & KL](../../../AI-ML-intuition/Module_5_Generation/5.01_Information_Theory_Entropy_KL_Divergence.md) — the Bayesian + KL machinery free energy is built from.
-- Prereqs in this section: [06 Predictive Coding](06-Predictive-Coding.md)
-- Related domain: [05. Deep Learning](../../05.%20Deep_Learning/concepts/README.md)
+- Prereqs in this section: [06 Predictive Coding](../06-Predictive-Coding/06-Predictive-Coding.md)
+- Related domain: [05. Deep Learning](../../05.%20Deep_Learning/README.md)

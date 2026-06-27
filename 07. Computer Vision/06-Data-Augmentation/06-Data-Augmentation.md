@@ -53,6 +53,6 @@ digits). It's also half the answer to "my model overfits — what do you do?"
 - [Computer Vision: Algorithms and Applications, 2nd ed. — **Ch. 5.3 (Training, regularization & augmentation)**](https://szeliski.org/Book/) — **Richard Szeliski** — augmentation as regularization, free.
 
 ## 🔗 In this platform
-- Foundation: [Deep Learning › Regularization](../../05.%20Deep_Learning/concepts/09-Regularization.md) · [Deep Learning › Dropout](../../05.%20Deep_Learning/concepts/10-Dropout.md) — augmentation is a data-side regularizer.
-- Related: [Image Classification](04-Image-Classification.md) · [Transfer Learning for Vision](05-Transfer-Learning-for-Vision.md)
-- Next concepts: [11 Vision Transformers](11-Vision-Transformers.md) · [12 Self-Supervised Vision](12-Self-Supervised-Vision.md) (augmentation defines the contrastive views)
+- Foundation: [Deep Learning › Regularization](../../05.%20Deep_Learning/09-Regularization/09-Regularization.md) · [Deep Learning › Dropout](../../05.%20Deep_Learning/10-Dropout/10-Dropout.md) — augmentation is a data-side regularizer.
+- Related: [Image Classification](../04-Image-Classification/04-Image-Classification.md) · [Transfer Learning for Vision](../05-Transfer-Learning-for-Vision/05-Transfer-Learning-for-Vision.md)
+- Next concepts: [11 Vision Transformers](../11-Vision-Transformers/11-Vision-Transformers.md) · [12 Self-Supervised Vision](../12-Self-Supervised-Vision/12-Self-Supervised-Vision.md) (augmentation defines the contrastive views)

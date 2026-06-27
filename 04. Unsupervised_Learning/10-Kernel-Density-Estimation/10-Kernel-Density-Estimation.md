@@ -11,7 +11,7 @@ updated: 2026-06-22
 
 # Kernel Density Estimation: a histogram that forgot its bins
 
-Suppose someone hands you 200 measurements — reaction times, sensor readings, gene expression levels — and asks the deceptively simple question: *what is the probability density that produced these numbers?* Not "what's the mean," not "fit me a Gaussian," but the whole shape: where the mass piles up, whether there are one bump or two, how heavy the tails are. If you already believed the data were Gaussian you'd estimate a mean and a variance and be done. If you believed they came from a handful of Gaussians you'd fit a [Gaussian mixture](04-Gaussian-Mixture-Models-and-EM.md). But what if you *refuse to assume any parametric form at all* and want the data to speak for itself?
+Suppose someone hands you 200 measurements — reaction times, sensor readings, gene expression levels — and asks the deceptively simple question: *what is the probability density that produced these numbers?* Not "what's the mean," not "fit me a Gaussian," but the whole shape: where the mass piles up, whether there are one bump or two, how heavy the tails are. If you already believed the data were Gaussian you'd estimate a mean and a variance and be done. If you believed they came from a handful of Gaussians you'd fit a [Gaussian mixture](../04-Gaussian-Mixture-Models-and-EM/04-Gaussian-Mixture-Models-and-EM.md). But what if you *refuse to assume any parametric form at all* and want the data to speak for itself?
 
 That refusal is the entire premise of **Kernel Density Estimation (KDE)** — the workhorse **non-parametric** density estimator. Its idea is almost embarrassingly simple: **drop a small smooth bump on top of every data point, then add the bumps up.** Where points cluster, the bumps overlap and pile into a peak; where points are sparse, the bumps are thin and the estimate sags toward zero. The result is a smooth curve that traces the data's shape without ever committing to a formula for it. KDE is the smooth, bin-free descendant of the humble histogram, and the engine behind density-based anomaly scoring, violin plots, mean-shift clustering, and naive-Bayes class densities.
 
@@ -64,7 +64,7 @@ The oldest non-parametric density estimator is the **histogram**: chop the line 
 
 **4. It scales terribly with dimension.** In $d$ dimensions you need bins covering a $d$-dimensional grid; to keep a few points per bin the number of bins — and hence the data — explodes exponentially. (KDE softens but does not escape this; see the curse of dimensionality below.)
 
-![Two histograms of the same 150-point bimodal sample that differ only in where the bins start (left: origin −5.0; right: shifted +0.25). The bar heights jump and the apparent peaks shift — an artifact of the bin grid. The KDE (green) overlaid on each is smooth, edge-free, and essentially identical regardless of any grid, tracking the true density (red dashed) closely.](images/kde_vs_histogram.png)
+![Two histograms of the same 150-point bimodal sample that differ only in where the bins start (left: origin −5.0; right: shifted +0.25). The bar heights jump and the apparent peaks shift — an artifact of the bin grid. The KDE (green) overlaid on each is smooth, edge-free, and essentially identical regardless of any grid, tracking the true density (red dashed) closely.](../images/kde_vs_histogram.png)
 
 KDE fixes flaws 1–3 directly: it replaces the hard bin-counting with a smooth kernel, so the estimate is **continuous and differentiable**, and — crucially — it **has no bins and therefore no bin origin**, killing the arbitrary-grid dependence entirely. Think of it as a histogram where, instead of dropping each point into a rigid box, you drop a soft *bump* centered exactly on the point.
 
@@ -80,7 +80,7 @@ Read it left to right and the whole method is in the formula. For each data poin
 
 > *Where this comes from: **Rosenblatt (1956)** wrote down the first non-parametric density estimator (a moving-window count — effectively a tophat kernel); **Parzen (1962)** generalized it to smooth kernels and proved its consistency, which is why KDE is also called the **Parzen-window** estimator. The bias/variance/AMISE analysis and the bandwidth rule below are from **Silverman's 1986 monograph** "Density Estimation"; data-driven selection from **Sheather & Jones (1991)**; the multivariate treatment from **Scott (1992)** — all in the references.*
 
-![The construction, measured on n=5 points. Each purple curve is one scaled kernel (1/nh)·K((x−xᵢ)/h) sitting on a data point (blue dot); the green curve is their sum — the KDE. Where points cluster (left and center-right) the bumps reinforce into peaks; the lone gaps sag toward zero. The estimate is smooth even though it's built from five identical bumps.](images/kde_construction.png)
+![The construction, measured on n=5 points. Each purple curve is one scaled kernel (1/nh)·K((x−xᵢ)/h) sitting on a data point (blue dot); the green curve is their sum — the KDE. Where points cluster (left and center-right) the bumps reinforce into peaks; the lone gaps sag toward zero. The estimate is smooth even though it's built from five identical bumps.](../images/kde_construction.png)
 
 **What $K$ must satisfy.** For $\hat f_h$ to be a legitimate density (non-negative, integrating to 1) the kernel needs:
 
@@ -108,7 +108,7 @@ The **Epanechnikov** kernel is *MISE-optimal*: among all kernels it minimizes th
 
 > **Note:** the single most important empirical fact about KDE: **the choice of kernel matters far less than the choice of bandwidth.** Swap Gaussian for Epanechnikov for tophat at the *same* bandwidth and the estimates are nearly indistinguishable; change the bandwidth by 2× and the estimate transforms completely. Spend your effort on $h$, not on $K$.
 
-![Left: the three kernel shapes K(u) — the smooth Gaussian, the parabolic Epanechnikov (finite support), and the boxy tophat. Right: KDEs built from all three on the same 120-point sample at the same bandwidth h=0.6. The three estimates lie almost on top of each other; the only visible difference is the tophat's slight raggedness (from its hard edges). Shape barely matters; bandwidth is everything.](images/kde_kernels.png)
+![Left: the three kernel shapes K(u) — the smooth Gaussian, the parabolic Epanechnikov (finite support), and the boxy tophat. Right: KDEs built from all three on the same 120-point sample at the same bandwidth h=0.6. The three estimates lie almost on top of each other; the only visible difference is the tophat's slight raggedness (from its hard edges). Shape barely matters; bandwidth is everything.](../images/kde_kernels.png)
 
 > **Gotcha:** the **tophat (uniform) kernel produces a non-smooth, ragged estimate** — it's a sum of step functions, so the KDE jumps as points enter and leave each box. It's the closest kernel to a histogram and shares some of its discontinuity. If you want a smooth curve (e.g. to differentiate it), use a smooth kernel like the Gaussian or Epanechnikov, not the tophat.
 
@@ -121,7 +121,7 @@ Everything important about KDE lives in the bandwidth $h$. It is the *width* of 
 - **Small $h$** → narrow bumps → the estimate hugs each point, producing a **spiky** curve with a peak at (nearly) every observation. It has **low bias** (it follows the data closely) but **high variance** (it follows the *noise* too — a different sample gives a wildly different curve). This is **undersmoothing / overfitting**.
 - **Large $h$** → wide bumps → the estimate blurs everything into a broad, **flat** curve. It has **low variance** (stable across samples) but **high bias** (it washes out real structure — two modes merge into one). This is **oversmoothing / underfitting**.
 
-![The bias–variance knob, measured on a 200-point bimodal sample. The true density (slate dashed) has two modes. h=0.12 (red) is undersmoothed — spiky, high-variance, inventing wiggles that aren't real. h=1.40 (amber) is oversmoothed — a single broad bump that has erased the bimodality (high bias). Silverman's h=0.70 (green) tracks the truth closely. The tick marks at the bottom are the raw data.](images/kde_bandwidth.png)
+![The bias–variance knob, measured on a 200-point bimodal sample. The true density (slate dashed) has two modes. h=0.12 (red) is undersmoothed — spiky, high-variance, inventing wiggles that aren't real. h=1.40 (amber) is oversmoothed — a single broad bump that has erased the bimodality (high bias). Silverman's h=0.70 (green) tracks the truth closely. The tick marks at the bottom are the raw data.](../images/kde_bandwidth.png)
 
 To make "bias" and "variance" precise — and to find the *optimal* $h$ — we derive their asymptotic forms. This is the one derivation worth knowing cold for an interview.
 
@@ -406,7 +406,7 @@ Crucially, run a likelihood cross-validation on this same kind of data and it pi
 KDE is less a standalone "model" than a versatile primitive. The main uses:
 
 - **Non-parametric density estimation** — the direct job: estimate $p(x)$ when you won't assume a form. Used in econometrics, signal processing, astronomy (luminosity functions), and anywhere a smooth empirical density is wanted.
-- **Anomaly / novelty detection** — fit a KDE to "normal" data; a new point with **low estimated density** is an outlier or novelty. This is a density-based detector, complementary to the isolation/distance methods in [Anomaly / Outlier Detection](09-Anomaly-Outlier-Detection.md). scikit-learn's `KernelDensity.score_samples` is a standard novelty scorer; thresholding it flags rare points.
+- **Anomaly / novelty detection** — fit a KDE to "normal" data; a new point with **low estimated density** is an outlier or novelty. This is a density-based detector, complementary to the isolation/distance methods in [Anomaly / Outlier Detection](../09-Anomaly-Outlier-Detection/09-Anomaly-Outlier-Detection.md). scikit-learn's `KernelDensity.score_samples` is a standard novelty scorer; thresholding it flags rare points.
 - **Data visualization** — the smooth alternative to the histogram. **Violin plots** are mirrored KDEs; **ridgeline (joyplot)** plots stack KDEs; 2-D KDEs draw the smooth contour clouds you see in scatter overlays. This is probably KDE's most common everyday appearance.
 - **Generative sampling** — because a Gaussian KDE *is* an equal-weight mixture of Gaussians, you can sample from it directly: pick a data point uniformly, then draw from $\mathcal N(x_i, h^2)$. This is exactly the **smoothed bootstrap** — resampling with a little Gaussian jitter.
 - **Class-conditional densities for classification** — fit a separate KDE per class to model $p(x \mid y)$, combine with class priors via Bayes' rule, and you have a **non-parametric naive Bayes / QDA** classifier (Jake VanderPlas's "KDE Bayesian classifier"). No Gaussian-per-class assumption needed.
@@ -474,7 +474,7 @@ Output:
   point [-6.   1. ]  log-density= -32.40  -> ANOMALY
 ```
 
-The two far-off points score a log-density around $-33$ to $-36$, dozens of nats below the normal points (~$-2$) and far under the threshold ($-5.7$) — flagged cleanly. This is the same idea behind density-based detectors in [Anomaly / Outlier Detection](09-Anomaly-Outlier-Detection.md); KDE supplies the density, the threshold supplies the decision.
+The two far-off points score a log-density around $-33$ to $-36$, dozens of nats below the normal points (~$-2$) and far under the threshold ($-5.7$) — flagged cleanly. This is the same idea behind density-based detectors in [Anomaly / Outlier Detection](../09-Anomaly-Outlier-Detection/09-Anomaly-Outlier-Detection.md); KDE supplies the density, the threshold supplies the decision.
 
 > **Gotcha:** this works beautifully in 2-D as shown — and degrades in high dimensions for exactly the curse-of-dimensionality reason. A KDE novelty detector on a 100-D feature vector will assign *everything* a near-zero density (all points are in the empty tails), so the scores stop discriminating. For high-D novelty detection, reduce dimension first or use isolation/one-class methods built for it.
 
@@ -509,7 +509,7 @@ It helps to place KDE between its crude ancestor and its parametric cousin.
 | High dimensions | poor (curse) | far better (parametric) |
 | Extrapolation | none beyond data | yes (smooth tails) |
 
-> **Note:** the one-line summary: **KDE is a GMM with one component per data point, equal weights, and a single shared bandwidth instead of learned means and covariances.** GMM *learns where the bumps go and how wide each is* (and uses few of them); KDE *fixes the bumps on the data and uses all of them*. Use KDE when you want maximum flexibility in low dimensions with no fitting; use a GMM when you want a compact, interpretable, data-efficient model that scales to higher dimensions. They are the two ends of the density-estimation spectrum, and [GMM/EM](04-Gaussian-Mixture-Models-and-EM.md) is the natural next page.
+> **Note:** the one-line summary: **KDE is a GMM with one component per data point, equal weights, and a single shared bandwidth instead of learned means and covariances.** GMM *learns where the bumps go and how wide each is* (and uses few of them); KDE *fixes the bumps on the data and uses all of them*. Use KDE when you want maximum flexibility in low dimensions with no fitting; use a GMM when you want a compact, interpretable, data-efficient model that scales to higher dimensions. They are the two ends of the density-estimation spectrum, and [GMM/EM](../04-Gaussian-Mixture-Models-and-EM/04-Gaussian-Mixture-Models-and-EM.md) is the natural next page.
 
 ---
 
@@ -592,7 +592,7 @@ Output:
 (4) CV-optimal h = 0.2931  vs Silverman h = 0.6111  (CV smaller: bimodal truth)
 ```
 
-> **Note:** the headline is line (1): **`match=True`** — our three-line `kde()` reproduces scikit-learn's optimized estimator exactly, because there is no hidden machinery; KDE really is "average a kernel per point." Line (4) is the practical lesson: **Silverman over-smoothed the bimodal data (0.61) and cross-validation correctly pulled the bandwidth down (0.29)** to resolve the two modes — the [bias–variance](../../03.%20Supervised_Learning/concepts/12-Bias-Variance-Tradeoff.md) story playing out on real data.
+> **Note:** the headline is line (1): **`match=True`** — our three-line `kde()` reproduces scikit-learn's optimized estimator exactly, because there is no hidden machinery; KDE really is "average a kernel per point." Line (4) is the practical lesson: **Silverman over-smoothed the bimodal data (0.61) and cross-validation correctly pulled the bandwidth down (0.29)** to resolve the two modes — the [bias–variance](../../03.%20Supervised_Learning/12-Bias-Variance-Tradeoff/12-Bias-Variance-Tradeoff.md) story playing out on real data.
 
 > **Tip:** for production density estimation, prefer `scipy.stats.gaussian_kde` (quick, auto-bandwidth) or `sklearn.neighbors.KernelDensity` (multiple kernels, tree-accelerated, integrates with `GridSearchCV`). The from-scratch version above is for understanding; the libraries handle large $n$, multiple dimensions, and bandwidth selection for you.
 

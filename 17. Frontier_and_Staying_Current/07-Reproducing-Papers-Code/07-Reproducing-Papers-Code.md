@@ -52,6 +52,6 @@ pipeline, eval protocol) — and the reproducibility crisis means knowing *why* 
 - [Understanding Deep Learning](https://udlbook.github.io/udlbook/) — **Simon Prince** — free PDF with notebooks; the math + code pairing that supports faithful re-implementation.
 
 ## 🔗 In this platform
-- Per-concept index: [Frontier & Staying Current — concepts](README.md)
-- Pair with: [01 How to Read ML Papers](01-How-to-Read-ML-Papers.md) · [02 arXiv & Papers with Code](02-arXiv-and-Papers-with-Code.md) · [06 Benchmarks & Leaderboards](06-Benchmarks-and-Leaderboards-to-Watch.md)
-- Frameworks for running the code: [11. Tools and Frameworks](../../13.%20Tools_and_Frameworks/) · [12. Deployment & MLOps](../../14.%20Deployment_and_MLOps/concepts/README.md)
+- Per-concept index: [Frontier & Staying Current — concepts](../README.md)
+- Pair with: [01 How to Read ML Papers](../01-How-to-Read-ML-Papers/01-How-to-Read-ML-Papers.md) · [02 arXiv & Papers with Code](../02-arXiv-and-Papers-with-Code/02-arXiv-and-Papers-with-Code.md) · [06 Benchmarks & Leaderboards](../06-Benchmarks-and-Leaderboards-to-Watch/06-Benchmarks-and-Leaderboards-to-Watch.md)
+- Frameworks for running the code: [11. Tools and Frameworks](../../13.%20Tools_and_Frameworks/) · [12. Deployment & MLOps](../../14.%20Deployment_and_MLOps/README.md)

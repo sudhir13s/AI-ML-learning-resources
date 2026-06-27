@@ -56,6 +56,6 @@ mode collapse.
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 5.04 GANs & WGAN](../../../AI-ML-intuition/Module_5_Generation/5.04_GANs_and_WGAN.md) · [5.01 Entropy & KL Divergence](../../../AI-ML-intuition/Module_5_Generation/5.01_Information_Theory_Entropy_KL_Divergence.md)
-- Prereq: [02 GANs & DCGAN](02-GANs-and-DCGAN.md) (the base game this card fixes)
-- Next concepts: [04 Conditional Generation & Classifier-Free Guidance](04-Conditional-Generation-and-Classifier-Free-Guidance.md) · [12 Evaluation of Generative Models](12-Evaluation-of-Generative-Models.md) (how to measure collapse)
+- Prereq: [02 GANs & DCGAN](../02-GANs-and-DCGAN/02-GANs-and-DCGAN.md) (the base game this card fixes)
+- Next concepts: [04 Conditional Generation & Classifier-Free Guidance](../04-Conditional-Generation-and-Classifier-Free-Guidance/04-Conditional-Generation-and-Classifier-Free-Guidance.md) · [12 Evaluation of Generative Models](../12-Evaluation-of-Generative-Models/12-Evaluation-of-Generative-Models.md) (how to measure collapse)
 - Field overview: [9. Generative AI](../README.md)

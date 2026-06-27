@@ -53,6 +53,6 @@ neuroscience meaningfully informs ML.
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 2.02 Backpropagation — The Chain Rule](../../../AI-ML-intuition/Module_2_Optimization/2.02_Backpropagation_The_Chain_Rule.md) — the global algorithm predictive coding approximates locally.
-- Prereqs in this section: [08 Visual Cortex & CNN Inspiration](08-Visual-Cortex-and-CNN-Inspiration.md)
-- Next concepts: [07 Free Energy Principle / Active Inference](07-Free-Energy-Principle-Active-Inference.md) · [14 Biologically-Plausible Backprop Alternatives](14-Biologically-Plausible-Backprop-Alternatives.md)
-- Related domain: [05. Deep Learning](../../05.%20Deep_Learning/concepts/README.md)
+- Prereqs in this section: [08 Visual Cortex & CNN Inspiration](../08-Visual-Cortex-and-CNN-Inspiration/08-Visual-Cortex-and-CNN-Inspiration.md)
+- Next concepts: [07 Free Energy Principle / Active Inference](../07-Free-Energy-Principle-Active-Inference/07-Free-Energy-Principle-Active-Inference.md) · [14 Biologically-Plausible Backprop Alternatives](../14-Biologically-Plausible-Backprop-Alternatives/14-Biologically-Plausible-Backprop-Alternatives.md)
+- Related domain: [05. Deep Learning](../../05.%20Deep_Learning/README.md)

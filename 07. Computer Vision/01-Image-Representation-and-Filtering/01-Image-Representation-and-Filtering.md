@@ -53,5 +53,5 @@ classical baselines (HOG + SVM for detection, SIFT for matching) that deep learn
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 4.13 Convolution](../../../AI-ML-intuition/Module_4_Stabilization/4B_Architectural_Motifs/4.13_Convolution.md) — filtering *is* convolution; CNNs learn these kernels.
-- Foundation: [Deep Learning › CNNs & Convolution](../../05.%20Deep_Learning/concepts/13-CNNs-and-Convolution.md)
-- Next concepts: [02 Pooling & Receptive Fields](02-Pooling-and-Receptive-Fields.md) · [03 Classic CNN Architectures](03-Classic-CNN-Architectures.md)
+- Foundation: [Deep Learning › CNNs & Convolution](../../05.%20Deep_Learning/13-CNNs-and-Convolution/13-CNNs-and-Convolution.md)
+- Next concepts: [02 Pooling & Receptive Fields](../02-Pooling-and-Receptive-Fields/02-Pooling-and-Receptive-Fields.md) · [03 Classic CNN Architectures](../03-Classic-CNN-Architectures/03-Classic-CNN-Architectures.md)

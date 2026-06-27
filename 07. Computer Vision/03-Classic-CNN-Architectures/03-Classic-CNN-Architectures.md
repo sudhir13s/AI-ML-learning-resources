@@ -56,5 +56,5 @@ scaling buys EfficientNet. These backbones are also the default feature extracto
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 4.06 Residual / Skip Connections](../../../AI-ML-intuition/Module_4_Stabilization/4B_Architectural_Motifs/4.06_Residual_Skip_Connections.md) · [4.01 Batch Normalization](../../../AI-ML-intuition/Module_4_Stabilization/4A_Normalization/4.01_Batch_Normalization.md)
-- Foundation: [Deep Learning › CNNs & Convolution](../../05.%20Deep_Learning/concepts/13-CNNs-and-Convolution.md) · [Deep Learning › Residual / Skip Connections](../../05.%20Deep_Learning/concepts/18-Residual-Skip-Connections.md)
-- Next concepts: [04 Image Classification](04-Image-Classification.md) · [05 Transfer Learning for Vision](05-Transfer-Learning-for-Vision.md)
+- Foundation: [Deep Learning › CNNs & Convolution](../../05.%20Deep_Learning/13-CNNs-and-Convolution/13-CNNs-and-Convolution.md) · [Deep Learning › Residual / Skip Connections](../../05.%20Deep_Learning/18-Residual-Skip-Connections/18-Residual-Skip-Connections.md)
+- Next concepts: [04 Image Classification](../04-Image-Classification/04-Image-Classification.md) · [05 Transfer Learning for Vision](../05-Transfer-Learning-for-Vision/05-Transfer-Learning-for-Vision.md)

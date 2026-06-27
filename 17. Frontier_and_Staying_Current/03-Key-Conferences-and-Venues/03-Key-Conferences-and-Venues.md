@@ -54,6 +54,6 @@ go straight to vetted sources instead of secondhand summaries.
 - [Dive into Deep Learning](https://d2l.ai/) — **Zhang et al.** — when a conference paper is dense, d2l's chapters are the readable, runnable companion.
 
 ## 🔗 In this platform
-- Per-concept index: [Frontier & Staying Current — concepts](README.md)
-- Pair with: [01 How to Read ML Papers](01-How-to-Read-ML-Papers.md) · [02 arXiv & Papers with Code](02-arXiv-and-Papers-with-Code.md) · [11 Evaluating Hype vs Substance](11-Evaluating-Hype-vs-Substance.md)
-- Subfield venues map onto: [06. NLP](../../06.%20NLP/README.md) · [07. Computer Vision](../../07.%20Computer%20Vision/concepts/README.md)
+- Per-concept index: [Frontier & Staying Current — concepts](../README.md)
+- Pair with: [01 How to Read ML Papers](../01-How-to-Read-ML-Papers/01-How-to-Read-ML-Papers.md) · [02 arXiv & Papers with Code](../02-arXiv-and-Papers-with-Code/02-arXiv-and-Papers-with-Code.md) · [11 Evaluating Hype vs Substance](../11-Evaluating-Hype-vs-Substance/11-Evaluating-Hype-vs-Substance.md)
+- Subfield venues map onto: [06. NLP](../../06.%20NLP/README.md) · [07. Computer Vision](../../07.%20Computer%20Vision/README.md)

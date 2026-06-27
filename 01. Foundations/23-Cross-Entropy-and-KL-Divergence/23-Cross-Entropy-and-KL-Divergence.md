@@ -52,5 +52,5 @@ distillation, RLHF).
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 3.03 Categorical Cross-Entropy / NLL](../../../AI-ML-intuition/Module_3_Evaluation/3.03_Categorical_Cross-Entropy_NLL.md) · [5.01 Entropy & KL](../../../AI-ML-intuition/Module_5_Generation/5.01_Information_Theory_Entropy_KL_Divergence.md)
 - Curriculum context: [Maths for AI-ML — Phase 3 (Information Theory, row 3.5)](../Maths%20for%20AI-ML/README.md)
-- Prereq: [22 Entropy](22-Entropy.md) · Related: [19 Maximum Likelihood Estimation](19-Maximum-Likelihood-Estimation.md) (cross-entropy = MLE) · [24 Mutual Information](24-Mutual-Information.md)
+- Prereq: [22 Entropy](../22-Entropy/22-Entropy.md) · Related: [19 Maximum Likelihood Estimation](../19-Maximum-Likelihood-Estimation/19-Maximum-Likelihood-Estimation.md) (cross-entropy = MLE) · [24 Mutual Information](../24-Mutual-Information/24-Mutual-Information.md)
 </content>

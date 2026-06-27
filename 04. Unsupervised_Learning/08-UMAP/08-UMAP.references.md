@@ -53,10 +53,10 @@ updated: 2026-06-22
 
 **In this platform:**
 - Concept page (full explanation): [UMAP](08-UMAP.md)
-- The closest comparison (slower, weaker global structure, no reusable transform): [t-SNE](07-t-SNE.md)
-- The linear baseline (fast, faithful-but-limited): [Dimensionality Reduction — Overview (PCA)](06-Dimensionality-Reduction-Overview.md)
+- The closest comparison (slower, weaker global structure, no reusable transform): [t-SNE](../07-t-SNE/07-t-SNE.md)
+- The linear baseline (fast, faithful-but-limited): [Dimensionality Reduction — Overview (PCA)](../06-Dimensionality-Reduction-Overview/06-Dimensionality-Reduction-Overview.md)
 - Concept depth (the *why*): [AI-ML-intuition 1.11–1.12 Dimensionality Reduction (t-SNE / UMAP)](../../../AI-ML-intuition/Module_1_Representation/1.11-1.12_Dimensionality_Reduction_for_Representation_t-SNE_UMAP.md)
-- Often the next step after UMAP (its author also wrote HDBSCAN): [DBSCAN](03-DBSCAN.md) · [Spectral Clustering](05-Spectral-Clustering.md)
-- The failure mode UMAP helps fix in retrieval: [k-Nearest Neighbors (curse of dimensionality)](../../03.%20Supervised_Learning/concepts/04-k-Nearest-Neighbors.md)
+- Often the next step after UMAP (its author also wrote HDBSCAN): [DBSCAN](../03-DBSCAN/03-DBSCAN.md) · [Spectral Clustering](../05-Spectral-Clustering/05-Spectral-Clustering.md)
+- The failure mode UMAP helps fix in retrieval: [k-Nearest Neighbors (curse of dimensionality)](../../03.%20Supervised_Learning/04-k-Nearest-Neighbors/04-k-Nearest-Neighbors.md)
 - Prereq math: [Foundations — Linear Algebra (vectors & matrices)](../../01.%20Foundations/Maths%20for%20AI-ML/1.%20Linear%20Algebra/VectorsAndMatrices.md)
 - Field overview: [4. Unsupervised Learning](../README.md)

@@ -53,8 +53,8 @@ updated: 2026-06-22
 
 **In this platform**:
 - Concept page (full explanation): [Anomaly / Outlier Detection](09-Anomaly-Outlier-Detection.md)
-- Related unsupervised methods: [DBSCAN](03-DBSCAN.md) — its "noise" label *is* a form of outlier detection · [Kernel Density Estimation](10-Kernel-Density-Estimation.md) — density-based scoring · [K-Means Clustering](01-K-Means-Clustering.md) (distance-to-centroid scoring)
-- Evaluation under imbalance: [Classification Metrics](../../03.%20Supervised_Learning/concepts/14-Classification-Metrics.md) — the ROC-AUC vs PR-AUC contrast, derived
-- Boundary method foundations: [Support Vector Machines](../../03.%20Supervised_Learning/concepts/06-Support-Vector-Machines.md) — the kernel + margin machinery One-Class SVM reuses
+- Related unsupervised methods: [DBSCAN](../03-DBSCAN/03-DBSCAN.md) — its "noise" label *is* a form of outlier detection · [Kernel Density Estimation](../10-Kernel-Density-Estimation/10-Kernel-Density-Estimation.md) — density-based scoring · [K-Means Clustering](../01-K-Means-Clustering/01-K-Means-Clustering.md) (distance-to-centroid scoring)
+- Evaluation under imbalance: [Classification Metrics](../../03.%20Supervised_Learning/14-Classification-Metrics/14-Classification-Metrics.md) — the ROC-AUC vs PR-AUC contrast, derived
+- Boundary method foundations: [Support Vector Machines](../../03.%20Supervised_Learning/06-Support-Vector-Machines/06-Support-Vector-Machines.md) — the kernel + margin machinery One-Class SVM reuses
 - Concept depth (the *why*): [AI-ML-intuition 1.07–1.08 Distances (Euclidean vs Cosine)](../../../AI-ML-intuition/Module_1_Representation/1.07-1.08_Similarities_Distances_Euclidean_vs_Cosine.md) — density and "local" outliers are defined by the distance metric
 - Field overview: [4. Unsupervised Learning](../README.md)

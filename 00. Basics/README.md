@@ -38,12 +38,12 @@ from "what even is ML?" to shipping your first model.
 
 ### Related concepts (covered in another section)
 > These topics start here but live in depth elsewhere — follow the link when you're ready to go deeper.
-- **The math behind it all** — linear algebra · calculus · probability · statistics → [01. Foundations](../01.%20Foundations/concepts/README.md)
+- **The math behind it all** — linear algebra · calculus · probability · statistics → [01. Foundations](../01.%20Foundations/README.md)
 - **Cleaning & preparing data** — missing values · encoding · scaling · feature engineering · splitting → [02. Data Preprocessing](../02.%20Data_Preprocessing/README.md)
 - **The supervised algorithms** — linear/logistic regression · trees · SVMs · ensembles → [03. Supervised Learning](../03.%20Supervised_Learning/README.md)
-- **The unsupervised algorithms** — clustering · PCA · dimensionality reduction → [04. Unsupervised Learning](../04.%20Unsupervised_Learning/concepts/README.md)
-- **Neural networks & deep learning** — MLPs · backprop · CNNs · transformers → [05. Deep Learning](../05.%20Deep_Learning/concepts/README.md)
-- **Frameworks in depth** — PyTorch · TensorFlow · scikit-learn pipelines → [13. Tools & Frameworks](../13.%20Tools_and_Frameworks/concepts/README.md)
+- **The unsupervised algorithms** — clustering · PCA · dimensionality reduction → [04. Unsupervised Learning](../04.%20Unsupervised_Learning/README.md)
+- **Neural networks & deep learning** — MLPs · backprop · CNNs · transformers → [05. Deep Learning](../05.%20Deep_Learning/README.md)
+- **Frameworks in depth** — PyTorch · TensorFlow · scikit-learn pipelines → [13. Tools & Frameworks](../13.%20Tools_and_Frameworks/README.md)
 
 ## 🎓 Courses (free)
 - [Machine Learning Specialization](https://www.coursera.org/specializations/machine-learning-introduction) — **Andrew Ng / DeepLearning.AI** — free to audit; the canonical first ML course on Earth.

@@ -52,5 +52,5 @@ auditability, access control). Sits between experiment tracking and serving.
 - [Machine Learning Engineering — **Ch. 8–9** (deployment, versioning & maintenance)](http://www.mlebook.com/wiki/doku.php) — **Andriy Burkov** — read-first chapters free.
 
 ## 🔗 In this platform
-- Builds on: [03 Experiment Tracking](03-Experiment-Tracking.md) · [04 Data & Model Versioning](04-Data-and-Model-Versioning.md)
-- Next concepts: [14 A/B Testing · Shadow & Canary](14-AB-Testing-Shadow-and-Canary-Deployment.md) · [11 Model Monitoring & Observability](11-Model-Monitoring-and-Observability.md)
+- Builds on: [03 Experiment Tracking](../03-Experiment-Tracking/03-Experiment-Tracking.md) · [04 Data & Model Versioning](../04-Data-and-Model-Versioning/04-Data-and-Model-Versioning.md)
+- Next concepts: [14 A/B Testing · Shadow & Canary](../14-AB-Testing-Shadow-and-Canary-Deployment/14-AB-Testing-Shadow-and-Canary-Deployment.md) · [11 Model Monitoring & Observability](../11-Model-Monitoring-and-Observability/11-Model-Monitoring-and-Observability.md)

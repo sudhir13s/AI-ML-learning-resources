@@ -54,5 +54,5 @@ batching to hit a cost/latency budget — while protecting quality.
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 8.02 Retrieval-Augmented Generation](../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.02_Retrieval_Augmented_Generation.md) · [1.02 Dense Embeddings](../../../AI-ML-intuition/Module_1_Representation/1.02_Dense_Embeddings.md) (the basis of semantic caching)
-- Prereqs: [01 RAG Fundamentals](01-RAG-Fundamentals.md) · [15 LLM App Orchestration](15-LLM-App-Orchestration.md)
+- Prereqs: [01 RAG Fundamentals](../01-RAG-Fundamentals/01-RAG-Fundamentals.md) · [15 LLM App Orchestration](../15-LLM-App-Orchestration/15-LLM-App-Orchestration.md)
 - Related domain: [09. LLMs — KV Cache](../../09.%20LLMs/05-KV-Cache/05-KV-Cache.md) · [09. LLMs — Inference Optimization & Serving (vLLM)](../../09.%20LLMs/09-Inference-Optimization-and-Serving/09-Inference-Optimization-and-Serving.md)

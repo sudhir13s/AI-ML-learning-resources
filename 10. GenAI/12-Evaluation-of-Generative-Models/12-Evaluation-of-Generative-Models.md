@@ -55,7 +55,7 @@ that a single number hides; and **CLIP-score** for text-to-image prompt alignmen
 - [Deep Learning — **§20.14 "Evaluating Generative Models"**](https://www.deeplearningbook.org/contents/generative_models.html) — **Goodfellow, Bengio & Courville** — why evaluation is hard and what the metrics measure, free online.
 
 ## 🔗 In this platform
-- Prereq: [02 GANs & DCGAN](02-GANs-and-DCGAN.md) · [05 Diffusion Models (DDPM)](05-Diffusion-Models-DDPM.md) (the models you evaluate)
-- Related: [03 GAN Training & WGAN](03-GAN-Training-and-WGAN.md) (FID/precision-recall detect mode collapse)
+- Prereq: [02 GANs & DCGAN](../02-GANs-and-DCGAN/02-GANs-and-DCGAN.md) · [05 Diffusion Models (DDPM)](../05-Diffusion-Models-DDPM/05-Diffusion-Models-DDPM.md) (the models you evaluate)
+- Related: [03 GAN Training & WGAN](../03-GAN-Training-and-WGAN/03-GAN-Training-and-WGAN.md) (FID/precision-recall detect mode collapse)
 - Compare with: [NLP — Evaluation Metrics (BLEU · perplexity)](../../06.%20NLP/18-NLP-Evaluation-Metrics/18-NLP-Evaluation-Metrics.md) (the text-generation analogue)
 - Field overview: [9. Generative AI](../README.md)

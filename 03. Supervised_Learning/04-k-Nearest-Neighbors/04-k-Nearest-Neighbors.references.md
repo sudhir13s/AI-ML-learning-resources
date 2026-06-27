@@ -55,9 +55,9 @@ updated: 2026-06-22
 
 **In this platform**:
 - Concept page (full explanation): [k-Nearest Neighbors](04-k-Nearest-Neighbors.md)
-- Math prerequisites (the *why*): [01. Foundations](../../01.%20Foundations/concepts/README.md) — distance metrics, norms, the curse of dimensionality.
-- The knob k turns: [Bias–Variance Tradeoff](12-Bias-Variance-Tradeoff.md) — small k = high variance, large k = high bias, made precise.
-- How you actually pick k: [Cross-Validation](13-Cross-Validation.md) — never tune k on training error.
-- Why scaling is mandatory: [2. Data Preprocessing](../../02.%20Data_Preprocessing/concepts/README.md) — k-NN is acutely sensitive to feature scaling and encoding.
+- Math prerequisites (the *why*): [01. Foundations](../../01.%20Foundations/README.md) — distance metrics, norms, the curse of dimensionality.
+- The knob k turns: [Bias–Variance Tradeoff](../12-Bias-Variance-Tradeoff/12-Bias-Variance-Tradeoff.md) — small k = high variance, large k = high bias, made precise.
+- How you actually pick k: [Cross-Validation](../13-Cross-Validation/13-Cross-Validation.md) — never tune k on training error.
+- Why scaling is mandatory: [2. Data Preprocessing](../../02.%20Data_Preprocessing/README.md) — k-NN is acutely sensitive to feature scaling and encoding.
 - Concept depth (the *why*): [AI-ML-intuition 1.07–1.08 Euclidean vs Cosine Distance](../../../AI-ML-intuition/Module_1_Representation/1.07-1.08_Similarities_Distances_Euclidean_vs_Cosine.md) · [1.09 Manhattan (L1) Distance](../../../AI-ML-intuition/Module_1_Representation/1.09_Manhattan_L1_Distance.md) · [1.10 Mahalanobis Distance](../../../AI-ML-intuition/Module_1_Representation/1.10_Mahalanobis_Distance.md)
-- A contrasting classifier: [Naive Bayes](05-Naive-Bayes.md) — a generative, parametric alternative to k-NN's lazy, geometric approach.
+- A contrasting classifier: [Naive Bayes](../05-Naive-Bayes/05-Naive-Bayes.md) — a generative, parametric alternative to k-NN's lazy, geometric approach.

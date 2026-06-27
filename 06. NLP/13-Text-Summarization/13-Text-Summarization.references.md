@@ -63,7 +63,7 @@ updated: 2026-06-27
 **In this platform**:
 - Concept page (full explanation): [Text Summarization](13-Text-Summarization.md)
 - Runnable code (same verified functions the page and figures use): [teaching notebook](code/13-Text-Summarization.ipynb) · [source-of-truth module](code/text_summarization.py) · [figure generator](code/make_figures_13.py)
-- The engine of abstractive summarization: [08 Sequence-to-Sequence & Encoder–Decoder](../08-Sequence-to-Sequence-and-Encoder-Decoder/08-Sequence-to-Sequence-and-Encoder-Decoder.md) · [16 Transformer Architecture](../../05.%20Deep_Learning/concepts/16-Transformer-Architecture.md) · [15 Attention Mechanism](../../05.%20Deep_Learning/concepts/15-Attention-Mechanism.md)
+- The engine of abstractive summarization: [08 Sequence-to-Sequence & Encoder–Decoder](../08-Sequence-to-Sequence-and-Encoder-Decoder/08-Sequence-to-Sequence-and-Encoder-Decoder.md) · [16 Transformer Architecture](../../05.%20Deep_Learning/16-Transformer-Architecture/16-Transformer-Architecture.md) · [15 Attention Mechanism](../../05.%20Deep_Learning/15-Attention-Mechanism/15-Attention-Mechanism.md)
 - How summaries are decoded: [17 Decoding Strategies](../17-Decoding-Strategies/17-Decoding-Strategies.md)
 - How summaries are scored (ROUGE in full): [18 NLP Evaluation Metrics](../18-NLP-Evaluation-Metrics/18-NLP-Evaluation-Metrics.md)
 - Sentence scoring inputs: [03 Bag-of-Words & TF-IDF](../03-Bag-of-Words-and-TF-IDF/03-Bag-of-Words-and-TF-IDF.md) · [06 Contextual Embeddings (ELMo, BERT)](../06-Contextual-Embeddings-ELMo-BERT/06-Contextual-Embeddings-ELMo-BERT.md)

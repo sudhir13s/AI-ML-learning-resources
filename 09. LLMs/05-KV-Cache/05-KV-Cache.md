@@ -30,7 +30,7 @@ I'm going to walk this the way I'd actually explain it to a teammate staring at 
 
 To see why the cache exists, you have to feel the waste it removes.
 
-LLMs generate **autoregressively** — ***one token at a time, each new token conditioned on every token before it***. To produce token $t$, the model runs self-[attention](../../05.%20Deep_Learning/concepts/15-Attention-Mechanism.md): it forms a **query** for the current position and compares it against a **key** for every previous position, then mixes the corresponding **values**. So far so good. The catch is what happens on the *next* step. Naively, to produce token $t+1$ you run the whole sequence through the model again — which recomputes the keys and values for tokens $1 \dots t$, *the very same keys and values you computed one step ago*.
+LLMs generate **autoregressively** — ***one token at a time, each new token conditioned on every token before it***. To produce token $t$, the model runs self-[attention](../../05.%20Deep_Learning/15-Attention-Mechanism/15-Attention-Mechanism.md): it forms a **query** for the current position and compares it against a **key** for every previous position, then mixes the corresponding **values**. So far so good. The catch is what happens on the *next* step. Naively, to produce token $t+1$ you run the whole sequence through the model again — which recomputes the keys and values for tokens $1 \dots t$, *the very same keys and values you computed one step ago*.
 
 And here is the crucial observation that makes the whole optimization possible:
 

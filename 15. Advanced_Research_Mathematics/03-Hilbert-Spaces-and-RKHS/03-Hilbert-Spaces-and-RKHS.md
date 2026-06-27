@@ -56,7 +56,7 @@ theorem hold?"
 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 1.16 The Kernel Trick](../../../AI-ML-intuition/Module_1_Representation/1.16_The_Kernel_Trick.md) · [1.06 Scaled Dot-Product](../../../AI-ML-intuition/Module_1_Representation/1.06_Vector_Similarities_The_Scaled_Dot-Product.md)
-- Foundations (the basics this builds on): [Norms, Inner Products & Orthogonality](../../01.%20Foundations/concepts/03-Norms-Inner-Products-and-Orthogonality.md)
-- Prerequisite & next: [02 Functional Analysis](02-Functional-Analysis.md) · [08 Information Geometry](08-Information-Geometry.md)
-- Related domain: [04. Unsupervised Learning](../../04.%20Unsupervised_Learning/concepts/README.md)
+- Foundations (the basics this builds on): [Norms, Inner Products & Orthogonality](../../01.%20Foundations/03-Norms-Inner-Products-and-Orthogonality/03-Norms-Inner-Products-and-Orthogonality.md)
+- Prerequisite & next: [02 Functional Analysis](../02-Functional-Analysis/02-Functional-Analysis.md) · [08 Information Geometry](../08-Information-Geometry/08-Information-Geometry.md)
+- Related domain: [04. Unsupervised Learning](../../04.%20Unsupervised_Learning/README.md)
 </content>

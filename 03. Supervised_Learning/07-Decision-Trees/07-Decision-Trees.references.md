@@ -51,5 +51,5 @@ updated: 2026-06-22
 **In this platform**:
 - Concept page (full explanation): [Decision Trees](07-Decision-Trees.md)
 - Concept depth (the *why*): [AI-ML-intuition 3.07 Bias–Variance & Generalization](../../../AI-ML-intuition/Module_3_Evaluation/3.07_Bias_Variance_and_Generalization.md) · [3.08 Ensembles (Bagging/Boosting)](../../../AI-ML-intuition/Module_3_Evaluation/3.08_Ensembles_Bagging_Boosting.md)
-- Related: [Bias–Variance Tradeoff](12-Bias-Variance-Tradeoff.md) (why a single tree is high-variance) · [Bagging](08-Bagging.md) / [Random Forests](09-Random-Forests.md) (↓ variance) · [Gradient Boosting (XGBoost)](10-Gradient-Boosting-XGBoost.md) (↓ bias)
-- Math prerequisites: [01. Foundations](../../01.%20Foundations/concepts/README.md) — entropy, information gain, Gini impurity
+- Related: [Bias–Variance Tradeoff](../12-Bias-Variance-Tradeoff/12-Bias-Variance-Tradeoff.md) (why a single tree is high-variance) · [Bagging](../08-Bagging/08-Bagging.md) / [Random Forests](../09-Random-Forests/09-Random-Forests.md) (↓ variance) · [Gradient Boosting (XGBoost)](../10-Gradient-Boosting-XGBoost/10-Gradient-Boosting-XGBoost.md) (↓ bias)
+- Math prerequisites: [01. Foundations](../../01.%20Foundations/README.md) — entropy, information gain, Gini impurity

@@ -33,7 +33,7 @@ Intuition and pictures first, then the math (derived, with sources), then runnab
 Adding features feels free — more information, surely a better model. It is not. As dimension $d$ grows, several pathologies appear at once, collectively the **curse of dimensionality**:
 
 - **Volume explodes; data evaporates.** To cover the unit cube at fixed density you need $\propto r^d$ points. In 1-D, ten points per unit gives fine coverage; in 100-D you'd need $10^{100}$ to match it. Real datasets are therefore unimaginably **sparse** in high-D — every point is alone in a vast emptiness.
-- **Distances stop discriminating.** The ratio $(\text{dist}_{\max} - \text{dist}_{\min}) / \text{dist}_{\min} \to 0$ as $d \to \infty$ for many distributions: the nearest and farthest neighbours become **nearly equidistant**, so distance-based methods ([k-NN](../../03.%20Supervised_Learning/concepts/04-k-Nearest-Neighbors.md), k-means, kernels) lose their footing.
+- **Distances stop discriminating.** The ratio $(\text{dist}_{\max} - \text{dist}_{\min}) / \text{dist}_{\min} \to 0$ as $d \to \infty$ for many distributions: the nearest and farthest neighbours become **nearly equidistant**, so distance-based methods ([k-NN](../../03.%20Supervised_Learning/04-k-Nearest-Neighbors/04-k-Nearest-Neighbors.md), k-means, kernels) lose their footing.
 - **Overfitting and multicollinearity.** More features than you can support means a model can memorize noise; highly **correlated** columns make linear-model coefficients unstable (the matrix $X^\top X$ becomes near-singular).
 - **Cost.** Storage, compute, and human attention all scale with $d$. You cannot *plot* 64-D data; you can plot 2-D.
 
@@ -176,7 +176,7 @@ To choose how many components $k$ to keep, you have three standard tools:
 
 On the 64-dimensional **digits** dataset (8×8 images), the scree plot has a clear early drop and a long flat tail; reaching 90% of the variance needs $k = 31$ components and 95% needs $k = 40$ — measured below:
 
-![Left: scree plot of per-component explained variance on the 64-D digits dataset, showing a steep early drop (the elbow) then a long flat tail. Right: cumulative explained variance, with dashed reference lines at 90% and 95% showing those thresholds are reached at k=31 and k=40 respectively.](images/pca_scree.png)
+![Left: scree plot of per-component explained variance on the 64-D digits dataset, showing a steep early drop (the elbow) then a long flat tail. Right: cumulative explained variance, with dashed reference lines at 90% and 95% showing those thresholds are reached at k=31 and k=40 respectively.](../images/pca_scree.png)
 
 > **Tip:** "how many components?" has no universal answer — it depends on the *job*. For **visualization** you're forced to $k=2$ or $3$. For **compression/denoising** pick a variance target. For a **downstream model**, treat $k$ as a hyperparameter and cross-validate it against the metric you actually care about (accuracy, not variance).
 
@@ -219,7 +219,7 @@ PCA is a hammer, and not everything is a nail. Know its failure modes cold:
 - **Sensitive to scaling and outliers.** A single gross outlier can swing a principal axis toward itself (squared error is outlier-hungry); robust PCA variants exist for this.
 - **Components can be hard to interpret.** A PC is a dense linear combination of *all* features; **sparse PCA** trades a little variance for components that load on only a few features.
 
-![PCA versus t-SNE on the same 64-D digits dataset. Left: the top two principal components capture only about 22% of the variance and the ten digit classes overlap into one blob — the linear limitation. Right: t-SNE, a non-linear method, unfolds the manifold into ten clean, well-separated clusters.](images/pca_vs_tsne.png)
+![PCA versus t-SNE on the same 64-D digits dataset. Left: the top two principal components capture only about 22% of the variance and the ten digit classes overlap into one blob — the linear limitation. Right: t-SNE, a non-linear method, unfolds the manifold into ten clean, well-separated clusters.](../images/pca_vs_tsne.png)
 
 > **Note:** PCA capturing only ~22% of the variance in two components on digits is *not* a failure of PCA — it's telling you the digit manifold is **genuinely high-dimensional and curved**. The honest reading: "no flat 2-D shadow can separate these; use a non-linear method for the *picture*, but PCA-to-~30-D is still a great *preprocessing* step." (We confirm that below: a classifier on 30 PCA dims nearly matches the full 64-D one.)
 
@@ -296,8 +296,8 @@ The **linear** family — fast, transparent, reusable transforms:
 
 The **non-linear / manifold** family — bend to the data's shape, mostly for visualization:
 
-- **t-SNE** — preserves *local* neighbourhoods, produces clean clusters for **visualization only**; stochastic, no reusable transform. (See the dedicated page: **[t-SNE](07-t-SNE.md)**.)
-- **UMAP** — faster, scales to millions, preserves more *global* structure, and **can transform new points**. (See the dedicated page: **[UMAP](08-UMAP.md)**.)
+- **t-SNE** — preserves *local* neighbourhoods, produces clean clusters for **visualization only**; stochastic, no reusable transform. (See the dedicated page: **[t-SNE](../07-t-SNE/07-t-SNE.md)**.)
+- **UMAP** — faster, scales to millions, preserves more *global* structure, and **can transform new points**. (See the dedicated page: **[UMAP](../08-UMAP/08-UMAP.md)**.)
 - **Isomap** — preserves **geodesic** (along-the-manifold) distances via a neighbour graph; unrolls a Swiss roll correctly.
 - **LLE** (Locally Linear Embedding) — preserves each point's reconstruction from its local neighbours.
 - **Autoencoders** — a neural net that compresses through a bottleneck and reconstructs; the **learned, non-linear** generalization of PCA (a linear autoencoder with squared loss *recovers* the PCA subspace).
@@ -395,7 +395,7 @@ $$(4-\lambda)(3-\lambda) - (2)(2) = \lambda^2 - 7\lambda + 8 = 0 \;\Longrightarr
 
 So $\lambda_1 \approx 5.5616$ and $\lambda_2 \approx 1.4384$. The top eigenvector solves $(\Sigma - \lambda_1 I)\mathbf{w} = \mathbf{0}$, i.e. $(4-5.5616)w_1 + 2w_2 = 0 \Rightarrow w_2 = 0.7808\,w_1$; normalizing gives $\mathbf{w}_1 \approx [0.788,\, 0.615]^\top$. **PC1 captures $\lambda_1/(\lambda_1+\lambda_2) = 5.56/7.0 = 79.4\%$ of the variance.** The geometry: PC1 is the long axis of the data ellipse, PC2 the short axis orthogonal to it, and the arrow lengths in the picture below are $\sqrt{\lambda_i}$ (one standard deviation).
 
-![A 2-D correlated point cloud with the two principal axes drawn as arrows from the mean. PC1 (red) is the long diagonal axis carrying 92% of the variance, PC2 (green) the short orthogonal axis carrying 8%. Each arrow's length is one standard deviation, the square root of its eigenvalue.](images/pca_axes.png)
+![A 2-D correlated point cloud with the two principal axes drawn as arrows from the mean. PC1 (red) is the long diagonal axis carrying 92% of the variance, PC2 (green) the short orthogonal axis carrying 8%. Each arrow's length is one standard deviation, the square root of its eigenvalue.](../images/pca_axes.png)
 
 ### Example 2 — a full end-to-end projection trace on four points
 
@@ -425,7 +425,7 @@ Two payoffs in one experiment. First, **reconstruction error falls monotonically
 
 This curve is exactly **Eckart-Young** in action: the residual at rank $k$ equals the sum of the *dropped* squared singular values — which we verify matches the empirical error to the decimal (565183.40 = 565183.40 at $k=10$). The reconstructed digit visibly sharpens as $k$ climbs:
 
-![Top row: an original 8x8 digit alongside its PCA reconstruction from k = 1, 2, 5, 10, 20, 40, 64 components, growing progressively sharper until k=64 reproduces it exactly. Bottom: the measured mean reconstruction error across the whole dataset, falling monotonically and reaching zero at full rank.](images/pca_reconstruct.png)
+![Top row: an original 8x8 digit alongside its PCA reconstruction from k = 1, 2, 5, 10, 20, 40, 64 components, growing progressively sharper until k=64 reproduces it exactly. Bottom: the measured mean reconstruction error across the whole dataset, falling monotonically and reaching zero at full rank.](../images/pca_reconstruct.png)
 
 Second, **PCA as preprocessing barely costs accuracy while halving the dimensions.** Training logistic regression on PCA-reduced digits in a leakage-safe pipeline (5-fold CV accuracy — the exact code is in the next section):
 
