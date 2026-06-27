@@ -6,14 +6,14 @@ level: intermediate
 prereqs: ["bow-tfidf", "probability", "linear-algebra", "gmm-em"]
 interview_frequency: medium
 template: concept-deep
-updated: 2026-06-22
+updated: 2026-06-27
 ---
 
 # Topic Modeling: discovering the hidden themes in a pile of text
 
 Imagine someone hands you a hard drive with 200,000 news articles, no labels, no folders, no tags — and asks "what is this collection *about*?" You can't read it. You can't even skim it. But you have an intuition that there aren't 200,000 different things going on in there; there are maybe twenty or thirty recurring **themes** — politics, sports, finance, weather, crime, technology — and every article is some *blend* of a few of them. A budget piece is mostly *finance* with a dash of *politics*; a transfer-window story is mostly *sports* with a dash of *finance*. **Topic modeling** is the family of unsupervised algorithms that reads the whole pile for you and hands back exactly that: a set of discovered themes (each described by the words that define it) and, for every document, the mixture of themes it's made of — **without ever being told what the themes are**.
 
-It is one of the oldest and most useful tricks in unsupervised NLP, and it sits at a beautiful intersection of three things you may already know: it's a **latent-variable model fit by EM** (cousin of the [Gaussian Mixture Model](../../04.%20Unsupervised_Learning/concepts/04-Gaussian-Mixture-Models-and-EM.md)), it's a **dimensionality reduction** of the bag-of-words matrix (cousin of [PCA/SVD](../../04.%20Unsupervised_Learning/concepts/06-Dimensionality-Reduction-Overview.md)), and its modern reincarnation is a **clustering of embeddings**. I'm going to teach it the way I'd walk a teammate through it at a whiteboard: start from the *problem* and the bag-of-words matrix it operates on, build up the predecessor (**pLSA**) so you feel *why* its successor exists, derive **Latent Dirichlet Allocation (LDA)** from its generative story all the way to its sampling update, then derive **Non-negative Matrix Factorization (NMF)** as the linear-algebra answer to the same question, compare them honestly against **LSA/SVD** and the modern **BERTopic** approach, and finish with four worked examples you can re-run. By the end you'll be able to:
+It is one of the oldest and most useful tricks in unsupervised NLP, and it sits at a beautiful intersection of three things you may already know: it's a **latent-variable model fit by EM** (cousin of the [Gaussian Mixture Model](../../04.%20Unsupervised_Learning/concepts/04-Gaussian-Mixture-Models-and-EM.md)), it's a **dimensionality reduction** of the bag-of-words matrix (cousin of [PCA/SVD](../../04.%20Unsupervised_Learning/concepts/06-Dimensionality-Reduction-Overview.md)), and its modern reincarnation is a **clustering of embeddings**. I'm going to teach it the way I'd walk a teammate through it at a whiteboard: start from the *problem* and the bag-of-words matrix it operates on, build up the predecessor (**pLSA**) so you feel *why* its successor exists, derive **Latent Dirichlet Allocation (LDA)** from its generative story all the way to its sampling update, then derive **Non-negative Matrix Factorization (NMF)** as the linear-algebra answer to the same question, compare them honestly against **LSA/SVD** and the modern **BERTopic** approach, and finish with worked examples you can re-run — including a from-scratch Gibbs sampler that **recovers planted topics**. By the end you'll be able to:
 
 - explain **what** topic modeling discovers and **why** it's unsupervised dimensionality reduction over the document–term matrix;
 - tell the **LDA generative story** — Dirichlet priors, per-document topic mixtures, per-word topic assignments — and say *why Dirichlet*;
@@ -23,6 +23,8 @@ It is one of the oldest and most useful tricks in unsupervised NLP, and it sits 
 - pick the right tool — **LDA vs NMF vs LSA vs BERTopic** — for a given corpus, and name each method's failure modes.
 
 > **Note:** topic modeling is **descriptive, not predictive**. There is no label, no ground truth, no accuracy score. The output is a *lens* for a human to explore a corpus with — which is exactly why **interpretability** (can a person read a topic and name it?) matters more here than any single fit statistic. Hold onto that; it explains most of the design choices below.
+
+> **Runnable code and a teaching notebook.** Every measured number and figure on this page is produced by a single seeded source module and reproduced cell-by-cell in an executed notebook next to this page — see the [step-by-step teaching notebook](code/15-Topic-Modeling-LDA-NMF.ipynb), the [source module](code/topic_modeling.py) (collapsed-Gibbs LDA, multiplicative-update NMF, and coherence, all from scratch; run `python topic_modeling.py`), and the [figure generator](code/make_figures_15.py). It runs on **CPU** in a few seconds — no GPU — and everything stochastic is seeded (`seed=7`), so the planted-topic recovery is bit-for-bit reproducible.
 
 ---
 
@@ -100,6 +102,8 @@ Before LDA there was **probabilistic latent semantic analysis** (pLSA, Hofmann 1
 
 $$p(w \mid d) \;=\; \sum_{z=1}^{K} \, p(w \mid z)\, p(z \mid d).$$
 
+> **Source / derivation:** this latent-topic mixture and its EM fit are §3 of [Hofmann, *Probabilistic Latent Semantic Indexing* (SIGIR 1999)](https://arxiv.org/abs/1301.6705) — the aspect model that introduced the hidden topic variable $z$ and that LDA later wrapped in a Dirichlet prior.
+
 Read it left to right: to generate a word in document $d$, first pick a topic $z$ with probability $p(z \mid d)$ (the document's topic mixture), then pick a word from that topic with probability $p(w \mid z)$ (the topic's word distribution). The two factor-tables — $p(z\mid d)$ (a $D \times K$ table) and $p(w\mid z)$ (a $K \times V$ table) — are fit by **maximum likelihood with EM**, exactly the alternation you know from [GMMs](../../04.%20Unsupervised_Learning/concepts/04-Gaussian-Mixture-Models-and-EM.md): an **E-step** softly assigns each word occurrence to topics ($p(z \mid d, w)$, the responsibility), and an **M-step** re-estimates the two tables from those soft assignments.
 
 pLSA works, and the generative idea is exactly right. But it has **two fatal weaknesses**:
@@ -149,11 +153,33 @@ The full joint probability of one document factorizes cleanly along this story:
 
 $$p(\theta_d, \mathbf{z}_d, \mathbf{w}_d \mid \alpha, \beta) \;=\; \underbrace{p(\theta_d \mid \alpha)}_{\text{Dirichlet}} \prod_{n=1}^{N_d} \underbrace{p(z_{d,n} \mid \theta_d)}_{\text{pick topic}} \, \underbrace{p(w_{d,n} \mid \beta_{z_{d,n}})}_{\text{pick word}}.$$
 
-And the schematic of the whole machine — priors feeding the per-document mixture, the mixture feeding per-word topics, topics-plus-word-distributions feeding the observed words — is the picture worth burning into memory:
+> **Source / derivation:** this joint factorization is Eq. (3) of [Blei, Ng & Jordan, *Latent Dirichlet Allocation* (JMLR 2003)](https://www.jmlr.org/papers/volume3/blei03a/blei03a.pdf) — it falls straight out of the generative story (draw $\theta_d$ once, then for each word draw a topic then a word), and every inference method below is an attempt to invert it.
 
-![LDA generative model: the document–topic prior α produces each document's topic mixture θ_d, which produces a per-word topic z, which together with the topic–word distributions β_k (drawn from prior η) produces each observed word.](../images/topic_lda_generative.png)
+The same machine is conventionally drawn as a **plate diagram** — nested rectangles, where a plate means "repeat this part." The outer plate repeats over the $D$ documents; the inner plate repeats over the $N_d$ word slots in a document; $\beta$ sits *outside* both plates because the $K$ topic–word distributions are shared across the whole corpus. Only the words $w$ are **shaded** (observed); $\theta$, $z$, $\beta$ are unshaded — latent, and the thing inference must recover:
 
-> **Note (plate notation):** in the paper this is drawn as nested rectangles ("plates"): an outer plate over $D$ documents, an inner plate over $N_d$ words, with $\theta$ inside the document plate and $\beta$ outside everything (shared across all documents). The plate notation is just a compact way of saying "repeat this part." Only the words $w$ are **shaded** (observed); $\theta, z, \beta$ are unshaded (latent — what we must infer).
+```mermaid
+graph LR
+    ETA(["η<br/>(topic–word prior)"]):::prior --> BETA["β_k<br/>K topic–word dists<br/>(shared, outside the plates)"]:::shared
+    ALPHA(["α<br/>(doc–topic prior)"]):::prior --> THETA["θ_d<br/>doc topic mixture"]:::latent
+    THETA --> Z["z_{d,n}<br/>per-word topic"]:::latent
+    BETA --> W["w_{d,n}<br/>observed word"]:::observed
+    Z --> W
+
+    subgraph DOC["plate: D documents"]
+      subgraph WORD["plate: N_d words"]
+        Z
+        W
+      end
+      THETA
+    end
+
+    classDef prior fill:#7A6528,stroke:#5A4508,color:#fff
+    classDef shared fill:#2A5B80,stroke:#1A4B70,color:#fff
+    classDef latent fill:#5D4A8A,stroke:#4D3A7A,color:#fff
+    classDef observed fill:#2E7A5A,stroke:#1E6A4A,color:#fff
+```
+
+*Plate notation for LDA: priors α, η feed the latent mixtures θ and topic–word distributions β; θ produces a per-word topic z, which with β produces the only observed variable, the word w (shaded green). β is outside the document plate — it is shared across all documents.*
 
 ### What the Dirichlet actually is
 
@@ -162,6 +188,12 @@ The Dirichlet is a **distribution over probability vectors** — it's the natura
 $$p(\theta \mid \alpha) \;=\; \frac{1}{B(\alpha)} \prod_{k=1}^{K} \theta_k^{\,\alpha_k - 1}, \qquad \theta_k \ge 0,\;\; \sum_k \theta_k = 1,$$
 
 where $B(\alpha)$ is the normalizing constant (a ratio of Gamma functions). The constraint $\sum_k \theta_k = 1$ means every sample lives on the **probability simplex** — for $K=3$, an equilateral triangle whose corners are "100% topic 1," "100% topic 2," "100% topic 3." The $\alpha$ vector controls *where on that triangle* the mass piles up. With a **symmetric** Dirichlet ($\alpha_k = \alpha$ for all $k$), $\alpha = 1$ gives a uniform spread over the triangle; $\alpha \ll 1$ pushes mass into the **corners** (sparse mixtures — each document is one or two topics); $\alpha \gg 1$ pulls mass to the **center** (dense, even blends). That single scalar is the sparsity dial.
+
+> **Source / derivation:** the Dirichlet density and its role as the conjugate prior for the multinomial topic mixtures are §2 of [Blei, Ng & Jordan, *Latent Dirichlet Allocation* (JMLR 2003)](https://www.jmlr.org/papers/volume3/blei03a/blei03a.pdf) — the paper that introduced LDA and the source of the generative story above.
+
+The picture below makes the "sparsity dial" literal: 600 draws from a symmetric Dirichlet on the $K=3$ simplex at three concentration settings. Small $\alpha$ scatters documents into the corners (each is about one topic — what we usually want); $\alpha=1$ spreads them uniformly; large $\alpha$ clumps them in the middle (every document a smear of all three).
+
+![600 samples from a symmetric Dirichlet on the K=3 simplex, for α=0.1 (sparse, mass in the corners), α=1 (uniform over the triangle), and α=5 (dense, mass at the center). The concentration parameter α is a single knob controlling how peaky each document's topic mixture is.](../images/tm_dirichlet_simplex.png)
 
 > **Tip:** picture the $K=3$ simplex as a triangle. Small $\alpha$ scatters documents near the *corners* (each is mostly one topic); large $\alpha$ clumps them in the *middle* (each is a uniform smear). You almost always want documents near the corners — so you almost always want $\alpha < 1$. The same triangle picture, with the vocabulary simplex, explains why small $\eta$ gives crisp topics.
 
@@ -197,6 +229,8 @@ This is what the original Blei et al. paper used and what **scikit-learn** imple
 
 $$\log p(\mathbf{w}) \;=\; \underbrace{\mathcal{L}(q)}_{\text{ELBO}} \;+\; \underbrace{\mathrm{KL}\big(q \,\Vert\, p(\cdot \mid \mathbf{w})\big)}_{\ge\, 0},$$
 
+> **Source / derivation:** this evidence-decomposition and the mean-field variational EM that maximizes the ELBO are §5 of [Blei, Ng & Jordan, *Latent Dirichlet Allocation* (JMLR 2003)](https://www.jmlr.org/papers/volume3/blei03a/blei03a.pdf) (Eqs. 13–15); the online/stochastic mini-batch variant is [Hoffman, Blei & Bach, *Online Learning for LDA* (NeurIPS 2010)](https://papers.nips.cc/paper/2010/hash/71f6278d140af599e06ad9bf1ba03cb0-Abstract.html).
+
 and the evidence $\log p(\mathbf{w})$ is a fixed constant, **minimizing the KL gap is identical to maximizing the ELBO** $\mathcal{L}(q) = \mathbb{E}_q[\log p(\theta,\mathbf{z},\mathbf{w})] - \mathbb{E}_q[\log q]$ — a tractable lower bound on the log-evidence. The optimization alternates, EM-style: update the per-word topic responsibilities $\phi$ and the per-document mixture parameters $\gamma$ to tighten the bound (E-step), then update the global topic–word distributions (M-step). Each step provably never lowers the ELBO, so it converges. It's **fast and deterministic** and scales to huge corpora (especially the **online/stochastic** variant of Hoffman et al., which updates from mini-batches), at the cost of the bias the factorization assumption introduces — mean-field tends to *underestimate* posterior variance because it can't represent correlations it assumed away.
 
 > **Note:** this is the exact same ELBO / "maximize a lower bound because the true objective is intractable" move that powers the [variational autoencoder](../../10.%20GenAI/concepts/01-Variational-Autoencoders-VAE-ELBO.md) and, in spirit, the EM algorithm for [GMMs](../../04.%20Unsupervised_Learning/concepts/04-Gaussian-Mixture-Models-and-EM.md). Variational EM for LDA *is* EM, with an approximate E-step because the exact posterior over $(\theta, \mathbf{z})$ doesn't factor nicely. If you've seen the ELBO once, you've seen it everywhere in this corner of ML.
@@ -207,6 +241,8 @@ This is the method most people derive in interviews because the update is so int
 
 $$p(z_i = k \mid \mathbf{z}_{\neg i}, \mathbf{w}) \;\propto\; \underbrace{\big(n_{d,k}^{\neg i} + \alpha\big)}_{\substack{\text{how much doc } d \\ \text{already likes topic } k}} \;\times\; \underbrace{\frac{n_{k,w}^{\neg i} + \eta}{n_{k}^{\neg i} + V\eta}}_{\substack{\text{how much topic } k \\ \text{likes word } w}}$$
 
+> **Source / derivation:** this is Eq. (5) of [Griffiths & Steyvers, *Finding Scientific Topics* (PNAS 2004)](https://www.pnas.org/doi/10.1073/pnas.0307752101), derived in full in the open tutorial [Steyvers & Griffiths, *Probabilistic Topic Models* (2007)](https://cocosci.princeton.edu/tom/papers/SteyversGriffiths.pdf). It comes from collapsing (integrating out) $\theta$ and $\beta$ using Dirichlet–multinomial conjugacy, leaving a closed-form conditional over the discrete assignments alone — exactly the update the from-scratch sampler below implements.
+
 where $n_{d,k}$ = count of words in document $d$ currently assigned to topic $k$, $n_{k,w}$ = count of word $w$ across the corpus assigned to topic $k$, $n_{k}$ = total words assigned to topic $k$, and the $\neg i$ superscript means "excluding the current word $i$ we're reassigning." Each term has a plain-English reading:
 
 - **First factor** $(n_{d,k} + \alpha)$ — *"this document already has a lot of topic $k$ in it"* — pulls a word toward topics its neighbors in the same document use. This is what makes a document settle into a few topics.
@@ -216,6 +252,61 @@ where $n_{d,k}$ = count of words in document $d$ currently assigned to topic $k$
 
 > **Tip:** the $+\alpha$ and $+\eta$ in the numerators are **smoothing** straight out of the Dirichlet prior — they're pseudo-counts that stop any probability from ever hitting exactly zero, so a topic can still occasionally emit a word it hasn't emitted yet. The same Laplace-style smoothing you saw in [n-gram models](../04-N-gram-Language-Models-and-Smoothing/04-N-gram-Language-Models-and-Smoothing.md), arriving here for free from conjugacy.
 
+### From scratch: a Gibbs sampler that recovers planted topics
+
+Talk is cheap — let's *prove* the update works. Here is the entire collapsed-Gibbs sweep, in the exact form of the conditional above, run on a tiny synthetic corpus where we **planted** three known topics (sports / cooking / space, each a disjoint 6-word vocabulary, with 15% of every document's words "leaking" from other topics so it's a genuine admixture). Because we know the planting, we can check the sampler *recovers* the truth, not merely produces something. The full runnable version (and a NumPy cross-check) lives in the [step-by-step notebook](code/15-Topic-Modeling-LDA-NMF.ipynb) and the [source module](code/topic_modeling.py); the heart of it is this loop:
+
+```python
+"""Collapsed-Gibbs LDA — the conditional p(z_i=k | ...) ∝ (n_dk+α)(n_kw+η)/(n_k+Vη), from scratch.
+Verified on Python 3.12 / numpy 2.4, CPU, seed=7."""
+import numpy as np
+
+def gibbs_lda(docs, V, K, alpha=0.1, eta=0.01, n_iter=300, seed=7):
+    rng = np.random.default_rng(seed)
+    n_dk = np.zeros((len(docs), K)); n_kw = np.zeros((K, V)); n_k = np.zeros(K)
+    z = []                                               # topic assignment per word occurrence
+    for d, doc in enumerate(docs):                       # random init
+        zd = rng.integers(0, K, size=len(doc)); z.append(zd)
+        for i, w in enumerate(doc):
+            n_dk[d, zd[i]] += 1; n_kw[zd[i], w] += 1; n_k[zd[i]] += 1
+    for _ in range(n_iter):                              # Gibbs sweeps
+        for d, doc in enumerate(docs):
+            for i, w in enumerate(doc):
+                k = z[d][i]
+                n_dk[d, k] -= 1; n_kw[k, w] -= 1; n_k[k] -= 1   # remove word i (the ¬i counts)
+                p = (n_dk[d] + alpha) * (n_kw[:, w] + eta) / (n_k + V * eta)  # the conditional
+                p /= p.sum()
+                k = rng.choice(K, p=p)                            # sample its new topic
+                z[d][i] = k
+                n_dk[d, k] += 1; n_kw[k, w] += 1; n_k[k] += 1    # add it back
+    phi = (n_kw + eta) / (n_kw + eta).sum(1, keepdims=True)      # P(word | topic)
+    theta = (n_dk + alpha) / (n_dk + alpha).sum(1, keepdims=True)  # P(topic | doc)
+    return phi, theta
+```
+
+Run it on the planted corpus (60 documents, 18-word vocabulary) and read off each topic's top words — they snap back to the three planted blocks (in some arbitrary numbering — more on that below), and every document's $\theta$ loads almost entirely on its planted topic (**purity 1.000** against the ground truth):
+
+```
+Gibbs-LDA recovered topics (top words):
+  topic 0: onion, tomato, bake, garlic, simmer, recipe     ← COOKING, recovered
+  topic 1: rocket, planet, moon, telescope, galaxy, orbit   ← SPACE, recovered
+  topic 2: coach, match, team, striker, goal, league        ← SPORTS, recovered
+
+doc-topic purity vs planted truth: 1.000
+```
+
+The two count tables the sampler converges to *are* the answer, and they have a clean visual signature — a **block-diagonal** structure that says "each topic owns its words, each document owns its topic":
+
+![Recovered topic–word distributions φ from the from-scratch Gibbs sampler on the planted corpus. Each of the three recovered topics concentrates its probability on its planted 6-word block (sports / cooking / space), with near-zero mass elsewhere — the planted structure was recovered, not supplied.](../images/tm_topic_word_heatmap.png)
+
+![Recovered doc–topic mixtures θ, documents sorted by their planted topic. The block-diagonal pattern shows each document loading almost entirely on its single planted topic — clean recovery of the admixture structure from word co-occurrence alone.](../images/tm_doc_topic_heatmap.png)
+
+This recovery isn't instant — it *emerges*. Starting from a random assignment, each sweep nudges words toward topics their document-mates and corpus-mates already use, and the two self-reinforcing pulls drive the corpus to organize itself. Watching the corpus log-likelihood climb and the doc-topic purity march to 1.0 over the sweeps makes the "soft clustering that sharpens" dynamic concrete:
+
+![Corpus log-likelihood (blue) and doc-topic purity against the planted truth (green) over Gibbs sweeps. Both rise sharply in the first few sweeps and saturate — the sampler self-organizes random assignments into the three planted topics, reaching purity 1.0.](../images/tm_gibbs_convergence.png)
+
+> **Note:** the sampler is **seeded** (`np.random.default_rng(7)`) so this recovery is bit-for-bit reproducible. Change the seed and the *topic numbering* will shuffle (topic 0 might come back as cooking) — but the *three topics themselves* are stable, because they're a property of the corpus, not the seed. This is the "topics aren't aligned across runs" gotcha, live.
+
 ---
 
 ## Choosing K: perplexity and coherence
@@ -224,14 +315,23 @@ LDA needs you to fix $K$, the number of topics, in advance. Too few and distinct
 
 **Held-out perplexity.** Fit on a training split, then measure how *surprised* the model is by held-out documents. Perplexity is the exponentiated per-word negative log-likelihood, $\exp\!\big(-\frac{\sum_d \log p(\mathbf{w}_d)}{\sum_d N_d}\big)$ — **lower is better** (the model predicts unseen text well). It's the natural likelihood-based score, *but* — and this is the famous Chang et al. (2009) result — **lower perplexity often means *less* human-interpretable topics.** Optimizing likelihood alone can produce statistically tidy topics that read like nonsense to a person.
 
-**Topic coherence.** This measures the thing we actually care about: *do a topic's top words actually go together?* The intuition: if the top words of a topic are *garlic, onion, tomato, basil*, they should **co-occur** in documents far more than chance; if they're *garlic, orbit, the, goal*, they don't. Two standard formalizations:
+> **Source / derivation:** held-out perplexity for LDA is defined in §7.1 of [Blei, Ng & Jordan (2003)](https://www.jmlr.org/papers/volume3/blei03a/blei03a.pdf); the result that *lower perplexity can mean less interpretable topics* — the reason we don't trust it alone — is [Chang, Boyd-Graber, Gerrish, Wang & Blei, *Reading Tea Leaves* (NeurIPS 2009)](https://proceedings.neurips.cc/paper/2009/hash/f92586a25bb3145facd64ab20fd554ff-Abstract.html).
 
-- **UMass coherence** — sum over top-word pairs of $\log\frac{D(w_i, w_j) + 1}{D(w_j)}$, where $D(w_j)$ is how many documents contain $w_j$ and $D(w_i, w_j)$ how many contain both. Asks: *given a topic word appeared, how often did its topic-mates appear too?* **Higher (less negative) is better.**
-- **$C_v$ coherence** (Röder et al. 2015) — the most-used measure in practice; it scores top-word pairs by **normalized pointwise mutual information** over a sliding window in a reference corpus and aggregates with cosine similarity. It correlates best with human ratings, which is why gensim's `CoherenceModel(coherence='c_v')` is the standard sweep tool.
+**Topic coherence.** This measures the thing we actually care about: *do a topic's top words actually go together?* The intuition: if the top words of a topic are *garlic, onion, tomato, basil*, they should **co-occur** in documents far more than chance; if they're *garlic, orbit, the, goal*, they don't. Three standard formalizations, each scoring a topic by aggregating over pairs of its top words:
 
-Here is a **measured** sweep on a clean 3-theme corpus: held-out perplexity and UMass coherence as $K$ varies. Both bottom-out / peak at the true $K = 3$:
+- **UMass coherence** (Mimno et al. 2011) — the canonical score *sums* over ordered top-word pairs of $\log\frac{D(w_i, w_j) + 1}{D(w_j)}$, where $D(w_j)$ is how many documents contain $w_j$ and $D(w_i, w_j)$ how many contain both. Asks: *given a topic word appeared, how often did its topic-mates appear too?* It's **intrinsic** — computed on the same corpus you fit on. **Higher (less negative) is better.** The from-scratch code on this page computes a lightly **stabilized, pair-averaged** variant — $\frac{1}{|\text{pairs}|}\sum_{i,j}\log\frac{D(w_i,w_j) + \varepsilon}{D(w_j) + \varepsilon}$ with $\varepsilon = 1$ on *both* terms (so it never divides by zero and is comparable across differently-sized word sets); the numbers below are from that variant.
+- **NPMI coherence** (the UCI/Newman family, normalized) — for each pair, $\text{NPMI}(w_i,w_j) = \frac{\log\frac{p(w_i,w_j)}{p(w_i)\,p(w_j)}}{-\log p(w_i,w_j)}$, with probabilities estimated from document co-occurrence. NPMI lives in $[-1,1]$: $+1$ = always together, $0$ = independent, $-1$ = never together. Averaging it over a topic's word pairs is the workhorse coherence score.
+- **$C_v$ coherence** (Röder et al. 2015) — the most-used measure in practice; it combines NPMI over a sliding window with a cosine-similarity aggregation and correlates best with human ratings, which is why gensim's `CoherenceModel(coherence='c_v')` is the standard sweep tool.
 
-![Held-out perplexity (lower better, red) and UMass coherence (higher better, green) as the number of topics K varies on a synthetic three-theme corpus. Both agree that K = 3 — perplexity is minimized and coherence is maximized at the true number of topics.](../images/topic_coherence_perplexity.png)
+> **Source / derivation:** UMass is Eq. (1) of [Mimno, Wallach, Talley, Leenders & McCallum, *Optimizing Semantic Coherence in Topic Models* (EMNLP 2011)](https://aclanthology.org/D11-1024/); the PMI/NPMI family is [Newman, Lau, Grieser & Baldwin, *Automatic Evaluation of Topic Coherence* (NAACL 2010)](https://aclanthology.org/N10-1012/); and $C_v$ — the systematic comparison that found the best human-correlating combination — is [Röder, Both & Hinneburg, *Exploring the Space of Topic Coherence Measures* (WSDM 2015)](http://svn.aksw.org/papers/2015/WSDM_Topic_Evaluation/public.pdf).
+
+Coherence is only useful if it actually *separates* a good topic from a bad one. Computing NPMI and UMass from scratch (the formulas above) on a real planted topic versus a **random** set of the same size, the coherent topic wins decisively on both — the words in a real topic co-occur far more than random words do:
+
+![Coherence of a real (planted) topic versus a random word set of the same size, on both NPMI (higher better) and UMass (higher better). The planted topic scores +0.243 NPMI / −0.298 UMass against the random set's +0.017 / −0.439 — a coherence measure that does its job.](../images/tm_coherence_bars.png)
+
+And here is the **measured** $K$-sweep on the clean 3-theme planted corpus: held-out perplexity (a 70/30 train/test split) and mean UMass coherence as $K$ varies. Perplexity is clearly minimized at the true $K = 3$; coherence is high at $K=3$ but *noisier* — it also looks good at $K=4$ and $K=5$. That gap is the lesson, not a bug:
+
+![Held-out perplexity (lower better, red) and UMass coherence (higher better, green) versus the number of topics K on the synthetic three-theme corpus. Perplexity bottoms out sharply at the true K = 3, while coherence is flatter and noisier across K = 3–5 — a live picture of why the two measures can disagree and why you read the topics rather than blindly trust a number.](../images/tm_coherence_perplexity.png)
 
 > **Tip:** the practical recipe is **"sweep $K$, plot coherence, pick the elbow, then read the topics."** Don't trust a single number — coherence guides you to a *range*, and the final call is human: fit two or three nearby $K$ values, print the top-10 words per topic, and choose the one whose topics you can *name*. Interpretability is the real objective; coherence is its best proxy, perplexity a weaker one.
 
@@ -249,7 +349,9 @@ $$V \;\approx\; W H, \qquad W \ge 0,\; H \ge 0,$$
 
 with $W$ of shape $D \times K$ (each row = a document's weights over the $K$ topics) and $H$ of shape $K \times V$ (each row = a topic's weights over the $V$ words). That's it: $W$ is "documents in topic space," $H$ is "topics in word space" — the exact same $D\times K$ and $K\times V$ decomposition LDA produces, but as a deterministic matrix factorization instead of a probabilistic posterior.
 
-![NMF factorizes the non-negative document–term matrix V (left, measured TF-IDF) into W (documents × topics) and H (topics × words). Because every entry stays ≥ 0, topics combine additively — a document is a sum of parts, never a cancellation.](../images/topic_nmf_factorization.png)
+![NMF factorizes the non-negative document–term matrix V (left, the planted count matrix, with its block-diagonal theme structure) into W (documents × topics, center) and H (topics × words, right, the three recovered topics). Because every entry stays ≥ 0, topics combine additively — a document is a sum of parts, never a cancellation. W shows each document group loading on a single topic; H shows each topic concentrated on its block of words.](../images/tm_nmf_factorization.png)
+
+> **Source / derivation:** the non-negative factorization $V \approx WH$ and the parts-based interpretation are [Lee & Seung, *Learning the Parts of Objects by Non-negative Matrix Factorization* (Nature 1999)](https://www.nature.com/articles/44565).
 
 ### The objective and the multiplicative update rules
 
@@ -261,7 +363,26 @@ The Frobenius objective is least-squares reconstruction; the **generalized KL** 
 
 $$H \leftarrow H \odot \frac{W^{\top} V}{W^{\top} W H}, \qquad\qquad W \leftarrow W \odot \frac{V H^{\top}}{W H H^{\top}},$$
 
+> **Source / derivation:** the Frobenius and KL objectives, these multiplicative update rules, and the auxiliary-function proof that each update monotonically decreases the loss are Theorems 1–2 of [Lee & Seung, *Algorithms for Non-negative Matrix Factorization* (NeurIPS 2001)](https://proceedings.neurips.cc/paper/2000/hash/f9d1152547c0bde01830b7e8bd60024c-Abstract.html).
+
 where $\odot$ and the division are **element-wise**. The beauty of these updates: they're just multiplications and divisions of non-negative quantities, so **non-negativity is preserved automatically** — start with $W, H \ge 0$ and they stay $\ge 0$ forever, no projection or clipping needed. Lee & Seung proved each update **monotonically decreases** the loss (via an auxiliary-function argument akin to EM), so the algorithm converges (to a local optimum — the problem is non-convex jointly, though convex in each factor alone).
+
+The whole algorithm is four lines, and watching the reconstruction error fall proves the monotone-decrease guarantee is real:
+
+```python
+"""NMF by Lee & Seung's multiplicative updates — from scratch. Verified, seed=7, CPU."""
+import numpy as np
+
+def nmf(X, K, n_iter=400, seed=7, eps=1e-9):
+    rng = np.random.default_rng(seed)
+    W = rng.random((X.shape[0], K)); H = rng.random((K, X.shape[1]))
+    for _ in range(n_iter):
+        H = H * (W.T @ X) / (W.T @ W @ H + eps)     # update H, non-negativity preserved
+        W = W * (X @ H.T) / (W @ H @ H.T + eps)     # update W, non-negativity preserved
+    return W, H                                     # X ≈ W @ H, both ≥ 0
+```
+
+![NMF reconstruction error ‖V − WH‖_F under the multiplicative updates on the planted count matrix: it falls from 106.9 to 42.6 and never rises — the monotone-decrease guarantee, measured. No learning rate, no projection step; non-negativity is preserved by construction.](../images/tm_nmf_convergence.png)
 
 > **Note:** the multiplicative updates have a tidy reading. Each factor is scaled by the ratio of "what the data wants" ($W^\top V$, the correlation of topics with the actual matrix) over "what the current reconstruction produces" ($W^\top W H$). Where the model under-explains an entry the ratio exceeds 1 and the factor grows; where it over-explains, the ratio is below 1 and it shrinks. The fixed point is where they balance — exactly $V \approx WH$.
 
@@ -273,7 +394,7 @@ By forcing every entry $\ge 0$, NMF can only build a document by **adding parts*
 
 There's also a clean connection to **clustering**. If you constrain each row of $W$ to be a one-hot indicator (a document belongs to exactly one topic) and use the Frobenius loss, NMF reduces to **k-means** — the topics become hard cluster centroids. Relaxing to non-negative *soft* weights is what turns that hard clustering into the soft, mixed-membership decomposition we want. So NMF sits on a spectrum: tighten it and you get k-means; loosen it and you get a soft topic model. And as noted, NMF with the **generalized-KL** loss is mathematically very close to **pLSA** — the two optimize nearly the same objective from different starting philosophies, which is why they tend to produce similar topics on the same matrix.
 
-![Measured top words per topic for both methods on a small sports/cooking/space corpus: LDA (counts, top row) and NMF (TF-IDF, bottom row) each recover the three themes — team/goal/football, onion/garlic/tomato, and planet/telescope/spacecraft.](../images/topic_lda_nmf_topwords.png)
+![Measured top-6 words per topic for both methods on the 18-document sports/cooking/space corpus: LDA on raw counts (top row) and NMF on TF-IDF (bottom row) each recover the three themes with no labels — team/goal/football, garlic/onion/tomato, and planet/galaxy/spacecraft.](../images/tm_lda_nmf_topwords.png)
 
 > **Tip:** NMF on a **TF-IDF** matrix is often the fastest path to *good-looking* topics, especially for **short documents** (tweets, titles, reviews) where LDA's per-document word counts are too sparse to estimate $\theta_d$ well. It's deterministic given a seed/init (use `init='nndsvda'`), runs in seconds, and the top words are usually crisp. When a quick, reproducible topic breakdown is the goal, reach for NMF first.
 
@@ -318,6 +439,8 @@ A model hands you $\beta_k$ (or $H_k$) — a weight over every word. Turning tha
 Classical topic models inherit bag-of-words' original sin: **no word order, no context, no synonymy.** To them *bank* (river) and *bank* (money) are one word, and *car* and *automobile* are unrelated. The modern fix replaces counts with **contextual embeddings** ([Sentence & Document Embeddings](../07-Sentence-and-Document-Embeddings/07-Sentence-and-Document-Embeddings.md)) and clusters *those*.
 
 **BERTopic** (Grootendorst, 2022) is the leading example, and its pipeline is a clean four-stage recipe:
+
+> **Source / derivation:** the embed → UMAP → HDBSCAN → c-TF-IDF pipeline and the class-based TF-IDF weighting are [Grootendorst, *BERTopic: Neural topic modeling with a class-based TF-IDF procedure* (arXiv 2022)](https://arxiv.org/abs/2203.05794).
 
 1. **Embed** every document with a sentence transformer (e.g. `all-MiniLM-L6-v2`) → dense semantic vectors that *do* understand context and synonymy.
 2. **Reduce** the embeddings' dimensionality with **UMAP** (clustering in 384-d is hard; UMAP brings it to ~5-d while preserving neighborhood structure).
@@ -377,7 +500,7 @@ Putting the pieces together, here's the workflow I'd actually run on a fresh cor
 
 ## Worked examples
 
-Four hand-traceable examples, increasing in machinery — the first three by hand, the fourth measured in scikit-learn.
+Five examples, increasing in machinery — the first three by hand, the last two measured. Every measured number here is produced by the [source module](code/topic_modeling.py) and reproduced step-by-step in the [teaching notebook](code/15-Topic-Modeling-LDA-NMF.ipynb), which asserts each qualitative claim (topics recovered, error monotone, coherent beats random) *before* printing the number — so nothing on this page is hand-typed.
 
 ### Example 1 — generate a tiny document by walking the LDA story
 
@@ -419,9 +542,9 @@ $$V = \begin{bmatrix}5 & 4 & 0\\ 0 & 1 & 4\\ 4 & 3 & 1\end{bmatrix},\quad W_0 = 
 
 The initial reconstruction error is $\lVert V - W_0 H_0\rVert_F = 7.55$. Apply the $H$ update $H \leftarrow H \odot \frac{W^\top V}{W^\top W H}$ (element-wise), then the $W$ update with the new $H$. The first row of the updated $H$ comes out
 
-$$H_1[0] = [0.984,\; 2.072,\; 1.002], \qquad W_1[0] = [0.337,\; 1.160],$$
+$$H_1[0] = [0.977,\; 2.087,\; 1.015], \qquad W_1[0] = [0.332,\; 1.164],$$
 
-and the new error is $\lVert V - W_1 H_1\rVert_F = \mathbf{4.30}$ — **down from 7.55 in a single iteration**, every entry still $\ge 0$. Repeat and it keeps dropping monotonically ($8.2 \to 4.1 \to 4.06 \to 4.04 \to \dots$ in the verified run below), converging to a non-negative factorization that reconstructs $V$ as a sum of two parts.
+and the new error is $\lVert V - W_1 H_1\rVert_F = \mathbf{4.30}$ — **down from 7.55 in a single iteration**, every entry still $\ge 0$. Repeat and it keeps dropping monotonically — the verified trajectory is $7.55 \to 4.30 \to 4.08 \to 4.04 \to 3.91 \to 3.31 \to 2.03$ — converging to a non-negative factorization that reconstructs $V$ as a sum of two parts. (Reproduced by `nmf_example_trace()` in the [source module](code/topic_modeling.py).)
 
 ### Example 4 — measured LDA and NMF on a small corpus (scikit-learn)
 
@@ -496,6 +619,41 @@ doc-0 topic mixture (theta): [0.973 0.014 0.014]
 Both methods cleanly recover **sports / cooking / space** with no labels, ever. And `theta` for doc-0 (a match report) is **97% topic 0** — the model figured out it's a sports document purely from word co-occurrence.
 
 > **Note:** notice LDA needed tuned priors and a good seed to come out this clean on only 18 short documents, while NMF (on TF-IDF) was crisp more readily — a small live demonstration of the "**NMF is steadier on short corpora**" point from the comparison table. On a large corpus the gap narrows and LDA's probabilistic benefits start to pay off.
+
+### Example 5 — coherence from scratch: a real topic beats a random word set
+
+The whole reason coherence is trustworthy is that it gives a *high* score to words that genuinely co-occur and a *low* score to words that don't. We can check that directly, from scratch, with NPMI computed off document co-occurrence — no library:
+
+```python
+"""NPMI coherence from scratch: a coherent topic out-scores a random word set. Verified, seed=7."""
+import numpy as np
+
+def npmi_coherence(word_ids, counts):           # counts: (n_docs x vocab) 0/1+ matrix
+    n_docs = counts.shape[0]
+    present = (counts > 0).astype(float)
+    df = present.sum(0)                          # docs containing each word
+    co = present.T @ present                     # docs containing BOTH words i and j
+    scores = []
+    for a in range(len(word_ids)):
+        for b in range(a + 1, len(word_ids)):
+            i, j = word_ids[a], word_ids[b]
+            p_ij = co[i, j] / n_docs
+            if p_ij <= 0:
+                scores.append(-1.0); continue    # never co-occur → maximally incoherent
+            pmi  = np.log(p_ij / ((df[i]/n_docs) * (df[j]/n_docs)))
+            scores.append(pmi / -np.log(p_ij))   # normalize PMI to [-1, 1]
+    return float(np.mean(scores))
+```
+
+On the planted corpus, a real planted topic (`goal, team, match, league, striker, coach`) versus a random set of six vocabulary words:
+
+```
+coherence — coherent (planted) topic vs random word set:
+  NPMI : coherent +0.243  vs  random +0.017
+  UMass: coherent -0.298  vs  random -0.439
+```
+
+The coherent topic wins on both measures — its words really do travel together, which is exactly the signal coherence is built to detect, and the basis for sweeping $K$ by coherence rather than perplexity.
 
 ---
 
