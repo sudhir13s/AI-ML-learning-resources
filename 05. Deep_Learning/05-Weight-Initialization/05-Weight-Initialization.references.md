@@ -1,0 +1,59 @@
+---
+id: "05-deep-learning/weight-initialization/references"
+topic: "Weight Initialization — References"
+parent: "05-deep-learning/weight-initialization"
+type: references
+updated: 2026-06-22
+---
+
+# Weight Initialization — references and further reading
+
+> Companion link library for **[Weight Initialization](05-Weight-Initialization.md)** (the concept page). External sources *and* internal links to related pages on this platform, kept separate so it can be reused as a standalone reference list. Grouped by type, best-first. Every entry is from a primary author or a recognized deep explainer — chosen for depth on *this* topic.
+
+**Start here — suggested path**:
+1. **Build intuition** — watch [Weight Initialization (C2W1L11)](https://www.youtube.com/watch?v=s2coXdufOzE) (**Andrew Ng**). *Why variance scaling keeps signals alive through depth.*
+2. **See it interactively** — open [Initializing neural networks](https://www.deeplearning.ai/ai-notes/initialization/index.html) (**DeepLearning.AI**). *Sliders show too-small/too-large init collapsing or exploding activations live.*
+3. **Get the math** — read [How to initialize deep neural networks: Xavier and Kaiming](https://pouannes.github.io/blog/initialization/) (**Pierre Ouannes**). *Full variance derivation for both schemes.*
+4. **Read the sources** — [Glorot & Bengio (Xavier)](http://proceedings.mlr.press/v9/glorot10a/glorot10a.pdf) → [He et al. (Kaiming, for ReLU)](https://arxiv.org/abs/1502.01852). *The two papers everyone cites.*
+5. **Make it concrete** — work through [d2l: Numerical Stability and Initialization](https://d2l.ai/chapter_multilayer-perceptrons/numerical-stability-and-init.html), then see how the residual/transformer tricks ([Fixup](https://arxiv.org/abs/1901.09321)) extend it to very deep nets.
+
+**Videos**:
+- [Weight Initialization in a Deep Network (C2W1L11)](https://www.youtube.com/watch?v=s2coXdufOzE) — **DeepLearningAI (Andrew Ng)** — the clearest short derivation of variance-preserving init.
+- [Weight Initialization explained — reducing the vanishing gradient problem](https://www.youtube.com/watch?v=8krd5qKVw-Q) — **deeplizard** — why zero/large init fails and how Xavier/He fix it.
+- [Xavier & He Initialization](https://www.youtube.com/watch?v=LKWatKGRZLI) — **Six Sigma Pro SMART** — side-by-side walk-through of both schemes.
+- [Why don't we initialize the weights of a neural network to zero?](https://www.youtube.com/watch?v=LBMVyXfZQy0) — **Bhavesh Bhatt** — the symmetry-breaking argument, concretely.
+
+**Interactive & visual**:
+- [Initializing neural networks](https://www.deeplearning.ai/ai-notes/initialization/index.html) — **DeepLearning.AI** — interactive sliders showing how init scale collapses or explodes signal flow through a network, with the variance math.
+
+**Courses (free)**:
+- [Stanford CS231n — Neural Networks Part 2 (Initialization)](https://cs231n.github.io/neural-networks-2/) — **Stanford (Karpathy / Li / Johnson)** — the canonical notes on calibrating initial variances.
+- [Dive into Deep Learning — Numerical Stability & Initialization](https://d2l.ai/chapter_multilayer-perceptrons/numerical-stability-and-init.html) — **Zhang et al.** — vanishing/exploding signals and the init fixes, with code.
+
+**Articles / blogs (free, no paywall)**:
+- [How to initialize deep neural networks: Xavier and Kaiming](https://pouannes.github.io/blog/initialization/) — **Pierre Ouannes** — the full variance derivation for both schemes, step by step.
+- [torch.nn.init — official documentation](https://pytorch.org/docs/stable/nn.init.html) — **PyTorch** — the reference for `kaiming_normal_`, `xavier_uniform_`, `orthogonal_`, and `calculate_gain` (the gain table this page derives).
+- [CS231n — Weight Initialization](https://cs231n.github.io/neural-networks-2/) — **Stanford CS231n** — calibrated initialization and the pitfalls of naive choices.
+
+**Key papers**:
+- [Understanding the difficulty of training deep feedforward networks (Xavier/Glorot)](http://proceedings.mlr.press/v9/glorot10a/glorot10a.pdf) — **Glorot & Bengio (2010)** — derives the variance-preserving initialization (the fan-in/fan-out average).
+- [Delving Deep into Rectifiers (He/Kaiming init + PReLU)](https://arxiv.org/abs/1502.01852) — **He et al. (2015)** — initialization tuned for ReLU networks (the factor-of-2 fix).
+- [Efficient BackProp](http://yann.lecun.com/exdb/publis/pdf/lecun-98b.pdf) — **LeCun, Bottou, Orr & Müller (1998)** — the original fan-in scaling ($1/\text{fan\_in}$, "LeCun init") and input-normalization advice.
+- [Exact solutions to the nonlinear dynamics of learning in deep linear networks](https://arxiv.org/abs/1312.6120) — **Saxe, McClelland & Ganguli (2013)** — orthogonal initialization and depth-independent learning dynamics.
+- [Fixup Initialization: Residual Learning Without Normalization](https://arxiv.org/abs/1901.09321) — **Zhang, Dauphin & Ma (2019)** — zero-init the residual branch to train very deep nets without BatchNorm.
+- [Improving Transformer Optimization Through Better Initialization (T-Fixup)](https://proceedings.mlr.press/v119/huang20f/huang20f.pdf) — **Huang et al. (2020)** — transformer-specific init that removes the need for LayerNorm warmup.
+- [All you need is a good init (LSUV)](https://arxiv.org/abs/1511.06422) — **Mishkin & Matas (2015)** — Layer-Sequential Unit-Variance: orthogonal init + data-driven per-layer rescaling.
+- [An Empirical Exploration of Recurrent Network Architectures](https://proceedings.mlr.press/v37/jozefowicz15.pdf) — **Jozefowicz, Zaremba & Sutskever (2015)** — the LSTM forget-gate-bias-1 trick, measured.
+
+**Books (free chapters)**:
+- [Dive into Deep Learning — §5.4 "Numerical Stability and Initialization"](https://d2l.ai/chapter_multilayer-perceptrons/numerical-stability-and-init.html) — **Zhang et al.** — vanishing/exploding signals and Xavier init, with code.
+- [Deep Learning — §8.4 "Parameter Initialization Strategies"](https://www.deeplearningbook.org/contents/optimization.html) — **Goodfellow, Bengio & Courville** — the rigorous treatment of init and its effect on optimization.
+- [Neural Networks and Deep Learning — Ch. 3 (weight initialization)](http://neuralnetworksanddeeplearning.com/chap3.html) — **Michael Nielsen** — why scaling init by fan-in speeds early learning.
+
+**In this platform**:
+- Concept page (full explanation): [Weight Initialization](05-Weight-Initialization.md)
+- Concept depth (the *why*): [AI-ML-intuition 4.12 Weight Initialization (Xavier/He)](../../../AI-ML-intuition/Module_4_Stabilization/4C_Training_Stability/4.12_Weight_Initialization_Xavier_He.md)
+- Prerequisite: [Backpropagation & Computational Graphs](../02-Backpropagation-and-Computational-Graphs/02-Backpropagation-and-Computational-Graphs.md)
+- The failure mode init prevents: [Vanishing / Exploding Gradients](../06-Vanishing-Exploding-Gradients/06-Vanishing-Exploding-Gradients.md)
+- Closely related: [Activation Functions](../03-Activation-Functions/03-Activation-Functions.md) (which scheme to use depends on the activation) · [Normalization](../11-Normalization/11-Normalization.md) (reduces but doesn't eliminate init sensitivity) · [Residual / Skip Connections](../18-Residual-Skip-Connections/18-Residual-Skip-Connections.md) (the identity path the residual-init tricks protect)
+- Field overview: [Deep Learning](../README.md)
