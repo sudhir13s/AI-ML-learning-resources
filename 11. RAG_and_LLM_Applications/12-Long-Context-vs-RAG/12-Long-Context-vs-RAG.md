@@ -64,17 +64,20 @@ overhead = 700 tokens/query, at a representative \$3 / 1M input tokens):
 
 ```
  corpus (chunks) | stuff tokens |  stuff $/q |   RAG $/q | cheaper
-------------------------------------------------------------------
+------------------------------------------------------------------------------
+               7 |          700 |   0.00210$ |  0.00210$ | stuff  <- just below (stuffing still wins)
+               8 |          800 |   0.00240$ |  0.00210$ | RAG  <- crossover (RAG wins from here)
               10 |        1,000 |   0.00300$ |  0.00210$ | RAG
              100 |       10,000 |   0.03000$ |  0.00210$ | RAG
-               8 |          800 |   0.00240$ |  0.00210$ | RAG  <- crossover
            1,000 |      100,000 |   0.30000$ |  0.00210$ | RAG
          100,000 |   10,000,000 |  30.00000$ |  0.00210$ | RAG
 ```
 
-Past a tiny **crossover** (here ~8 chunks) RAG is cheaper on *every* query, and the gap only widens —
-at 100k chunks, stuffing costs ~14,000× RAG's per-query tokens. The crossover is small precisely
-because stuffing's cost grows *per chunk per query* while RAG's is fixed.
+Read the top two rows together: at **7 chunks** stuffing still ties/wins (the 700-token RAG overhead
+dominates a tiny corpus); at **8 chunks** — the crossover — RAG takes the lead and never gives it back.
+Past it, RAG is cheaper on *every* query and the gap only widens: at 100k chunks, stuffing costs
+~14,000× RAG's per-query tokens. The crossover is small precisely because stuffing's cost grows *per
+chunk per query* while RAG's is fixed.
 
 ![The cost per query as the corpus grows (log–log): stuffing the whole corpus (red) rises linearly with corpus size, while RAG (blue, flat) sends only the top-k. They cross at ~8 chunks; beyond it RAG is cheaper on every query and the gap widens without bound. Our measurement — real cost arithmetic.](../images/rag12_cost_crossover.png)
 
@@ -183,7 +186,7 @@ position 1) to ~**54%** (gold in the middle) — roughly **20 points** — recov
 
 > **Source / derivation:** the accuracy-vs-position U-curve is [Lost in the Middle](https://arxiv.org/abs/2307.03172) (Liu et al. 2023) — *their* measured result on GPT-3.5/Claude-class models, cited here (not our measurement). The related "usable context < advertised window" finding is [RULER](https://arxiv.org/abs/2404.06654) (Hsieh et al. 2024).
 
-![The lost-in-the-middle U-curve (Liu et al. 2023): answer accuracy vs the position of the relevant document within a 20-document context — ~75% at the start, dipping to ~54% in the middle, recovering to ~71% at the end. Labelled as their cited external data, not our measurement.](../images/rag12_lost_in_middle.png)
+![The lost-in-the-middle U-curve (Liu et al. 2023): answer accuracy vs the position of the relevant document within a 20-document context — ~75% at the start, dipping to ~54% in the middle, recovering to ~74% at the end (a near-symmetric U). Labelled as their cited external data, not our measurement.](../images/rag12_lost_in_middle.png)
 
 This is *why* placement matters: retrieval hands the model a few chunks it can put where it reads
 best, instead of burying the answer in the middle of a million tokens.
@@ -253,6 +256,13 @@ PROVIDERS = (
 - **GPT-4o / GPT-4 Turbo:** 128,000-token context ([OpenAI API docs](https://developers.openai.com/api/docs/models/gpt-4o)).
 - **Claude (3.5 Sonnet and current Haiku):** 200,000-token context ([Anthropic docs](https://platform.claude.com/docs/en/docs/about-claude/models)).
 - **Gemini 1.5 Pro:** 1,048,576 tokens, extended to **2,000,000** ([Google Developers Blog](https://developers.googleblog.com/en/new-features-for-the-gemini-api-and-google-ai-studio/)).
+
+> **Note (pricing detail):** providers often charge a **higher input rate above ~128k tokens** — e.g.
+> Gemini's long-context tier is priced above its short-context rate ([Google pricing](https://ai.google.dev/pricing)),
+> which makes stuffing a *huge* prompt cost *even more* than the flat rate used above. But the
+> **crossover itself is price-independent** — the price $p$ cancels in the comparison
+> $Nt\,p$ vs $(kt+h)\,p$ — so a higher long-context rate only *widens* the gap in RAG's favour; it
+> never moves the crossover.
 
 Even the largest window is finite: a 1M-chunk corpus (~100M tokens) overflows a 2M-token window
 outright — so past some corpus size, retrieval isn't a *cheaper* option, it's the *only* one that

@@ -146,7 +146,7 @@ class DilutionPoint:
     margin: float  # gold_cosine - best_distractor_cosine (the gold's lead; shrinks as pool grows)
 
 
-def _distractor_pool(base_corpus: tuple[str, ...], n: int) -> list[str]:
+def _distractor_pool(n: int) -> list[str]:
     """Build n synthetic distractor passages -- Helios-7-flavoured but NOT the gold answer.
 
     Deterministic templated text so the pool is reproducible with no randomness. These stand in for
@@ -165,7 +165,6 @@ def measure_dilution(
     dense: DenseRetriever,
     query: str,
     gold: str,
-    base_corpus: tuple[str, ...],
     distractor_counts: tuple[int, ...],
 ) -> list[DilutionPoint]:
     """Measure how the gold's cosine MARGIN shrinks as more distractors join the candidate pool.
@@ -179,7 +178,7 @@ def measure_dilution(
     gold_cos = float(dense._encode([gold])[0] @ q_vec)  # noqa: SLF001 -- fixed across all points
     points: list[DilutionPoint] = []
     for n in distractor_counts:
-        distractors = _distractor_pool(base_corpus, n)
+        distractors = _distractor_pool(n)
         if distractors:
             d_vecs = dense._encode(distractors)  # noqa: SLF001 -- (n, dim) unit-norm
             best_distractor = float(np.max(d_vecs @ q_vec))
@@ -202,7 +201,7 @@ LIU_U_CURVE: tuple[tuple[int, float], ...] = (
     (5, 62.0),
     (10, 54.0),  # gold in the middle -> worst (the "lost in the middle" dip)
     (15, 60.0),
-    (20, 71.0),  # gold at the very end -> nearly as good as the start
+    (20, 74.0),  # gold at the very end -> nearly as good as the start (near-symmetric U, per the paper)
 )
 LIU_SOURCE = "Liu et al. 2023, 'Lost in the Middle', arXiv:2307.03172 (their reported result, not ours)"
 
@@ -254,12 +253,18 @@ def main() -> None:
     print(f"  price: ${price:.2f} / 1M input tokens (representative, cited)\n")
     print(f"  {'corpus (chunks)':>16} | {'stuff tokens':>12} | {'stuff $/query':>13} | {'RAG $/query':>11} | cheaper")
     print("  " + "-" * 78)
-    for chunks in (10, 100, crossover - 1, crossover, 1_000, 100_000):
+    # numeric order, with the just-below-crossover and crossover rows ADJACENT so the boundary is clear
+    for chunks in (crossover - 1, crossover, 10, 100, 1_000, 100_000):
         st = stuff_tokens(chunks)
         st_cost = query_cost_usd(st, price)
         rag_cost = query_cost_usd(rag_toks, price)
         cheaper = "RAG" if rag_cost < st_cost else "stuff"
-        tag = "  <- crossover" if chunks == crossover else ""
+        if chunks == crossover - 1:
+            tag = "  <- just below (stuffing still wins)"
+        elif chunks == crossover:
+            tag = "  <- crossover (RAG wins from here)"
+        else:
+            tag = ""
         print(f"  {chunks:>16,} | {st:>12,} | {st_cost:>12.5f}$ | {rag_cost:>10.5f}$ | {cheaper}{tag}")
     # Correctness BEFORE the claim: at the crossover stuffing first exceeds RAG; below it, stuffing wins.
     assert stuff_tokens(crossover) > rag_toks, "at the crossover, stuffing must exceed RAG's fixed cost"
@@ -281,7 +286,7 @@ def main() -> None:
     query = "When was the Helios-7 satellite launched?"
     gold = corpus[0]  # "The Helios-7 satellite was launched on March 3rd, 2024 from the Kourou spaceport."
     counts = (0, 5, 20, 100, 500)
-    points = measure_dilution(dense, query, gold, corpus, counts)
+    points = measure_dilution(dense, query, gold, counts)
     print(f"  query: {query}")
     print(f"  gold : {gold}")
     print(f"  gold's own cosine to the query (fixed): {points[0].gold_cosine:.3f}\n")

@@ -141,8 +141,8 @@ def fig_cost_multiplier() -> None:
                     color=INK, ha="center", va="bottom", xytext=(0, 3), textcoords="offset points",
                     fontweight="bold")
     ax.axhline(1.0, color=BLUE, linewidth=1.6, linestyle="--")
-    ax.text(0.02, 1.0, " RAG baseline (1×)", transform=ax.get_yaxis_transform(), color=BLUE,
-            fontsize=8.4, va="bottom", fontweight="bold")
+    ax.text(0.98, 1.0, "RAG baseline (1×) ", transform=ax.get_yaxis_transform(), color=BLUE,
+            fontsize=8.4, ha="right", va="bottom", fontweight="bold")
     ax.set_yscale("log")
     ax.set_xlabel("corpus size (chunks)")
     ax.set_ylabel("stuffing cost ÷ RAG cost per query (log)")
@@ -180,26 +180,36 @@ def fig_lost_in_middle() -> None:
 
 
 def fig_dilution_proxy(dense: DenseRetriever, corpus: tuple[str, ...]) -> None:
-    """OUR MEASUREMENT: the gold's retrieval margin shrinking as distractor context grows."""
+    """OUR MEASUREMENT: the gold's retrieval margin shrinking as distractor context grows.
+
+    Uses the SAME counts as the page table + notebook -- (0, 5, 20, 100, 500) -- so the solid curve
+    STARTS at the asserted focused margin (0.804, n=0 = RAG focused, gold alone) and every plotted
+    value matches the transcript. The x-axis is a categorical index (evenly spaced) with the actual
+    distractor counts as tick labels, so the n=0 point plots cleanly (a log axis can't show 0).
+    """
     query = "When was the Helios-7 satellite launched?"
     gold = corpus[0]
-    counts = (1, 5, 20, 100, 500)  # start at 1 so the margin curve is a clean shrink (0 = focused baseline)
-    points = measure_dilution(dense, query, gold, corpus, counts)
-    focused = measure_dilution(dense, query, gold, corpus, (0,))[0].margin  # RAG focused baseline
+    counts = (0, 5, 20, 100, 500)  # identical to the page table + notebook cell -> no orphan point
+    points = measure_dilution(dense, query, gold, counts)
+    focused = points[0].margin  # n=0 = RAG focused baseline (gold alone), the asserted 0.804
 
     fig, ax = plt.subplots(figsize=(9.2, 5.4))
     _style_axis(ax)
-    xs = [p.n_distractors for p in points]
+    idx = np.arange(len(points))  # categorical x so n=0 plots (log can't show 0)
     margins = [p.margin for p in points]
-    ax.plot(xs, margins, "-o", color=RED, linewidth=2.0, markersize=6,
-            label="stuffed context: gold's margin over best distractor")
+    ax.plot(idx, margins, "-o", color=RED, linewidth=2.0, markersize=7,
+            label="gold's margin over best distractor (grows with context)")
     ax.axhline(focused, color=BLUE, linewidth=2.0, linestyle="--",
-               label=f"RAG focused (gold alone): margin {focused:.2f}")
-    for p in points:
-        ax.annotate(f"{p.margin:.2f}", (p.n_distractors, p.margin), fontsize=8.0, color=INK,
-                    ha="center", va="bottom", xytext=(0, 5), textcoords="offset points")
-    ax.set_xscale("log")
-    ax.set_xlabel("# distractor passages surrounding the gold (log scale)")
+               label=f"RAG focused (gold alone, n=0): margin {focused:.3f}")
+    for i, p in enumerate(points):
+        ax.annotate(f"{p.margin:.3f}", (i, p.margin), fontsize=8.4, color=INK,
+                    ha="center", va="bottom", xytext=(0, 6), textcoords="offset points",
+                    fontweight="bold")
+    ax.set_xticks(idx)
+    ax.set_xticklabels([f"{p.n_distractors}" for p in points])
+    ax.set_xlim(-0.4, len(points) - 0.6)
+    ax.set_ylim(0, focused * 1.18)
+    ax.set_xlabel("# distractor passages surrounding the gold (0 = RAG focused)")
     ax.set_ylabel("gold's cosine margin over best distractor")
     ax.legend(loc="upper right", fontsize=8.4, framealpha=0.9)
     ax.set_title("Context dilution (encoder proxy): more irrelevant context erodes the gold's lead",
