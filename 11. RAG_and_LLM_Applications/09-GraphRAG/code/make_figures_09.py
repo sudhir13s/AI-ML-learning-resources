@@ -141,7 +141,7 @@ def fig_multihop_vs_flat(graph: nx.Graph) -> None:
     retriever = DenseRetriever(corpus)
     probe = build_multihop_probe()
     flat_hits = retriever.search(probe.query, k=TOP_K).indices
-    flat_ok = flat_rag_can_answer_multihop(retriever, probe, corpus)
+    flat_ok = flat_rag_can_answer_multihop(corpus)
     path = shortest_path(graph, probe.start, probe.end)
 
     fig, (ax_flat, ax_graph) = plt.subplots(1, 2, figsize=(12.6, 5.6), gridspec_kw={"width_ratios": [1.0, 1.0]})
@@ -255,18 +255,21 @@ def fig_local_vs_global() -> None:
         ax.set_xlim(0, 1)
         ax.set_ylim(0, 1)
 
-    def box(ax, x, y, w, h, text, color, fs=8.4):
-        ax.add_patch(plt.Rectangle((x, y), w, h, facecolor=color, alpha=0.92, edgecolor=INK, linewidth=1.0))
-        ax.text(x + w / 2, y + h / 2, text, ha="center", va="center", color="white", fontsize=fs, fontweight="bold")
+    # wider boxes (0.68) with a smaller font so every label fits with margin; long labels wrap to 2 lines
+    bx, bw = 0.16, 0.68
+
+    def box(ax, y, text, color, fs=8.2):
+        ax.add_patch(plt.Rectangle((bx, y), bw, 0.11, facecolor=color, alpha=0.92, edgecolor=INK, linewidth=1.0))
+        ax.text(bx + bw / 2, y + 0.055, text, ha="center", va="center", color="white", fontsize=fs, fontweight="bold")
 
     # LOCAL
     ax_l.text(0.5, 0.96, "LOCAL search — specific-entity / multi-hop", ha="center", fontsize=11,
               fontweight="bold", color=GREEN)
-    box(ax_l, 0.22, 0.80, 0.56, 0.10, "query mentions specific entities", SLATE)
-    box(ax_l, 0.22, 0.62, 0.56, 0.10, "link query → graph entities", BLUE)
-    box(ax_l, 0.22, 0.44, 0.56, 0.10, "traverse neighbourhood / shortest path", GREEN)
-    box(ax_l, 0.22, 0.26, 0.56, 0.10, "gather connected facts → answer", GREEN)
-    for y0, y1 in ((0.80, 0.72), (0.62, 0.54), (0.44, 0.36)):
+    box(ax_l, 0.79, "query mentions specific entities", SLATE)
+    box(ax_l, 0.61, "link query → graph entities", BLUE)
+    box(ax_l, 0.43, "traverse neighbourhood /\nshortest path", GREEN)
+    box(ax_l, 0.25, "gather connected facts → answer", GREEN)
+    for y0, y1 in ((0.79, 0.72), (0.61, 0.54), (0.43, 0.36)):
         ax_l.annotate("", xy=(0.5, y1), xytext=(0.5, y0), arrowprops=dict(arrowstyle="->", color=INK, lw=1.4))
     ax_l.text(0.5, 0.12, "good for: “which office runs the satellite\ncarrying the imager?” (connect facts)",
               ha="center", fontsize=8.4, style="italic", color=INK)
@@ -274,11 +277,11 @@ def fig_local_vs_global() -> None:
     # GLOBAL
     ax_g.text(0.5, 0.96, "GLOBAL search — whole-corpus / thematic", ha="center", fontsize=11,
               fontweight="bold", color=AMBER)
-    box(ax_g, 0.22, 0.80, 0.56, 0.10, "query is about the whole dataset", SLATE)
-    box(ax_g, 0.22, 0.62, 0.56, 0.10, "detect communities (modularity)", AMBER)
-    box(ax_g, 0.22, 0.44, 0.56, 0.10, "summarize each community (LLM)", PURPLE)
-    box(ax_g, 0.22, 0.26, 0.56, 0.10, "map-reduce summaries → answer", GREEN)
-    for y0, y1 in ((0.80, 0.72), (0.62, 0.54), (0.44, 0.36)):
+    box(ax_g, 0.79, "query is about the whole dataset", SLATE)
+    box(ax_g, 0.61, "detect communities (modularity)", AMBER)
+    box(ax_g, 0.43, "summarize each community (LLM)", PURPLE)
+    box(ax_g, 0.25, "map-reduce summaries → answer", GREEN)
+    for y0, y1 in ((0.79, 0.72), (0.61, 0.54), (0.43, 0.36)):
         ax_g.annotate("", xy=(0.5, y1), xytext=(0.5, y0), arrowprops=dict(arrowstyle="->", color=INK, lw=1.4))
     ax_g.text(0.5, 0.12, "good for: “what are the main themes\nacross the corpus?” (aggregate)",
               ha="center", fontsize=8.4, style="italic", color=INK)
@@ -311,24 +314,28 @@ def fig_global_mapreduce(communities) -> None:
     n = len(result.partial_points)
     xs = [(i + 0.5) / n for i in range(n)]
     for i, (x, point) in enumerate(zip(xs, result.partial_points)):
-        # community box
-        ax.add_patch(plt.Rectangle((x - 0.15, 0.60), 0.30, 0.20, facecolor=COMMUNITY_COLORS[i % len(COMMUNITY_COLORS)],
+        # community box. MAP boxes show each community's THEME HEADING (the text before the colon) in
+        # full -- a clean, non-truncated label -- consistent with the REDUCE box showing the full
+        # synthesis. No mid-word truncation on either.
+        heading = point.split(":")[0]
+        ax.add_patch(plt.Rectangle((x - 0.15, 0.58), 0.30, 0.22, facecolor=COMMUNITY_COLORS[i % len(COMMUNITY_COLORS)],
                      alpha=0.16, edgecolor=COMMUNITY_COLORS[i % len(COMMUNITY_COLORS)], linewidth=1.3))
-        ax.text(x, 0.77, f"community {i}", ha="center", fontsize=8.6, fontweight="bold",
+        ax.text(x, 0.755, f"community {i}", ha="center", fontsize=8.6, fontweight="bold",
                 color=COMMUNITY_COLORS[i % len(COMMUNITY_COLORS)])
-        ax.text(x, 0.68, wrap(point.split(":")[0] + ":" + point.split(":")[1][:40] + "…", 26),
-                ha="center", va="center", fontsize=6.8, color=INK)
-        ax.text(x, 0.55, "MAP → partial theme", ha="center", fontsize=7.4, style="italic", color=SLATE)
+        ax.text(x, 0.66, wrap(heading, 22), ha="center", va="center", fontsize=7.8, color=INK, fontweight="bold")
+        ax.text(x, 0.545, "MAP → partial theme", ha="center", fontsize=7.4, style="italic", color=SLATE)
         # arrow down to reduce
         ax.annotate("", xy=(0.5, 0.40), xytext=(x, 0.52), arrowprops=dict(arrowstyle="->", color=INK, lw=1.2, alpha=0.6))
 
-    # reduce box
-    ax.add_patch(plt.Rectangle((0.12, 0.16), 0.76, 0.22, facecolor=GREEN, alpha=0.14, edgecolor=GREEN, linewidth=1.5))
-    ax.text(0.5, 0.345, "REDUCE → final themes answer", ha="center", fontsize=9.5, fontweight="bold", color=GREEN)
-    ax.text(0.5, 0.24, wrap(result.final_answer.replace("Main themes across the corpus: ", ""), 96),
-            ha="center", va="center", fontsize=6.8, color=INK)
-    ax.text(0.5, 0.03, "communities are REAL (networkx modularity); the summaries/answer text is an "
-            "illustrative LLM stand-in", ha="center", fontsize=7.6, style="italic", color=SLATE)
+    # reduce box -- the full synthesised answer, wrapped (no truncation)
+    ax.add_patch(plt.Rectangle((0.10, 0.15), 0.80, 0.23, facecolor=GREEN, alpha=0.14, edgecolor=GREEN, linewidth=1.5))
+    ax.text(0.5, 0.345, "REDUCE → final themes answer (full synthesis)", ha="center", fontsize=9.5,
+            fontweight="bold", color=GREEN)
+    ax.text(0.5, 0.245, wrap(result.final_answer.replace("Main themes across the corpus: ", ""), 98),
+            ha="center", va="center", fontsize=6.6, color=INK)
+    ax.text(0.5, 0.03, "MAP boxes show each community's theme heading; REDUCE shows the full synthesis. "
+            "Communities are REAL (networkx modularity); the summaries/answer text is an illustrative LLM stand-in.",
+            ha="center", fontsize=7.4, style="italic", color=SLATE)
     _save(fig, "rag09_global_mapreduce.png")
 
 

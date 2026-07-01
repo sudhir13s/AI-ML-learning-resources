@@ -18,11 +18,11 @@ updated: 2026-07-02
 5. **Build one** — read [LlamaIndex — Property Graph Index](https://developers.llamaindex.ai/python/framework/module_guides/indexing/lpg_index_guide/) or run [Microsoft GraphRAG get-started](https://microsoft.github.io/graphrag/get_started/). *The extract-triples → graph → query pipeline, runnable.*
 
 **Videos**:
-- [GraphRAG: The Marriage of Knowledge Graphs and RAG](https://www.youtube.com/watch?v=knDDGYHnnSI) — **Microsoft Research (Jonathan Larson)** — the GraphRAG authors explain local vs global search, community reports, and the sensemaking gains, first-hand.
-- [GraphRAG explained — from local to global](https://www.youtube.com/watch?v=r09tJfON6kE) — **Prompt Engineering** — a clear walkthrough of the entity-graph → community-summary → map-reduce pipeline.
-- [Knowledge Graphs for RAG with Neo4j](https://www.youtube.com/watch?v=hvGnZ_rxDU) — **Neo4j** — building a knowledge graph from documents with an LLM and querying it for multi-hop retrieval.
-- [Community detection & modularity, visually](https://www.youtube.com/watch?v=lU1Qb9hCV3Q) — **Great Learning / community** — modularity and the Louvain method for finding clusters in a graph, the algorithm behind GraphRAG's communities.
-- [Building a GraphRAG pipeline with LlamaIndex](https://www.youtube.com/watch?v=hb8uT-VBEww) — **LlamaIndex** — the PropertyGraphIndex / KnowledgeGraphIndex path end to end.
+- [GraphRAG: The Marriage of Knowledge Graphs and RAG](https://www.youtube.com/watch?v=knDDGYHnnSI) — **Emil Eifrem (Neo4j)** — why combine knowledge graphs with RAG: local vs global questions, entity graphs, and community-level reasoning.
+- [GraphRAG: LLM-Derived Knowledge Graphs for RAG](https://www.youtube.com/watch?v=r09tJfON6kE) — **Prompt Engineering** — a clear walkthrough of the entity-graph → community-summary → map-reduce pipeline.
+- [Road to NODES: Mastering RAG with the GraphRAG Python Package](https://www.youtube.com/watch?v=OALrsghrP_I) — **Neo4j** — a hands-on workshop building a GraphRAG system: LLM entity extraction, knowledge-graph construction, and relationship-aware retrieval.
+- [NetSci 06-2: Modularity and the Louvain Method](https://www.youtube.com/watch?v=QfTxqAxJp0U) — **Andrew Beveridge** — the math behind modularity and how the Louvain algorithm maximizes it; the community-detection engine under GraphRAG.
+- [LlamaIndex Webinar: Advanced RAG with Knowledge Graphs (with Tomaz from Neo4j)](https://www.youtube.com/watch?v=LDh5MdR-CPQ) — **LlamaIndex** — the `PropertyGraphIndex` abstractions end to end, from extraction to graph retrieval.
 
 **Interactive & visual**:
 - [Microsoft GraphRAG — visualization & get-started](https://microsoft.github.io/graphrag/get_started/) — **Microsoft** — run the indexer on a corpus and explore the resulting graph and community reports.
@@ -34,7 +34,8 @@ updated: 2026-07-02
 
 **Articles / blogs (free, no paywall)**:
 - [GraphRAG: Unlocking LLM discovery on narrative private data](https://www.microsoft.com/en-us/research/blog/graphrag-unlocking-llm-discovery-on-narrative-private-data/) — **Microsoft Research** — the announcement blog: the motivation (global sensemaking) and the local→global design, with examples.
-- [Microsoft GraphRAG — Local Search](https://microsoft.github.io/graphrag/query/local_search/) & [Global Search](https://microsoft.github.io/graphrag/query/global_search/) — **Microsoft docs** — the exact mechanics of the two query modes the page cites (entity access points; map-reduce with 1–10 importance ratings).
+- [GraphRAG Costs Explained: What You Need to Know](https://techcommunity.microsoft.com/blog/azure-ai-foundry-blog/graphrag-costs-explained-what-you-need-to-know/4207978) — **Microsoft (Azure AI Foundry)** — the indexing-cost breakdown the page's cost anchor cites: LLM extraction calls per chunk drive the majority of GraphRAG's cost (vs ~$0.006 to embed a whole book for flat RAG).
+- [Microsoft GraphRAG — Local Search](https://microsoft.github.io/graphrag/query/local_search/) & [Global Search](https://microsoft.github.io/graphrag/query/global_search/) — **Microsoft docs** — the exact mechanics of the two query modes the page cites (entity access points; map-reduce where each point carries a numerical importance rating).
 - [Constructing knowledge graphs from text with LLMs](https://neo4j.com/blog/developer/construct-knowledge-graphs-unstructured-text/) — **Neo4j** — LLM entity/relation extraction and entity resolution, the indexing steps this page's pitfalls cover.
 - [Using a Property Graph Index](https://developers.llamaindex.ai/python/framework/module_guides/indexing/lpg_index_guide/) — **LlamaIndex docs** — the `PropertyGraphIndex` API (kg_extractors, synonym + vector-context retrievers) the page cites.
 - [NetworkX — community detection](https://networkx.org/documentation/stable/reference/algorithms/community.html) — **NetworkX docs** — `greedy_modularity_communities`, `louvain_communities`, and `modularity` — the exact functions the from-scratch code runs.

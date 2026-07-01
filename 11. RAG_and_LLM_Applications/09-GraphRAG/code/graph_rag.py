@@ -3,10 +3,11 @@
 Flat vector RAG retrieves the top-k SIMILAR chunks and stops there. That fails on two whole
 classes of question:
 
-  1. MULTI-HOP questions that must CONNECT facts across documents -- "which office is responsible
-     for the satellite that reported error E-4011?" needs the chain
-     E-4011 -> Helios-7 -> Dr. Amara Okoye -> Nairobi office. No single chunk holds that chain, so
-     top-k similarity retrieves the endpoints but never links them.
+  1. MULTI-HOP questions that must CONNECT facts across documents -- "where is the team based that
+     leads the satellite carrying the hyperspectral imager?" needs the chain
+     hyperspectral imager -> Helios-7 -> Dr. Amara Okoye -> Nairobi office. No single chunk holds
+     that chain, so top-k similarity retrieves the endpoints but never links them. (This is the exact
+     probe build_multihop_probe() implements; its shortest path is asserted in main().)
   2. GLOBAL / thematic questions -- "what are the main themes across the corpus?" -- where the answer
      is an AGGREGATE over the whole dataset, not any one chunk.
 
@@ -151,6 +152,17 @@ def path_with_relations(graph: nx.Graph, path: list[str]) -> str:
     return " ".join(parts)
 
 
+def graph_without_edge(graph: nx.Graph, subj: str, obj: str) -> nx.Graph:
+    """Return a COPY of the graph with one edge removed -- simulating a MISSED extraction (Pitfall 1).
+
+    A missed (subject, relation, object) triple is a missing edge. This lets us measure what a single
+    extraction error does to multi-hop traversal without mutating the original graph.
+    """
+    damaged = graph.copy()
+    damaged.remove_edge(subj, obj)
+    return damaged
+
+
 def build_multihop_probe() -> MultiHopProbe:
     """The multi-hop probe flat vector RAG cannot answer: imager -> satellite -> lead -> office.
 
@@ -248,14 +260,15 @@ def global_search(communities: list[frozenset[str]]) -> GlobalAnswer:
 # ================================================================================================
 
 
-def flat_rag_can_answer_multihop(retriever: DenseRetriever, probe: MultiHopProbe, corpus: tuple[str, ...]) -> bool:
-    """True iff any single retrieved chunk contains BOTH ends of the hop -- the imager and the office.
+def flat_rag_can_answer_multihop(corpus: tuple[str, ...]) -> bool:
+    """True iff any single corpus chunk contains BOTH ends of the hop -- the imager and the office.
 
-    Multi-hop answering needs one piece of text that links the two ends. We test the strongest
+    Multi-hop answering needs one piece of text that links the two ends. This tests the strongest
     version of flat RAG's chance across the WHOLE corpus (not just its top-k): does ANY chunk mention
-    both the 'imager' and the 'Nairobi office'? If not, no amount of top-k tuning lets flat RAG
-    connect them -- the multi-hop failure is structural, not a ranking miss. (Dense retriever is real;
-    this is a real, measured check.)
+    both the 'imager' and the 'Nairobi office'? If not, no amount of top-k tuning or reranking lets
+    flat RAG connect them -- the multi-hop failure is STRUCTURAL (a property of the corpus), not a
+    ranking miss. It is exactly because this is corpus-level, not retriever-level, that the check takes
+    only the corpus: the dense retriever's ranking is irrelevant when the linking text does not exist.
     """
     for chunk in corpus:
         text = chunk.lower()
@@ -314,7 +327,7 @@ def main() -> None:
     print(f"  flat-RAG top-{TOP_K} chunks: {list(flat_hits)}")
     for idx in flat_hits:
         print(f"    chunk[{idx}]: {corpus[idx]}")
-    flat_ok = flat_rag_can_answer_multihop(retriever, probe, corpus)
+    flat_ok = flat_rag_can_answer_multihop(corpus)
     print(f"  any single corpus chunk links the imager AND the 'Nairobi office': {flat_ok}")
     # graph traversal: the real shortest path connects the chain
     path = shortest_path(graph, probe.start, probe.end)
