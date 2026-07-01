@@ -282,6 +282,11 @@ def safe_eval(expression: str) -> float:
     return _eval(ast.parse(expression, mode="eval"))
 ```
 
+> **Note:** the AST whitelist blocks *code execution*, but `**` still allows a pure-arithmetic
+> resource blowup (`9**9**9` → an astronomically large number that pins CPU/memory). The module adds
+> a small denial-of-service guard — an exponent above `MAX_EXPONENT` is refused — a reminder that a
+> tool taking model-generated input needs to bound *resource* use, not just *code* execution.
+
 Now run the agent on the compound query with the (illustrative) policy that decomposes it. The
 **trace is the lesson** — read it top to bottom:
 
@@ -301,6 +306,7 @@ step 3
 step 4
   Thought:     I now have both facts: the orbit count and the resolution. I can answer.
   Action:      finish('Helios-7 completes 14 full orbits per day (14.85 raw), and its imager has a ground resolution of 4 meters.')
+  Observation: (done)
 
 FINAL ANSWER: Helios-7 completes 14 full orbits per day (14.85 raw), and its imager has a ground resolution of 4 meters.
 steps taken: 4 | tools used: ['retrieve', 'calculator', 'retrieve', 'finish'] | hit budget: False

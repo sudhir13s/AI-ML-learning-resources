@@ -230,9 +230,9 @@ def fig_agent_trace() -> None:
     ax.text(0.5, 0.135, f"FINAL ANSWER: {wrap(result.answer, 108)}", ha="center", va="top",
             fontsize=9.0, color=GREEN, fontweight="bold",
             bbox=dict(boxstyle="round,pad=0.5", facecolor=GREEN, alpha=0.12, edgecolor=GREEN))
-    ax.text(0.5, 0.01, f"{result.n_steps} steps · tools: {result.tools_used} · "
+    ax.text(0.5, 0.035, f"{result.n_steps} steps · tools: {result.tools_used} · "
             "the loop, tools, retrieval and arithmetic are REAL; the Thought text is an illustrative stand-in",
-            ha="center", fontsize=7.6, color=SLATE, style="italic")
+            ha="center", va="bottom", fontsize=7.6, color=SLATE, style="italic")
     _save(fig, "rag10_agent_trace.png")
 
 

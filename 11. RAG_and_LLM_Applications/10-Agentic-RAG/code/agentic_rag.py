@@ -132,6 +132,10 @@ _ALLOWED_UNARYOPS: dict[type, Callable[[float], float]] = {
     ast.UAdd: operator.pos,
     ast.USub: operator.neg,
 }
+# Exponent magnitude cap. `**` is safe against code execution, but a nested tower like `9**9**9`
+# is a pure-arithmetic resource blowup (huge result -> CPU/memory), so we bound the exponent. This
+# is a denial-of-service guard, not a code-exec one -- the AST whitelist already blocks execution.
+MAX_EXPONENT = 100.0
 
 
 def safe_eval(expression: str) -> float:
@@ -140,7 +144,8 @@ def safe_eval(expression: str) -> float:
     Parses the string to an AST and recursively evaluates ONLY numeric literals and the whitelisted
     operators above; any other node (a name, an attribute, a function call, an import) raises
     ValueError. This is why the calculator tool can take model/agent-provided input without the
-    code-execution risk that bare eval() would introduce.
+    code-execution risk that bare eval() would introduce. As a denial-of-service guard, an exponent
+    whose magnitude exceeds MAX_EXPONENT is refused (so `9**9**9` cannot blow up CPU/memory).
     """
 
     def _eval(node: ast.AST) -> float:
@@ -149,7 +154,10 @@ def safe_eval(expression: str) -> float:
         if isinstance(node, ast.Constant) and isinstance(node.value, (int, float)):
             return float(node.value)
         if isinstance(node, ast.BinOp) and type(node.op) in _ALLOWED_BINOPS:
-            return _ALLOWED_BINOPS[type(node.op)](_eval(node.left), _eval(node.right))
+            left, right = _eval(node.left), _eval(node.right)
+            if isinstance(node.op, ast.Pow) and abs(right) > MAX_EXPONENT:
+                raise ValueError(f"exponent {right:g} exceeds the MAX_EXPONENT={MAX_EXPONENT:g} guard")
+            return _ALLOWED_BINOPS[type(node.op)](left, right)
         if isinstance(node, ast.UnaryOp) and type(node.op) in _ALLOWED_UNARYOPS:
             return _ALLOWED_UNARYOPS[type(node.op)](_eval(node.operand))
         raise ValueError(f"disallowed expression element: {ast.dump(node)}")
