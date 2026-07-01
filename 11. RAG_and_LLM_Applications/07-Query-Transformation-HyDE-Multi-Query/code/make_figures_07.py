@@ -41,6 +41,7 @@ from query_transformation import (
     cosine_to_gold,
     recall_at_k,
     reciprocal_rank,
+    reciprocal_rank_fusion,
     retrieve_hyde,
     retrieve_multiquery,
     retrieve_raw,
@@ -286,22 +287,21 @@ def fig_rrf_fusion(dense: DenseRetriever, corpus: tuple[str, ...]) -> None:
     ax_curve.legend(loc="upper right", framealpha=0.95, fontsize=8.5)
 
     # --- right: worked fusion of the chapter's OWN reformulation rankings ---
+    # Fuse the 3 reformulations over FULL-CORPUS ranks via the canonical reciprocal_rank_fusion (the
+    # exact function retrieve_multiquery uses), so the score shown is provably the pipeline's number,
+    # not a top-5-only shortcut. We DISPLAY only the top-5 rows for legibility; the fusion itself is
+    # full-corpus, which is why doc[1]'s 0.0492 equals what the notebook prints from the same function.
     ax_demo.axis("off")
     ax_demo.set_xlim(0, 1)
     ax_demo.set_ylim(0, 1)
     depth = 5
-    lists = [list(dense.search(q, k=depth).indices) for q in mq.paraphrases]
-    # RRF over these lists (all docs seen)
-    seen = sorted({d for lst in lists for d in lst})
-    k_rrf = RRF_K
-    rrf_score = {}
-    for d in seen:
-        s = 0.0
-        for lst in lists:
-            if d in lst:
-                s += 1.0 / (k_rrf + lst.index(d) + 1)
-        rrf_score[d] = s
-    fused = sorted(seen, key=lambda d: rrf_score[d], reverse=True)[:depth]
+    lists = [list(dense.search(q, k=depth).indices) for q in mq.paraphrases]  # top-5 rows to show
+    score_lists = [dense.all_scores(q) for q in mq.paraphrases]               # full-corpus, for fusion
+    # Fuse via the SAME canonical function the pipeline uses, over the FULL corpus (k=len(corpus)),
+    # then read off the fused scores -- so the number shown is provably the pipeline's, not a shortcut.
+    fused_full = reciprocal_rank_fusion(score_lists, k_rrf=RRF_K, k=len(corpus))
+    rrf_score = dict(zip(fused_full.indices, fused_full.scores))
+    fused = list(fused_full.indices[:depth])
 
     col_x = [0.13, 0.35, 0.57, 0.83]
     headers = ["reform. 1", "reform. 2", "reform. 3", "RRF fused"]
@@ -319,9 +319,9 @@ def fig_rrf_fusion(dense: DenseRetriever, corpus: tuple[str, ...]) -> None:
         face = GREEN if fd == mq.gold else SLATE
         ax_demo.text(col_x[3], y, f"{i+1}. doc[{fd}]  ({rrf_score[fd]:.4f})", ha="center", fontsize=8.8,
                      color=INK, bbox=dict(boxstyle="round,pad=0.28", facecolor=face, alpha=0.18, edgecolor=face))
-    ax_demo.text(0.5, 0.02, f"green = gold (doc[{mq.gold}]); ranked #1 by every reformulation → RRF locks it #1",
+    ax_demo.text(0.5, 0.02, f"green = gold (doc[{mq.gold}]); ranked #1 by every reformulation → RRF locks it #1 (0.0492)",
                  ha="center", fontsize=8.6, style="italic", color=INK)
-    ax_demo.set_title("Worked RRF fusion of the chapter's 3 reformulations (real rankings)", fontsize=10.5, pad=10)
+    ax_demo.set_title("Worked RRF fusion of the 3 reformulations (full-corpus ranks; top-5 shown)", fontsize=10.5, pad=10)
     _save(fig, "rag07_rrf_fusion.png")
 
 
