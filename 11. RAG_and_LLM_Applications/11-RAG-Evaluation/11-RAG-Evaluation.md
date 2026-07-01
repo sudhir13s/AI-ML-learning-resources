@@ -202,7 +202,14 @@ the top $k$:
 $$\text{context\_recall@}k = \frac{\big|\{\, d \in \text{top-}k : d \in \mathcal{R} \,\}\big|}{|\mathcal{R}|}.$$
 
 Recall is the **ceiling** on everything downstream: a chunk never retrieved cannot ground the answer,
-no matter how good generation is.
+no matter how good generation is. The form above is the **reference-set** (ID-based, non-LLM) recall:
+you supply the set $\mathcal{R}$ of relevant chunk IDs and count how many were retrieved. Note this is
+*not* RAGAS's default — RAGAS's `LLMContextRecall` instead decomposes the **ground-truth answer** into
+claims and uses an LLM to attribute each claim to the retrieved context, so "recall" there means "what
+fraction of the answer's claims are covered by the retrieved context." Same intent (did we retrieve
+enough to answer?), different unit (chunk IDs here vs answer-claims there).
+
+> **Source / derivation:** context recall as (relevant retrieved) / (all relevant) is classic IR recall ([Jurafsky & Martin, SLP3 Ch. 14](https://web.stanford.edu/~jurafsky/slp3/14.pdf)); the claim-attribution `LLMContextRecall` default and the reference-set `NonLLMContextRecall` variant are [RAGAS context recall](https://docs.ragas.io/en/stable/concepts/metrics/available_metrics/) (Es et al. 2023). Both in the references.
 
 For single-gold ranking we also reuse **MRR** ($1/\text{rank}$ of the gold) and **nDCG@k** from
 [chapter 6](../06-Re-ranking-Cross-Encoders/06-Re-ranking-Cross-Encoders.md) — the same ranking
@@ -407,8 +414,8 @@ The mechanism above is what the mainstream frameworks implement, with an LLM as 
   around a running app for live scoring and tracing.
 - **DeepEval** — pytest-style RAG metrics (`FaithfulnessMetric`, `AnswerRelevancyMetric`, …) so evals
   run in your test suite and fail the build on a regression.
-- **[LangSmith](https://arxiv.org/abs/2309.15217)** evaluators — run a metric over a dataset in CI,
-  track scores across versions, and diff regressions (the eval-in-CI loop).
+- **[LangSmith](https://docs.smith.langchain.com/evaluation/concepts)** evaluators — run a metric over
+  a dataset in CI, track scores across versions, and diff regressions (the eval-in-CI loop).
 - **[ARES](https://arxiv.org/abs/2311.09476)** — trains lightweight judges for context relevance,
   faithfulness, and answer relevance, cheaper than calling a large LLM on every example.
 

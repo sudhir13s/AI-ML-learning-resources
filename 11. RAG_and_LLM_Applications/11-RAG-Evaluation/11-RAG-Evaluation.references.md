@@ -43,6 +43,7 @@ updated: 2026-07-02
 - [RAGAS: Available Metrics](https://docs.ragas.io/en/stable/concepts/metrics/available_metrics/) — **Exploding Gradients** — the authoritative metric definitions the page's faithfulness / context-precision math is derived from.
 - [explodinggradients/ragas (GitHub)](https://github.com/explodinggradients/ragas) — **Exploding Gradients** — the open-source library to read and run.
 - [LLM-as-a-Judge](https://huggingface.co/learn/cookbook/en/llm_judge) — **Hugging Face** — how (and how *not*) to use an LLM as the evaluator behind these metrics; practical remedies for judge bias.
+- [LangSmith — Evaluation](https://docs.smith.langchain.com/evaluation/concepts) — **LangChain** — running evaluators over a dataset, tracking scores across versions, and gating regressions in CI (the offline-eval → CI loop the page's production section describes).
 
 **Key papers**:
 - [RAGAS: Automated Evaluation of Retrieval-Augmented Generation](https://arxiv.org/abs/2309.15217) — **Es, James, Espinosa-Anke & Schockaert (2023)** — the primary source: reference-free, LLM-judged faithfulness (supported-claims / total-claims), answer relevance (questions regenerated from the answer), and context relevance/precision — the metrics this chapter derives.

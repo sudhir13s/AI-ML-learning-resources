@@ -38,7 +38,7 @@ cosine proxy only approximates.
 The dense encoder + corpus are imported from ch5's hybrid_search (which imports ch1), and the
 ranking metrics from ch6's reranking, so the RAG chapters share ONE source of truth.
 
-Verified on Python 3.12 / numpy 2.x / sentence-transformers (all-MiniLM-L6-v2, CPU). Deterministic:
+Verified on Python 3.12.x / numpy 2.4.6 / torch 2.12.0 / sentence-transformers (all-MiniLM-L6-v2, CPU). Deterministic:
 identical numbers every run given the same cached model.
 
 Run:
@@ -446,6 +446,37 @@ def main() -> None:
     assert s_true > s_swap, "the true claim still scores higher than the swapped one"
     print(f"\n  -> the false '2 meters' claim scores {s_swap:.3f} and CLEARS the {SUPPORT_THRESHOLD} bar: cosine ~ topical, not factual.")
     print("     This is why RAGAS uses an LLM judge (NLI-style entailment), which the cosine proxy only approximates.")
+
+    # ------------------------------------------------------------------------------------------
+    # 6) ONE GOLDEN RECORD -> ALL METRICS: the harness that a real eval set runs per sample.
+    # ------------------------------------------------------------------------------------------
+    print("\n" + "=" * 96)
+    print("6) The harness: one golden record (question, answer, relevant set) -> a full EvalReport")
+    print("=" * 96)
+    sample = EvalSample(
+        question=QUESTION,
+        answer=FAITHFUL_ANSWER,
+        relevant=frozenset({0, 1}),  # imager + launch chunks
+        label="imager+launch, faithful answer",
+    )
+    report = evaluate_sample(dense, corpus, sample, k=3)
+    print(f"  sample: {sample.label}")
+    print(f"  retrieved top-3       : {list(report.retrieved)}")
+    print(f"  context precision@3   : {report.context_precision:.3f}")
+    print(f"  context recall@3      : {report.context_recall:.3f}")
+    print(f"  MRR (first-gold)      : {report.mrr:.3f}")
+    print(f"  nDCG@3 (first-gold)   : {report.ndcg:.3f}")
+    print(f"  context relevance     : {report.context_relevance:.3f}")
+    print(f"  faithfulness          : {report.faithfulness.score:.3f}")
+    print(f"  answer relevance      : {report.answer_relevance:.3f}")
+    # the report must agree with the individually-computed numbers from sections 1-4 above
+    assert report.context_precision == good_prec, "report precision must match the section-3 number"
+    assert report.context_recall == 1.0, "the faithful sample's relevant chunks are both in the top-3"
+    assert report.faithfulness.score == faithful.score, "report faithfulness must match section 1"
+    assert report.answer_relevance == rel_relevant, "report answer relevance must match section 2"
+    assert report.context_relevance == cr_good, "report context relevance must match section 4"
+    assert report.mrr == 0.5 and abs(report.ndcg - 0.631) < 1e-3, "single-gold MRR/nDCG for gold at rank 2"
+    print("\n  -> one record -> every retrieval + generation metric, all agreeing with the per-metric calls above.")
 
 
 if __name__ == "__main__":

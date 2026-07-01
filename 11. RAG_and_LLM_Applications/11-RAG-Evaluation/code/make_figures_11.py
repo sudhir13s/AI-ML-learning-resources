@@ -160,10 +160,13 @@ def fig_faithful_vs_unfaithful(dense: DenseRetriever, context_text: str) -> None
                         color=GREEN if ok else RED, ha="center", va="bottom", xytext=(0, 3),
                         textcoords="offset points", fontweight="bold")
         ax.axhline(SUPPORT_THRESHOLD, color=AMBER, linewidth=1.5, linestyle="--")
-        ax.text(-0.45, SUPPORT_THRESHOLD + 0.02, f"threshold {SUPPORT_THRESHOLD}",
-                color=AMBER, fontsize=7.8, ha="left", va="bottom")
+        # label the threshold line to the RIGHT of the last bar, on the line — clear of every bar
+        ax.text(len(result.claims) - 0.35, SUPPORT_THRESHOLD, f"τ = {SUPPORT_THRESHOLD}",
+                color=AMBER, fontsize=8.0, ha="left", va="center", fontweight="bold",
+                bbox=dict(boxstyle="round,pad=0.2", facecolor="white", edgecolor="none", alpha=0.85))
         ax.set_xticks(x)
         ax.set_xticklabels([f"claim {i+1}\n{_short(c, 24)}" for i, c in enumerate(result.claims)], fontsize=7.6)
+        ax.set_xlim(-0.6, len(result.claims) - 0.1)
         ax.set_ylim(0, 1.18)
         ax.set_ylabel("claim support (max cosine to context)")
         ax.set_title(f"{title}\nfaithfulness = {result.score:.3f}  "
