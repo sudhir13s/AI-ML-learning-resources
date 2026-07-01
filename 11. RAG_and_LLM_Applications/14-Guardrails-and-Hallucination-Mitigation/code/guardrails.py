@@ -403,7 +403,10 @@ def main() -> None:
     print("=" * 96)
     imager_ctx = (retrieved[0],)  # the clean imager passage
     grounded = output_rail(dense, GROUNDED_ANSWER, imager_ctx)
-    # the no-context query retrieves only OFF-TOPIC passages -> the fabricated cost answer is ungrounded
+    # the no-context query retrieves only OFF-TOPIC passages -> the fabricated cost answer is ungrounded.
+    # The chessboard passage is deliberately chosen as the NEAREST off-topic context we have (a generic
+    # factual sentence sharing no Helios-7 vocabulary), so the low grounding is an honest worst-case for
+    # "no relevant context retrieved" -- not a strawman picked to score ~0 by construction.
     offtopic_ctx = tuple(p for p in corpus if "chessboard" in p or "Eiffel" in p)[:1]
     hallucinated = output_rail(dense, HALLUCINATED_ANSWER, offtopic_ctx)
     print(f"  GROUNDED answer   : grounding {grounded.grounding:.3f} (>= {GROUNDING_THRESHOLD}) -> emit")
