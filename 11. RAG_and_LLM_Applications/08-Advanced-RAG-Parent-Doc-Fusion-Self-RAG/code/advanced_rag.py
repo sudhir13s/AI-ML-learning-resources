@@ -315,9 +315,16 @@ def main() -> None:
     parent_ctx = retriever.parent_context(result)
     top_child = children[result.child_indices[0]]
     print(f"query: {query}")
+    print(f"  top-{TOP_K} child hits: {list(result.child_indices)}  (parents: {[children[i].parent_id for i in result.child_indices]})")
     print(f"  top child hit: doc-child[{result.child_indices[0]}] (cos={result.child_scores[0]:.3f})")
     print(f"    child text (what top-1 child-only RAG feeds the LLM): {top_child.text!r}")
     print("    -> opens with 'This orbit' — the referent (which orbit?) is NOT in the child; a fragment.")
+    # two of the retrieved children (5 and 4) share the SAME 'Orbit' parent -> the dedup pitfall is real:
+    # without dedup that section would be fed twice. Assert the actual indices so pitfall #2's prose is backed.
+    orbit_pid = next(i for i, p in enumerate(parents) if p.heading == "Orbit")
+    orbit_children_hit = tuple(i for i in result.child_indices if children[i].parent_id == orbit_pid)
+    print(f"  children hitting the same '{parents[orbit_pid].heading}' parent: {list(orbit_children_hit)}  (both dedupe to one parent)")
+    assert orbit_children_hit == (5, 4), f"expected Orbit children (5, 4) in the top-{TOP_K}, got {orbit_children_hit}"
     print(f"  deduped parents returned: {list(result.parent_ids)}")
     print("  PARENT context (what parent-doc RAG feeds the LLM):")
     for line in parent_ctx.splitlines():
