@@ -201,8 +201,11 @@ $$
 $$
 
 A **low** τ catches more paraphrases (fewer misses) but serves more **false hits** — a genuinely
-different query gets the wrong cached answer. A **high** τ is safe but misses real paraphrases (they
-re-pay the full cost). You cannot minimize both.
+different query gets the wrong cached answer. A **high** τ is safer but misses real paraphrases (they
+re-pay the full cost). You cannot minimize both — and even τ=0.8 admits **2 of 3** of this adversarial
+probe set (false-hit rate 0.667; only τ=0.9 balances the two). τ is a **dial, not a guarantee**: pair a
+high threshold with an **exact-match fast path** and answer **verification** (Pitfall 1) — never rely on
+cosine alone to protect against a false hit.
 
 > **Source / derivation:** the similarity-threshold hit rule and its false-hit vs miss tradeoff are the
 > semantic-cache design [GPTCache (Bang 2023)](https://aclanthology.org/2023.nlposs-1.24/) formalizes
@@ -224,12 +227,14 @@ $$
 \text{prefix cost} = \underbrace{p_{\text{write}} \cdot n_{\text{prefix}}}_{\text{first call (cache write)}} + \underbrace{p_{\text{read}} \cdot n_{\text{prefix}} \cdot (m-1)}_{\text{next } m-1 \text{ calls (cache read)}}, \quad p_{\text{read}} \ll p_{\text{base}}.
 $$
 
+**Break-even (analytic, not a measured value):** with Anthropic's $p_{\text{write}}=1.25\times$ and $p_{\text{read}}=0.1\times$ base, prefix caching beats re-paying full price ($p_{\text{base}}\cdot n_{\text{prefix}}\cdot m$) once $1.25 + 0.1(m-1) < m$, i.e. $m > 1.28$ — so it pays off from the **2nd call ($m \ge 2$)**: a single cache read already earns back the 1.25× write premium.
+
 > **Source / derivation:** [Anthropic prompt caching](https://platform.claude.com/docs/en/docs/build-with-claude/prompt-caching)
 > prices a cache **write** at **1.25×** base input and a cache **read** at **0.1×** base (5-minute
 > TTL, min 1,024 tokens); [OpenAI automatic prompt caching](https://developers.openai.com/api/docs/guides/prompt-caching)
-> caches prefixes **≥1,024 tokens** (exact-prefix match) — cached input tokens are billed at half price,
-> which the docs summarise as **up to ~90% input-cost and ~80% latency** reduction on cache-heavy
-> prompts. The underlying mechanism — reusing precomputed attention for a recurring prefix — is
+> caches prefixes **≥1,024 tokens** (exact-prefix match) — cached input tokens are discounted steeply
+> (the guide cites **up to ~90% input-cost and ~80% latency** reduction on cache-heavy prompts; the flat
+> 50% figure was the 2024 GPT-4o-class launch rate — flagship models now cache-read at ~0.1× base). The underlying mechanism — reusing precomputed attention for a recurring prefix — is
 > [*Prompt Cache*, Gim et al. 2023 (MLSys 2024)](https://arxiv.org/abs/2311.04934).
 
 ---
@@ -326,7 +331,8 @@ Our from-scratch cache is the mechanism. In production you reach for a library o
 from langchain.globals import set_llm_cache
 from langchain_community.cache import InMemoryCache
 set_llm_cache(InMemoryCache())                       # exact-string cache, one line
-# semantic cache: set_llm_cache(<VectorStore>SemanticCache(embedding=..., score_threshold=...))
+# semantic cache (concrete class): from langchain_community.cache import RedisSemanticCache
+#   set_llm_cache(RedisSemanticCache(redis_url="redis://localhost:6379", embedding=..., score_threshold=0.2))
 ```
 
 ```python
@@ -349,7 +355,7 @@ client.messages.create(
 ```
 
 ```python
-# OpenAI — automatic prompt caching: no code change; prefixes >= 1024 tokens cached (cached tokens ~half price).
+# OpenAI — automatic prompt caching: no code change; prefixes >= 1024 tokens cached (up to ~90% input-cost / ~80% latency off).
 # Just put static content (instructions, docs) FIRST and variable content (the user query) LAST.
 ```
 
@@ -445,9 +451,9 @@ toolkit (each verified against its current docs):
   state — **cache write 1.25×** base input, **cache read 0.1×**, **5-minute** default TTL, minimum
   1,024 tokens. Ideal for a long system prompt or a document reused across many queries.
 - **OpenAI automatic prompt caching.** No code change — prefixes **≥1,024 tokens** are cached
-  automatically (exact-prefix match); cached input tokens are billed at **half price** (the docs cite
-  **up to ~90%** input-cost and **~80%** latency reduction on cache-heavy prompts). Structure prompts
-  static-first, variable-last to maximize hits.
+  automatically (exact-prefix match); cached input tokens are discounted steeply — the docs cite
+  **up to ~90%** input-cost and **~80%** latency reduction on cache-heavy prompts (flagship models
+  cache-read at ~0.1× base). Structure prompts static-first, variable-last to maximize hits.
 - **Redis / vector-DB semantic caches.** A production semantic cache at the gateway, backed by a vector
   index for fast nearest-neighbour lookup over a large cache.
 
