@@ -21,6 +21,9 @@ Figures produced:
                                      vs an over-citing one (threshold 0): precision drops, recall holds.
   rag13_coarse_vs_fine.png        -- coarse (which document) vs fine (which exact span) attribution --
                                      the granularity axis, schematic.
+  rag13_placement.png             -- the 2x2 placement map: each production system (Anthropic, Vertex,
+                                     LlamaIndex, ALCE, this page's attributor) on timing (post-hoc <->
+                                     generation-time) x granularity (coarse <-> fine). Schematic.
 
 Verified on Python 3.12 / matplotlib 3.x / numpy 2.x / sentence-transformers (CPU). Headless (Agg).
 """
@@ -242,16 +245,19 @@ def fig_attribution_heatmap(dense: DenseRetriever, passages: tuple[str, ...]) ->
                  fontsize=11.0, color=INK, fontweight="bold", pad=12)
 
     for i in range(n_claims):
-        best_j = int(np.argmax(matrix[i]))
+        best_j = int(np.argmax(matrix[i]))  # numpy argmax = the exact citation logic (first-occurrence on a true tie)
         for j in range(n_pass):
             val = matrix[i, j]
-            is_cited = (j == best_j) and attributions[i].citation is not None
-            ax.text(j, i, f"{val:.2f}", ha="center", va="center", fontsize=8.6,
+            is_argmax = j == best_j
+            is_cited = is_argmax and attributions[i].citation is not None
+            # 3 decimals so a near-tie (claim 3: 0.487 vs 0.488) shows its TRUE ordering — the boxed
+            # cell is the argmax, and at 3 dp the reader can see why it, not its neighbour, won.
+            ax.text(j, i, f"{val:.3f}", ha="center", va="center", fontsize=8.4,
                     color="white" if val > 0.55 else INK,
-                    fontweight="bold" if is_cited else "normal")
+                    fontweight="bold" if is_argmax else "normal")
             if is_cited:
                 ax.add_patch(plt.Rectangle((j - 0.5, i - 0.5), 1, 1, fill=False, edgecolor=GREEN, linewidth=3.0))
-            elif j == best_j and attributions[i].citation is None:  # uncitable row: argmax still below bar
+            elif is_argmax and attributions[i].citation is None:  # uncitable row: argmax still below bar
                 ax.add_patch(plt.Rectangle((j - 0.5, i - 0.5), 1, 1, fill=False, edgecolor=RED,
                              linewidth=2.6, linestyle="--"))
     cbar = fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
@@ -370,6 +376,78 @@ def fig_coarse_vs_fine(passages: tuple[str, ...]) -> None:
     _save(fig, "rag13_coarse_vs_fine.png")
 
 
+# ================================================================================================
+# Figure 6 -- the 2x2 placement map: where each production system sits on the chapter's two axes
+# ================================================================================================
+
+
+def fig_placement() -> None:
+    """Place the production systems on the chapter's two axes: timing x granularity.
+
+    Schematic (labelled) — this is the "where does each tool sit?" map for the dense
+    "Where it's used" prose. The two axes are exactly the ones the page teaches:
+      x = timing: post-hoc (map claims back after generation) <-> generation-time (model emits [1]
+          as it writes);
+      y = granularity: coarse (cite the document) <-> fine (cite the exact span).
+    Placements are from each provider's own docs (verified in the references): Anthropic returns
+    sentence/char spans at generation time (fine + gen-time); Vertex grounding links generated
+    segments to grounding chunks at generation time (gen-time, chunk-level); LlamaIndex injects
+    [1][2] at generation time over citation chunks (gen-time, chunk-level); ALCE is a POST-HOC
+    benchmark that scores citations already present (post-hoc). Our from-scratch attributor sits in
+    the post-hoc column too — that's the quadrant this chapter builds.
+    """
+    fig, ax = plt.subplots(figsize=(11.0, 7.2))
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
+    _style_axis(ax)
+    ax.set_xticks([])
+    ax.set_yticks([])
+
+    # quadrant shading (very light) so the four regions read at a glance
+    ax.add_patch(plt.Rectangle((0.5, 0.5), 0.5, 0.5, facecolor=GREEN, alpha=0.05, edgecolor="none"))  # gen-time + fine
+    ax.add_patch(plt.Rectangle((0.0, 0.5), 0.5, 0.5, facecolor=BLUE, alpha=0.05, edgecolor="none"))   # post-hoc + fine
+    ax.add_patch(plt.Rectangle((0.5, 0.0), 0.5, 0.5, facecolor=AMBER, alpha=0.05, edgecolor="none"))  # gen-time + coarse
+    ax.add_patch(plt.Rectangle((0.0, 0.0), 0.5, 0.5, facecolor=SLATE, alpha=0.05, edgecolor="none"))  # post-hoc + coarse
+
+    # axes cross-hairs through the centre
+    ax.axvline(0.5, color=GRID, linewidth=1.4, zorder=1)
+    ax.axhline(0.5, color=GRID, linewidth=1.4, zorder=1)
+
+    # axis labels
+    ax.text(0.5, 1.045, "TIMING: post-hoc  ←——————————→  generation-time", ha="center",
+            fontsize=10.5, color=INK, fontweight="bold")
+    ax.text(-0.035, 0.5, "GRANULARITY: coarse (document)  ←——————→  fine (exact span)", ha="center",
+            va="center", rotation=90, fontsize=10.5, color=INK, fontweight="bold")
+    ax.text(0.02, 0.965, "fine", fontsize=8.5, color=SLATE, style="italic")
+    ax.text(0.02, 0.02, "coarse", fontsize=8.5, color=SLATE, style="italic")
+
+    # each system: (x timing, y granularity, label, colour, note)
+    # (x timing, y granularity, label, colour, note, label_above?) -- label_above places the name
+    # above the dot and the note below; label_above=False flips it, so nearby dots never collide.
+    systems = [
+        (0.82, 0.86, "Anthropic\nCitations API", GREEN, "gen-time · sentence/char spans"),
+        (0.74, 0.62, "Vertex AI grounding", GREEN, "gen-time · grounding chunks"),
+        (0.74, 0.38, "LlamaIndex CitationQueryEngine", GREEN, "gen-time · citation chunks"),
+        (0.18, 0.72, "ALCE\n(benchmark)", BLUE, "post-hoc · NLI-scored spans"),
+        (0.20, 0.30, "this page's\npost-hoc attributor", BLUE, "post-hoc · sentence-level"),
+    ]
+    for x, y, label, col, note in systems:  # name ABOVE the dot, note BELOW -- dots spaced so no overlap
+        ax.scatter([x], [y], s=210, color=col, edgecolor=INK, linewidth=1.2, zorder=5)
+        name_dy, note_dy = 16, -20
+        name_va, note_va = "bottom", "top"
+        ax.annotate(label, (x, y), xytext=(0, name_dy), textcoords="offset points", ha="center",
+                    va=name_va, fontsize=8.6, color=INK, fontweight="bold", zorder=6)
+        ax.annotate(note, (x, y), xytext=(0, note_dy), textcoords="offset points", ha="center",
+                    va=note_va, fontsize=7.2, color=col, style="italic", zorder=6)
+
+    ax.text(0.5, -0.06, "The best production stacks live top-right (fine + generation-time); post-hoc "
+            "verification (left column) grades or repairs any output.",
+            transform=ax.transAxes, ha="center", fontsize=8.4, color=INK, style="italic")
+    fig.suptitle("Where each citation system sits: timing × granularity",
+                 fontsize=13.0, y=0.98, color=INK, fontweight="bold")
+    _save(fig, "rag13_placement.png")
+
+
 def main() -> None:
     corpus = full_corpus()
     dense = DenseRetriever(corpus)
@@ -380,6 +458,7 @@ def main() -> None:
     fig_attribution_heatmap(dense, passages)
     fig_precision_recall(dense, passages)
     fig_coarse_vs_fine(passages)
+    fig_placement()
 
 
 if __name__ == "__main__":

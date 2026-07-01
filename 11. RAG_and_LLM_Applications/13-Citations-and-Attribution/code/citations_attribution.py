@@ -115,7 +115,7 @@ def claim_passage_scores(dense: DenseRetriever, claim: str, passages: tuple[str,
     if not passages:
         return np.zeros(0)
     claim_vec = dense._encode([claim])[0]  # noqa: SLF001 -- reuse ch5's encoder; unit-norm
-    passage_vecs = dense._encode(list(passages))  # (n_passages, dim) unit-norm
+    passage_vecs = dense._encode(list(passages))  # noqa: SLF001 -- reuse ch5's encoder; (n_passages, dim) unit-norm
     return passage_vecs @ claim_vec  # unit-norm rows => dot product == cosine, one per passage
 
 
@@ -444,6 +444,14 @@ def main() -> None:
     assert greedy_precision < precision, "force-citing the hallucination adds a false citation -> precision drops"
     assert greedy_recall == recall, "over-citation does not change recall (same supportable claims, same hits)"
     assert forced.citation is not None, "with threshold 0 even the hallucination is (wrongly) cited"
+    # Pin the tie: the hallucination's two best passages are a NEAR-tie at 2 decimals (both ~0.49), so
+    # the forced citation column must be exactly np.argmax (which breaks the tie by the true 3rd-decimal
+    # ordering, first-occurrence on an exact tie). This freezes the heatmap's red-box column == this
+    # prose's passage, so a rounding-level drift can never make them disagree.
+    forced_argmax = int(np.argmax(np.array(forced.scores))) + 1  # 1-based, exactly the citation logic
+    assert forced.citation == forced_argmax, "the force-cited passage must equal np.argmax of the claim's passage scores"
+    print(f"  (tie-break pinned: passage [{forced.citation}] == argmax; the two top passages are "
+          f"{forced.scores[forced.citation - 1]:.3f} vs {sorted(forced.scores, reverse=True)[1]:.3f} — decided at the 3rd decimal)")
     print(f"\n  -> precision {precision:.2f} -> {greedy_precision:.2f}: over-citing the hallucination is a false citation.")
     print("     The support threshold is the precision/recall dial -- raise it to cite less but cleaner.\n")
 

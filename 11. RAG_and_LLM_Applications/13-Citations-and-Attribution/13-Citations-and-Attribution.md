@@ -215,7 +215,10 @@ the code computes.
 
 Once each claim is assigned a citation (or flagged uncitable), we grade the result against ground
 truth. Let $G_i \subseteq \{1,\dots,k\}$ be the set of passages that **genuinely** support claim
-$s_i$ (a human/NLI judgment; $G_i = \varnothing$ for a hallucination). Then:
+$s_i$ (a human/NLI judgment; $G_i = \varnothing$ for a hallucination). A claim is **supportable** iff
+$G_i \neq \varnothing$ — the same `supportable` predicate the code labels each gold with, so the page
+notation and the notebook's `CitedClaimGold(supportable=...)` field mean exactly the same thing.
+Then:
 
 $$
 \textbf{citation precision} = \frac{\#\{\,i : \text{cite}(s_i) \neq \varnothing \ \wedge\ \text{cite}(s_i) \in G_i\,\}}{\#\{\,i : \text{cite}(s_i) \neq \varnothing\,\}},
@@ -501,7 +504,18 @@ match that isn't entailment slips a false citation past the cosine bar. (The sol
 ## Where it's used, and why it matters {#where-its-used-and-why-it-matters}
 
 Citations are the feature that turns RAG from a demo into something a professional will stake their
-name on. Where it shows up (each verified against the provider's own docs):
+name on. Before the details, here is the whole landscape on the **two axes this chapter taught** —
+*timing* (post-hoc ↔ generation-time) × *granularity* (coarse ↔ fine) — so you can see at a glance
+where each system sits:
+
+![The 2×2 placement map. Each production system on timing (post-hoc ↔ generation-time) × granularity
+(coarse ↔ fine): the Anthropic Citations API sits top-right (generation-time, fine sentence/char
+spans); Vertex grounding and LlamaIndex `CitationQueryEngine` are generation-time at chunk
+granularity; ALCE is a post-hoc benchmark that scores citations with an NLI model; this page's
+attributor is post-hoc, sentence-level. The best production stacks live top-right; the post-hoc
+column grades or repairs any output. Schematic; placements from each provider's docs.](../images/rag13_placement.png)
+
+Where it shows up (each verified against the provider's own docs):
 
 - **Consumer answer engines.** [Perplexity](https://www.perplexity.ai/) and Bing/Copilot put **inline
   numbered citations** on every answer, sourced from live web results — the citation *is* the product,
