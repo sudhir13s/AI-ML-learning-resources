@@ -41,7 +41,7 @@ updated: 2026-07-02
 - [LCEL: LangChain Expression Language (concepts)](https://python.langchain.com/docs/concepts/lcel/) — **LangChain** — the authoritative explanation of Runnable composition (`prompt | model | parser`).
 - [How to route between sub-chains](https://python.langchain.com/docs/how_to/routing/) — **LangChain** — logical and semantic routing recipes (the routing decision the page's Router implements).
 - [LangGraph overview](https://docs.langchain.com/oss/python/langgraph/) — **LangChain** — when and how to use a stateful, cyclic graph for orchestration (`StateGraph` / `add_node` / `add_conditional_edges`).
-- [Introducing Query Pipelines](https://www.llamaindex.ai/blog/introducing-query-pipelines-025dc2bb0537) — **LlamaIndex** — building advanced RAG DAGs by declaring modules and links.
+- [Introducing Query Pipelines](https://www.llamaindex.ai/blog/introducing-query-pipelines-025dc2bb0537) — **LlamaIndex** — building advanced RAG DAGs by declaring modules and links. (LlamaIndex now recommends **Workflows** for new pipelines; `QueryPipeline` remains for existing DAGs.)
 - [Haystack — Pipelines](https://docs.haystack.deepset.ai/docs/pipelines) — **deepset** — a node-and-edge pipeline framework for search/RAG, the same compose-typed-components model.
 
 **Key papers**:

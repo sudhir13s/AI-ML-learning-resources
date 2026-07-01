@@ -346,6 +346,7 @@ graph.invoke({"query": "What is the imager resolution?"})
 
 ```python
 # LlamaIndex QueryPipeline — a DAG of modules linked explicitly.
+# (LlamaIndex now recommends Workflows for NEW pipelines; QueryPipeline remains for existing DAGs.)
 from llama_index.core.query_pipeline import QueryPipeline
 qp = QueryPipeline()
 qp.add_modules({"retriever": retriever, "reranker": reranker, "synth": response_synthesizer})
@@ -449,6 +450,7 @@ against its current docs):
   human-in-the-loop, and durable long-running agents — a superset of the chain.
 - **LlamaIndex QueryPipeline.** A **DAG** of modules linked with `add_modules` + `add_link` (or a
   sequential `chain=[...]`), purpose-built for RAG pipelines (retriever → reranker → synthesizer).
+  (LlamaIndex now recommends **Workflows** for new pipelines; `QueryPipeline` remains for existing DAGs.)
 - **DSPy.** [Khattab et al. 2023](https://arxiv.org/abs/2310.03714) — a **declarative** framework:
   you write **signatures** and **modules**, and a **compiler/optimizer** tunes the prompts (and
   demonstrations) to a metric, instead of you hand-writing prompt chains.

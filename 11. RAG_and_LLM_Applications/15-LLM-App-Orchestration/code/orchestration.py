@@ -350,7 +350,7 @@ def make_direct_step() -> FnStep:
 
 
 # ================================================================================================
-# Assemble the app: a RAG chain (retrieve->rerank->generate->guardrail) and a DIRECT chain, behind a router.
+# Assemble the app: a RAG chain (retrieve->rerank->guardrail->generate) and a DIRECT chain, behind a router.
 # ================================================================================================
 
 
@@ -452,7 +452,7 @@ def main() -> None:
     )
 
     # ------------------------------------------------------------------------------------------
-    # 1) THE WIRED APP, end to end: route -> retrieve -> rerank -> generate -> guardrail, with a trace.
+    # 1) THE WIRED APP, end to end: route -> retrieve -> rerank -> guardrail -> generate, with a trace.
     # ------------------------------------------------------------------------------------------
     print("=" * 96)
     print("1) The wired mini-RAG app: one query flows through the whole pipeline, with a step trace")
@@ -466,6 +466,10 @@ def main() -> None:
     # Correctness BEFORE the claim: the fact query takes the RAG path, runs all four steps, and answers.
     assert result.route == "rag", "the fact query must route to the RAG chain"
     assert len(result.trace) == 5, "route + 4 RAG steps = 5 trace lines"
+    # Pin the retrieve/rerank indices BY VALUE so a library drift can't silently change the numbers
+    # the page bolds (retrieve top-4, rerank top-2).
+    assert list(result.retrieved) == [1, 0, 2, 10], "retrieve returns the imager+launch+lead+distractor pool"
+    assert list(result.reranked) == [1, 10], "rerank keeps the imager passage and the top telemetry line"
     assert not result.abstained and result.answer, "a grounded fact query is answered, not abstained"
     assert "resolution" in result.answer, "the answer surfaces the imager-resolution passage"
     print("  -> one object wires four real steps; the trace shows exactly what ran.\n")
@@ -527,7 +531,7 @@ def main() -> None:
     print("  -> the same transient fault crashes naive glue but is recovered by the orchestrator.\n")
 
     # ------------------------------------------------------------------------------------------
-    # 5) A STATEFUL GRAPH: the RAG steps as a graph whose edges route retrieve->rerank->generate->guardrail.
+    # 5) A STATEFUL GRAPH: the RAG steps as a graph whose edges route retrieve->rerank->guardrail->generate.
     # ------------------------------------------------------------------------------------------
     print("=" * 96)
     print("5) The same steps as a StatefulGraph: edges pick the next node; a step budget bounds cycles")
