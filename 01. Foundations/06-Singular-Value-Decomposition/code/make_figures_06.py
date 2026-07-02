@@ -156,12 +156,13 @@ def fig_image_montage(img: NDArray[np.float64], svd) -> None:
     a_norm = float(np.linalg.norm(img, ord="fro"))
     fig, axes = plt.subplots(2, 3, figsize=(11, 8))
     for ax, k in zip(axes.ravel(), ranks):
-        rec = np.clip(reconstruct(svd, k), 0, 255)
-        err = float(np.linalg.norm(img - rec, ord="fro")) / a_norm
+        rec = reconstruct(svd, k)  # UNCLIPPED — the error must match compression_curve / the page table
+        err = float(np.linalg.norm(img - rec, ord="fro")) / a_norm  # identical formula to the module
         ratio = (img.shape[0] * img.shape[1]) / (k * (img.shape[0] + img.shape[1] + 1))
-        ax.imshow(rec, cmap="gray", vmin=0, vmax=255)
+        # clip ONLY the displayed pixels (a valid image is [0,255]); the error number stays unclipped
+        ax.imshow(np.clip(rec, 0, 255), cmap="gray", vmin=0, vmax=255)
         label = "full rank (exact)" if k == svd.s.size else f"rank {k}"
-        ax.set_title(f"{label}\nrel err {err:.3f} · {ratio:.0f}× smaller", fontsize=10, color=INK)
+        ax.set_title(f"{label}\nrel err {err:.3f} · {ratio:.1f}× smaller", fontsize=10, color=INK)
         ax.set_xticks([])
         ax.set_yticks([])
     fig.suptitle(

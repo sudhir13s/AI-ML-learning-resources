@@ -367,8 +367,11 @@ def main() -> None:
     print("  " + "-" * 50)
     for k in (5, 20, 50):
         r = eckart_young_check(img, svd_img, k)
-        assert abs(r["measured"] - r["predicted"]) < 1e-6 * r["predicted"], "EY closed form must match"
-        assert r["measured"] <= r["random_rankk"] + 1e-9, "truncated SVD must be <= any rank-k"
+        # explicit raises (not `assert`) so the checks survive `python -O`, which strips asserts
+        if abs(r["measured"] - r["predicted"]) >= 1e-6 * r["predicted"]:
+            raise AssertionError(f"Eckart–Young closed form must match measured error at k={k}")
+        if r["measured"] > r["random_rankk"] + 1e-9:
+            raise AssertionError(f"truncated SVD must be <= any rank-k approximation at k={k}")
         print(f"  {k:>4} | {r['measured']:>12.1f} | {r['predicted']:>12.1f} | {r['random_rankk']:>13.1f}")
     print("  -> truncated error == closed form, and always <= a random rank-k factor (optimal)\n")
 

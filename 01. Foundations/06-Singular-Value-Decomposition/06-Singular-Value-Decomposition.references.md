@@ -50,12 +50,12 @@ updated: 2026-07-02
 **📚 Books (free chapters / full PDFs)**:
 - [Mathematics for Machine Learning — Ch. 4.5 "Singular Value Decomposition"](https://mml-book.github.io/book/mml-book.pdf) — **Deisenroth, Faisal & Ong** — `A = UΣVᵀ`, the derivation from `AᵀA`, low-rank approximation, and the link to PCA. Free full PDF.
 - [Data-Driven Science & Engineering — Ch. 1 "Singular Value Decomposition"](https://databookuw.com/) — **Brunton & Kutz** — an SVD-first treatment with code; the source of the image-compression and Eckart–Young framing. Chapter PDFs free.
-- [Introduction to Linear Algebra / Linear Algebra and Learning from Data](https://math.mit.edu/~gs/) — **Gilbert Strang** — Strang's SVD chapters and the four-subspaces picture (author page with free materials and lecture links).
-- [Numerical Linear Algebra](https://people.maths.ox.ac.uk/trefethen/text.html) — **Trefethen & Bau** — Lectures 4–5 derive the SVD and its geometry rigorously (author page; the book is the standard reference for the numerics).
+- [MIT 18.06 — Lecture 29: Singular Value Decomposition (video + downloadable transcript)](https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/resources/lecture-29-singular-value-decomposition/) — **Gilbert Strang (MIT OCW)** — the specific free SVD lecture ("the final and best factorization of a matrix"), with the four-subspaces picture; the closest thing to a free Strang SVD chapter, one click.
+- [Numerical Linear Algebra — Lecture 4 "The Singular Value Decomposition"](https://people.maths.ox.ac.uk/trefethen/lec4.ps) — **Trefethen & Bau** — the exact SVD lecture (with [Lecture 5, "More on the SVD"](https://people.maths.ox.ac.uk/trefethen/lec5.ps)) deriving the SVD and its geometry rigorously; the standard numerical reference, posted free by the author.
 
 **🔗 In this platform**:
 - Concept page (full explanation): [Singular Value Decomposition](06-Singular-Value-Decomposition.md)
 - Prerequisite (the *why* behind Σ² and eigenvectors of `AᵀA`): [04 Eigenvalues & Eigenvectors](../04-Eigenvalues-and-Eigenvectors/04-Eigenvalues-and-Eigenvectors.md) · [05 Matrix Decompositions](../05-Matrix-Decompositions/05-Matrix-Decompositions.md)
 - Foundations it rests on: [02 Matrices & Matrix Operations](../02-Matrices-and-Matrix-Operations/02-Matrices-and-Matrix-Operations.md) · [03 Norms, Inner Products & Orthogonality](../03-Norms-Inner-Products-and-Orthogonality/03-Norms-Inner-Products-and-Orthogonality.md)
 - Where it goes next: [07 PCA — the math](../07-Principal-Component-Analysis-Math/07-Principal-Component-Analysis-Math.md)
-- Applied downstream: dimensionality reduction and latent factors → [Unsupervised Learning](../../04.%20Unsupervised_Learning/README.md); low-rank adaptation of LLM weights (LoRA) → [09 LLMs](../../09.%20LLMs/README.md)
+- Applied downstream: dimensionality reduction and latent factors → [Unsupervised Learning](../../04.%20Unsupervised_Learning/README.md); low-rank adaptation of LLM weights → [LoRA & PEFT](../../09.%20LLMs/12-LoRA-and-PEFT/12-LoRA-and-PEFT.md)
