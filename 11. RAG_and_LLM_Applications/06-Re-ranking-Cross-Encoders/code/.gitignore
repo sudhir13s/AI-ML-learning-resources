@@ -1,0 +1,7 @@
+# Regenerable caches (built by reranking.py — corpus/query embeddings, per-query orderings,
+# and the run summary). Not committed: large + reproducible. Run `python reranking.py` to rebuild.
+data/
+
+# Notebook / tool byproducts
+.ipynb_checkpoints/
+__pycache__/
