@@ -25,7 +25,7 @@ updated: 2026-07-02
 - [OpenAI Function Calling — full beginner tutorial](https://www.youtube.com/watch?v=aqdWSYWC_LI) — the schema → `tool_calls` → `role: tool` round-trip in plain code, closest to this chapter's build.
 - [Tips for Building AI Agents](https://www.youtube.com/watch?v=LP5OCa20Zpg) — **Anthropic** — designing good tool *schemas* and interfaces, and handling failures — the highest-leverage part of tool use.
 - [How We Build Effective Agents](https://www.youtube.com/watch?v=D7_ipDqhtwk) — **Barry Zhang (Anthropic)** — tool design and the agent–environment feedback loop; when tool calling is enough.
-- [AI Agents Fundamentals in 21 Minutes](https://www.youtube.com/watch?v=qU3fmidNbJE) — **Tina Huang** — function calling explained alongside the full agent loop, no framework.
+- [Gorilla LLM: Teach LLMs to Use Tools at Scale](https://www.youtube.com/watch?v=iz-ITyzteE8) — **Shishir Patil (Gorilla / UC Berkeley)** — the first author on teaching LLMs to emit correct, executable API calls at scale; the dedicated deep pointer for the *measured-reliability* axis (the Berkeley Function-Calling Leaderboard).
 - [Understanding ReAct with LangChain](https://www.youtube.com/watch?v=Eug2clsLtFs) — **Sam Witteveen** — the text-parsed tool loop this chapter contrasts with; watch it to feel the brittleness structured calling removes.
 
 **🎓 Courses (free)**:

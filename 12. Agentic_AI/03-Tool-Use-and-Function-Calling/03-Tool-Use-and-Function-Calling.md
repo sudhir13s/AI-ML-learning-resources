@@ -192,6 +192,8 @@ Every field is load-bearing, and each one is *for the model*, not for your code:
 
 The schema is the **single source of truth**: the same object is handed to the model (via the template) *and* validated against at dispatch time, so the declaration the model sees and the contract your code enforces can never drift.
 
+> **Try it yourself.** In the companion notebook, edit the calculator's `description` in `TOOL_REGISTRY` down to just `"does math"` and re-run the schema-and-call steps on a mixed batch (a calculation, a unit conversion, an FX query). Watch tool *selection* get muddier — the model calls the calculator on things it shouldn't, or hesitates on things it should. Then restore the precise description and watch selection sharpen. **The `description` is the highest-leverage string in the entire schema** — it is your prompt for *when to use the tool*, and it's the cheapest thing to get wrong.
+
 ### How the schema enters the prompt
 
 The mechanism is not magic — you can print it. `apply_chat_template(messages, tools=schemas, add_generation_prompt=True)` renders the schemas into the system section. For Qwen (and the Hermes-style templates it follows), that section reads:
@@ -251,10 +253,19 @@ def validate_arguments(call, spec):
         if key not in props:            # ignore stray keys rather than fail
             continue
         want = props[key].get("type", "string")
-        # coerce a number sent as a string; reject a genuinely wrong type
-        ...
+        ok_types = _JSON_TYPE_OK.get(want, (str,))
+        if want in ("number", "integer") and isinstance(raw, str):    # "42" -> 42.0 (coerce)
+            coerced[key] = float(raw) if want == "number" else int(raw)   # (raises on "abc")
+            continue
+        # accept a right-typed value, but reject a bool where a number is wanted (bool IS an int!)
+        if isinstance(raw, ok_types) and not (want != "boolean" and isinstance(raw, bool)):
+            coerced[key] = raw
+        else:
+            raise ToolError(f"argument {key!r} must be a {want}, got {type(raw).__name__} {raw!r}")
     return coerced
 ```
+
+The `not (want != "boolean" and isinstance(raw, bool))` guard is the subtle detail worth pausing on: in Python `bool` is a subclass of `int`, so `isinstance(True, (int, float))` is `True` — without the guard, a `True` would silently pass as a `number`. We reject it, because a boolean is almost never a valid numeric argument. *(This is the exact logic in `validate_arguments`; the string-coercion `try/except` is elided here for flow — see [`function_calling_agent.py`](code/function_calling_agent.py).)*
 
 This is the function-calling analogue of ReAct's defensive parsing and `_normalise_finish` — but operating on *typed JSON* instead of fuzzy prose, which makes it far more precise. A missing `to_unit`, a `value` sent as the string `"42"` (coerce it), a boolean where a number belongs (reject it) — each is caught here, *before* a tool runs, and turned into an error the model can read and correct on its next turn. **Validation is where "valid JSON ≠ valid arguments" gets handled in code.**
 
@@ -283,10 +294,14 @@ The list-of-calls design gives you two composition patterns for free:
 Here is a real sequential trace: the model looks up the USD→JPY rate, reads the real **157.0**, and grounds its final answer on it.
 
 ```
-User: First look up the USD to JPY exchange rate, then multiply 40 dollars by that rate.
+User: First look up the USD to JPY exchange rate with the get_exchange_rate tool, then multiply 40 dollars by that rate to get the yen amount.
 Assistant -> tool_call: get_exchange_rate({"from_currency": "USD", "to_currency": "JPY"})
 Tool [get_exchange_rate] -> 157.0
-Assistant: Using the exchange rate of 157.0, 40 US dollars is 40 × 157 = 6,280 Japanese yen.
+Assistant: Now, let's use the calculated exchange rate of 157.0 to multiply it by 40 dollars to find out how many Japanese Yen you would have:
+
+40 * 157 = 6,280 Yen
+
+Therefore, 40 US Dollars is approximately equal to 6,280 Japanese Yen.
 ```
 
 The rate **157.0** came from the tool, not the model's memory — the same grounding ReAct gives you, now over the structured protocol. (Note the model does the final multiply in prose here rather than issuing a second `calculator` call — a realistic behaviour worth seeing honestly; the *fact* is still grounded in a real tool result.)
