@@ -1,0 +1,9 @@
+# Any downloaded raw corpora go here — regenerable, not committed.
+# (This chapter uses scikit-learn's 20-newsgroups, which sklearn caches under
+#  ~/scikit_learn_data outside the repo, so nothing lands here in practice; the folder
+#  exists so an alternate corpus can be cached locally without polluting git.)
+data/
+
+# Notebook / tool byproducts
+.ipynb_checkpoints/
+__pycache__/
