@@ -381,6 +381,33 @@ def hero_query(
     return best_qi
 
 
+def pick_demo_query(
+    data: ScifactData, bi: BiEncoderRetriever, cross: CrossEncoderReranker,
+    candidates: int = 20, retrieve_k: int = RETRIEVE_K, metric_k: int = METRIC_K,
+) -> int:
+    """Pick a query where re-ranking DEMONSTRABLY wins, by measuring a small candidate set live.
+
+    The single-query teaching walkthrough must show a case where the cross-encoder actually helps
+    (gold in-pool but not first -> promoted toward #1). Re-ranking is NOT guaranteed per query (a
+    domain-mismatch query can be mis-scored and the gold sunk), so we don't hard-code an index: we
+    retrieve + rerank the first `candidates` queries whose gold is in the pool but *not already at
+    rank 1*, and return the one with the largest MRR gain. Self-contained (no full eval needed) and
+    honest -- the choice is made by measurement, and the walkthrough's captions then match its output.
+    """
+    best_qi, best_gain = 0, -1.0
+    for qi in range(min(candidates, data.n_queries)):
+        gold = data.gold[qi]
+        pool = bi.retrieve(qi, k=retrieve_k)
+        # only consider queries where there's room to improve: gold present but not already #1
+        if not (set(int(d) for d in pool) & gold) or int(pool[0]) in gold:
+            continue
+        reranked = cross.rerank(data.query_texts[qi], pool, data.doc_texts)
+        gain = mrr_at_k(reranked, gold, metric_k) - mrr_at_k(pool, gold, metric_k)
+        if gain > best_gain:
+            best_qi, best_gain = qi, gain
+    return best_qi
+
+
 def sweep_rerank_depth(
     data: ScifactData, bi_orders: list[np.ndarray], rr_full_orders: list[np.ndarray],
     ks=K_SWEEP, metric_k: int = METRIC_K,

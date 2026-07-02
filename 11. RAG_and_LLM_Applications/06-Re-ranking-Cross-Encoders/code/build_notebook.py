@@ -80,7 +80,7 @@ CELLS = [
         "    RETRIEVE_K, METRIC_K,",
         "    load_scifact, detect_device, BiEncoderRetriever, CrossEncoderReranker,",
         "    ndcg_at_k, mrr_at_k, recall_at_k, precision_at_k,",
-        "    evaluate, sweep_rerank_depth, hero_query,",
+        "    evaluate, sweep_rerank_depth, hero_query, pick_demo_query,",
         ")",
         "",
         "device = detect_device()",
@@ -102,35 +102,43 @@ CELLS = [
         "",
         "Before ranking anything, look at the data. A scifact query is a scientific *claim*; the gold "
         "passage is an abstract that supports (or refutes) it. Seeing the real text makes every rank "
-        "below interpretable — you can *read* whether a retrieved passage is genuinely on-topic.",
+        "below interpretable — you can *read* whether a retrieved passage is genuinely on-topic. Here's "
+        "one example query and its gold abstract(s):",
     ),
     code(
-        "qi = 0",
-        "print('QUERY:', data.query_texts[qi])",
+        "example_qi = 0",
+        "print('QUERY:', data.query_texts[example_qi])",
         "print('\\ngold (relevant) passages for this query:')",
-        "for gi in sorted(data.gold[qi]):",
+        "for gi in sorted(data.gold[example_qi]):",
         "    print(f'  doc[{gi}]: {data.doc_texts[gi][:150]}...')",
     ),
     # ----------------------------------------------------------------- Step 3
     md(
-        "## Step 3 — Stage 1: the bi-encoder retriever (independent encoding)",
+        "## Step 3 — build both stages, and pick a walkthrough query *by measurement*",
         "",
-        "The first stage embeds the query and **every passage independently** into unit vectors, then "
-        "ranks by cosine similarity (a dot product on unit vectors). Because the passage vectors don't "
-        "depend on the query, they are **precomputed once** and cached — at query time we embed only the "
-        "query and take dot products. That independence is what makes it fast, and exactly what makes it "
-        "coarse: the query never *sees* the passage. `BiEncoderRetriever` builds (or loads) the corpus "
-        "and query embeddings; `retrieve` returns the top-K by exact cosine via numpy `argpartition`.",
+        "The first stage (`BiEncoderRetriever`) embeds the query and **every passage independently** into "
+        "unit vectors, then ranks by cosine similarity (a dot product on unit vectors). Because the "
+        "passage vectors don't depend on the query, they are **precomputed once** and cached — at query "
+        "time we embed only the query and take dot products. That independence is what makes it fast, and "
+        "exactly what makes it coarse: the query never *sees* the passage. We also build the second-stage "
+        "`CrossEncoderReranker` now, so we can **choose our single-query walkthrough by measurement** "
+        "rather than an arbitrary index: `pick_demo_query` scans a few queries and returns one where "
+        "re-ranking *demonstrably helps* (gold in the pool but not first → promoted toward the top). "
+        "(Re-ranking is **not** guaranteed to help every query — Step 8's honest aside shows a query where "
+        "it hurts — which is exactly why we measure in aggregate. Here we teach the mechanism on a case "
+        "where it works, chosen honestly.)",
     ),
     code(
-        "bi = BiEncoderRetriever(data, device=device)   # embeds/caches corpus + queries (once)",
+        "bi = BiEncoderRetriever(data, device=device)      # embeds/caches corpus + queries (once)",
+        "cross = CrossEncoderReranker(device=device)       # the second stage (built now so we can pick by measurement)",
         "print(f'corpus embeddings: {bi.doc_vectors.shape} | query embeddings: {bi.query_vectors.shape}')",
         "norms = np.linalg.norm(bi.doc_vectors[:500], axis=1)",
-        "print(f'doc-vector L2 norms: min {norms.min():.3f}, max {norms.max():.3f} '",
-        "      f'(≈1 → cosine == dot product)')",
+        "print(f'doc-vector L2 norms: min {norms.min():.3f}, max {norms.max():.3f} (≈1 → cosine == dot product)')",
         "",
+        "qi = pick_demo_query(data, bi, cross)             # a query where re-ranking demonstrably wins (measured)",
         "pool = bi.retrieve(qi, k=RETRIEVE_K)",
-        "print(f'\\nretrieved top-{RETRIEVE_K} for query {qi}; first 8 doc ids: {pool[:8].tolist()}')",
+        "print(f'\\nwalkthrough query {qi}: \"{data.query_texts[qi][:70]}...\"')",
+        "print(f'retrieved top-{RETRIEVE_K}; first 8 doc ids: {pool[:8].tolist()}')",
     ),
     # ----------------------------------------------------------------- Step 4
     md(
@@ -187,16 +195,21 @@ CELLS = [
         "attends to every passage token and back. A head on the `[CLS]` position emits one scalar "
         "**relevance logit**. This is the signal the bi-encoder structurally throws away — and it costs "
         "one full forward pass *per pair*, so it can only run on the shortlist. We score the retrieved "
-        "pool and look at the logits for gold vs non-gold candidates: the gold scores far higher.",
+        "pool and compare the logits for gold vs non-gold candidates. On a query where re-ranking works "
+        "(like this one), the gold *usually* scores above the field — see the score-separation figure "
+        "over 60 queries for the aggregate picture; here we print the actual comparison for this query so "
+        "the claim matches the output.",
     ),
     code(
-        "cross = CrossEncoderReranker(device=device)",
+        "# `cross` was built in Step 3 (so we could pick the walkthrough query by measurement)",
         "logits = cross.scores(data.query_texts[qi], [data.doc_texts[int(i)] for i in pool])",
         "gold_logits = [float(s) for i, s in zip(pool, logits) if int(i) in g]",
         "other_logits = [float(s) for i, s in zip(pool, logits) if int(i) not in g]",
+        "g_med, o_med = float(np.median(gold_logits)), float(np.median(other_logits))",
         "print(f'cross-encoder logits — gold: {[round(x,2) for x in gold_logits]}')",
-        "print(f'  median non-gold logit: {np.median(other_logits):.2f}  '",
-        "      f'(gold scores far above the field — that gap is why re-ranking works)')",
+        "print(f'  gold median logit {g_med:.2f} vs non-gold median {o_med:.2f} '",
+        "      f'— gold is {\"ABOVE\" if g_med > o_med else \"BELOW\"} the field '",
+        "      f'({\"the gap re-ranking exploits\" if g_med > o_med else \"a mis-score — see Step 8s aside\"})')",
     ),
     # ----------------------------------------------------------------- Step 7
     md(
@@ -217,22 +230,55 @@ CELLS = [
         "print(f'nDCG@10:    {ndcg_at_k(pool, g, METRIC_K):.3f}  ->  {ndcg_at_k(reranked, g, METRIC_K):.3f}')",
         "print(f'MRR@10:     {mrr_at_k(pool, g, METRIC_K):.3f}  ->  {mrr_at_k(reranked, g, METRIC_K):.3f}')",
     ),
+    # ----------------------------------------------------------------- Step 7b (honest aside)
+    md(
+        "## Step 7b — the honest caveat: re-ranking is *not* guaranteed per query",
+        "",
+        "The walkthrough above showed re-ranking winning — but that is a *choice we made by measurement*, "
+        "not a guarantee. On a **domain-mismatch** query the `ms-marco`-trained cross-encoder can "
+        "*mis-score* and actually **sink** the gold. scifact is scientific claim verification, not the web "
+        "QA the reranker was trained on, so this really happens — and it's the exact pitfall the page "
+        "flags (§ *Domain / model mismatch*). Let's look at query 0 (\"0-dimensional biomaterials lack "
+        "inductive properties\"), where the reranker scores the gold *below* the field and demotes it:",
+    ),
+    code(
+        "bad_qi = 0",
+        "bad_pool = bi.retrieve(bad_qi, k=RETRIEVE_K)",
+        "bad_g = data.gold[bad_qi]",
+        "bad_logits = cross.scores(data.query_texts[bad_qi], [data.doc_texts[int(i)] for i in bad_pool])",
+        "bad_gold_l = [float(s) for i, s in zip(bad_pool, bad_logits) if int(i) in bad_g]",
+        "bad_other_l = [float(s) for i, s in zip(bad_pool, bad_logits) if int(i) not in bad_g]",
+        "bad_reranked = cross.rerank(data.query_texts[bad_qi], bad_pool, data.doc_texts)",
+        "print(f'query 0: \"{data.query_texts[bad_qi][:60]}...\"')",
+        "print(f'  gold median logit {np.median(bad_gold_l):.2f} vs non-gold median {np.median(bad_other_l):.2f} '",
+        "      f'— gold is {\"ABOVE\" if np.median(bad_gold_l) > np.median(bad_other_l) else \"BELOW\"} the field (mis-scored)')",
+        "print(f'  gold rank:  bi-encoder #{gold_rank(bad_pool, bad_g)}  ->  reranked #{gold_rank(bad_reranked, bad_g)}  '",
+        "      f'(re-ranking HURT this query)')",
+        "print('\\n=> a single query can go either way; this is why you MEASURE IN AGGREGATE (next).')",
+    ),
     # ----------------------------------------------------------------- Step 8
     md(
         "## Step 8 — the real aggregate lift over many queries",
         "",
-        "One query is an anecdote; the benchmark is the evidence. We run retrieve-then-rerank over a "
-        "batch of real test queries and average the metrics. This is the honest measure of what the "
-        "re-ranker buys — and on a strong first stage like this one, the lift is real but *modest*, which "
-        "is itself an important lesson: a re-ranker is not free magic, it's a measurable precision "
-        "upgrade you verify on your own data. (We use a subset here for notebook runtime; the full "
-        "300-query numbers from `python reranking.py` match and are on the page.)",
+        "One query is an anecdote (in either direction); the benchmark is the evidence. We run "
+        "retrieve-then-rerank over a batch of real test queries and average the metrics — the wins "
+        "outweigh the mis-scores, so the aggregate rises. This is the honest measure of what the re-ranker "
+        "buys — and on a strong first stage like this one, the lift is real but *modest*, which is itself "
+        "an important lesson: a re-ranker is a measurable precision upgrade you verify on your own data, "
+        "not free magic.",
+        "",
+        "> **Subset vs full run.** For notebook runtime we evaluate the **first 100** queries — an easier "
+        "slice than the whole set. The full **300-query** run (`python reranking.py`, the numbers on the "
+        "page) gives **nDCG@10 0.648 → 0.687 (+0.038)** and **MRR@10 0.607 → 0.656 (+0.049)**. The subset "
+        "numbers below will differ (higher baseline, similar-sized lift) — that's the slice, not a "
+        "mismatch; both runs show the same story (ranking metrics up, pool recall flat).",
     ),
     code(
-        "N_EVAL = 100   # subset for notebook runtime; the module runs all 300",
+        "N_EVAL = 100   # subset for notebook runtime; the module runs all 300 (page numbers)",
         "t0 = time.time()",
         "ev, bi_orders, rr_orders = evaluate(data, bi, cross, n_queries=N_EVAL)",
-        "print(f'evaluated {ev.n_queries} real queries in {time.time()-t0:.0f}s\\n')",
+        "print(f'evaluated the first {ev.n_queries} queries in {time.time()-t0:.0f}s '",
+        "      f'(an easier slice; full-300 on the page: nDCG 0.648->0.687, MRR 0.607->0.656)\\n')",
         "print(f'{\"metric\":<13} | {\"bi-encoder\":>10} | {\"reranked\":>9} | {\"delta\":>7}')",
         "print('-' * 48)",
         "for r in ev.rows:",
@@ -289,11 +335,16 @@ CELLS = [
         "ms). The cross-encoder pays **one transformer forward pass per candidate**, and none of it is "
         "precomputable (each score depends on the query). We measure both per-query latencies — the "
         "asymmetry is the whole reason for the two-stage funnel.",
+        "",
+        "> **Wall-clock varies** run-to-run and by machine (thermal, scheduling, cold vs warm caches). "
+        "Expect roughly **8–11 ms per candidate** on this hardware; the page quotes the full-run median "
+        "(~11 ms/candidate, ~1.1 s at K=100). Don't read a small spread between this cell and the page as "
+        "a reproduction failure — the *ratio* (rerank ≫ retrieve) is the invariant point.",
     ),
     code(
         "from reranking import measure_latency",
         "ret_ms, rr_ms = measure_latency(data, bi, cross)",
-        "print(f'per-query latency ({device}):')",
+        "print(f'per-query latency ({device}, this run — wall-clock varies):')",
         "print(f'  stage 1 retrieve (top-{RETRIEVE_K}) : {ret_ms:.2f} ms')",
         "print(f'  stage 2 rerank   (top-{RETRIEVE_K}) : {rr_ms:.1f} ms  '",
         "      f'(~{rr_ms/ret_ms:.0f}x the retrieve cost, ~{rr_ms/RETRIEVE_K:.1f} ms/candidate)')",
@@ -339,7 +390,8 @@ CELLS = [
         "the right order, because it encodes query and passage independently and can't model their "
         "interaction.",
         "- **The cross-encoder reads the pair jointly** — `[CLS] q [SEP] d` → full self-attention → one "
-        "relevance logit; we saw the gold score far above the field, and the pool re-sort lift the gold.",
+        "relevance logit; on a query where it works the gold scores above the field and the pool re-sort "
+        "lifts it — though (Step 7b) an individual domain-mismatch query can be mis-scored the other way.",
         "- **The lift is real and measured** — on this real benchmark, re-ranking raises nDCG@10 and "
         "MRR@10 (and even Recall@10, by promoting in-pool gold into the top-10) while leaving the "
         "**pool recall (Recall@K) exactly flat** — the recall ceiling: reranking reorders the same K "
