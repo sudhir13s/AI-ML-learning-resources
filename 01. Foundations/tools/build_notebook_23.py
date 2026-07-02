@@ -5,11 +5,14 @@ every cell live, and *teach* cross-entropy and KL from it. Each numbered step ha
 lead-in (the intuition) followed by ONE focused code cell with real output. This generator writes
 the .ipynb; a separate nbconvert pass executes it headless so the outputs are embedded.
 
-    python build_notebook.py            # writes the .ipynb (unexecuted)
-    python -m nbconvert --to notebook --execute --inplace 23-Cross-Entropy-and-KL-Divergence.ipynb
+    python build_notebook_23.py         # writes the .ipynb (unexecuted) into the chapter's code/
+    python -m nbconvert --to notebook --execute --inplace \
+        "../23-Cross-Entropy-and-KL-Divergence/code/23-Cross-Entropy-and-KL-Divergence.ipynb"
 
-Kept as a generator (not a hand-edited .ipynb) so the notebook and the module stay in lockstep:
-the same algorithm, typed once in the module, demonstrated step-by-step here.
+This generator lives in the domain-level ``01. Foundations/tools/`` folder; the notebook it writes
+(and the module it mirrors) stay in the chapter's ``code/`` folder. Kept as a generator (not a
+hand-edited .ipynb) so the notebook and the module stay in lockstep: the same algorithm, typed once
+in the module, demonstrated step-by-step here.
 """
 
 from __future__ import annotations
@@ -17,7 +20,13 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-NB_PATH = Path(__file__).resolve().parent / "23-Cross-Entropy-and-KL-Divergence.ipynb"
+# Written into the chapter's own code/ folder, one directory up from tools/ then into the chapter.
+NB_PATH = (
+    Path(__file__).resolve().parent.parent
+    / "23-Cross-Entropy-and-KL-Divergence"
+    / "code"
+    / "23-Cross-Entropy-and-KL-Divergence.ipynb"
+)
 
 
 _CELL_ID = 0

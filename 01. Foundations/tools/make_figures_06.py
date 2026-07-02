@@ -6,7 +6,7 @@ All measured figures come from the same real matrices the chapter and notebook u
 schematic (the 2x2 unit-circle -> ellipse geometry) is itself computed from a real SVD of a real
 2x2 matrix — so even the "illustration" is a true decomposition, just in a dimension we can draw.
 
-Writes muted-palette PNGs to the shared chapter image dir (../../images/) with prefix ``found06_``:
+Writes muted-palette PNGs to the shared domain image dir (../images/) with prefix ``found06_``:
 
   found06_geometry_ellipse.png  -- unit circle -> Vᵀ rotate -> Σ scale -> U rotate = ellipse,
                                    from the REAL SVD of a real 2x2 matrix (semi-axes = sigma_i).
@@ -30,17 +30,24 @@ Verified on Python 3.12 / matplotlib 3.10 / numpy 2.4 / scikit-learn 1.9.
 
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 
-import matplotlib
+# This generator lives in the domain-level ``01. Foundations/tools/`` folder, while the chapter
+# module it demonstrates stays in that chapter's ``code/`` folder. Put that folder on sys.path so
+# the ``singular_value_decomposition`` import below resolves no matter the working directory.
+_CHAPTER_CODE = Path(__file__).resolve().parent.parent / "06-Singular-Value-Decomposition" / "code"
+sys.path.insert(0, str(_CHAPTER_CODE))
+
+import matplotlib  # noqa: E402  (imported after the sys.path insert above, which must run first)
 
 matplotlib.use("Agg")  # headless: render straight to PNG, never open a window
-import matplotlib.pyplot as plt
-import numpy as np
-from numpy.typing import NDArray
-from sklearn.datasets import load_digits
+import matplotlib.pyplot as plt  # noqa: E402
+import numpy as np  # noqa: E402
+from numpy.typing import NDArray  # noqa: E402
+from sklearn.datasets import load_digits  # noqa: E402
 
-from singular_value_decomposition import (
+from singular_value_decomposition import (  # noqa: E402  (resolved via the sys.path insert above)
     COMPRESSION_RANKS,
     compression_curve,
     compute_svd,
@@ -63,7 +70,8 @@ NAVY = "#2A5B80"  # secondary data
 INK = "#1C2530"  # labels
 GRID = "#D4D9DF"  # gridlines
 
-OUT_DIR = Path(__file__).resolve().parent.parent.parent / "images"
+# From ``01. Foundations/tools/`` the shared image dir is one level up: ``01. Foundations/images``.
+OUT_DIR = Path(__file__).resolve().parent.parent / "images"
 DPI = 120
 IMG_PREFIX = "found06_"
 
