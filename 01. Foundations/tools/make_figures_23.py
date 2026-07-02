@@ -5,7 +5,7 @@ All measured figures come from the same real corpora and datasets the chapter an
 by real gradient descent, real n-gram language models. Nothing is hand-typed. The one analytic
 curve (the binary-entropy function) is computed from its formula, not drawn by hand.
 
-Writes muted-palette PNGs to the shared chapter image dir (../../images/) with prefix ``found23_``:
+Writes muted-palette PNGs to the shared domain image dir (../images/) with prefix ``found23_``:
 
   found23_entropy_surprise.png  -- REAL letter-frequency distribution + per-symbol surprise
                                    (-log2 p) of a real corpus, and the binary-entropy curve.
@@ -27,17 +27,24 @@ Verified on Python 3.12 / matplotlib 3.10 / numpy 2.4 / scikit-learn 1.9.
 
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 
-import matplotlib
+# This generator lives in the domain-level ``01. Foundations/tools/`` folder, while the chapter
+# module it demonstrates stays in that chapter's ``code/`` folder. Put that folder on sys.path so
+# the ``cross_entropy_kl`` import below resolves no matter the working directory.
+_CHAPTER_CODE = Path(__file__).resolve().parent.parent / "23-Cross-Entropy-and-KL-Divergence" / "code"
+sys.path.insert(0, str(_CHAPTER_CODE))
+
+import matplotlib  # noqa: E402  (imported after the sys.path insert above, which must run first)
 
 matplotlib.use("Agg")  # headless: render straight to PNG, never open a window
-import matplotlib.pyplot as plt
-import numpy as np
-from numpy.typing import NDArray
-from sklearn.datasets import fetch_20newsgroups
+import matplotlib.pyplot as plt  # noqa: E402
+import numpy as np  # noqa: E402
+from numpy.typing import NDArray  # noqa: E402
+from sklearn.datasets import fetch_20newsgroups  # noqa: E402
 
-from cross_entropy_kl import (
+from cross_entropy_kl import (  # noqa: E402  (resolved via the sys.path insert above)
     BIGRAM_LAMBDA,
     binary_entropy_bits,
     bigram_perplexity,
@@ -69,7 +76,8 @@ NAVY = "#2A5B80"  # secondary data
 INK = "#1C2530"  # labels
 GRID = "#D4D9DF"  # gridlines
 
-OUT_DIR = Path(__file__).resolve().parent.parent.parent / "images"
+# From ``01. Foundations/tools/`` the shared image dir is one level up: ``01. Foundations/images``.
+OUT_DIR = Path(__file__).resolve().parent.parent / "images"
 DPI = 120
 IMG_PREFIX = "found23_"
 
