@@ -27,7 +27,7 @@ updated: 2026-07-02
 - [Entropy (for data science) Clearly Explained](https://www.youtube.com/watch?v=YtebGVx-Fxw) — **StatQuest (Josh Starmer)** — the entropy / surprise baseline that KL is measured against.
 - [Intuitively Understanding the KL Divergence](https://www.youtube.com/watch?v=SxGYPqCgJWM) — **Adian Liusie** — the meaning and asymmetry of KL, forward vs reverse.
 - [The KL Divergence: Information Theory meets Machine Learning](https://www.youtube.com/watch?v=LJ5oCK4mQZM) — **Serrano.Academy (Luis Serrano)** — KL divergence built from first principles with worked examples.
-- [But what is the Central Limit Theorem? / Information theory in the Essence series](https://www.youtube.com/@3blue1brown) — **3Blue1Brown** — the channel whose geometric style underpins the "surprise as code length" intuition used here.
+- [Solving Wordle using information theory](https://www.youtube.com/watch?v=v68zYyaEmEA) — **3Blue1Brown** — builds Shannon entropy and information-as-bits from first principles (expected surprise = code length) — the exact intuition this page opens with.
 
 **🎓 Courses (free)**:
 - [Stanford CS231n — Linear Classification (Softmax & cross-entropy loss)](https://cs231n.github.io/linear-classify/) — **Stanford** — cross-entropy derived as *the* classification loss, with the softmax gradient (the Step 4 derivation).

@@ -333,7 +333,8 @@ def fit_gaussian_reverse_kl(
         fit = GaussianFit(mu=mu, sigma=float(np.exp(log_sigma)), kl=objective(mu, log_sigma))
         if best is None or fit.kl < best.kl:
             best = fit
-    assert best is not None  # mode_inits is non-empty by construction; teaching-time invariant
+    if best is None:  # mode_inits is non-empty by construction; guard the invariant explicitly
+        raise AssertionError("no Gaussian fit found — mode_inits was unexpectedly empty")
     return best
 
 
