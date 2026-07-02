@@ -3,11 +3,12 @@
 Authoring the notebook as code keeps every cell under version control and lets us regenerate it
 deterministically. The notebook itself imports ONLY numpy + faiss + the local `vector_indexes`
 module — never torch (faiss + torch co-loading crashes on this box; embeddings are precomputed by
-`embed_corpus.py`). Execute headless with:
+`embed_corpus.py`). The generated notebook is written into the chapter's own code/ dir; execute it
+there (so its `import vector_indexes` and `data/` resolve) with:
 
     python -m nbconvert --to notebook --execute --inplace 04-Vector-Databases-and-ANN-Indexes.ipynb
 
-Run this generator with:  python build_notebook.py
+Run this generator from 11. RAG.../tools/ with:  python build_notebook_04.py
 """
 
 from __future__ import annotations
@@ -15,7 +16,14 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-NB_PATH = Path(__file__).resolve().parent / "04-Vector-Databases-and-ANN-Indexes.ipynb"
+# This generator lives in 11. RAG.../tools/; the notebook belongs in the chapter's own code/ dir
+# (next to vector_indexes.py + data/), so it's written there, not beside this generator.
+NB_PATH = (
+    Path(__file__).resolve().parent.parent
+    / "04-Vector-Databases-and-ANN-Indexes"
+    / "code"
+    / "04-Vector-Databases-and-ANN-Indexes.ipynb"
+)
 
 
 _CELL_COUNTER = [0]

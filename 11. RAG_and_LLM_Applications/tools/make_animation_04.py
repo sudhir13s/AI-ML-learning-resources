@@ -11,9 +11,9 @@ recall cliff — measured on the real 384-D FAISS IVF over the real Wikipedia co
 static `rag04_ivf_recall_cliff.png` figure. Here the point you watch is the *probed region
 expanding* to cover the query's true neighbours as the knob turns.
 
-    python make_animation_04.py
+    python make_animation_04.py          # run from 11. RAG.../tools/
 
-The GIF is written to ../../images/ via matplotlib's PillowWriter (no ffmpeg needed).
+The GIF is written to ../images/ via matplotlib's PillowWriter (no ffmpeg needed).
 
 Produced:
   rag04_nprobe_growth.gif — the probed Voronoi cells expanding with nprobe, the recovered true
@@ -40,7 +40,7 @@ AMBER = "#7A6528"
 INK = "#1C2530"
 GRID = "#D4D9DF"
 
-OUT_DIR = Path(__file__).resolve().parent.parent.parent / "images"
+OUT_DIR = Path(__file__).resolve().parent.parent / "images"  # 11. RAG.../tools/ -> 11. RAG.../images/
 DPI = 95
 FPS = 2  # slow: dwell on each nprobe so the expansion is readable
 HOLD_FRAMES = 3

@@ -6,10 +6,11 @@ pipeline over BeIR/scifact live: real bi-encoder retrieval, real cross-encoder r
 nDCG@10/MRR@10 against real relevance labels. Corpus embeddings are cached (`data/`), so the notebook
 reuses one embedding pass; the cross-encoder passes are the honest cost of a real demo.
 
-Execute headless with:
+The generated notebook is written into the chapter's own code/ dir; execute it there (so its
+`import reranking` and cached `data/` resolve) with:
     python -m nbconvert --to notebook --execute --inplace 06-Re-ranking-Cross-Encoders.ipynb
 
-Run this generator with:  python build_notebook.py
+Run this generator from 11. RAG.../tools/ with:  python build_notebook_06.py
 """
 
 from __future__ import annotations
@@ -17,7 +18,14 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-NB_PATH = Path(__file__).resolve().parent / "06-Re-ranking-Cross-Encoders.ipynb"
+# This generator lives in 11. RAG.../tools/; the notebook belongs in the chapter's own code/ dir
+# (next to reranking.py + data/), so it's written there, not beside this generator.
+NB_PATH = (
+    Path(__file__).resolve().parent.parent
+    / "06-Re-ranking-Cross-Encoders"
+    / "code"
+    / "06-Re-ranking-Cross-Encoders.ipynb"
+)
 
 _CELL_COUNTER = [0]
 
