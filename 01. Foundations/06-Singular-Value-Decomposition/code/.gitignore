@@ -1,0 +1,8 @@
+# Any cached / downloaded raw imagery goes here — regenerable, not committed.
+# (This chapter uses sklearn's *bundled* china.jpg, so nothing lands here in practice;
+#  the folder exists so an alternate image source can be cached without polluting git.)
+data/
+
+# Notebook / tool byproducts
+.ipynb_checkpoints/
+__pycache__/
