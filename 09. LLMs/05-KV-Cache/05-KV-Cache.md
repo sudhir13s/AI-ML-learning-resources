@@ -154,7 +154,7 @@ The leading **2** is for storing both **K** and **V**. Everything else is just "
 
 > **Note:** this formula assumes a **per-head K/V** cache — it holds for MHA, MQA, and GQA, where you vary $n_{\text{kv\_heads}}$. **MLA breaks it**: it stores no per-head K/V at all, so substitute the latent width $d_c + d_R$ (e.g. $512+64$) for the whole $2 \times n_{\text{kv\_heads}} \times d_{\text{head}}$ term (and drop the leading 2 — one latent reconstructs both K and V).
 
-> *Where this comes from: the formula falls directly out of the per-layer attention shapes in **Attention Is All You Need** (Vaswani et al. 2017, §3.2), and is worked through explicitly in **Transformer Inference Arithmetic** (Kipply) and **Transformer Math 101** (EleutherAI) — all three in the references.*
+> **Source / derivation:** the KV-cache size formula falls directly out of the per-layer attention shapes in [Vaswani et al., *Attention Is All You Need* (2017)](https://arxiv.org/abs/1706.03762), §3.2, and is worked through explicitly in [kipply, *Transformer Inference Arithmetic*](https://kipp.ly/transformer-inference-arithmetic/) and [EleutherAI, *Transformer Math 101*](https://blog.eleuther.ai/transformer-math/) — all three in the references.
 
 **Worked example 1 — cache per token (Llama-2-7B, FP16).** Its config: $n_{\text{layers}}=32$, $n_{\text{kv\_heads}}=32$, $d_{\text{head}}=128$, and FP16 = 2 bytes. Per token:
 
@@ -184,7 +184,7 @@ A single decode step (batch 1) pushes one token through the model. The compute i
 
 $$\text{arithmetic intensity} \approx \frac{2 \times \text{params}}{\text{bytes per param}} = \frac{14\times10^9 \text{ FLOP}}{14\times10^9 \text{ bytes}} \approx \mathbf{1\ \text{FLOP/byte}}.$$
 
-> *Where this comes from: the **roofline model** that pits arithmetic intensity against the compute-to-bandwidth ratio is Williams, Waterman & Patterson, "Roofline" (CACM 2009); its application to transformer decode — establishing that autoregressive generation is memory-bound — is laid out in **Efficiently Scaling Transformer Inference** (Pope et al. 2022, in the references).*
+> **Source / derivation:** the [roofline model](https://www2.eecs.berkeley.edu/Pubs/TechRpts/2008/EECS-2008-134.html) that pits arithmetic intensity against the compute-to-bandwidth ratio is Williams, Waterman & Patterson, "Roofline" (CACM 2009); its application to transformer decode — establishing that autoregressive generation is memory-bound — is laid out in [Pope et al., *Efficiently Scaling Transformer Inference* (2022)](https://arxiv.org/abs/2211.05102). Both in the references.
 
 An A100 does ~312 TFLOP/s of compute but only ~2 TB/s of memory bandwidth — a ratio of ~**156 FLOP/byte** before compute becomes the limit. At an intensity of ~1, decode is **deeply** memory-bound: the compute units sit ~99% idle, waiting on memory. The cure is **batching**: process $B$ sequences together and you read each weight **once** but do $B\times$ the math, multiplying arithmetic intensity by $B$ and walking toward the compute-bound regime. That's why throughput-oriented serving batches aggressively — and why, once weights are amortized across a big batch, the **KV cache** becomes the bytes you're actually moving, so shrinking it (GQA, FP8) translates almost directly into more tokens/second.
 
