@@ -6,9 +6,10 @@ indexes, real recall@10 vs exact, real query latency. Nothing is hand-typed. The
 figures (2D Voronoi cells, the HNSW layer cartoon) are clearly labelled illustrative — you cannot
 plot 384-dim space, so they use a tiny 2D toy purely to convey the geometry, never to fake a number.
 
-Writes muted-palette PNGs to the shared chapter image dir (../../images/) with prefix `rag04_`.
+Writes muted-palette PNGs to the shared chapter image dir (../images/) with prefix `rag04_`.
 
-    python make_figures_04.py            # needs data/ populated by `python embed_corpus.py`
+    python make_figures_04.py            # run from 11. RAG.../tools/; needs the chapter's
+                                         # code/data/ populated by `python code/embed_corpus.py`
 
 Figures produced:
   rag04_bruteforce_growth.png   -- exact-search cost O(N*d) growing linearly with N, anchored by the
@@ -27,6 +28,7 @@ Verified on Python 3.12 / matplotlib 3.x / numpy 2.x / faiss-cpu.
 
 from __future__ import annotations
 
+import sys
 import time
 from pathlib import Path
 
@@ -34,10 +36,15 @@ import faiss
 import matplotlib
 
 matplotlib.use("Agg")  # headless: render straight to PNG, never open a window
-import matplotlib.pyplot as plt
-import numpy as np
+import matplotlib.pyplot as plt  # noqa: E402  (after matplotlib.use — backend must be set first)
+import numpy as np  # noqa: E402
 
-from vector_indexes import (
+# This generator lives in 11. RAG.../tools/; the chapter module it drives lives in the chapter's
+# own code/ dir. Add that dir to sys.path so `import vector_indexes` resolves from here.
+_CHAPTER_CODE = Path(__file__).resolve().parent.parent / "04-Vector-Databases-and-ANN-Indexes" / "code"
+sys.path.insert(0, str(_CHAPTER_CODE))
+
+from vector_indexes import (  # noqa: E402  (after sys.path.insert above)
     HNSW_M,
     IVF_NLIST,
     PQ_M,
@@ -67,7 +74,7 @@ AMBER = "#7A6528"  # query / highlight / HNSW
 INK = "#1C2530"  # labels
 GRID = "#D4D9DF"  # gridlines
 
-OUT_DIR = Path(__file__).resolve().parent.parent.parent / "images"
+OUT_DIR = Path(__file__).resolve().parent.parent / "images"  # 11. RAG.../tools/ -> 11. RAG.../images/
 DPI = 110
 
 

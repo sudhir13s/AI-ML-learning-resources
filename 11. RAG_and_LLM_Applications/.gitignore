@@ -1,0 +1,10 @@
+# Regenerable embedding caches produced under each chapter's code/data/ — large + reproducible,
+# so not committed. Rebuild per chapter:
+#   04-Vector-Databases-and-ANN-Indexes: `python code/embed_corpus.py`  (~46 MB of real .npy vectors)
+#   06-Re-ranking-Cross-Encoders:        `python code/reranking.py`     (corpus/query embeddings,
+#                                         per-query orderings, and the run summary)
+*/code/data/
+
+# Notebook / tool byproducts
+*/code/.ipynb_checkpoints/
+*/code/__pycache__/

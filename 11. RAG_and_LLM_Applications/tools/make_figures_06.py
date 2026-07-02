@@ -7,10 +7,10 @@ orderings (`data/scifact_orderings.npz`) and the summary produced by `python rer
 never repeats the tens of thousands of cross-encoder forward passes. The few *schematic* figures (the
 funnel, the bi-vs-cross tower diagram) are clearly labelled illustrative.
 
-Writes muted-palette PNGs to the shared chapter image dir (../../images/) with prefix `rag06_`.
+Writes muted-palette PNGs to the shared chapter image dir (../images/) with prefix `rag06_`.
 
-    python reranking.py          # first — produces the cached orderings + summary.json
-    python make_figures_06.py    # then — draws the figures from that real run
+    python code/reranking.py     # first (from the chapter dir) — caches orderings + summary.json
+    python make_figures_06.py    # then (from 11. RAG.../tools/) — draws the figures from that run
 
 Figures produced:
   rag06_ndcg_mrr.png       -- REAL aggregate nDCG@10/MRR@10/Recall@10/Precision@10, bi vs reranked.
@@ -28,15 +28,21 @@ matplotlib headless (Agg). Verified on Python 3.12 / matplotlib 3.x / numpy 2.x.
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 
 import matplotlib
 
 matplotlib.use("Agg")  # headless: render straight to PNG, never open a window
-import matplotlib.pyplot as plt
-import numpy as np
+import matplotlib.pyplot as plt  # noqa: E402  (after matplotlib.use — backend must be set first)
+import numpy as np  # noqa: E402
 
-from reranking import (
+# This generator lives in 11. RAG.../tools/; the chapter module it drives lives in the chapter's
+# own code/ dir. Add that dir to sys.path so `import reranking` resolves from here.
+_CHAPTER_CODE = Path(__file__).resolve().parent.parent / "06-Re-ranking-Cross-Encoders" / "code"
+sys.path.insert(0, str(_CHAPTER_CODE))
+
+from reranking import (  # noqa: E402  (after sys.path.insert above)
     DATA_DIR,
     K_SWEEP,
     METRIC_K,
@@ -58,7 +64,7 @@ AMBER = "#7A6528"  # query / highlight
 INK = "#1C2530"  # labels
 GRID = "#D4D9DF"  # gridlines
 
-OUT_DIR = Path(__file__).resolve().parent.parent.parent / "images"
+OUT_DIR = Path(__file__).resolve().parent.parent / "images"  # 11. RAG.../tools/ -> 11. RAG.../images/
 DPI = 110
 
 
