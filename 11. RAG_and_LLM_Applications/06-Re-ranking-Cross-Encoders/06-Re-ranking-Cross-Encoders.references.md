@@ -3,7 +3,7 @@ id: "11-rag-and-llm-apps/re-ranking-cross-encoders/references"
 topic: "Re-ranking (Cross-Encoders) — References"
 parent: "11-rag-and-llm-apps/re-ranking-cross-encoders"
 type: references
-updated: 2026-06-27
+updated: 2026-07-02
 ---
 
 # Re-ranking with Cross-Encoders — references and further reading
@@ -45,7 +45,13 @@ updated: 2026-06-27
 - [The TREC-8 Question Answering Track Report](https://trec.nist.gov/pubs/trec8/papers/qa_report.pdf) — **Voorhees (1999)** — the QA-track evaluation that introduced **mean reciprocal rank** (MRR), averaging $1/\text{rank}$ of the first correct answer; the origin of the MRR metric on the page.
 - [ColBERT: Efficient Passage Search via Contextualized Late Interaction over BERT](https://arxiv.org/abs/2004.12832) — **Khattab & Zaharia (2020)** — per-token embeddings + late MaxSim interaction; the precomputable middle ground between bi- and cross-encoders.
 - [MS MARCO: A Human-Generated Machine Reading Comprehension Dataset](https://arxiv.org/abs/1611.09268) — **Bajaj et al. (2016)** — the passage-ranking dataset the `ms-marco-MiniLM` re-rankers (and most open cross-encoders) are trained on.
-- [BEIR: A Heterogeneous Benchmark for Zero-Shot Evaluation of IR Models](https://arxiv.org/abs/2104.08663) — **Thakur et al. (2021)** — shows cross-encoder re-ranking gains (and limits) across diverse retrieval tasks; the empirical case for re-ranking.
+- [BEIR: A Heterogeneous Benchmark for Zero-Shot Evaluation of IR Models](https://arxiv.org/abs/2104.08663) — **Thakur et al. (2021)** — the benchmark suite (scifact is one of its tasks) used on the page to measure the re-ranking lift against real relevance labels; shows cross-encoder re-ranking gains (and limits) across diverse retrieval tasks.
+- [Document Ranking with a Pretrained Sequence-to-Sequence Model (MonoT5)](https://arxiv.org/abs/2003.06713) — **Nogueira, Jiang, Pradeep & Lin (2020)** — re-ranking as *generation*: a T5 emits "true"/"false" for a (query, passage) pair and the softmax over those tokens is the relevance score; the seq2seq alternative to the encoder cross-encoder discussed on the page.
+
+**Data & models used on this page (all free / open, for exact reproducibility)**:
+- [BeIR/scifact](https://huggingface.co/datasets/BeIR/scifact) + [BeIR/scifact-qrels](https://huggingface.co/datasets/BeIR/scifact-qrels) — **Wadden et al. / BeIR** — the real scientific-claim retrieval benchmark (5,183 abstracts, 300 test queries, human relevance judgments) the page's nDCG/MRR are measured on.
+- [sentence-transformers/all-MiniLM-L6-v2](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2) — **UKP / Sentence-Transformers** — the real 384-dim bi-encoder used for first-stage retrieval.
+- [cross-encoder/ms-marco-MiniLM-L-6-v2](https://huggingface.co/cross-encoder/ms-marco-MiniLM-L-6-v2) — **Sentence-Transformers** — the real cross-encoder re-ranker whose relevance logits reorder the pool.
 
 **Books (free, with chapters)**:
 - [Introduction to Information Retrieval — Ch. 8 "Evaluation in information retrieval"](https://nlp.stanford.edu/IR-book/html/htmledition/evaluation-in-information-retrieval-1.html) — **Manning, Raghavan & Schütze** — the IR evaluation foundations (precision, MAP, the lineage of nDCG) behind measuring a re-ranker, free online.
