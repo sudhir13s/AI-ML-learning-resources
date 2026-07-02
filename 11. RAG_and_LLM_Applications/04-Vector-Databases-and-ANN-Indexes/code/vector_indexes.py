@@ -1,14 +1,14 @@
-"""Real ANN indexes over a real corpus with FAISS — the production way to search vectors.
+"""Real ANN indexes over a real corpus with FAISS — the real-world way to search vectors.
 
 This is the load-bearing module for the chapter. It is **not** a toy: it loads real
-sentence-transformer embeddings of ~40k real Wikipedia passages (produced offline by
+sentence-transformer embeddings of ~30k real Wikipedia passages (produced offline by
 `embed_corpus.py`) and builds **real FAISS indexes** — `IndexFlatIP` (exact baseline),
 `IndexIVFFlat` (real inverted-file / Voronoi index), and `IndexHNSWFlat` (real Hierarchical
 Navigable Small World graph) — then MEASURES their approximation quality (recall@k vs exact)
 and their real query latency as you turn the recall/speed knob (`nprobe` for IVF, `efSearch`
 for HNSW). Optional `IndexIVFPQ` shows real product-quantization memory compression.
 
-Design notes that matter in production and in this environment:
+Design notes that matter in real-world systems and in this environment:
 
 * **torch and FAISS must not co-load here.** On macOS both link `libomp`; importing them in
   one process double-initialises OpenMP and crashes (SIGABRT/SIGSEGV) even with
@@ -45,7 +45,7 @@ faiss.omp_set_num_threads(1)
 # ---- Paths + hyperparameters (hoisted; no magic numbers inline) ---------------------------------
 DATA_DIR = Path(__file__).resolve().parent / "data"
 TOP_K = 10  # retrieve the 10 nearest neighbours; recall@10 is the headline metric
-IVF_NLIST = 256  # IVF Voronoi cells (~ a few × sqrt(N) for N~40k; FAISS trains k-means to this)
+IVF_NLIST = 256  # IVF Voronoi cells (~ a few × sqrt(N) for N~30k; FAISS trains k-means to this)
 IVF_NPROBE_SWEEP = (1, 2, 4, 8, 16, 32, 64, 128, 256)  # cells probed per query — the IVF knob
 HNSW_M = 32  # HNSW links per node (graph degree) — higher = better recall, more memory
 HNSW_EF_CONSTRUCTION = 200  # build-time candidate list — higher = better graph, slower build
@@ -86,7 +86,7 @@ def load_corpus(data_dir: Path = DATA_DIR) -> Corpus:
     if not emb_path.exists():
         raise FileNotFoundError(
             f"{emb_path} not found. Run `python embed_corpus.py` first to build the real "
-            "corpus (it embeds ~40k Wikipedia passages and writes this cache)."
+            "corpus (it embeds ~30k Wikipedia passages and writes this cache)."
         )
     embeddings = np.load(emb_path).astype(np.float32)
     queries = np.load(data_dir / "query_emb.npy").astype(np.float32)
@@ -128,6 +128,26 @@ def build_ivf(embeddings: np.ndarray, nlist: int = IVF_NLIST) -> faiss.IndexIVFF
     return index
 
 
+def ivf_cell_sizes(index: faiss.IndexIVFFlat) -> np.ndarray:
+    """Return the number of vectors in each of the `nlist` inverted lists (cells).
+
+    A well-trained IVF has roughly balanced cells (~N/nlist each); very skewed cells are a
+    symptom of clustered data or too-large nlist and hurt the recall/latency tradeoff. Reading
+    the list lengths straight off the real index makes the k-means partition inspectable.
+    """
+    inv = index.invlists
+    return np.array([inv.list_size(i) for i in range(index.nlist)], dtype=np.int64)
+
+
+def ivf_centroids(index: faiss.IndexIVFFlat) -> np.ndarray:
+    """Return the `nlist` cell centroids (the coarse-quantizer's k-means codebook), shape (nlist, d).
+
+    These centroids ARE the Voronoi cell centres a query is routed against: at query time FAISS
+    computes the query→centroid similarities and probes the `nprobe` nearest cells' lists.
+    """
+    return index.quantizer.reconstruct_n(0, index.nlist)
+
+
 # ============================ HNSW (navigable small-world graph) =================================
 def build_hnsw(
     embeddings: np.ndarray, m: int = HNSW_M, ef_construction: int = HNSW_EF_CONSTRUCTION
@@ -141,6 +161,22 @@ def build_hnsw(
     index.hnsw.efConstruction = ef_construction
     index.add(embeddings)  # incremental graph construction (no separate train step)
     return index
+
+
+def hnsw_level_counts(index: faiss.IndexHNSWFlat) -> np.ndarray:
+    """Return how many nodes live at each HNSW layer (level 0 = base, holds ALL nodes).
+
+    HNSW assigns each inserted node a maximum layer drawn from a geometric/exponential decay, so
+    the layer populations shrink by a roughly constant factor going up — the *pyramid* that gives
+    the graph its O(log N) navigation. Reading the real per-level counts off the built index shows
+    that decay directly (each level up holds ~1/e of the level below, for FAISS's default mL).
+    """
+    levels = faiss.vector_to_array(index.hnsw.levels)  # per-node max level (1-based in FAISS)
+    if levels.size == 0:
+        return np.array([index.ntotal], dtype=np.int64)
+    max_level = int(levels.max())
+    # a node present at level L is present at every level <= L, so count nodes with level > l
+    return np.array([int((levels > lvl).sum()) for lvl in range(max_level)], dtype=np.int64)
 
 
 # ============================ recall + latency measurement ======================================
@@ -246,6 +282,27 @@ def build_ivfpq(
     index.train(embeddings)
     index.add(embeddings)
     return index
+
+
+def pq_encode_decode(
+    embeddings: np.ndarray, m: int = PQ_M, nbits: int = PQ_NBITS
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """Train a standalone Product Quantizer, then ENCODE and DECODE vectors so you can *see* PQ.
+
+    This exposes the raw PQ mechanic the IVFPQ index hides: split each d-vector into `m` subvectors,
+    learn a k=2**nbits codebook per subspace with k-means, replace each subvector by its nearest
+    centroid's id (that id list IS the code), then decode by concatenating the chosen centroids.
+    Returns (codes, reconstructed, per_vector_l2_error): codes is (N, m) uint8 ids, reconstructed is
+    (N, d) the lossy decode, and the error is the L2 gap between original and reconstruction — the
+    quantization loss that costs a little recall in exchange for the m*nbits/8-byte code.
+    """
+    d = embeddings.shape[1]
+    pq = faiss.ProductQuantizer(d, m, nbits)
+    pq.train(embeddings)
+    codes = pq.compute_codes(embeddings)  # (N, m) uint8 — the concatenated centroid ids
+    reconstructed = pq.decode(codes)  # (N, d) — centroids stitched back together
+    errors = np.linalg.norm(embeddings - reconstructed, axis=1)  # per-vector quantization error
+    return codes, reconstructed, errors
 
 
 def pq_memory_bytes(dim: int, m: int = PQ_M, nbits: int = PQ_NBITS) -> tuple[int, int, float]:

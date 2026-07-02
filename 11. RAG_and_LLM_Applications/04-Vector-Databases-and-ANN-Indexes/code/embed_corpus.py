@@ -22,7 +22,7 @@ a serving job.
 
 Run once (a few minutes, downloads the model + a Wikipedia slice on first run):
 
-    python embed_corpus.py                 # default ~40k passages
+    python embed_corpus.py                 # default ~30k passages
     N_TARGET_PASSAGES=60000 python embed_corpus.py
 
 Deterministic: fixed seed for the query sample; embeddings are a deterministic function of the

@@ -48,7 +48,10 @@ from vector_indexes import (
     build_ivf,
     exact_latency_ms,
     exact_topk,
+    hnsw_level_counts,
+    ivf_cell_sizes,
     load_corpus,
+    pq_encode_decode,
     pq_memory_bytes,
     sweep_hnsw,
     sweep_ivf,
@@ -321,6 +324,92 @@ def fig_pq_memory(dim: int, n_corpus: int) -> None:
     _save(fig, "rag04_pq_memory.png")
 
 
+# ============================ mechanism figures (REAL, from the built indexes) ===================
+def fig_ivf_cell_sizes(ivf) -> None:
+    """REAL histogram of IVF inverted-list lengths — the k-means partition, made inspectable."""
+    sizes = ivf_cell_sizes(ivf)
+    fig, ax = plt.subplots(figsize=(7.6, 4.6))
+    _style_axis(ax)
+    ax.hist(sizes, bins=30, color=PURPLE, edgecolor=INK, linewidth=0.6, alpha=0.9)
+    mean = sizes.mean()
+    ax.axvline(mean, color=AMBER, linewidth=1.8, linestyle="--",
+               label=f"mean {mean:.0f} vectors/cell (≈ N/nlist)")
+    ax.set_xlabel("vectors per cell (inverted-list length)")
+    ax.set_ylabel("number of cells")
+    ax.set_title(f"REAL IVF partition: {ivf.nlist} k-means cells over {ivf.ntotal:,} vectors "
+                 f"(min {sizes.min()}, max {sizes.max()})", fontsize=11, pad=12)
+    ax.legend(loc="upper right", framealpha=0.95, fontsize=9)
+    _save(fig, "rag04_ivf_cell_sizes.png")
+
+
+def fig_hnsw_pyramid(hnsw) -> None:
+    """REAL HNSW layer pyramid: node counts per level, showing the geometric (~1/e) decay."""
+    counts = hnsw_level_counts(hnsw)
+    fig, ax = plt.subplots(figsize=(7.8, 4.8))
+    _style_axis(ax)
+    levels = list(range(len(counts)))
+    bars = ax.barh(levels, counts, color=[BLUE if i == 0 else AMBER for i in levels],
+                   edgecolor=INK, linewidth=0.7, height=0.62)
+    for lvl, (bar, c) in enumerate(zip(bars, counts)):
+        ax.annotate(f"{c:,} nodes", (c, bar.get_y() + bar.get_height() / 2),
+                    fontsize=9, color=INK, ha="left", va="center", xytext=(5, 0),
+                    textcoords="offset points")
+    ax.set_xscale("log")
+    ax.set_yticks(levels)
+    ax.set_yticklabels([f"level {i}" + ("  (base — all N)" if i == 0 else "") for i in levels])
+    ax.set_xlabel("nodes at this layer (log scale)")
+    ax.set_xlim(1, counts[0] * 4)
+    ax.invert_yaxis()  # base at the bottom, sparse top at the top
+    ratios = " · ".join(f"×{counts[i + 1] / counts[i]:.2f}" for i in range(len(counts) - 1))
+    ax.set_title(f"REAL HNSW layer pyramid ({hnsw.hnsw.max_level + 1} levels): "
+                 f"each level up holds far fewer nodes ({ratios})", fontsize=10.5, pad=12)
+    _save(fig, "rag04_hnsw_pyramid.png")
+
+
+def fig_pq_encoding(embeddings: np.ndarray, dim: int) -> None:
+    """REAL PQ encode/decode: how one vector becomes m codes, plus the reconstruction-error spread."""
+    codes, _recon, errors = pq_encode_decode(embeddings)
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12.0, 4.6))
+
+    # left: schematic of split → codebook → code, annotated with a REAL code
+    ax1.axis("off")
+    ax1.set_title(f"Encoding one vector: split into m={PQ_M} subvectors → nearest sub-centroid id",
+                  fontsize=10.5, color=INK)
+    subs = 6  # show the first few subspaces only, for legibility
+    real_code = codes[0][:subs]
+    for j in range(subs):
+        x0 = 0.04 + j * 0.15
+        ax1.add_patch(plt.Rectangle((x0, 0.62), 0.12, 0.16, facecolor=BLUE, alpha=0.6,
+                                    edgecolor=INK, linewidth=0.8))
+        ax1.text(x0 + 0.06, 0.70, f"sub {j}\n{dim // PQ_M}-D", ha="center", va="center",
+                 fontsize=7.5, color="white")
+        ax1.annotate("", (x0 + 0.06, 0.44), (x0 + 0.06, 0.60),
+                     arrowprops=dict(arrowstyle="->", color=SLATE, lw=1.4))
+        ax1.add_patch(plt.Rectangle((x0, 0.28), 0.12, 0.16, facecolor=GREEN, alpha=0.75,
+                                    edgecolor=INK, linewidth=0.8))
+        ax1.text(x0 + 0.06, 0.36, f"id\n{real_code[j]}", ha="center", va="center",
+                 fontsize=8.5, color="white", fontweight="bold")
+    ax1.text(0.04 + subs * 0.15 + 0.01, 0.36, "…", fontsize=16, va="center", color=INK)
+    ax1.text(0.5, 0.14, f"code = {PQ_M} centroid-ids (each 0–255) = {PQ_M} bytes  "
+             f"(vs {dim}×4 = {dim * 4:,} bytes raw)", ha="center", fontsize=9, color=INK,
+             style="italic")
+    ax1.text(0.5, 0.90, f"codebook per subspace: 2^{PQ_NBITS} = {2 ** PQ_NBITS} centroids",
+             ha="center", fontsize=8.5, color=SLATE)
+    ax1.set_xlim(0, 1)
+    ax1.set_ylim(0, 1)
+
+    # right: real reconstruction-error distribution (the quantization loss that costs recall)
+    _style_axis(ax2)
+    ax2.hist(errors, bins=40, color=RED, edgecolor=INK, linewidth=0.5, alpha=0.85)
+    ax2.axvline(errors.mean(), color=AMBER, linewidth=1.8, linestyle="--",
+                label=f"mean error {errors.mean():.3f}")
+    ax2.set_xlabel("L2 reconstruction error  ‖original − decoded‖  (0 = lossless)")
+    ax2.set_ylabel("number of vectors")
+    ax2.set_title(f"REAL PQ quantization loss over {len(errors):,} vectors", fontsize=10.5, pad=10)
+    ax2.legend(loc="upper right", framealpha=0.95, fontsize=9)
+    _save(fig, "rag04_pq_encoding.png")
+
+
 # ============================ schematic figures (illustrative 2D geometry) =======================
 def fig_voronoi_cells() -> None:
     """SCHEMATIC: 2D Voronoi cells + the nprobe probed cells (illustrative — 384-d can't be drawn)."""
@@ -406,14 +495,18 @@ def main() -> None:
     hnsw = build_hnsw(corpus.embeddings)
     hnsw_points = sweep_hnsw(hnsw, corpus.queries, ground_truth)
 
-    # measured figures
+    # measured figures (recall/latency)
     fig_bruteforce_growth(flat_ms, corpus.n, corpus.dim)
     fig_ivf_recall_cliff(ivf_points, flat_ms)
     fig_hnsw_efsearch(hnsw_points, flat_ms)
     fig_recall_vs_latency(ivf_points, hnsw_points, flat_ms)
     fig_build_memory(corpus.embeddings)
     fig_pq_memory(corpus.dim, corpus.n)
-    # schematic figures
+    # mechanism figures (from the built indexes' internals)
+    fig_ivf_cell_sizes(ivf)
+    fig_hnsw_pyramid(hnsw)
+    fig_pq_encoding(corpus.embeddings, corpus.dim)
+    # schematic figures (2D geometry for intuition)
     fig_voronoi_cells()
     fig_hnsw_layers()
     print("all figures written to", OUT_DIR)
