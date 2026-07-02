@@ -1,0 +1,7 @@
+# Regenerable embedding cache (built by embed_corpus.py — ~46 MB of real .npy vectors).
+# Not committed: it's large and reproducible. Run `python embed_corpus.py` to rebuild.
+data/
+
+# Notebook / tool byproducts
+.ipynb_checkpoints/
+__pycache__/

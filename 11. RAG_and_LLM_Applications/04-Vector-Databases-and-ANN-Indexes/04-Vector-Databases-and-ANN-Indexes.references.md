@@ -3,7 +3,7 @@ id: "11-rag-and-llm-apps/vector-databases-ann-indexes/references"
 topic: "Vector Databases & ANN Indexes — References"
 parent: "11-rag-and-llm-apps/vector-databases-ann-indexes"
 type: references
-updated: 2026-06-27
+updated: 2026-07-02
 ---
 
 # Vector Databases & ANN Indexes — references and further reading
@@ -44,6 +44,11 @@ updated: 2026-06-27
 - [Billion-scale similarity search with GPUs (arXiv:1702.08734)](https://arxiv.org/abs/1702.08734) — **Johnson, Douze & Jégou (2017/2019)** — the FAISS GPU paper; the source for the exact (flat) $O(N \cdot d)$ baseline ANN exists to beat.
 - [The FAISS Library (arXiv:2401.08281)](https://arxiv.org/abs/2401.08281) — **Douze et al. (2024)** — the design of the most-used similarity-search library (IVF, PQ, HNSW); the reference for index choice.
 - [DiskANN: Fast Accurate Billion-point NN Search on a Single Node](https://proceedings.neurips.cc/paper_files/paper/2019/file/09853c7fb1d3f8ee67a61b6bf4a7f8e6-Paper.pdf) — **Subramanya et al. (2019, NeurIPS)** — graph ANN that spills to SSD for billion-scale search beyond RAM; the frontier past in-memory HNSW.
+
+**Data & models used on this page (all free / open, for exact reproducibility)**:
+- [wikimedia/wikipedia — Simple English (20231101.simple)](https://huggingface.co/datasets/wikimedia/wikipedia) — **Wikimedia Foundation** (CC-BY-SA) — the real corpus: 30,000 passages are chunked from these articles by `code/embed_corpus.py`.
+- [BAAI/bge-small-en-v1.5](https://huggingface.co/BAAI/bge-small-en-v1.5) — **BAAI** — the real 384-dim retrieval embedder used to vectorise the corpus and queries; L2-normalised so cosine similarity is a dot product.
+- [FAISS](https://github.com/facebookresearch/faiss) / [`faiss-cpu` on PyPI](https://pypi.org/project/faiss-cpu/) — **Meta** — the real ANN library the page measures (`IndexFlatIP`, `IndexIVFFlat`, `IndexHNSWFlat`, `IndexIVFPQ`).
 
 **Books (free, with chapters)**:
 - [Introduction to Information Retrieval — Ch. 6–7 (scoring, the vector space model, efficient ranking)](https://nlp.stanford.edu/IR-book/html/htmledition/scoring-term-weighting-and-the-vector-space-model-1.html) — **Manning, Raghavan & Schütze** — the IR foundations of similarity scoring and index efficiency, free online.
