@@ -206,7 +206,7 @@ The paper's central empirical claim is best understood as a 2×2: reasoning on/o
 - **Act-only** can call tools but, without a reasoning channel, can't *decide* which tool to call next when the choice depends on an intermediate result — it fumbles multi-hop problems.
 - **ReAct** gets the reasoning to *steer* the acting and the acting to *ground* the reasoning. Yao et al. show this combination beats both ablations on HotpotQA, ALFWorld, and WebShop.
 
-> **Source / derivation:** [Yao et al., arXiv:2210.03629, §3–4](https://arxiv.org/abs/2210.03629) — the ablation study isolating reasoning-only, acting-only, and combined ReAct, establishing that the *interleaving* (not either half alone) is what drives the gains; and the analysis attributing much of the improvement to reduced fact hallucination via observation grounding.
+> **Source / derivation:** [Yao et al., arXiv:2210.03629, §3.3 "Results and Observations"](https://arxiv.org/abs/2210.03629) — the ablation on the knowledge-intensive tasks (HotpotQA, Fever) isolating reasoning-only (CoT), acting-only (Act), and combined ReAct, establishing that the *interleaving* (not either half alone) is what drives the gains ("ReAct outperforms Act consistently"; "ReAct vs. CoT"; "ReAct + CoT-SC perform best"), with the analysis attributing much of the improvement to reduced fact hallucination via observation grounding. (The interactive decision-making results on ALFWorld and WebShop are in §4.)
 
 > **Related — the reasoning half.** [Wei et al., *Chain-of-Thought Prompting Elicits Reasoning in Large Language Models* (2022), arXiv:2201.11903](https://arxiv.org/abs/2201.11903) — the reasoning channel ReAct builds on; read it to see exactly what ReAct *adds* (an acting channel and real observations) on top of pure step-by-step reasoning.
 
@@ -303,6 +303,8 @@ This is not cheating — it's honouring the model's obvious intent. And it is re
 Here is the honest test. The same six real multi-step questions, run two ways — the full ReAct loop (with tools) and the reason-only baseline (no tools) — scored on exact match. Every generation is greedy, so this reproduces exactly.
 
 ![Bar chart of exact-match accuracy on 6 real multi-step questions: ReAct (reason + act + tools) scores 100% (6/6), reason-only (no tools) scores 50% (3/6). Real measured results from the companion module.](../images/agentic02_react_vs_direct.png)
+
+*Scope: 6 questions and one small (1.5B) model — this illustrates the mechanism, it is not a benchmark. The peer-reviewed, large-scale version of exactly this result is Yao et al.'s §3.3 ablation.*
 
 **ReAct 100% (6/6) versus reason-only 50% (3/6).** And the *pattern* of the wins is the whole story — reason-only succeeds precisely on the easy arithmetic and fails on everything needing exact computation or a looked-up fact, while ReAct recovers every one of those by acting:
 

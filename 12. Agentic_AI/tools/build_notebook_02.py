@@ -109,10 +109,10 @@ add_code(
     "import transformers\n"
     "\n"
     "from react_agent import (\n"
-    "    calculator, wiki, TOOLS, KNOWLEDGE_BASE,\n"
-    "    SYSTEM_PROMPT, DIRECT_PROMPT,\n"
+    "    calculator, wiki, KNOWLEDGE_BASE,\n"
+    "    SYSTEM_PROMPT,\n"
     "    LanguageModel, pick_device,\n"
-    "    parse_action, Action, _normalise_finish,\n"
+    "    parse_action, _normalise_finish,\n"
     "    dispatch, run_react, run_direct,\n"
     "    compare_react_vs_direct, EVAL_SET,\n"
     ")\n"
@@ -224,7 +224,7 @@ add_md(
     "failure the loop must survive)."
 )
 add_code(
-    "trimmed, action = parse_action(raw)\n"
+    "_, action = parse_action(raw)   # first return value is the trimmed text; we only need the action\n"
     "print('parsed action ->', action)\n"
     "print('tool:', action.tool, '| arg:', repr(action.arg))"
 )

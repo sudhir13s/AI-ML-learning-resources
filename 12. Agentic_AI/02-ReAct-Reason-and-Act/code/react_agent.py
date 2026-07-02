@@ -158,10 +158,13 @@ def wiki(query: str) -> str:
     (a real failure mode: the tool returns nothing useful and the agent must decide what to do).
     """
     q = query.lower().strip()
+    q_tokens = set(q.split())
     for key, entry in KNOWLEDGE_BASE.items():
-        # match if the query shares its key words with a KB key (order/extra words tolerated)
-        key_words = set(key.split())
-        if key in q or key_words.issubset(set(q.split())) or any(w in q for w in key_words if len(w) > 4):
+        # match on the full key substring, OR when the query contains ALL of the key's significant
+        # (>3-char) words — order and extra words tolerated. Requiring the full significant word-set
+        # (rather than any single word) keeps matching precise as the knowledge base grows.
+        significant = {w for w in key.split() if len(w) > 3}
+        if key in q or (significant and significant.issubset(q_tokens)):
             return entry
     return f"No knowledge-base entry found for {query!r}."
 

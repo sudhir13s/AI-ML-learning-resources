@@ -194,7 +194,9 @@ def fig_comparison(llm: LanguageModel) -> None:
     # ---- Figure 3: per-question outcome grid ----
     fig, ax = plt.subplots(figsize=(8.6, 5.0))
     ax.set_xlim(0, 3)
-    ax.set_ylim(0, n + 1.1)  # extra headroom so the title clears the header row
+    # extra headroom on top so the title clears the header row, and a ~6% bottom margin
+    # (floor below y=0.5, the last row) so no renderer clips the final "17^3" row.
+    ax.set_ylim(-0.4, n + 1.1)
     ax.axis("off")
     ax.text(
         0.05,
