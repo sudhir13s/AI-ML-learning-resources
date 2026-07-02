@@ -153,7 +153,7 @@ Symbols: $N$ vectors, $d$ dimensions, $n_{\text{list}}$ cells, $n_{\text{probe}}
 
 ### 2. HNSW — the layer pyramid, greedy descent, and why it's $O(\log N)$ (derived)
 
-**The build is incremental, and the key trick is the layer assignment.** HNSW has no separate "train" step; `index.add(x)` inserts vectors one at a time. When a node is inserted, it is assigned a **maximum layer** $\ell$ drawn from a geometric/exponential distribution: $\ell = \lfloor -\ln(u)\cdot m_L \rfloor$ for a uniform $u\in(0,1)$, where $m_L$ is a level-multiplier constant (FAISS's default is $m_L=1/\ln M$). A node present at layer $\ell$ is inserted into every layer from $\ell$ down to 0, connecting to its $M$ nearest neighbours *within each layer*. Because $\Pr[\ell \ge L]$ decays like $e^{-L/m_L}$, each layer up holds a **roughly constant fraction** ($\approx 1/e$ for the default $m_L$) of the nodes below it — a **pyramid**: the base (layer 0) holds all $N$ nodes; the top holds a handful.
+**The build is incremental, and the key trick is the layer assignment.** HNSW has no separate "train" step; `index.add(x)` inserts vectors one at a time. When a node is inserted, it is assigned a **maximum layer** $\ell$ drawn from a geometric/exponential distribution: $\ell = \lfloor -\ln(u)\cdot m_L \rfloor$ for a uniform $u\in(0,1)$, where $m_L$ is a level-multiplier constant (FAISS's default is $m_L=1/\ln M$). A node present at layer $\ell$ is inserted into every layer from $\ell$ down to 0, connecting to its $M$ nearest neighbours *within each layer*. Because $\Pr[\ell \ge L]$ decays like $e^{-L/m_L}$, each layer up holds a **roughly constant fraction** of the nodes below it: going up one level multiplies the survivor count by $e^{-1/m_L}$, and with the default $m_L = 1/\ln M$ that fraction is $e^{-\ln M} = 1/M$ (here $1/32 \approx 0.031$). So the layers form a **pyramid**: the base (layer 0) holds all $N$ nodes; each level up keeps only $\approx 1/M$ of the one below; the top holds a handful.
 
 This is not hand-waving — we read the *real* pyramid straight off the built graph:
 
@@ -161,7 +161,7 @@ This is not hand-waving — we read the *real* pyramid straight off the built gr
 
 **Greedy descent, and the $O(\log N)$ argument.** A query enters at the single top-layer node and, on that layer, **greedily hops** to whichever neighbour is closer to $\mathbf q$, stopping when no neighbour improves (a local optimum for that layer). It then drops to the next layer down and repeats from where it landed, until the dense base layer, where it does a final broadened search. Why is the total work $\approx O(\log N)$? Two multiplied factors:
 
-1. **Number of layers.** With each layer holding $\approx 1/e$ of the nodes below, the number of non-empty layers is $\approx \log_e N$ — i.e. $O(\log N)$ layers to descend. (Our pyramid: $30000\to944\to23\to2$, four levels, and $\ln 30000\approx 10$.)
+1. **Number of layers.** With each layer holding $\approx 1/M$ of the nodes below, the number of non-empty layers is $\approx \log_M N$ — i.e. $O(\log N)$ layers to descend. (Our pyramid: $30000\to944\to23\to2$, four levels, and $\log_{32} 30000 \approx 3$, in line with the four measured levels.)
 2. **Work per layer is $O(1)$ in expectation.** On a navigable small-world graph, the greedy walk within a layer reaches the local optimum in a bounded (roughly constant) number of hops, because the long-range links let each hop cover a constant *fraction* of the remaining distance — the small-world property.
 
 Multiply them: $O(\log N)$ layers $\times\ O(1)$ hops/layer $= O(\log N)$ total — the hallmark that makes HNSW scale like binary search rather than a linear scan. The build is $O(N\log N)$: each of $N$ insertions runs a greedy search to find its neighbours.
@@ -240,15 +240,15 @@ for p in sweep_ivf(ivf, corpus.queries, ground_truth):   # measured on the real 
 ```
  nprobe | recall@10 | ms/query | speedup vs exact
  -------------------------------------------------
-      1 |     0.674 |    0.017 |          58.3x
-      2 |     0.791 |    0.021 |          45.9x
-      4 |     0.876 |    0.032 |          30.8x
-      8 |     0.933 |    0.050 |          19.6x
-     16 |     0.970 |    0.090 |          11.0x
-     32 |     0.987 |    0.165 |           6.0x
-     64 |     0.997 |    0.324 |           3.0x
-    128 |     0.999 |    0.604 |           1.6x
-    256 |     1.000 |    1.155 |           0.9x
+      1 |     0.674 |    0.017 |          58.5x
+      2 |     0.791 |    0.021 |          46.7x
+      4 |     0.876 |    0.030 |          32.7x
+      8 |     0.933 |    0.051 |          19.1x
+     16 |     0.970 |    0.088 |          11.1x
+     32 |     0.987 |    0.158 |           6.2x
+     64 |     0.997 |    0.317 |           3.1x
+    128 |     0.999 |    0.603 |           1.6x
+    256 |     1.000 |    1.172 |           0.8x
 ```
 
 Read it top to bottom — this is the **recall cliff** the coverage-vs-cost math predicted. At **`nprobe=1`** the index is **~58× faster** than exact but recall is only **0.674** — it misses a third of the true neighbours, because they live in cells it didn't probe. As `nprobe` climbs, recall recovers with diminishing returns: **0.674 → 0.791 → 0.876 → 0.933 → 0.970** — and cost rises linearly. The **sweet spot is `nprobe=16`**: recall **0.970** while still **~11× faster** than exact. Past that, you pay a lot more latency for almost no recall gain (at `nprobe=256` you've scanned every cell — recall 1.0, but *slower* than exact because of the centroid-scan overhead). *That* shape — steep climb then plateau — is exactly what the derivation said, and what you tune against.
@@ -260,21 +260,21 @@ Read it top to bottom — this is the **recall cliff** the coverage-vs-cost math
 ```python
 from vector_indexes import build_hnsw, hnsw_level_counts, sweep_hnsw
 hnsw = build_hnsw(corpus.embeddings)         # M=32, efConstruction=200 — the real graph
-print(hnsw_level_counts(hnsw))               # [30000, 944, 23, 2] — the pyramid, ~1/e decay
+print(hnsw_level_counts(hnsw))               # [30000, 944, 23, 2] — the pyramid, ~1/M decay
 ```
 
-The counts — `30000 → 944 → 23 → 2` — are the geometric decay the math predicted, and $\ln 30000\approx 10$ is the ballpark node-touch count that makes the walk $O(\log N)$. Then `sweep_hnsw` sweeps `efSearch` the same way `sweep_ivf` swept `nprobe`:
+The counts — `30000 → 944 → 23 → 2` — are the $\approx 1/M$ geometric decay the math predicted ($944/30000 \approx 1/32$), giving $\approx \log_M N \approx 3$–$4$ layers to descend — the pyramid that makes the walk $O(\log N)$. Then `sweep_hnsw` sweeps `efSearch` the same way `sweep_ivf` swept `nprobe`:
 
 ```
  efSearch | recall@10 | ms/query | speedup vs exact
  --------------------------------------------------
-        8 |     0.979 |    0.034 |          29.2x
-       16 |     0.991 |    0.056 |          17.6x
-       32 |     0.996 |    0.090 |          10.9x
-       64 |     0.998 |    0.141 |           7.0x
-      128 |     0.999 |    0.271 |           3.6x
-      256 |     1.000 |    0.508 |           1.9x
-      512 |     1.000 |    0.921 |           1.1x
+        8 |     0.979 |    0.034 |          28.5x
+       16 |     0.991 |    0.051 |          19.2x
+       32 |     0.996 |    0.082 |          11.9x
+       64 |     0.998 |    0.147 |           6.6x
+      128 |     0.999 |    0.274 |           3.6x
+      256 |     1.000 |    0.480 |           2.0x
+      512 |     1.000 |    0.985 |           1.0x
 ```
 
 Notice how much *higher and flatter* HNSW's curve starts: even at `efSearch=8` it's already at **recall 0.979 while ~29× faster than exact** — a point IVF never reaches (IVF's fastest 0.97-recall setting is only ~11× faster). That's HNSW's reputation in one table.
@@ -375,7 +375,7 @@ Real systems, with **verified** specifics:
 - *Why doesn't exact search scale?* It's $O(N \cdot d)$ — linear in corpus size; 10M×768 ≈ 7.7B ops per query, and the raw vectors stop fitting in RAM.
 - *IVF in one sentence?* k-means the vectors into cells; at query time probe only the `nprobe` nearest cells' inverted lists.
 - *Why does nprobe trade recall for speed?* Recall = fraction of true neighbours living in the probed cells (rises with diminishing returns); cost = vectors scanned $\approx n_{\text{probe}}\,N/n_{\text{list}}$ (rises linearly) — hence a cliff then a plateau.
-- *HNSW in one sentence?* A multi-layer navigable graph whose layers decay ~1/e per level; greedily hop neighbour→neighbour toward the query, ~$O(\log N)$ (≈ $\log N$ layers × $O(1)$ hops/layer).
+- *HNSW in one sentence?* A multi-layer navigable graph whose layers decay ~1/M per level (with $m_L=1/\ln M$); greedily hop neighbour→neighbour toward the query, ~$O(\log N)$ (≈ $\log_M N$ layers × $O(1)$ hops/layer).
 - *What's the recall cliff?* Too-low `nprobe`/`efSearch` is fast but silently misses neighbours (IVF recall 0.67 at nprobe=1 in our measured sweep).
 - *IVF vs HNSW?* IVF partitions space (lighter, updatable, tune `nprobe`); HNSW connects points (dominates the recall/latency frontier, but more memory, ~9 s build, harder to update).
 - *What does PQ buy and cost?* 32× less memory (m=48 codebook ids vs raw floats); costs recall from approximate (asymmetric) distances (we measured 0.97 → 0.69).

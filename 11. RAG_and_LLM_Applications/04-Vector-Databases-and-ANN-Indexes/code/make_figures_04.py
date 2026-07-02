@@ -343,7 +343,7 @@ def fig_ivf_cell_sizes(ivf) -> None:
 
 
 def fig_hnsw_pyramid(hnsw) -> None:
-    """REAL HNSW layer pyramid: node counts per level, showing the geometric (~1/e) decay."""
+    """REAL HNSW layer pyramid: node counts per level, showing the geometric (~1/M) decay."""
     counts = hnsw_level_counts(hnsw)
     fig, ax = plt.subplots(figsize=(7.8, 4.8))
     _style_axis(ax)

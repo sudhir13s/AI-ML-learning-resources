@@ -169,7 +169,8 @@ def hnsw_level_counts(index: faiss.IndexHNSWFlat) -> np.ndarray:
     HNSW assigns each inserted node a maximum layer drawn from a geometric/exponential decay, so
     the layer populations shrink by a roughly constant factor going up — the *pyramid* that gives
     the graph its O(log N) navigation. Reading the real per-level counts off the built index shows
-    that decay directly (each level up holds ~1/e of the level below, for FAISS's default mL).
+    that decay directly: with FAISS's default mL = 1/ln(M), each level up holds ~1/M of the level
+    below (e^{-1/mL} = e^{-ln M} = 1/M; e.g. 1/32 for M=32).
     """
     levels = faiss.vector_to_array(index.hnsw.levels)  # per-node max level (1-based in FAISS)
     if levels.size == 0:

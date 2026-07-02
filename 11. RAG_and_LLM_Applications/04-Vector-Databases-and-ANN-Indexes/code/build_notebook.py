@@ -244,10 +244,11 @@ CELLS = [
         "HNSW takes the other route: instead of partitioning space it wires the vectors into a **multi-layer "
         "navigable graph**. `index.add(x)` builds it incrementally — there's no separate `train()`. When each "
         "node is inserted, it is assigned a **maximum layer** drawn from an exponentially-decaying "
-        "distribution, so the layers form a **pyramid**: layer 0 (the base) holds *all* N nodes densely "
-        "connected; each layer up holds roughly $1/e$ as many, with long-range links. A query enters at the "
-        "sparse top and greedily descends — that shrinking pyramid is precisely what turns 'walk the graph' "
-        "into $\\approx O(\\log N)$ hops. Below we read the **real per-layer node counts** off the built "
+        "distribution with multiplier $m_L = 1/\\ln M$, so the layers form a **pyramid**: layer 0 (the base) "
+        "holds *all* N nodes densely connected; each layer up keeps only $\\approx 1/M$ as many (here "
+        "$1/32 \\approx 0.031$, since $e^{-1/m_L} = e^{-\\ln M} = 1/M$), with long-range links. A query enters "
+        "at the sparse top and greedily descends — that shrinking pyramid is precisely what turns 'walk the "
+        "graph' into $\\approx O(\\log N)$ hops. Below we read the **real per-layer node counts** off the built "
         "index and watch the geometric decay.",
     ),
     code(
@@ -257,8 +258,8 @@ CELLS = [
         "print(f'layer node counts (base → top): {counts.tolist()}')",
         "for lvl in range(len(counts) - 1):",
         "    print(f'  level {lvl} → {lvl+1}: {counts[lvl]:,} → {counts[lvl+1]:,} '",
-        "          f'(×{counts[lvl+1]/counts[lvl]:.3f}; ~1/e≈0.368 is the target decay)')",
-        "print(f'a query touches only ~O(log N) ≈ {np.log(corpus.n):.0f} nodes per layer, not all {corpus.n:,}.')",
+        "          f'(×{counts[lvl+1]/counts[lvl]:.3f}; ~1/M = 1/{HNSW_M} ≈ {1/HNSW_M:.3f} is the target decay)')",
+        "print(f'~log_M(N) ≈ {np.log(corpus.n)/np.log(HNSW_M):.1f} layers to descend — the pyramid gives O(log N).')",
     ),
     # ---------------------------------------------------------------- Step 9
     md(
@@ -395,9 +396,9 @@ CELLS = [
         "- **IVF is a k-means partition** — we looked inside it: real centroids and imbalanced cell sizes; a "
         "query routes to the `nprobe` nearest cells and scans only those. We *measured* the recall cliff and "
         "the sweet spot.",
-        "- **HNSW is a layered graph** — we read the real layer pyramid (each level ~1/e of the one below), "
-        "which is what makes greedy descent ~$O(\\log N)$; `efSearch` is its recall/speed knob, and it sits "
-        "higher-and-left on the recall/latency frontier.",
+        "- **HNSW is a layered graph** — we read the real layer pyramid (each level ~1/M of the one below, "
+        "with $m_L=1/\\ln M$), which is what makes greedy descent ~$O(\\log N)$; `efSearch` is its recall/speed "
+        "knob, and it sits higher-and-left on the recall/latency frontier.",
         "- **PQ is a codebook compression** — we encoded real vectors into 48-byte codes and decoded them, "
         "measuring the reconstruction error that trades a little recall for ~32× memory; `IndexIVFPQ` fuses "
         "it with IVF routing for billion-scale search.",
