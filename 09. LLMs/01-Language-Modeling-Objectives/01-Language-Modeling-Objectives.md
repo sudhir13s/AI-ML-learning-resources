@@ -224,7 +224,7 @@ $$\mathcal{L} \;=\; \frac{1}{T}\sum_{t=1}^{T} -\log p(x_t \mid x_{<t})$$
 
 where $T$ is the number of scored positions. This is a single scalar; backprop pushes the model to raise $p$ on the true tokens.
 
-> *Where this comes from: the cross-entropy / maximum-likelihood objective for language models is laid out in **Speech and Language Processing** (Jurafsky & Martin, Ch. 10) and **Deep Learning** (Goodfellow et al., Ch. 10), both in the references. The shapes follow directly from the transformer's per-position vocabulary projection in **Attention Is All You Need** (Vaswani et al. 2017).*
+> **Source / derivation:** the cross-entropy / maximum-likelihood objective for language models is laid out in [Jurafsky & Martin, *Speech and Language Processing*, Ch. 10](https://web.stanford.edu/~jurafsky/slp3/10.pdf) and [Goodfellow et al., *Deep Learning*, Ch. 10](https://www.deeplearningbook.org/contents/rnn.html), both in the references. The shapes follow directly from the transformer's per-position vocabulary projection in [Vaswani et al., *Attention Is All You Need* (2017)](https://arxiv.org/abs/1706.03762).
 
 **Step 4 — perplexity, the human-readable twin.** Loss in "nats" (log base $e$) is hard to feel. **Perplexity** exponentiates it back into a number you can interpret:
 
