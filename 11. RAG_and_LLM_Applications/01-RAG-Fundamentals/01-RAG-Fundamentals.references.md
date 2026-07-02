@@ -3,7 +3,7 @@ id: "11-rag-and-llm-apps/rag-fundamentals/references"
 topic: "RAG Fundamentals — References"
 parent: "11-rag-and-llm-apps/rag-fundamentals"
 type: references
-updated: 2026-06-27
+updated: 2026-07-02
 ---
 
 # RAG Fundamentals — references and further reading
@@ -16,6 +16,13 @@ updated: 2026-06-27
 3. **Read the source** — skim [Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks](https://arxiv.org/abs/2005.11401) (**Lewis et al. 2020**). *Where "RAG" was coined; the retriever + generator framing and the marginalization equation.*
 4. **Build one end-to-end** — follow [RAG from Scratch](https://github.com/langchain-ai/rag-from-scratch) (**LangChain**) or watch [Learn RAG From Scratch](https://www.youtube.com/watch?v=sVcwVQRHIc8) (**freeCodeCamp**). *Wiring loader → splitter → embedder → vector store → retriever → LLM cements every term.*
 5. **Ground it in theory** — read [SLP3 Ch. 14 (IR + RAG)](https://web.stanford.edu/~jurafsky/slp3/14.pdf) (**Jurafsky & Martin**). *Retrieve-then-read and evaluation, from the standard NLP textbook.*
+
+**Real components used on this page** (every result on the concept page is produced by running these):
+- [`rag-datasets/rag-mini-wikipedia`](https://huggingface.co/datasets/rag-datasets/rag-mini-wikipedia) — the real corpus: **3,200 Wikipedia passages + 918 QA pairs**, loaded via the `datasets` library.
+- [`sentence-transformers/all-MiniLM-L6-v2`](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2) — the real **384-dim bi-encoder** that embeds corpus and queries; see the [Sentence-Transformers docs](https://www.sbert.net/) for the bi-/cross-encoder distinction.
+- [FAISS](https://github.com/facebookresearch/faiss) ([wiki](https://github.com/facebookresearch/faiss/wiki)) — the real **vector index** (`IndexFlatIP`, exact inner-product search); Facebook AI's similarity-search library.
+- [`cross-encoder/ms-marco-MiniLM-L-6-v2`](https://huggingface.co/cross-encoder/ms-marco-MiniLM-L-6-v2) — the real **cross-encoder reranker** that lifted recall@1 from 0.42 to 0.65 on this page.
+- [`meta-llama/Llama-3.1-8B-Instruct`](https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct) via the [Hugging Face Inference API](https://huggingface.co/docs/huggingface_hub/guides/inference) — the real **LLM** that generates the grounded answers (`InferenceClient.chat_completion`, `temperature=0`).
 
 **Videos**:
 - [What is Retrieval-Augmented Generation (RAG)?](https://www.youtube.com/watch?v=T-D1OfcDW1M) — **IBM Technology (Marina Danilevsky)** — the clearest 6-minute conceptual overview; *why* retrieval beats memorization.
@@ -44,6 +51,7 @@ updated: 2026-06-27
 - [REALM: Retrieval-Augmented Language Model Pre-Training](https://arxiv.org/abs/2002.08909) — **Guu et al. (2020)** — the contemporaneous idea of training a retriever jointly with a masked LM; foundational context for RAG.
 - [Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks](https://arxiv.org/abs/2005.11401) — **Lewis et al. (2020)** — the original RAG paper; **Eq. 1–2 give the marginalization $P(y\mid x)=\sum_z P(z\mid x)P(y\mid x,z)$** used on the concept page.
 - [Lost in the Middle: How Language Models Use Long Contexts](https://arxiv.org/abs/2307.03172) — **Liu et al. (2024, TACL)** — the U-shaped accuracy curve (evidence used best at the start/end of context, worst in the middle) behind the lost-in-the-middle figure.
+- [Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks](https://arxiv.org/abs/1908.10084) — **Reimers & Gurevych (2019)** — the bi-encoder architecture behind `all-MiniLM-L6-v2`, and (§ on cross-encoders) the retrieve-with-bi-encoder / rerank-with-cross-encoder pattern this page measures.
 - [Retrieval-Augmented Generation for Large Language Models: A Survey](https://arxiv.org/abs/2312.10997) — **Gao et al. (2023)** — comprehensive survey; the taxonomy that organizes the rest of this domain.
 
 **Books (free, with chapters)**:

@@ -1,219 +1,283 @@
-"""From-scratch RAG: retrieve-then-generate on a tiny corpus, with the retrieval visible.
+"""A real, production-shaped mini-RAG over a real Hugging Face corpus.
 
-Builds a complete Retrieval-Augmented Generation pipeline from primitives so every step is
-inspectable: a transparent hashing + TF-IDF embedder (no model download, runs on CPU in
-milliseconds), cosine-similarity top-k retrieval, prompt augmentation, and a deterministic
-extractive "generator". The whole point is to *see* the mechanics — embedding -> index ->
-top-k -> augment -> ground — not to call a black-box library.
+This is the retrieve-then-generate pipeline built out of the *actual* components a production
+RAG uses -- no toy corpus, no hand-rolled embedder, no stubbed generation:
 
-The headline demonstration: ask a question whose answer is NOT in the model's frozen
-parametric knowledge (a private fact), show the ungrounded path inventing/refusing, then show
-the grounded path answering correctly because the right passage was retrieved into the prompt.
+  * corpus     -- a real Hugging Face dataset (`rag-datasets/rag-mini-wikipedia`): 3,200 real
+                  Wikipedia passages + 918 real question/answer pairs.
+  * embeddings -- a real sentence-transformers bi-encoder (`all-MiniLM-L6-v2`, 384-d).
+  * index      -- a real FAISS approximate/exact nearest-neighbour index (`IndexFlatIP`).
+  * rerank     -- a real cross-encoder (`ms-marco-MiniLM-L-6-v2`) that re-scores candidates.
+  * generation -- a real LLM through the Hugging Face Inference API
+                  (`meta-llama/Llama-3.1-8B-Instruct` by default), grounded on the retrieved text.
 
-This is the same verified code embedded in the concept page and the teaching notebook.
-Verified on Python 3.12 / numpy 2.x. Device-agnostic for the torch report line (CUDA / MPS /
-CPU); the retrieval math itself is pure numpy and identical on any machine.
+The module is import-safe and side-effect-light: constructing the objects loads models and calls
+the network, so nothing runs at import time. Build a `RagPipeline` and call it.
 
-Run:
+Reproducibility / honesty
+--------------------------
+Retrieval is deterministic given fixed model weights (the embedder + FAISS are pure math).
+Generation goes through a hosted LLM: we send `temperature=0` for as-deterministic-as-possible
+decoding, but a hosted endpoint can still vary run-to-run (provider routing, model updates,
+sampling floors). We never fabricate an answer -- if the API is unreachable, the call raises.
+
+The libomp / OpenMP guard
+-------------------------
+FAISS and PyTorch (via sentence-transformers) can each load their own OpenMP runtime; on macOS
+this collides and segfaults. Setting `KMP_DUPLICATE_LIB_OK` and pinning `OMP_NUM_THREADS`
+*before* faiss/torch import defuses it. We do that at the very top of this module, so any file
+that imports `rag_fundamentals` first is protected -- including the notebook and figure scripts.
+
+Run the end-to-end demo:
     python rag_fundamentals.py
 """
 
 from __future__ import annotations
 
-import re
-from dataclasses import dataclass
+# --- OpenMP guard: MUST run before faiss / torch import (see module docstring) --------------
+import os
 
+os.environ.setdefault("KMP_DUPLICATE_LIB_OK", "TRUE")  # allow the two libomp copies to coexist
+os.environ.setdefault("OMP_NUM_THREADS", "1")  # pin threads so faiss+torch don't fight over them
+os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")  # silence the HF tokenizers fork warning
+
+import time
+from dataclasses import dataclass, field
+
+import faiss
 import numpy as np
+from datasets import load_dataset
+from huggingface_hub import InferenceClient
+from sentence_transformers import CrossEncoder, SentenceTransformer
 
-# ---- Corpus: a tiny "private knowledge base" the LLM was never trained on -------------------
-# Each string is one chunk (one passage). In a real system these come from splitting documents;
-# here we keep them short and self-contained so retrieval is easy to read by eye.
-CORPUS: tuple[str, ...] = (
-    "The Helios-7 satellite was launched on March 3rd, 2024 from the Kourou spaceport.",
-    "Helios-7 carries a hyperspectral imager with a ground resolution of 4 meters.",
-    "The project lead for Helios-7 is Dr. Amara Okoye, based in the Nairobi office.",
-    "Helios-7 completes one orbit of Earth every 97 minutes in a sun-synchronous orbit.",
-    "Photosynthesis converts carbon dioxide and water into glucose using sunlight.",
-    "The Eiffel Tower in Paris was completed in 1889 for the World's Fair.",
-    "A standard chessboard has 64 squares arranged in an 8 by 8 grid.",
-    "Water boils at 100 degrees Celsius at standard atmospheric pressure.",
+# ---- Real component identifiers (all verified to run in the target env) --------------------
+DATASET_ID = "rag-datasets/rag-mini-wikipedia"  # real Wikipedia passages + QA pairs
+EMBED_MODEL_ID = "sentence-transformers/all-MiniLM-L6-v2"  # 384-d bi-encoder, CPU-fast
+RERANK_MODEL_ID = "cross-encoder/ms-marco-MiniLM-L-6-v2"  # cross-encoder re-scorer
+# Generation model: Llama-3.1-8B is an open instruct model reliably served by the HF router.
+# The fallbacks are tried in order if the primary is momentarily unavailable (the router's
+# per-model availability genuinely fluctuates -- we saw Qwen 7B flip between runs).
+GEN_MODEL_IDS: tuple[str, ...] = (
+    "meta-llama/Llama-3.1-8B-Instruct",
+    "meta-llama/Llama-3.3-70B-Instruct",
+    "deepseek-ai/DeepSeek-V3",
 )
 
-# ---- Embedding hyperparameters (hoisted; no magic numbers inline) ---------------------------
-EMBED_DIM = 256  # hashing dimensionality: big enough that token collisions are rare on this corpus
-TOP_K = 3  # how many passages to retrieve and stuff into the prompt
-TOKEN_RE = re.compile(r"[a-z0-9]+")  # lowercase alphanumeric tokens; drops punctuation/case
-# NOTE: no random seed — the whole pipeline is deterministic by construction. The embedder uses a
-# fixed FNV-1a hash (see _stable_hash) precisely so there is no stochastic step to seed; identical
-# inputs always produce identical vectors, scores, and answers across runs and machines.
+# ---- Retrieval / generation hyperparameters (hoisted; no magic numbers inline) -------------
+TOP_K = 3  # passages retrieved into the prompt by default
+RERANK_CANDIDATES = 20  # how many dense hits to hand the cross-encoder before it re-ranks
+MAX_NEW_TOKENS = 200  # cap on generated answer length
+GEN_TEMPERATURE = 0.0  # greedy-ish decoding for maximum reproducibility
 
-# Two test questions: one answerable only from the private corpus, one a generic fact.
-PRIVATE_QUESTION = "When was the Helios-7 satellite launched?"
-GENERIC_QUESTION = "How many squares are on a chessboard?"
-
-# The single passage that actually answers PRIVATE_QUESTION (index into CORPUS), used to assert
-# the retriever surfaces the right evidence rather than something merely word-adjacent.
-PRIVATE_GOLD_INDEX = 0
+# The augmented-prompt template: the instruction that makes the model answer *from context*,
+# plus a hard "say you don't know" clause so a corpus miss surfaces as an honest refusal.
+PROMPT_TEMPLATE = (
+    "Answer the question using ONLY the context below. If the context does not contain the "
+    "answer, say you don't know. Cite the passage number(s) in square brackets that you used.\n\n"
+    "Context:\n{context}\n\nQuestion: {question}\nAnswer:"
+)
 
 
-def tokenize(text: str) -> list[str]:
-    """Lowercase and split into alphanumeric tokens — the unit both the embedder and IDF count over."""
-    return TOKEN_RE.findall(text.lower())  # findall over the precompiled regex = fast, punctuation-free
+@dataclass(frozen=True)
+class RetrievedPassage:
+    """One retrieved passage: its corpus index, text, and the score that surfaced it."""
 
-
-def compute_idf(corpus: tuple[str, ...]) -> dict[str, float]:
-    """Inverse document frequency per token: log(N / df) — rare words weigh more than common ones.
-
-    IDF is what makes "Helios" matter more than "the": a token appearing in every passage carries
-    no discriminative signal, so its weight collapses toward zero; a token in one passage is a
-    strong fingerprint for that passage.
-    """
-    n_docs = len(corpus)
-    doc_freq: dict[str, int] = {}
-    for doc in corpus:
-        # set(...) so a token repeated within one passage still counts as ONE document, not many
-        for token in set(tokenize(doc)):
-            doc_freq[token] = doc_freq.get(token, 0) + 1
-    # +1 inside the log keeps IDF strictly positive even for a token present in every document
-    return {tok: float(np.log(n_docs / df) + 1.0) for tok, df in doc_freq.items()}
-
-
-def embed(text: str, idf: dict[str, float], dim: int = EMBED_DIM) -> np.ndarray:
-    """Map text -> a fixed-length L2-normalized vector via IDF-weighted feature hashing.
-
-    Feature hashing (the "hashing trick") gives every token a deterministic slot in a `dim`-wide
-    vector via `hash(token) % dim`, with no vocabulary to store. Each token adds its IDF weight to
-    its slot, so the vector is a weighted bag-of-words. We L2-normalize at the end so that cosine
-    similarity reduces to a plain dot product — the geometry the retriever relies on.
-    """
-    vec = np.zeros(dim, dtype=np.float64)
-    for token in tokenize(text):
-        # a stable per-token slot; we fold the token's own hash to pick a +/- sign so unrelated
-        # tokens colliding in the same slot tend to cancel rather than spuriously reinforce
-        slot = _stable_hash(token) % dim
-        sign = 1.0 if (_stable_hash(token + "#sign") % 2 == 0) else -1.0
-        vec[slot] += sign * idf.get(token, 1.0)  # unseen tokens (e.g. in a query) default to weight 1
-    norm = np.linalg.norm(vec)
-    # guard the all-zero vector (text with no known tokens) so we never divide by zero
-    return vec / norm if norm > 0 else vec
-
-
-def _stable_hash(token: str) -> int:
-    """A deterministic hash that does NOT depend on Python's per-process hash randomization.
-
-    Python salts the built-in `hash()` of strings per process (PYTHONHASHSEED), which would make
-    embeddings — and therefore every downstream result — change run to run. A small FNV-1a hash
-    keeps the whole pipeline reproducible.
-    """
-    h = 0x811C9DC5  # FNV offset basis (32-bit)
-    for byte in token.encode("utf-8"):
-        h ^= byte
-        h = (h * 0x01000193) & 0xFFFFFFFF  # FNV prime, masked to 32 bits
-    return h
-
-
-def build_index(corpus: tuple[str, ...], idf: dict[str, float]) -> np.ndarray:
-    """Embed every passage once -> a (n_docs, dim) matrix. This is the 'index' we retrieve against."""
-    # np.stack over a list comprehension: one row per passage, all rows the same width
-    return np.stack([embed(doc, idf) for doc in corpus])
-
-
-def cosine_top_k(
-    query_vec: np.ndarray, index: np.ndarray, k: int = TOP_K
-) -> tuple[np.ndarray, np.ndarray]:
-    """Return (indices, scores) of the k passages most similar to the query, best first.
-
-    Because every row of `index` and the query are L2-normalized, the matrix-vector product
-    `index @ query_vec` is exactly the vector of cosine similarities — one dot product per passage.
-    """
-    scores = index @ query_vec  # (n_docs, dim) @ (dim,) -> (n_docs,) cosine score per passage
-    # argsort is ascending; take the last k and reverse to get the top-k in descending score order
-    top = np.argsort(scores)[-k:][::-1]
-    return top, scores[top]
-
-
-def build_prompt(question: str, passages: list[str]) -> str:
-    """Stitch retrieved passages + the question into the augmented prompt the generator sees.
-
-    This is the 'augment' step: the model's input is no longer just the question, it's the question
-    grounded in evidence. The instruction line tells the generator to answer *from the context*.
-    """
-    context = "\n".join(f"[{i + 1}] {p}" for i, p in enumerate(passages))  # numbered so answers can cite
-    return (
-        "Answer the question using ONLY the context below. "
-        "If the context does not contain the answer, say you don't know.\n\n"
-        f"Context:\n{context}\n\nQuestion: {question}\nAnswer:"
-    )
+    doc_id: int
+    text: str
+    score: float  # cosine similarity (dense) or cross-encoder logit (after rerank)
 
 
 @dataclass
-class Answer:
-    """A generator's reply plus the passage it grounded on (None when it had no evidence)."""
+class RagResult:
+    """The full trace of one RAG query -- everything needed to inspect *why* an answer was given."""
 
-    text: str
-    grounded_on: str | None
+    question: str
+    retrieved: list[RetrievedPassage]  # passages fed to the generator, best-first
+    prompt: str  # the exact augmented prompt sent to the LLM
+    answer: str  # the LLM's grounded answer
+    model: str  # which generation model actually produced it
+    latency_s: dict[str, float] = field(default_factory=dict)  # per-stage wall time
 
 
-def generate_ungrounded(question: str) -> Answer:
-    """Stand in for a frozen LLM answering from parametric memory alone — no retrieval.
+def load_corpus(*, max_passages: int | None = None) -> tuple[list[str], list[dict[str, str]]]:
+    """Load the real Wikipedia corpus and QA pairs from the Hugging Face Hub.
 
-    A real LLM has no Helios-7 facts in its weights, so it would refuse or hallucinate. We model the
-    *honest* version of that failure: it knows the generic fact (chessboard) but not the private one.
-    The lesson is the contrast with the grounded path, not this toy's cleverness.
+    Returns `(passages, qa)` where `passages` is a list of raw passage strings (each already a
+    reasonable chunk -- this dataset ships pre-split) and `qa` is a list of `{question, answer}`
+    dicts. `max_passages` truncates the corpus for a faster demo; `None` uses all 3,200.
     """
-    parametric_memory = {
-        "chessboard": "A chessboard has 64 squares.",  # a fact plausibly in pretraining data
-    }
-    for key, fact in parametric_memory.items():
-        if key in question.lower():
-            return Answer(fact, grounded_on=None)
-    # the private fact isn't in memory -> the honest outcome is "I don't know" (vs. a hallucination)
-    return Answer("I don't have information about that.", grounded_on=None)
+    corpus_split = load_dataset(DATASET_ID, "text-corpus")["passages"]
+    qa_split = load_dataset(DATASET_ID, "question-answer")["test"]
+    passages = [row["passage"] for row in corpus_split]
+    if max_passages is not None:
+        passages = passages[:max_passages]
+    qa = [{"question": row["question"], "answer": str(row["answer"])} for row in qa_split]
+    return passages, qa
 
 
-def generate_grounded(question: str, passages: list[str]) -> Answer:
-    """Deterministic extractive 'generator': answer from the retrieved passages, not from memory.
+class RagPipeline:
+    """A real retrieve-then-generate pipeline: embed -> FAISS index -> retrieve -> (rerank) -> generate.
 
-    Real RAG feeds the augmented prompt to an LLM. To keep this runnable with no model, we extract
-    the best-matching passage as the answer — which is enough to *prove the mechanism*: the answer
-    now comes from retrieved evidence. The selection mirrors retrieval: score each passage's token
-    overlap with the question and return the strongest, so the 'answer' is grounded and citable.
+    Construction is where the work happens: it downloads/loads the embedding model, embeds the
+    whole corpus once, and builds the FAISS index. The reranker and the LLM client are created
+    lazily on first use so a retrieval-only workflow pays for neither.
     """
-    q_tokens = set(tokenize(question)) - _STOPWORDS  # drop filler so overlap reflects content words
-    best_passage, best_overlap = None, -1
-    for passage in passages:
-        overlap = len(q_tokens & set(tokenize(passage)))  # shared content tokens = grounding strength
-        if overlap > best_overlap:
-            best_passage, best_overlap = passage, overlap
-    if best_passage is None or best_overlap == 0:
-        return Answer("I don't have information about that.", grounded_on=None)
-    return Answer(best_passage, grounded_on=best_passage)
+
+    def __init__(
+        self,
+        passages: list[str],
+        *,
+        embed_model_id: str = EMBED_MODEL_ID,
+        gen_model_ids: tuple[str, ...] = GEN_MODEL_IDS,
+        hf_token: str | None = None,
+    ) -> None:
+        self.passages = passages
+        self.embed_model_id = embed_model_id
+        self.gen_model_ids = gen_model_ids
+        self._hf_token = hf_token or os.environ.get("HF_TOKEN")
+
+        # 1) Embed the corpus with the real bi-encoder. `normalize_embeddings=True` gives unit
+        #    vectors so that inner product == cosine similarity -- the geometry FAISS-IP expects.
+        self.embedder = SentenceTransformer(embed_model_id)
+        t = time.perf_counter()
+        embeddings = self.embedder.encode(
+            passages, normalize_embeddings=True, batch_size=128, show_progress_bar=False
+        )
+        self.embeddings = np.asarray(embeddings, dtype="float32")
+        self.embed_seconds = time.perf_counter() - t
+        self.dim = int(self.embeddings.shape[1])
+
+        # 2) Build the real FAISS index. IndexFlatIP does exact inner-product search -- at this
+        #    scale (thousands of vectors) exact is ~2 ms/query, so we get ground-truth neighbours
+        #    with no approximation error. (Vector-DB chapter swaps in HNSW/IVF for millions.)
+        self.index = faiss.IndexFlatIP(self.dim)
+        self.index.add(self.embeddings)
+
+        # Lazily initialised heavy components.
+        self._reranker: CrossEncoder | None = None
+        self._client: InferenceClient | None = None
+        self._active_gen_model: str | None = None
+
+    # -- retrieval -----------------------------------------------------------------------------
+
+    def embed_query(self, question: str) -> np.ndarray:
+        """Embed a query with the SAME model as the corpus (mismatched embedders => garbage)."""
+        vec = self.embedder.encode([question], normalize_embeddings=True)
+        return np.asarray(vec, dtype="float32")
+
+    def retrieve(self, question: str, *, k: int = TOP_K) -> list[RetrievedPassage]:
+        """Dense retrieval: embed the query, ask FAISS for the k nearest passages by cosine."""
+        query_vec = self.embed_query(question)
+        scores, ids = self.index.search(query_vec, k)  # (1, k) each; scores are cosine sims
+        return [
+            RetrievedPassage(doc_id=int(i), text=self.passages[int(i)], score=float(s))
+            for i, s in zip(ids[0], scores[0])
+        ]
+
+    def rerank(
+        self, question: str, candidates: list[RetrievedPassage], *, k: int = TOP_K
+    ) -> list[RetrievedPassage]:
+        """Re-score dense candidates with the cross-encoder and keep the top-k.
+
+        A bi-encoder embeds query and passage independently; a cross-encoder reads the
+        (query, passage) pair jointly and is far more accurate -- but too slow to run over the
+        whole corpus, so it only re-orders a shortlist the fast dense stage already narrowed.
+        """
+        if self._reranker is None:
+            self._reranker = CrossEncoder(RERANK_MODEL_ID)
+        pairs = [(question, c.text) for c in candidates]
+        ce_scores = self._reranker.predict(pairs)
+        reranked = [
+            RetrievedPassage(doc_id=c.doc_id, text=c.text, score=float(s))
+            for c, s in zip(candidates, ce_scores)
+        ]
+        reranked.sort(key=lambda p: p.score, reverse=True)
+        return reranked[:k]
+
+    def retrieve_and_rerank(
+        self, question: str, *, k: int = TOP_K, candidates: int = RERANK_CANDIDATES
+    ) -> list[RetrievedPassage]:
+        """Full retrieval: cast a wide dense net (`candidates`), then cross-encoder rerank to `k`."""
+        dense = self.retrieve(question, k=candidates)
+        return self.rerank(question, dense, k=k)
+
+    # -- augmentation --------------------------------------------------------------------------
+
+    @staticmethod
+    def build_prompt(question: str, passages: list[RetrievedPassage]) -> str:
+        """Splice retrieved passages + the question into the augmented prompt (the 'open book')."""
+        context = "\n".join(f"[{rank}] {p.text}" for rank, p in enumerate(passages, start=1))
+        return PROMPT_TEMPLATE.format(context=context, question=question)
+
+    # -- generation ----------------------------------------------------------------------------
+
+    def _generate(self, prompt: str, *, max_new_tokens: int = MAX_NEW_TOKENS) -> tuple[str, str]:
+        """Call the real HF Inference API, trying each generation model until one responds.
+
+        Returns `(answer_text, model_id)`. Raises `RuntimeError` if every candidate model fails --
+        we never silently fabricate an answer.
+        """
+        if self._client is None:
+            self._client = InferenceClient(token=self._hf_token)
+        last_error: Exception | None = None
+        for model_id in self.gen_model_ids:
+            try:
+                response = self._client.chat_completion(
+                    model=model_id,
+                    messages=[{"role": "user", "content": prompt}],
+                    max_tokens=max_new_tokens,
+                    temperature=GEN_TEMPERATURE,
+                )
+                self._active_gen_model = model_id
+                return response.choices[0].message.content.strip(), model_id
+            except Exception as error:  # noqa: BLE001 -- provider errors vary; we try the next model
+                last_error = error
+                continue
+        raise RuntimeError(
+            f"all generation models failed ({self.gen_model_ids}); last error: {last_error}"
+        )
+
+    def generate_ungrounded(self, question: str, *, max_new_tokens: int = MAX_NEW_TOKENS) -> str:
+        """Ask the LLM the bare question -- no retrieval, answer from parametric memory alone."""
+        answer, _ = self._generate(question, max_new_tokens=max_new_tokens)
+        return answer
+
+    # -- end to end ----------------------------------------------------------------------------
+
+    def answer(
+        self, question: str, *, k: int = TOP_K, rerank: bool = True, max_new_tokens: int = MAX_NEW_TOKENS
+    ) -> RagResult:
+        """Full RAG: retrieve (+rerank) -> augment -> generate, returning the whole trace."""
+        latency: dict[str, float] = {}
+
+        t = time.perf_counter()
+        retrieved = (
+            self.retrieve_and_rerank(question, k=k) if rerank else self.retrieve(question, k=k)
+        )
+        latency["retrieve_s"] = time.perf_counter() - t
+
+        prompt = self.build_prompt(question, retrieved)
+
+        t = time.perf_counter()
+        answer_text, model_id = self._generate(prompt, max_new_tokens=max_new_tokens)
+        latency["generate_s"] = time.perf_counter() - t
+
+        return RagResult(
+            question=question,
+            retrieved=retrieved,
+            prompt=prompt,
+            answer=answer_text,
+            model=model_id,
+            latency_s=latency,
+        )
 
 
-# Stopwords kept tiny and explicit — just enough that question/passage overlap reflects content,
-# not grammar. A production system would use a real list or learned weights.
-_STOPWORDS = frozenset(
-    {"the", "a", "an", "is", "was", "were", "are", "of", "on", "in", "to", "how", "when", "what", "many"}
-)
+def _print_banner(pipeline: RagPipeline) -> None:
+    """Print the reproducibility banner: versions + the real components in play."""
+    import datasets as _ds
+    import huggingface_hub as _hf
+    import sentence_transformers as _st
 
-
-def rag_answer(
-    question: str, corpus: tuple[str, ...], idf: dict[str, float], index: np.ndarray, k: int = TOP_K
-) -> tuple[Answer, np.ndarray, np.ndarray]:
-    """End-to-end RAG: embed query -> top-k retrieve -> augment -> grounded generate.
-
-    Returns the grounded answer plus the retrieved (indices, scores) so callers can inspect exactly
-    what evidence the answer stood on.
-    """
-    query_vec = embed(question, idf)  # same embedder as the corpus -> query and passages share a space
-    top_idx, top_scores = cosine_top_k(query_vec, index, k=k)
-    retrieved = [corpus[i] for i in top_idx]  # the actual passage strings, best first
-    answer = generate_grounded(question, retrieved)  # generate FROM the retrieved evidence
-    return answer, top_idx, top_scores
-
-
-def _report_device() -> str:
-    """Pick the best torch device for the version banner; the retrieval math itself is pure numpy."""
     try:
         import torch
 
@@ -224,64 +288,56 @@ def _report_device() -> str:
             if torch.backends.mps.is_available()
             else "cpu"
         )
-        print("torch:", torch.__version__, "| device:", device)
-        return device
-    except ImportError:
-        print("torch: not installed (retrieval is pure numpy — unaffected)")
-        return "cpu"
+        torch_v = torch.__version__
+    except ImportError:  # pragma: no cover -- torch ships with sentence-transformers
+        device, torch_v = "cpu", "n/a"
+
+    print("=" * 78)
+    print("REAL mini-RAG -- reproducibility banner")
+    print(f"  numpy {np.__version__} | faiss {faiss.__version__} | torch {torch_v} | device {device}")
+    print(f"  datasets {_ds.__version__} | sentence-transformers {_st.__version__} | hub {_hf.__version__}")
+    print(f"  dataset : {DATASET_ID}  ({len(pipeline.passages)} passages)")
+    print(f"  embed   : {pipeline.embed_model_id}  ({pipeline.dim}-d, {pipeline.embed_seconds:.1f}s to embed corpus)")
+    print(f"  rerank  : {RERANK_MODEL_ID}")
+    print(f"  generate: {' -> '.join(pipeline.gen_model_ids)} (first that responds)")
+    print("=" * 78)
 
 
 def main() -> None:
-    _report_device()
-    print("numpy:", np.__version__)
-    print(f"corpus: {len(CORPUS)} passages | embed_dim: {EMBED_DIM} | top_k: {TOP_K}\n")
+    """Run the headline demonstration: a real hallucination fixed by real retrieval."""
+    passages, qa = load_corpus()
+    pipeline = RagPipeline(passages)
+    _print_banner(pipeline)
 
-    idf = compute_idf(CORPUS)
-    index = build_index(CORPUS, idf)
-    # Shapes first — prove the index is what we think before trusting any retrieval result.
-    print(f"index shape (n_docs, dim): {index.shape}")
-    assert index.shape == (len(CORPUS), EMBED_DIM), "index shape must be (n_docs, embed_dim)"
-    # Every row L2-normalized -> cosine == dot product; check a couple of norms are ~1.
-    norms = np.linalg.norm(index, axis=1)
-    assert np.allclose(norms, 1.0, atol=1e-9), "every passage embedding must be unit-norm"
-    print(f"all passage norms == 1.0: {np.allclose(norms, 1.0, atol=1e-9)}\n")
+    # The headline question. The answering passage exists in the corpus, but the fact is obscure
+    # enough that the bare LLM misattributes it -- exactly the closed-book failure RAG fixes.
+    question = "What was reversed about the temperature scale in 1745?"
 
-    # --- Retrieval, visible: show the top-k for the private question, scores and all ---
-    print(f"QUESTION (private): {PRIVATE_QUESTION}")
-    q_vec = embed(PRIVATE_QUESTION, idf)
-    top_idx, top_scores = cosine_top_k(q_vec, index, k=TOP_K)
-    print(f"top-{TOP_K} retrieved (index, cosine):")
-    for rank, (idx, score) in enumerate(zip(top_idx, top_scores), start=1):
-        print(f"  {rank}. doc[{idx}] cos={score:.3f}  | {CORPUS[idx]}")
-    # Correctness BEFORE any claim: the gold passage must be retrieved, and rank #1.
-    assert PRIVATE_GOLD_INDEX in top_idx, "the answering passage must be in the top-k"
-    assert top_idx[0] == PRIVATE_GOLD_INDEX, "the answering passage must rank #1 for this query"
-    print(f"gold passage doc[{PRIVATE_GOLD_INDEX}] retrieved at rank 1: True\n")
+    print(f"\nQUESTION: {question}\n")
 
-    # --- The headline contrast: ungrounded vs grounded on the SAME private question ---
-    ungrounded = generate_ungrounded(PRIVATE_QUESTION)
-    grounded, _, _ = rag_answer(PRIVATE_QUESTION, CORPUS, idf, index)
-    print("UNGROUNDED (parametric memory only):")
-    print(f"  -> {ungrounded.text}")
-    print("GROUNDED (retrieve-then-generate):")
-    print(f"  -> {grounded.text}")
-    assert grounded.grounded_on is not None, "the grounded answer must cite a retrieved passage"
-    assert "March 3rd, 2024" in grounded.text, "grounded answer must contain the launch date"
-    assert "March 3rd, 2024" not in ungrounded.text, "ungrounded path cannot know the private date"
-    print("grounded answer contains the correct date; ungrounded does not: True\n")
+    # 1) Dense retrieval -- FAISS nearest neighbours, with real cosine scores.
+    dense = pipeline.retrieve(question, k=TOP_K)
+    print(f"DENSE top-{TOP_K} (cosine):")
+    for rank, p in enumerate(dense, 1):
+        print(f"  {rank}. doc[{p.doc_id}] cos={p.score:.3f} | {p.text[:96]}")
+    assert dense[0].score > dense[-1].score, "dense results must be sorted best-first"
 
-    # --- The augmented prompt the generator actually sees ---
-    retrieved_passages = [CORPUS[i] for i in top_idx]
-    print("AUGMENTED PROMPT (what the generator receives):")
-    print("-" * 70)
-    print(build_prompt(PRIVATE_QUESTION, retrieved_passages))
-    print("-" * 70)
+    # 2) The headline contrast: ungrounded (parametric) vs grounded (retrieved) on the SAME question.
+    ungrounded = pipeline.generate_ungrounded(question)
+    result = pipeline.answer(question, rerank=False)
+    print("\nUNGROUNDED (no retrieval, parametric memory only):")
+    print(f"  -> {ungrounded}")
+    print("\nGROUNDED (retrieve-then-generate):")
+    print(f"  -> {result.answer}")
+    print(f"     [model: {result.model} | retrieve {result.latency_s['retrieve_s']*1000:.1f} ms "
+          f"| generate {result.latency_s['generate_s']:.2f} s]")
 
-    # --- A generic question the parametric model already knows -> RAG agrees ---
-    print(f"\nQUESTION (generic): {GENERIC_QUESTION}")
-    generic_ans, _, _ = rag_answer(GENERIC_QUESTION, CORPUS, idf, index)
-    print(f"  grounded -> {generic_ans.text}")
-    assert "64 squares" in generic_ans.text, "generic answer must retrieve the chessboard fact"
+    # 3) An out-of-corpus question: retrieval returns junk, so the honest answer is 'I don't know'.
+    oo = "What was the closing share price of Nvidia stock yesterday?"
+    oo_dense = pipeline.retrieve(oo, k=TOP_K)
+    oo_result = pipeline.answer(oo, rerank=False)
+    print(f"\nOUT-OF-CORPUS: {oo}")
+    print(f"  best cosine only {oo_dense[0].score:.3f} (junk) -> grounded answer: {oo_result.answer}")
 
 
 if __name__ == "__main__":
