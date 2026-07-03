@@ -52,7 +52,7 @@ SEED = 0
 # MLP denoiser trains from scratch to samples that match a real 2-D distribution on CPU in seconds. Every value is
 # a plain dial you can turn in the notebook.
 T_STEPS = 400          # number of diffusion steps; T=400 drives abar_T ~ 0.02 so x_T is essentially N(0, I)
-BETA_START = 1e-4      # linear-schedule endpoints (Ho et al. 2020 use these for T=1000; fine for T=200 in 2-D)
+BETA_START = 1e-4      # linear-schedule endpoints (Ho et al. 2020 use these for T=1000; fine for T=400 in 2-D)
 BETA_END = 0.02
 HIDDEN_DIM = 128       # denoiser MLP width
 TIME_EMB_DIM = 64      # sinusoidal timestep-embedding dimension
