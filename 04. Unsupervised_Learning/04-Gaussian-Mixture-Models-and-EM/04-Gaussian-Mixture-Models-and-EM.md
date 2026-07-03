@@ -6,7 +6,7 @@ level: intermediate
 prereqs: ["k-means", "probability", "multivariate-gaussian", "maximum-likelihood"]
 interview_frequency: high
 template: concept-deep
-updated: 2026-06-22
+updated: 2026-07-03
 ---
 
 # Gaussian Mixture Models & EM: soft clustering you can actually reason about
@@ -15,7 +15,7 @@ updated: 2026-06-22
 
 A **Gaussian Mixture Model (GMM)** fixes both problems at once by doing something more honest: it says the data was *generated* by a handful of **Gaussian distributions** — each with its own location, its own elliptical shape and orientation, and its own share of the data — and it figures out, for every point, the **probability** that each Gaussian produced it. Those probabilities are **soft assignments**, and they're the whole point. A GMM is "k-means with shapes and shades of grey": clusters can be tilted ellipses, and a point can be 70% this cluster and 30% that one.
 
-The catch is that fitting it is a chicken-and-egg problem — *if* we knew which Gaussian made each point we could estimate the Gaussians, and *if* we knew the Gaussians we could assign the points, but we know neither. The algorithm that breaks the deadlock is **Expectation–Maximization (EM)**, one of the most important and reusable algorithms in all of statistics. This page is the definitive treatment: we build the generative model, *derive EM in full* (including the lower bound and the proof that it can never make things worse), work **four** numeric examples by hand, and prove a from-scratch implementation matches scikit-learn down to the log-likelihood.
+The catch is that fitting it is a chicken-and-egg problem — *if* we knew which Gaussian made each point we could estimate the Gaussians, and *if* we knew the Gaussians we could assign the points, but we know neither. The algorithm that breaks the deadlock is **Expectation–Maximization (EM)**, one of the most important and reusable algorithms in all of statistics. This page is the definitive treatment: we build the generative model, *derive EM in full* (including the lower bound and the proof that it can never make things worse), work numeric examples by hand, and prove a from-scratch implementation matches scikit-learn down to the log-likelihood — on **real** data (standardized [Iris](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_iris.html), 150 flowers, 3 species), backed by a runnable four-file chapter (this note, its references, a `gmm_em.py` module, and a step-by-step notebook).
 
 By the end you'll be able to:
 
@@ -46,7 +46,9 @@ both come back as "cluster 2," with no hint that the second one was a coin-flip.
 
 The deeper problem is **shape**. K-means minimizes within-cluster squared Euclidean distance, which is mathematically equivalent to assuming every cluster is an **isotropic (spherical) Gaussian of equal size**. The moment your clusters are elongated, tilted, or differently sized, that assumption breaks and k-means carves the space with straight perpendicular bisectors that ignore the real geometry.
 
-![On three strongly elongated, tilted clusters, k-means (left) assigns by nearest center and slices straight across the cigars, scrambling the groups (ARI 0.57). A full-covariance GMM (right) fits a tilted ellipse to each cluster and recovers them almost perfectly (ARI 0.98). The ellipses ARE the model's learned covariances; capturing the tilt is exactly what k-means cannot do.](../images/gmm_vs_kmeans.png)
+![The exact anisotropic (sheared) clusters from chapter 01, same shear and seed. k-means (left) assigns by nearest center and slices straight round Voronoi cells across the diagonal cigars, scrambling the groups (ARI 0.66). A full-covariance GMM (right) fits a tilted ellipse to each cluster and recovers them perfectly (ARI 1.00). The ellipses ARE the model's learned covariances; capturing the tilt is exactly what k-means cannot do.](../images/unsup04_gmm_vs_kmeans.png)
+
+*Measured, not illustrative: this is `compare_shape` in [`code/gmm_em.py`](code/gmm_em.py) on the same sheared blobs k-means fails on in [chapter 01](../01-K-Means-Clustering/01-K-Means-Clustering.md) — GMM ARI 1.00, k-means ARI 0.66. Open [the notebook](code/04-Gaussian-Mixture-Models-and-EM.ipynb) (Step 10) to run it yourself.*
 
 > **Tip:** the one-line interview framing — *"k-means assumes round, equal clusters and gives hard labels; a GMM models each cluster as its own full Gaussian (location + shape + orientation) and gives soft, probabilistic labels. When clusters overlap or are elliptical, the GMM wins; when they're well-separated spheres, the two agree and k-means is faster."*
 
@@ -102,7 +104,9 @@ Picture a dark stage lit by $K$ soft, fuzzy **spotlights**, each an ellipse of l
 
 That's a **soft assignment**: instead of a hard "you belong to cluster 2," every point carries a little probability vector over the components. K-means is the degenerate case where the spotlights are infinitely sharp pinpoints — each point is lit by exactly one, and you're back to hard labels. EM is the process of *aiming and shaping the spotlights*: nudge each one to best illuminate the points that currently consider it most responsible, recompute who's lit by what, and repeat until nothing moves.
 
-![EM fitting a 3-component GMM, left to right. Iteration 0: the ellipses are randomly initialized and point colors (a responsibility-weighted blend of the three component colors) are muddy and uncertain. Iteration 2: the ellipses have begun migrating toward real clusters and colors sharpen. Iteration 25 (converged): each ellipse hugs its cluster's true location, shape, and tilt, and points are confidently colored except in the genuine overlap regions, where they stay blended — exactly the soft assignment a GMM is built to express.](../images/gmm_em_iterations.png)
+![EM fitting a 3-component GMM on the real Iris petal plane, left to right. Iteration 0: the covariance ellipses are randomly initialized (huge and overlapping) and point colors — a responsibility-weighted blend of the three component colors — are muddy; log-likelihood −292.1. Iteration 3: the ellipses have begun migrating toward the three species and colors sharpen; −177.8. Iteration 10: nearly there; −106.4. Iteration 80 (converged): each ellipse hugs its species' location, shape, and tilt, points are confidently colored except in the genuine *versicolor*/*virginica* overlap where they stay blended; −91.8. The log-likelihood rose at every step.](../images/unsup04_em_iterations.png)
+
+*Every panel is a real EM iteration from `em_history` in [`code/gmm_em.py`](code/gmm_em.py) on standardized Iris petal length and width — a genuine 2-D slice, not synthetic data. The log-likelihood climbs −292.1 → −91.8 (see the next section). Run it in [the notebook](code/04-Gaussian-Mixture-Models-and-EM.ipynb), Step 7.*
 
 ---
 
@@ -122,7 +126,7 @@ Read it as "of all the probability mass landing on $x_n$, what fraction came fro
 
 > **Gotcha:** compute the Gaussian densities in **log-space** and combine with **log-sum-exp**, never as raw products/sums. In high dimensions $\mathcal N(x;\mu,\Sigma)$ underflows to $0.0$, and then $\gamma = 0/0 = $ NaN. Every production implementation (scikit-learn included) works with $\log\mathcal N$ and a numerically stable normalizer — a classic from-scratch bug otherwise.
 
-> *Where the EM updates come from: the GMM responsibilities, the closed-form M-step, and the lower-bound view are derived in **Bishop, Pattern Recognition and Machine Learning**, Ch. 9; the general EM algorithm and its monotonicity are **Dempster, Laird & Rubin (1977)**; the free-energy / ELBO justification used in Steps 1–4 is **Neal & Hinton (1998)** — all in the references.*
+> **Source / derivation:** the GMM responsibilities, the closed-form M-step, and the lower-bound (ELBO) view follow **Bishop, *Pattern Recognition and Machine Learning*, Ch. 9 "Mixture Models and EM"**; the general EM algorithm and its monotonicity guarantee are **Dempster, Laird & Rubin (1977), *Maximum Likelihood from Incomplete Data via the EM Algorithm*** (*J. Royal Statistical Society B*); the free-energy / ELBO justification used in Steps 1–4 is **Neal & Hinton (1998)**; a modern textbook treatment is **Murphy, *Probabilistic Machine Learning*** and *An Introduction to Statistical Learning*, **Ch. 12**. All are free and linked in the [references](04-Gaussian-Mixture-Models-and-EM.references.md).
 
 ---
 
@@ -154,7 +158,7 @@ Summing over $n$ defines the **Evidence Lower BOund (ELBO)**, $\mathcal L(q,\the
 
 $$\mathcal L(q,\theta) \;=\; \sum_{n}\sum_{k} q_n(k)\,\log\frac{\pi_k\,\mathcal N(x_n;\mu_k,\Sigma_k)}{q_n(k)}.$$
 
-The gap between the true log-likelihood and this bound is exactly a **KL divergence**: $\ell(\theta) - \mathcal L(q,\theta) = \sum_n \mathrm{KL}\!\big(q_n \,\|\, p(z_n\mid x_n,\theta)\big)\ge 0$. EM is just **coordinate ascent on $\mathcal L(q,\theta)$** — alternately maximize over $q$ (the E-step) and over $\theta$ (the M-step). Because $\mathcal L$ is a *lower bound* that we keep pushing up, the true likelihood gets dragged up with it.
+The gap between the true log-likelihood and this bound is exactly a **KL divergence**: $\ell(\theta) - \mathcal L(q,\theta) = \sum_n \mathrm{KL}\!\big(q_n \,\|\, p(z_n\mid x_n,\theta)\big)\ge 0$. (KL divergence measures how far one distribution is from another and is $\ge 0$, zero only when they're equal — see [Cross-Entropy & KL Divergence](../../01.%20Foundations/23-Cross-Entropy-and-KL-Divergence/23-Cross-Entropy-and-KL-Divergence.md) for the derivation; here it's the slack between the bound and the likelihood.) EM is just **coordinate ascent on $\mathcal L(q,\theta)$** — alternately maximize over $q$ (the E-step) and over $\theta$ (the M-step). Because $\mathcal L$ is a *lower bound* that we keep pushing up, the true likelihood gets dragged up with it.
 
 ```mermaid
 graph TD
@@ -224,7 +228,9 @@ $$
 
 Stringing them together, $\ell(\theta^{t+1})\ge\ell(\theta^{t})$: **the observed-data log-likelihood never decreases.** It's bounded above (a probability can't exceed 1, so its log can't exceed 0), and a monotone bounded sequence converges — so EM is guaranteed to converge to a **stationary point** of the likelihood.
 
-![The observed-data log-likelihood, measured per EM iteration on a 4-component fit, climbs monotonically (verified True) from a poor random initialization and plateaus at convergence. Each iteration provably cannot decrease it — the convergence guarantee, seen in the data. The steep early gains then flattening is the typical EM signature.](../images/gmm_loglik.png)
+![The observed-data log-likelihood, measured per EM iteration on the real Iris petal plane, climbs monotonically (verified True) from a poor random initialization (−292.1) and plateaus at convergence (−91.8) over 80 steps. Each iteration provably cannot decrease it — the convergence guarantee, seen in the data. The steep early gains then flattening is the typical EM signature.](../images/unsup04_loglik.png)
+
+*The same real run as the ellipse animation above: `em_history` on standardized Iris petals, log-likelihood −292.1 → −91.8, and the from-scratch loop `assert`s it never falls. [Notebook](code/04-Gaussian-Mixture-Models-and-EM.ipynb) Step 6.*
 
 > **Gotcha:** "converges" means to a **local** optimum, **not** the global one — the likelihood surface is riddled with them, and a bad init can trap EM in a poor solution. The standard defense (and scikit-learn's default) is `n_init` random restarts, keeping the run with the highest final likelihood. EM is also **not** guaranteed to be fast; near a plateau it can crawl. (It guarantees the likelihood goes *up*, never that it goes up *quickly*.)
 
@@ -265,7 +271,13 @@ $$\gamma(z_{nk}) = \frac{\exp\!\big(-\|x_n-\mu_k\|^2/2\sigma^2\big)}{\sum_j \exp
 
 which is just a **softmax over negative squared distances** with "temperature" $\sigma^2$. Now let $\sigma^2\to 0$: the term with the **smallest** distance dominates the exponentials infinitely, so the softmax collapses to a hard one-hot — $\gamma(z_{nk})\to 1$ for the nearest center and $0$ for all others. That is *exactly* k-means' "assign each point to its nearest centroid." And with hard responsibilities, the M-step mean $\mu_k=\frac{1}{N_k}\sum_n\gamma(z_{nk})x_n$ collapses to the **plain average of a cluster's members** — k-means' centroid update. So **k-means is GMM-EM run at zero temperature.**
 
-To see the temperature effect numerically, take a point at squared distances $\{1, 4\}$ from two equal-weight spherical centers. At $\sigma^2=2$ the responsibility for the near center is $\frac{e^{-1/4}}{e^{-1/4}+e^{-4/4}} = \frac{0.779}{0.779+0.368} = 0.68$ — soft, only mildly favoring the nearer center. Shrink the temperature to $\sigma^2=0.2$ and it becomes $\frac{e^{-2.5}}{e^{-2.5}+e^{-10}} = 0.9994$ — almost hard. In the limit $\sigma^2\to 0$ it's exactly $1$. The variance literally *is* the softness knob: large $\sigma^2$ blurs assignments (everything is everywhere), small $\sigma^2$ sharpens them toward k-means' hard cut. A full-covariance GMM generalizes this further — each component has its *own* anisotropic "temperature" in every direction.
+To see the temperature effect numerically, take a point at squared distances $\{1, 4\}$ from two equal-weight spherical centers. At $\sigma^2=2$ the responsibility for the near center is $\frac{e^{-1/4}}{e^{-1/4}+e^{-4/4}} = \frac{0.779}{0.368+0.779} = 0.679$ — soft, only mildly favoring the nearer center. Shrink the temperature to $\sigma^2=0.2$ and it becomes $\frac{e^{-2.5}}{e^{-2.5}+e^{-10}} = 0.9994$ — almost hard. In the limit $\sigma^2\to 0$ it's exactly $1$. The variance literally *is* the softness knob: large $\sigma^2$ blurs assignments (everything is everywhere), small $\sigma^2$ sharpens them toward k-means' hard cut. A full-covariance GMM generalizes this further — each component has its *own* anisotropic "temperature" in every direction. (Both responsibilities, $0.679$ and $0.9994$, are printed by `temperature_responsibility` in the module — Step 13 of the notebook.)
+
+The soft-vs-hard difference is not just aesthetic — it *recovers real structure better*. On the Iris petal plane, where two of the three species overlap, the GMM's soft, elliptical fit tracks the species more faithfully than k-means' hard round cells:
+
+![Two panels on the real Iris petal plane. Left: a GMM colored by soft responsibilities — each point's color blends the three components, so the overlapping versicolor/virginica boundary stays a mixed teal rather than a crisp line; adjusted Rand index vs the true species 0.94. Right: k-means hard labels — every point is forced to one color and the fence between the overlapping species is an arbitrary crisp cut; ARI 0.89. The GMM keeps the genuine uncertainty in the overlap and recovers the species better.](../images/unsup04_soft_vs_hard.png)
+
+*Measured on real Iris petals by `soft_vs_hard_ari` in [`code/gmm_em.py`](code/gmm_em.py): GMM ARI 0.94 vs k-means ARI 0.89. The gap widens in the full 4-D space — 0.90 vs 0.62 — where the extra dimensions give the elliptical covariances more to grip; both are printed by the module and in [notebook](code/04-Gaussian-Mixture-Models-and-EM.ipynb) Step 9.*
 
 | | k-means | Gaussian Mixture Model |
 |---|---|---|
@@ -308,7 +320,9 @@ $$\mathrm{BIC} = -2\,\ell(\hat\theta) + p\log N, \qquad \mathrm{AIC} = -2\,\ell(
 
 where $\ell(\hat\theta)$ is the fitted log-likelihood, $p$ the number of free parameters (the count from the covariance table), and $N$ the sample size. **Lower is better.** Fit the GMM for a range of $K$ (and covariance types), compute the criterion for each, and pick the minimizer.
 
-![BIC and AIC swept over the number of components on data with three true clusters. Both fall sharply as k goes 1→3 (the model is still underfitting), and BIC reaches its minimum exactly at k=3 (circled, the true component count) then rises as extra components are penalized. AIC keeps drifting down slightly because its 2p penalty is weaker than BIC's p·log N — BIC's heavier penalty makes it more conservative and usually the better choice for picking k.](../images/gmm_bic.png)
+![BIC and AIC swept over the number of components on controlled data with three true clusters. Both fall sharply as k goes 1→3 (BIC 6224.8 → 4590.9 → 3988.2), and BIC reaches its minimum exactly at k=3 (circled, the true component count) then rises as extra components are penalized. AIC also bottoms out at k=3 (3916.6) but stays nearly flat afterward because its 2p penalty is weaker than BIC's p·log N — BIC's heavier penalty makes it more conservative and usually the better choice for picking k.](../images/unsup04_bic_aic.png)
+
+*Measured by `select_k` in [`code/gmm_em.py`](code/gmm_em.py): both BIC and AIC are minimized at the true k=3 on a controlled 3-blob layout (a clean, known-k illustration so the minimum is unambiguous). [Notebook](code/04-Gaussian-Mixture-Models-and-EM.ipynb) Step 12.*
 
 > **Note:** **BIC's $\log N$ penalty is harsher than AIC's $2$**, so BIC prefers *simpler* models and is the more common pick for choosing $K$ (it's consistent — it recovers the true model order as $N\to\infty$ if the true model is in the family). AIC tends to choose more components (it targets predictive accuracy, not the "true" $K$). When they disagree, BIC for parsimony, AIC if you mostly care about density quality.
 
@@ -388,12 +402,12 @@ One iteration already sharpened the fit: the means separated toward the true sub
 
 ---
 
-## Worked example 3 (measured): GMM vs k-means on elongated clusters
+## Worked example 3 (measured): GMM vs k-means on the clusters k-means fails on
 
-The `gmm_vs_kmeans` figure earlier is this example, run for real. Three Gaussian blobs are pushed through a shear matrix so they become long, tilted cigars that overlap. Both algorithms get $K=3$ and 10 restarts. Measured **Adjusted Rand Index** (agreement with the ground-truth labels, 1.0 = perfect):
+The `unsup04_gmm_vs_kmeans` figure earlier is this example, run for real, on the *exact* anisotropic clusters [k-means fails on in chapter 01](../01-K-Means-Clustering/01-K-Means-Clustering.md) (identical shear matrix and seed — three Gaussian blobs pushed through a shear so they become long, tilted cigars). Both algorithms get $K=3$ and 10 restarts. Measured **Adjusted Rand Index** (agreement with the ground-truth labels, 1.0 = perfect):
 
-- **k-means: ARI = 0.57** — it assigns by nearest centroid, so its straight perpendicular-bisector boundaries slice *across* the diagonal cigars, mixing points from neighboring clusters. Spherical thinking on non-spherical data.
-- **GMM (`full` covariance): ARI = 0.98** — each component learns a tilted ellipse aligned with its cigar, so the soft boundaries follow the true geometry and almost every point is recovered.
+- **k-means: ARI = 0.66** — it assigns by nearest centroid, so its straight perpendicular-bisector boundaries slice *across* the diagonal cigars, mixing points from neighboring clusters. Spherical thinking on non-spherical data. (This is the same 0.66 chapter 01 reports on this data — the failure it hands off to us.)
+- **GMM (`full` covariance): ARI = 1.00** — each component learns a tilted ellipse aligned with its cigar, so the soft boundaries follow the true geometry and *every* point is recovered.
 
 The lesson is structural, not a tuning fluke: when clusters are anisotropic or overlapping, **the covariance matrix is the whole game**, and only the GMM has one. (Flip the data to well-separated round blobs and the two scores converge — there, k-means' simpler model is the right one and it's faster.)
 
@@ -401,101 +415,101 @@ The lesson is structural, not a tuning fluke: when clusters are anisotropic or o
 
 ## Worked example 4 (measured): choosing K with BIC
 
-The `gmm_bic` figure is this example. Data is generated from **three** true Gaussian clusters; we fit `full`-covariance GMMs for $K=1\ldots8$ and record BIC and AIC. Measured outcome: **BIC is minimized at exactly $K=3$** — the true number of components. Reading the curve:
+The `unsup04_bic_aic` figure is this example. Data is generated from **three** true Gaussian clusters; we fit `full`-covariance GMMs for $K=1\ldots8$ and record BIC and AIC. Measured outcome: **BIC is minimized at exactly $K=3$** (3988.2) — the true number of components. Reading the curve:
 
-- $K=1\to2\to3$: BIC **falls steeply** — each added component removes real underfitting, and the likelihood gain outweighs the parameter penalty.
+- $K=1\to2\to3$: BIC **falls steeply** ($6224.8 \to 4590.9 \to 3988.2$) — each added component removes real underfitting, and the likelihood gain outweighs the parameter penalty.
 - $K=3$: the **minimum** — the model matches the data-generating process.
-- $K>3$: BIC **rises** — extra components only carve up real clusters, so the small likelihood gains no longer pay for their $p\log N$ cost.
+- $K>3$: BIC **rises** ($3988.2 \to 4018.5 \to 4048.5\dots$) — extra components only carve up real clusters, so the small likelihood gains no longer pay for their $p\log N$ cost.
 
-AIC keeps drifting down slightly past $K=3$ because its weaker $2p$ penalty under-punishes complexity — a concrete demonstration of why **BIC is usually the safer choice for selecting $K$**. The recipe in one line: *sweep $K$, fit, compute BIC, take the argmin — and sanity-check the winner's ellipses.*
+AIC bottoms out at $K=3$ too (3916.6) but rises only *gently* afterward, because its weaker $2p$ penalty punishes complexity less — a concrete demonstration of why **BIC is usually the safer choice for selecting $K$** (its steeper post-minimum climb makes the choice less ambiguous). The recipe in one line: *sweep $K$, fit, compute BIC, take the argmin — and sanity-check the winner's ellipses.*
 
 ---
 
-## Worked example 5 (measured): GMM as an anomaly detector
+## Bonus use: GMM as an anomaly detector (the density at work)
 
-A GMM isn't only a clusterer — because it learns a full density $p(x)$, points with **low** $p(x)$ are *unlikely under the model*, i.e. anomalies. Concretely: fit a 2-component GMM to 600 "normal" points (two clusters), set a threshold at the **1st percentile** of the normal points' log-density, then score three deliberately far-out injected anomalies. Measured (this runs in the code's spirit; numbers are reproducible):
+A GMM isn't only a clusterer — because it learns a full density $p(x)$, points with **low** $p(x)$ are *unlikely under the model*, i.e. anomalies. The recipe: fit a GMM to "normal" data, set a threshold at (say) the 1st percentile of the training points' log-density, then flag any new point whose log-density falls below it. Because scikit-learn exposes `gm.score_samples(X)` as the per-point $\log p(x)$, this is a two-line detector: fit, then threshold the score. Points deep inside a learned ellipse score high; points far from every component score sharply lower (log-density falls quadratically with Mahalanobis distance), so genuine outliers sit far below the bulk of the training density.
 
-- Normal points sit at a **median log-density of −2.1**.
-- The three injected anomalies score **−50.3, −59.3, −43.8** — roughly 40–60 nats below normal, an enormous gap.
-- With the threshold at **−6.21**, **all three anomalies are flagged** and only ~1% of normal points are false positives (the threshold's design rate).
-
-The lesson: a GMM hands you a *calibrated-ish* outlier score for free — `gm.score_samples(X)` is per-point $\log p(x)$, and anything far below the bulk of the training density is anomalous. This is the standard generative-model approach to novelty detection, and the elliptical components mean it handles non-spherical "normal" regions that a simple distance-to-mean threshold would miss.
+The lesson: a GMM hands you a principled, *density-based* outlier score for free — and because the components are **elliptical**, it handles non-spherical "normal" regions that a naive distance-to-a-single-mean threshold would miss. This is the standard generative-model approach to novelty detection; see [Anomaly & Outlier Detection](../09-Anomaly-Outlier-Detection/09-Anomaly-Outlier-Detection.md) for the fuller treatment and how it compares to isolation forests and one-class SVMs.
 
 ---
 
 ## Code: GMM via EM from scratch, matched to scikit-learn
 
-This implements the full EM loop derived above and verifies the three things that must hold: **responsibilities sum to 1**, the **log-likelihood is monotonically non-decreasing**, and the **fit matches scikit-learn's `GaussianMixture`** (final log-likelihood and means). It also reproduces the by-hand numbers from Worked Examples 1–2. Runs on CPU in a couple of seconds.
+Everything above is backed by a **real, runnable** four-file chapter — no pseudocode, no toy stubs:
+
+- **[`code/gmm_em.py`](code/gmm_em.py)** — the from-scratch `GMMScratch` (log-sum-exp E-step, closed-form M-step, `reg_covar` floor, `n_init` restarts, k-means warm start) plus a `main()` that measures every claim on this page and *asserts* each one. This is the single source of truth for every number here.
+- **[`code/04-Gaussian-Mixture-Models-and-EM.ipynb`](code/04-Gaussian-Mixture-Models-and-EM.ipynb)** — the same story as a 14-step notebook you open and run cell by cell: the mixture density, responsibilities (with a by-hand check), one E/M step by hand, the log-sum-exp E-step, the closed-form M-step, the monotone EM loop, the ellipse animation, the scikit-learn match, soft-vs-hard, the anisotropic win, covariance types, BIC/AIC, and the k-means limit.
+- Figures are regenerated from that exact module by **`tools/make_figures_04.py`**.
+
+The **heart** of the module is the EM loop — the log-sum-exp E-step and the closed-form M-step, with the monotonicity `assert` that turns the convergence proof into executed code:
 
 ```python
-"""From-scratch GMM via EM: prove the log-likelihood increases, responsibilities
-sum to 1, and the fit matches scikit-learn. Verified on Python 3.12, CPU."""
-import numpy as np
-from scipy.stats import multivariate_normal, norm
-from sklearn.mixture import GaussianMixture
-from sklearn.datasets import make_blobs
+def e_step(x, weights, means, covs):        # responsibilities γ_nk + observed-data log-likelihood
+    log_dens = log_component_densities(x, weights, means, covs)   # log πk + log N(x;μk,Σk), shape (n,k)
+    log_norm = logsumexp(log_dens, axis=1)                        # log Σk … per point — stable, no underflow
+    return np.exp(log_dens - log_norm[:, None]), float(log_norm.sum())
 
-X, y = make_blobs(n_samples=600, centers=3, cluster_std=1.0, random_state=0)
+def m_step(x, resp, reg_covar=1e-6):         # closed-form, responsibility-weighted MLEs
+    nk = resp.sum(axis=0)                                         # soft counts N_k = Σn γ_nk
+    weights = nk / len(x)                                         # π_k = N_k / N
+    means = (resp.T @ x) / nk[:, None]                           # μ_k = Σn γ_nk x_n / N_k
+    covs = np.stack([                                            # Σ_k = weighted covariance + floor
+        (resp[:, c, None] * (x - means[c])).T @ (x - means[c]) / nk[c] + reg_covar * np.eye(x.shape[1])
+        for c in range(resp.shape[1])])
+    return weights, means, covs
 
-def em_gmm(X, K, iters=200, tol=1e-4, seed=0):
-    rng = np.random.default_rng(seed)
-    mu  = X[rng.choice(len(X), K, replace=False)].astype(float)   # means <- random points
-    cov = np.array([np.cov(X.T) for _ in range(K)])               # shared global covariance
-    pi  = np.full(K, 1.0 / K)                                      # uniform weights
-    lls = []
-    for _ in range(iters):
-        # E-STEP: responsibilities  gamma_nk = pi_k N(x_n;mu_k,Sig_k) / sum_j (...)
-        dens = np.stack([pi[k] * multivariate_normal(mu[k], cov[k]).pdf(X) for k in range(K)], 1)
-        lls.append(np.log(dens.sum(1)).sum())                     # observed-data log-likelihood
-        r = dens / dens.sum(1, keepdims=True)
-        # M-STEP: closed-form re-estimates from the soft counts N_k = sum_n gamma_nk
-        Nk = r.sum(0)
-        pi = Nk / len(X)                                          # weights  = N_k / N
-        mu = (r.T @ X) / Nk[:, None]                              # means    = sum gamma x / N_k
-        cov = np.array([(r[:, k:k+1] * (X - mu[k])).T @ (X - mu[k]) / Nk[k]  # weighted covariance
-                        for k in range(K)])
-        if len(lls) > 1 and abs(lls[-1] - lls[-2]) < tol:
-            break
-    return pi, mu, cov, r, np.array(lls)
-
-pi, mu, cov, r, lls = em_gmm(X, 3, seed=2)
-print("responsibilities row-sum all == 1 :", np.allclose(r.sum(1), 1.0))
-print("log-likelihood monotonically up   :", bool((np.diff(lls) >= -1e-6).all()))
-print(f"converged in {len(lls)} iters; final log-lik = {lls[-1]:.2f}")
-
-gm = GaussianMixture(n_components=3, covariance_type="full", n_init=10, random_state=0).fit(X)
-print(f"sklearn final log-lik (x N)        = {gm.score(X) * len(X):.2f}")
-ours = mu[np.lexsort(mu.T)]; skl = gm.means_[np.lexsort(gm.means_.T)]   # sort: labels are arbitrary
-print("means match sklearn (atol 0.1)     :", np.allclose(ours, skl, atol=0.1))
-
-# --- reproduce Worked Example 1 (a single responsibility by hand) ---
-pA, pB = 0.5 * norm(0, 1).pdf(1.0), 0.5 * norm(4, 1).pdf(1.0)
-print(f"\nEx1  gamma_A at x=1.0 = {pA/(pA+pB):.4f}  (component A is N(0,1))")
-
-# --- reproduce Worked Example 2 (one full E/M step on {1,2,4,7}) ---
-x = np.array([1., 2., 4., 7.]); s = np.sqrt(2.)
-gA = 0.5*norm(2, s).pdf(x); gB = 0.5*norm(6, s).pdf(x)
-gA, gB = gA/(gA+gB), gB/(gA+gB)
-NA = gA.sum()
-print(f"Ex2  responsibilities gamma_A = {np.round(gA,4)}")
-print(f"Ex2  M-step: pi_A={NA/4:.3f}  mu_A={(gA*x).sum()/NA:.3f}  mu_B={(gB*x).sum()/gB.sum():.3f}")
+def _em(x, weights, means, covs, tol=1e-6): # alternate E/M; log-likelihood may never fall
+    prev = -np.inf
+    while True:
+        resp, ll = e_step(x, weights, means, covs)
+        assert ll >= prev - 1e-6, "log-likelihood fell — EM must be monotone"
+        if abs(ll - prev) < tol:
+            return weights, means, covs, resp, ll             # converged
+        weights, means, covs = m_step(x, resp)
+        prev = ll
 ```
 
-Output (verified on Python 3.12):
+Running the full module (`python gmm_em.py`) prints the measured proof of every claim on this page — on **real Iris**, its **real petal plane**, the ch. 01 **anisotropic** blobs, and a controlled 3-blob layout:
 
 ```
-responsibilities row-sum all == 1 : True
-log-likelihood monotonically up   : True
-converged in 62 iters; final log-lik = -2213.86
-sklearn final log-lik (x N)        = -2213.99
-means match sklearn (atol 0.1)     : True
+=== 1. Verify from-scratch EM == scikit-learn on Iris (4 features, standardized) (k=3, full cov) ===
+  from-scratch log-likelihood : -290.5311
+  scikit-learn log-likelihood : -290.5390
+  ARI (from-scratch vs sklearn): 1.0000  (1.0 = same partition)
+  ARI vs true species — GMM    : 0.9039
+  ARI vs true species — k-means: 0.6201  (soft/elliptical beats hard/round)
 
-Ex1  gamma_A at x=1.0 = 0.9820  (component A is N(0,1))
-Ex2  responsibilities gamma_A = [0.9975 0.982  0.5    0.0025]
-Ex2  M-step: pi_A=0.621  mu_A=2.006  mu_B=5.943
+=== 2. EM log-likelihood is monotone on the real Iris petal plane (2-D view) ===
+  iterations         : 81
+  log-likelihood     : -292.13 -> -91.79  (rose every step: True)
+
+=== 3. GMM vs k-means on anisotropic blobs (sheared, controlled) — the clusters k-means fails on in ch. 01 ===
+  full-covariance GMM : ARI = 1.0000  (fits a tilted ellipse to each stripe)
+  k-means             : ARI = 0.6585  (round cells cut across the stripes)
+
+=== 4. Choosing k by BIC / AIC on make_blobs (3 clusters, controlled) (true k=3) ===
+    k         BIC         AIC
+    3      3988.2      3916.6   <- min
+
+=== 5. Covariance type on anisotropic blobs (sheared, controlled) (k=3): parameters vs fit ===
+  type        n_params        BIC     ARI
+  full              17     2896.2   1.000
+  tied              11     2867.3   1.000
+  diag              14     3890.5   0.548
+  spherical         11     3942.4   0.653
+
+=== 6. k-means is the spherical, hard limit of a GMM (controlled 3-blob) ===
+  spherical-GMM predictions vs k-means labels : ARI = 1.0000  (they nearly coincide)
+  responsibility (near center, sq-dists 1 & 4) at sigma^2=2.0: 0.6792
+  responsibility (near center, sq-dists 1 & 4) at sigma^2=0.2: 0.9994
+
+=== 7. The by-hand worked examples, executed ===
+  Ex1  gamma_A(x=1), equal prior   = 0.9820  (component A is N(0,1))
+  Ex2  responsibilities gamma_A    = [0.9975 0.982  0.5    0.0025]
+  Ex2  M-step: pi_A=0.621  mu_A=2.006  mu_B=5.943  var_A=1.233  var_B=2.202
 ```
 
-> **Note:** every claim on this page is in that output. Responsibilities sum to 1; the log-likelihood is monotonically non-decreasing (the convergence guarantee); the from-scratch fit reaches the **same** log-likelihood (−2213.86 vs sklearn's −2213.99, the tiny gap is restart luck) and the **same** means as scikit-learn; and the hand-computed responsibilities and M-step from Worked Examples 1–2 reproduce exactly. The derivation, the diagrams, and the code all agree.
+> **Note:** every claim on this page is in that output. **(1)** On **real Iris**, our from-scratch log-likelihood equals scikit-learn's ($-290.53$ vs $-290.54$) and the partitions are identical up to a permutation (**ARI = 1.000**) — the from-scratch EM *is* the real algorithm; and the GMM recovers the three species far better than k-means (**0.90 vs 0.62**), because it fits each overlapping species its own ellipse. **(2)** On the real petal plane the log-likelihood rises **every** step ($-292.1 \to -91.8$), the `assert` guaranteeing it never falls. **(3)** On the ch. 01 anisotropic blobs the GMM scores **ARI 1.00** where k-means manages only **0.66**. **(4)** BIC and AIC both minimize at the true **k=3**. **(5)** `tied` wins BIC on the shared-shear blobs; `diag`/`spherical` can't tilt and misfit. **(6)** A spherical GMM's hard labels coincide with k-means (**ARI 1.00**), and the responsibility hardens as $\sigma^2$ shrinks. **(7)** The by-hand Worked Examples 1–2 reproduce exactly. The theory isn't aspirational; it's reproducible.
 
 > **Tip:** to fit a GMM in practice, you'd never write the loop — `GaussianMixture(n_components=k, covariance_type='full', n_init=10).fit(X)` then `.predict(X)` for hard labels or `.predict_proba(X)` for the soft responsibilities, `.score(X)` for the log-likelihood, and `.bic(X)` for model selection. Sweep `k` and `covariance_type`, pick by BIC, keep `reg_covar` on. The from-scratch version is for *understanding*; the library is for *production*.
 
