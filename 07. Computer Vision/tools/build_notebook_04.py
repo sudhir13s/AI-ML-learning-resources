@@ -186,13 +186,21 @@ add_md(
     "\n"
     "A pretrained backbone expects the distribution it was trained on. So before the ImageNet ResNet-18 sees a "
     "CIFAR image we **resize** it to 224×224 and **normalize** each channel with ImageNet's mean/std. Matching "
-    "the pretraining statistics is what lets the frozen features transfer. Here is one image before and after the "
-    "pipeline (the normalized tensor is de-normalized for display)."
+    "the pretraining statistics is what lets the frozen features transfer.\n"
+    "\n"
+    "Watch the per-channel mean *after* normalizing: it is **not** ~0, and that is the lesson, not a bug. "
+    "Normalization subtracts the **ImageNet dataset** mean, so it centers the *ImageNet* distribution — not this "
+    "single CIFAR image (a batch of one, from a different distribution). The residual gap from 0 you see below "
+    "*is* the CIFAR≠ImageNet distribution mismatch the 'match the backbone's diet' section warns about; centering "
+    "targets the dataset mean over many images, not any one image."
 )
 add_code(
     "batch = ic._to_backbone_batch(data.images_train[:1])   # [1,3,224,224], ImageNet-normalized\n"
     "print(f'pipeline: {data.images_train[:1].shape} uint8  ->  {tuple(batch.shape)} float (ImageNet-normalized)')\n"
-    "print(f'per-channel mean after normalize (should be near 0): {batch.mean(dim=(0,2,3)).numpy().round(2)}')"
+    "mean = batch.mean(dim=(0,2,3)).numpy().round(2)\n"
+    "print(f'per-channel mean of ONE CIFAR image after ImageNet-normalize: {mean}')\n"
+    "print('(NOT ~0 by design: ImageNet stats center the ImageNet dataset, not one CIFAR image ->')\n"
+    "print(' the residual gap from 0 is exactly the CIFAR vs ImageNet distribution mismatch.)')"
 )
 
 # ---- Step 5: frozen backbone / features ----

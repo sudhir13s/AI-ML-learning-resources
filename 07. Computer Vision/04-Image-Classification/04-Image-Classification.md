@@ -63,7 +63,7 @@ The second idea, **augmentation**, is a different kind of cheat: if labels are s
 
 ## The pipeline: how the pieces fit
 
-Before the method, the shape of the whole thing. An image-classification system is a fixed sequence of stages, and every applied project — from a Kaggle notebook to a production service — is some configuration of exactly these:
+Before the method, the shape of the whole thing. An image-classification system is a fixed sequence of stages, and every applied project — from a Kaggle notebook to a real-world deployed service — is some configuration of exactly these:
 
 ```mermaid
 graph LR
@@ -181,7 +181,7 @@ The transfer model wins by **+36.5 points** while training **18× fewer** parame
 
 Next, the augmentation ablation: the *same* from-scratch CNN, trained with and without random-crop + horizontal-flip, on the same data. The right way to read augmentation's effect is the **generalization gap** = training accuracy − test accuracy. A model that memorizes has a big gap; a regularized one has a small gap.
 
-![Two-panel figure. Left: test-accuracy learning curves over 40 epochs for the from-scratch CNN with and without augmentation; the augmented run ends higher and steadier. Right: the train-minus-test generalization gap is 12.8 points without augmentation and 6.4 points with it — augmentation roughly halves the overfitting gap. Measured on real CIFAR-10.](../images/cv04_augmentation.png)
+![Two-panel figure. Left: test-accuracy learning curves over 40 epochs for the from-scratch CNN with and without augmentation; the augmented run ends higher (generalizes better). Right: the train-minus-test generalization gap is 12.8 points without augmentation and 6.4 points with it — augmentation roughly halves the overfitting gap. Measured on real CIFAR-10.](../images/cv04_augmentation.png)
 
 | training | train accuracy | test accuracy | generalization gap |
 |---|---|---|---|
@@ -274,6 +274,8 @@ The workflow is clean, but a predictable set of mistakes bites practitioners —
 - **When *not* to reach for it.** If your images aren't natural photographs (raw sensor data, spectrograms with unusual statistics) an ImageNet backbone may transfer poorly and a domain-specific or from-scratch model can win — but you'd measure that, not assume it. And if per-class performance matters unequally (a rare-but-critical class), optimize and report the metric that reflects that, not overall accuracy.
 
 > **Tip:** the practitioner's default recipe, in one line — *"start from a pretrained backbone, replace the head, augment your training data, freeze-then-fine-tune, and evaluate with a confusion matrix, not just accuracy."* That sentence is 90% of applied image classification. The remaining 10% is choosing the backbone and tuning the fine-tune schedule.
+
+> **Try it:** in the [notebook](code/04-Image-Classification.ipynb), before you run anything, *predict the direction*. (1) Unfreeze ResNet-18's last block and fine-tune the head **and** that block at one-tenth the head's learning rate — will test accuracy go up or down versus the frozen linear probe, and why? (2) Swap the backbone `resnet18` → `resnet50` — predict what moves (accuracy? training time? overfitting on 3,000 images?). Write your prediction down, then change the two lines and check. Being *wrong* about the direction is where the learning is.
 
 ---
 
