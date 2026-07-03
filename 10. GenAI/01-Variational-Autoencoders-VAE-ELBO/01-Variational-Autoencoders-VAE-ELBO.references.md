@@ -57,5 +57,5 @@ updated: 2026-07-03
 - The variance contrast: [08 Reinforcement Learning · 09 Policy Gradients (REINFORCE)](../../08.%20Reinforcement_Learning/09-Policy-Gradients-REINFORCE/09-Policy-Gradients-REINFORCE.md) — the *score-function* estimator, the high-variance alternative you must use when you *cannot* reparameterize; the VAE's pathwise estimator is the low-variance counterpart.
 - The family contrast: [02 GANs and DCGAN](../02-GANs-and-DCGAN.md) — adversarial, sharp, unstable, no likelihood; the VAE is likelihood-based, stable, and blurry.
 - Where it goes next: [05 Diffusion Models (DDPM)](../05-Diffusion-Models-DDPM.md) — a many-step hierarchical VAE trained by a per-step ELBO; the VAE is its one-step conceptual seed.
-- Where the VAE lives in production: [07 Latent Diffusion / Stable Diffusion](../07-Latent-Diffusion-Stable-Diffusion.md) — diffusion runs in the compact latent space of a pretrained VAE; encode → diffuse → decode.
+- Where the VAE lives in the real world: [07 Latent Diffusion / Stable Diffusion](../07-Latent-Diffusion-Stable-Diffusion.md) — diffusion runs in the compact latent space of a pretrained VAE; encode → diffuse → decode.
 - Field overview: [10 Generative AI](../README.md)

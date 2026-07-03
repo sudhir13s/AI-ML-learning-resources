@@ -184,10 +184,10 @@ def fig_training_curves(exp) -> None:
                   f"{m.final_recon:.1f} + KL {m.final_kl:.1f}", fontsize=10, color=INK)
 
     _style_axis(ax2)
-    ax2.plot(epochs, m.kl, color=RED, linewidth=2.3, label="KL term (rises then settles)")
+    ax2.plot(epochs, m.kl, color=RED, linewidth=2.3, label="KL term (spikes in epoch 1, then relaxes and settles)")
     ax2.set_xlabel("epoch")
     ax2.set_ylabel("KL(q(z|x) || N(0, I))  (nats)")
-    ax2.legend(fontsize=8.5, frameon=False, loc="lower right")
+    ax2.legend(fontsize=8.5, frameon=False, loc="upper right")
     ax2.set_title("(b) the KL term: the encoder moves off the prior\nonly as far as reconstruction needs",
                   fontsize=10, color=INK)
 
