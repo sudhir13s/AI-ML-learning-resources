@@ -108,6 +108,8 @@ $$\frac{\partial L}{\partial b} = \frac{2}{n}\sum_{i=1}^n (\hat y_i - y_i).$$
 
 Look at what these *mean*, connecting back to the intuition. Both are built from the residual $(\hat y_i - y_i)$ — prediction minus truth. The intercept's gradient is (twice) the **average error**: if the line is systematically too low, the errors are negative, so $-\partial L/\partial b$ says "raise $b$" — lift the whole line. The slope's gradient weights each error by that example's $x_i$: it says "if the line is too low for high-income districts, tilt it up." The gradient is not magic; it is the precise, quantitative version of "you're colder over here, warmer over there."
 
+> **Try it:** we start too *low* ($\hat y = 0 <$ most prices), so every residual $\hat y_i - y_i$ is negative and $\partial L/\partial b$ comes out **negative** — the update raises $b$. **Predict:** if instead the line started too *high* (say $b = 10$, above every price), what sign would $\partial L/\partial b$ have, and would the first update raise or lower $b$? (Hint: flip the sign of the residuals.) The gradient always points *away* from the fit, so the update always steps back toward it — from either side.
+
 > **Source / derivation:** gradient descent — step in the negative-gradient direction to minimise a function — dates to [Cauchy's 1847 note *Méthode générale pour la résolution des systèmes d'équations simultanées*](https://www.academie-sciences.fr/pdf/dossiers/Cauchy/Cauchy_pdf/CR1847_t25_p536_538.pdf); its modern treatment for machine-learning objectives is [Goodfellow, Bengio & Courville, *Deep Learning*, Ch. 4.3 (gradient-based optimization) & Ch. 8](https://www.deeplearningbook.org/). Both in the references.
 
 ### Piece 3 — the update rule: take a step
@@ -185,7 +187,7 @@ sklearn least squares: slope w = +0.7819, intercept b = +2.0717
 match within 1e-2: True
 ```
 
-The module also runs the *identical loop* on three features at once (income, house age, average rooms) and again matches scikit-learn's least-squares weights $[+0.8398, +0.1935, -0.0865]$ exactly — the loop doesn't care how many parameters it's descending on.
+The module also runs the *identical loop* on three features at once (income, house age, average rooms) and again matches scikit-learn's least-squares weights $[+0.8398, +0.1935, -0.0865]$ exactly (reproduce with `python how_models_learn.py`) — the loop doesn't care how many parameters it's descending on.
 
 ---
 
@@ -233,7 +235,7 @@ That is **prediction minus target**, weighted by $x$ — the *identical structur
 
 ![Left: the decision boundary sharpening across training on real breast-cancer data (green = benign, red = malignant tumours). The boundary line (the 50/50 contour) swings from a poor early position (pale) into the well-separating final position (dark) by epoch 2000. Right: the log-loss falling from ln 2 = 0.693 (the coin-flip baseline, dashed) to a converged 0.232 — the same downhill curve MSE traced, for a different loss. Final training accuracy 89%.](../images/basics04_logreg_boundary.png)
 
-And the same proof-of-correctness holds: our from-scratch logistic GD reaches the same weights as `sklearn.LogisticRegression` (`w = [-4.298, -0.841], b = +0.984` both ways). **Same loop, different model and loss, matched to the library.** That is the payoff — you have now seen the engine that trains both a regressor and a classifier, and it was one loop.
+And the same proof-of-correctness holds: our from-scratch logistic GD reaches essentially the same weights as `sklearn.LogisticRegression` — our fit is `w = [-4.298, -0.841], b = +0.984` versus sklearn's `w = [-4.296, -0.840], b = +0.984`, agreeing to ~2 decimals. (For a fair comparison we fit sklearn *near-unregularised*, `C=1e4`, so it targets the same maximum-likelihood solution our loss does — otherwise its regularisation would deliberately shrink the weights and they wouldn't match.) **Same loop, different model and loss, matched to the library.** That is the payoff — you have now seen the engine that trains both a regressor and a classifier, and it was one loop.
 
 ---
 
@@ -280,7 +282,9 @@ The things that actually bite when you first train models, each with the fix.
 
 **5. `exp` overflow in the sigmoid/softmax.** A large logit makes `exp` overflow to `inf`. *Fix:* use a numerically-stable sigmoid (branch on the sign of $z$, as the module does) or the framework's fused `log_softmax`/`binary_cross_entropy_with_logits`. Never call bare `exp` on an unbounded score. (The [Cross-Entropy chapter](../../01.%20Foundations/23-Cross-Entropy-and-KL-Divergence/23-Cross-Entropy-and-KL-Divergence.md) covers the log-sum-exp trick.)
 
-**6. Expecting the loss to fall monotonically with mini-batches.** Full-batch loss falls smoothly (every step uses all data); mini-batch/SGD loss is *noisy* — it bounces down. *Fix:* don't panic at a jittery curve; look at the trend over many steps (or plot a running average). A little noise is normal and even helpful.
+**6. Fear of local minima.** The single most common beginner worry: won't gradient descent get *stuck* in a bad valley short of the best one? For a **convex** loss like MSE the answer is no — the bowl has a *single* bottom (you saw it in the loss-surface figure), which is exactly why our blind descent reached the *exact* least-squares answer. There is nowhere else to get stuck. Neural-network losses *are* non-convex, with many local minima and saddle points, but in practice the same loop reliably finds an *excellent* one — the [Gradient Descent Theory chapter](../../01.%20Foundations/13-Gradient-Descent-Theory/13-Gradient-Descent-Theory.md) explains why (high-dimensional minima are mostly equally good, and saddles are escapable). *Fix / takeaway:* for convex problems, don't fear local minima at all; for deep nets, good **initialization** and a **sane learning rate** matter far more than the minima you might imagine you're trapped in.
+
+**7. Expecting the loss to fall monotonically with mini-batches.** Full-batch loss falls smoothly (every step uses all data); mini-batch/SGD loss is *noisy* — it bounces down. *Fix:* don't panic at a jittery curve; look at the trend over many steps (or plot a running average). A little noise is normal and even helpful.
 
 ---
 
