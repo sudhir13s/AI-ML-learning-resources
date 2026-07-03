@@ -553,7 +553,10 @@ def main() -> None:
     xb, yb = x_tr[:16], np.eye(10)[y_tr[:16]]
     gc = gradient_check(mlp, xb, yb, eps=1e-5)
     print(f"  parameters checked : {gc.n_params}")
-    print(f"  median relative error : {gc.median_rel_error:.2e}   max : {gc.max_rel_error:.2e}  (<< 1e-3 => correct)\n")
+    print(f"  median relative error : {gc.median_rel_error:.2e}   max : {gc.max_rel_error:.2e}  (<< 1e-3 => correct)")
+    if not (gc.max_rel_error < 1e-3):  # hard gate: a broken backward pass must FAIL, not print a bad number and exit 0
+        raise AssertionError(f"gradient check FAILED: max relative error {gc.max_rel_error:.2e} >= 1e-3")
+    print()
 
     print("=== Epsilon U-curve on f(w) = 1/2 (tanh 3w - 0.5)^2 at w=0.7 ===")
     analytic, pts = epsilon_sweep()
@@ -565,7 +568,10 @@ def main() -> None:
 
     print("=== Torch cross-check — from-scratch MLP gradients vs loss.backward() ===")
     tm = torch_cross_check(mlp, xb, y_tr[:16])
-    print(f"  max abs diff = {tm.max_abs_diff:.2e}   allclose(atol=1e-10) = {tm.all_close}\n")
+    print(f"  max abs diff = {tm.max_abs_diff:.2e}   allclose(atol=1e-10) = {tm.all_close}")
+    if not tm.all_close:  # hard gate: from-scratch gradients MUST match the reference autodiff engine
+        raise AssertionError(f"torch cross-check FAILED: max abs diff {tm.max_abs_diff:.2e} exceeds atol=1e-10")
+    print()
 
     print("=== Train the from-scratch net on scikit-learn digits (SGD driven by backprop) ===")
     tr = train_digits()

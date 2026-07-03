@@ -248,8 +248,8 @@ def fig_delta_and_vanishing() -> None:
     ax.semilogy(layers, prof_relu.grad_norms, "s-", color=GREEN, lw=2, label="ReLU (stays flat)")
     ax.set_xlabel("layer (1 = input side  →  L = output side)")
     ax.set_ylabel("‖∂L/∂Wˡ‖  (weight-gradient norm, log scale)")
-    r = prof_sig.grad_norms[0] / prof_sig.grad_norms[-1]
-    ax.set_title(f"Vanishing gradients, measured: sigmoid's grad is {r:.0e}× smaller at the input layer", fontsize=11)
+    r = prof_sig.grad_norms[-1] / prof_sig.grad_norms[0]  # output/input: how many times smaller at the input
+    ax.set_title(f"Vanishing gradients, measured: sigmoid's grad is {r:.1e}× smaller at the input layer", fontsize=11)
     ax.legend(frameon=False, fontsize=10)
     fig.tight_layout()
     _save(fig, f"{IMG_PREFIX}vanishing.png")
@@ -268,7 +268,7 @@ def fig_gradcheck() -> None:
     ax.set_xlabel("numerical gradient (centred finite difference)")
     ax.set_ylabel("analytic gradient (backprop)")
     ax.set_title(f"Gradient check: {gc.n_params} params, all on y = x\n"
-                 f"median rel err {gc.median_rel_error:.1e}, max {gc.max_rel_error:.1e}", fontsize=11)
+                 f"median rel err {gc.median_rel_error:.2e}, max {gc.max_rel_error:.1e}", fontsize=11)
     ax.legend(frameon=False, fontsize=10, loc="upper left")
     ax.set_aspect("equal")
     fig.tight_layout()

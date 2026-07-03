@@ -262,7 +262,10 @@ add_code(
     "gc = gradient_check(check_net, x_tr[:16], np.eye(10)[y_tr[:16]], eps=1e-5)\n"
     "print(f'parameters checked    : {gc.n_params}')\n"
     "print(f'median relative error : {gc.median_rel_error:.2e}')\n"
-    "print(f'max    relative error : {gc.max_rel_error:.2e}   (<< 1e-3 => backward pass is correct)')"
+    "print(f'max    relative error : {gc.max_rel_error:.2e}   (<< 1e-3 => backward pass is correct)')\n"
+    "# hard gate: a broken backward pass must FAIL here, not just print a bad number\n"
+    "assert gc.max_rel_error < 1e-3, f'gradient check failed: max rel error {gc.max_rel_error:.2e}'\n"
+    "print('OK: gradient check confirms the from-scratch backward pass')"
 )
 
 # ---- Step 9: epsilon U-curve ----
@@ -294,7 +297,10 @@ add_md(
 add_code(
     "tm = torch_cross_check(check_net, x_tr[:16], y_tr[:16])\n"
     "print(f'max |from-scratch - autograd| = {tm.max_abs_diff:.2e}')\n"
-    "print(f'allclose(atol=1e-10)          = {tm.all_close}')"
+    "print(f'allclose(atol=1e-10)          = {tm.all_close}')\n"
+    "# hard gate: the from-scratch gradients must match the reference autodiff engine\n"
+    "assert tm.all_close, f'torch cross-check failed: max abs diff {tm.max_abs_diff:.2e}'\n"
+    "print('OK: from-scratch gradients match PyTorch autograd')"
 )
 
 # ---- Step 11: train on digits ----
