@@ -287,7 +287,7 @@ The code implements this backward pass from scratch (as a direct scatter, provab
 
 A **pooling** layer shrinks a feature map by summarizing each small region into one number — **max-pooling** keeps the strongest activation, **average-pooling** the mean. It has **no learnable parameters**; it's a fixed reduction.
 
-![A 4x4 feature map pooled with a 2x2 window into a 2x2 map: max-pooling keeps the maximum of each colored window (6, 4, 7, 9) while average-pooling keeps the mean (3.75, 2.25, 1.5, 5.0), both halving the resolution. Real numbers computed by the chapter code.](../images/dl13_pool.png)
+![A 4x4 feature map pooled with a 2x2 window into a 2x2 map: max-pooling keeps the maximum of each colored window (6, 4, 3, 9) while average-pooling keeps the mean (3.75, 2.25, 1.5, 5.0), both halving the resolution. Real numbers computed by the chapter code.](../images/dl13_pool.png)
 
 Pooling does two jobs:
 
@@ -519,6 +519,8 @@ The code trains a small **CNN** (`conv 1→8 → pool → conv 8→16 → pool �
 | MLP | 9,610 | 98.0% | 46.2% |
 
 The CNN **matches the MLP's clean accuracy with 5.1× fewer parameters** — the weight-sharing win — and when every test digit is shifted by one pixel, the CNN holds **60.6%** vs the MLP's **46.2%**: the position-sensitive MLP degrades far more, because the CNN's convolutions are equivariant to exactly that shift. And separately, the from-scratch conv's translation equivariance is verified *exactly* (shift-in = shift-out to $0.0$). Fewer weights, comparable accuracy, more robust — from a real training run.
+
+Why doesn't the CNN simply *win* clean accuracy here? Because 8×8 digits are almost too small for the convolutional prior to pay off: with barely any spatial extent and already-centered digits, there is little translation structure and little hierarchy to exploit, so a well-sized MLP fits the task nearly as well. The CNN's clean-accuracy advantage widens sharply as resolution and object variety grow — it is on real-resolution natural images (where a dense layer would need *billions* of position-specific weights and would overfit hopelessly) that the gap becomes decisive. At this toy scale the win shows up honestly where it *can* show up: **parameter efficiency and shift-robustness**, not raw clean accuracy.
 
 ---
 

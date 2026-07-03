@@ -9,16 +9,17 @@ of every CNN — and it is proven correct several independent ways:
 
   1. **Forward, three ways agree.** A from-scratch ``conv2d_naive`` (explicit multiply-and-sum loops), an
      ``conv2d_im2col`` (unfold the patches, one matmul — what frameworks actually do), ``scipy.signal``
-     cross-correlation, and ``torch.nn.functional.conv2d`` all produce the *same* feature map (loops match
-     torch to float32 summation-order noise ~1e-6; im2col matches torch to exactly 0; scipy matches the
-     single-channel case to ~1e-6). Each equality is a hard ``assert``.
+     cross-correlation, and ``torch.nn.functional.conv2d`` all produce the *same* feature map. Everything runs
+     in float64, so the differences are pure summation-order rounding: loops match torch to ~1e-15, im2col
+     matches torch to ~1e-15 (it *is* the same matmul), and scipy matches the single-channel case to ~1e-16.
+     Each equality is a hard ``assert``.
 
   2. **Backward, gradient-checked and autograd-checked.** The from-scratch ``conv2d_backward`` (returning
      dL/dX, dL/dW, dL/db) is checked two ways: against a **centred finite-difference** gradient for every
-     entry (median relative error ~1e-9 on float64) and against **torch autograd** on the identical op
-     (allclose to ~1e-6). Max-pooling's forward and backward (route the gradient to the argmax) are likewise
-     cross-checked against ``torch``. Every check is a hard ``assert`` — a broken backward pass raises, it
-     does not print a bad number and exit 0.
+     entry (median relative error ~1e-11 on float64) and against **torch autograd** on the identical op
+     (all three gradients match to ~1e-15). Max-pooling's forward and backward (route the gradient to the
+     argmax) are likewise cross-checked against ``torch`` (exact, 0.0). Every check is a hard ``assert`` — a
+     broken backward pass raises, it does not print a bad number and exit 0.
 
   3. **A real filter on a real image.** The classic Sobel edge kernels, applied with our own ``conv2d_naive``
      to a real grayscale photograph, reproduce ``scipy.signal.convolve2d`` to machine tolerance — the

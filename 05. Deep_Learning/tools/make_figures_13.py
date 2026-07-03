@@ -232,7 +232,7 @@ def fig_receptive_field() -> None:
         ax.annotate(f"{r}×{r}", (ell, r), textcoords="offset points", xytext=(0, 8), color=INK, fontsize=9, ha="center")
     # mark the two-3x3 = one-5x5 insight
     ax.annotate("two 3×3 convs = one 5×5 RF\n(18 vs 25 weights + an extra ReLU) — the VGG insight",
-                xy=(2, 5), xytext=(2.7, 7.4), color=RED, fontsize=9, ha="left",
+                xy=(2, 5), xytext=(0.55, 9.7), color=RED, fontsize=9, ha="left",
                 arrowprops={"arrowstyle": "->", "color": RED})
     # the stride-2 trace as a second series
     names = [t[0] for t in rf.rf_with_pool]
