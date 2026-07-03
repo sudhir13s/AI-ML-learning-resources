@@ -37,6 +37,8 @@ Intuition and pictures first, then the math (with sources), then runnable, verif
 
 You want a model that captures non-linear structure, handles **mixed feature types** (age, zip code, blood type) without preprocessing, needs **no normalization**, copes with missing values, and — crucially — that a human can **inspect and trust**. Linear and logistic models give interpretability but only straight boundaries; kernel SVMs and neural nets are flexible but opaque, and they demand scaling and careful tuning. Decision trees hit a sweet spot: arbitrary **axis-aligned** regions, learned greedily from the data, expressed as a flowchart anyone can follow. That readability — you can point at the exact path that produced a decision — is why they remain a default in medicine, credit scoring, fraud, and operations, where a model that *can't* explain itself is often a non-starter.
 
+Make the inadequacy concrete: a **single straight line can't cleanly separate the three Iris species** — no one line puts setosa, versicolor, and virginica each on their own side. But the **axis-aligned staircase** a tree carves — a few horizontal/vertical cuts stacking into rectangles — separates them almost perfectly (you'll see exactly this in [the decision-boundary figure](#what-a-tree-computes-axis-aligned-regions-and-the-staircase) below). That is the felt gap this page fills: from "one boundary isn't enough" to "a stack of one-feature questions is."
+
 > **Tip:** the interview framing is "interpretable, non-parametric, scale-free, mixed-type — but unstable as a single model." Everything good and bad about trees flows from one design choice: they ask **threshold questions on one feature at a time**. That buys interpretability and scale-invariance; it costs you smooth boundaries and stability.
 
 ---
@@ -47,9 +49,9 @@ A tree is grown **top-down and greedily**. At the root, the whole dataset sits i
 
 ```mermaid
 graph TD
-    R{"petal length ≤ 2.5 cm?"}:::amber
+    R{"petal length ≤ 2.45 cm?"}:::amber
     R -->|"yes"| L1(["setosa<br/>pure leaf — Gini 0"]):::out
-    R -->|"no"| N{"petal width ≤ 1.8 cm?"}:::process
+    R -->|"no"| N{"petal width ≤ 1.55 cm?"}:::process
     N -->|"yes"| L2(["versicolor"]):::out
     N -->|"no"| L3(["virginica"]):::out
 
@@ -58,7 +60,7 @@ graph TD
     classDef out fill:#2E7A5A,stroke:#1E6A4A,color:#fff
 ```
 
-That flowchart is not a cartoon — it is exactly what the algorithm learns. Here is a **real** tree fit on the Iris dataset (`max_depth=3`, Gini), drawn straight from the fitted model with its actual split thresholds, Gini values, and sample counts at every node:
+That flowchart is not a cartoon — its thresholds (2.45, 1.55) are the **real values the algorithm learns**, though it is a simplified 3-leaf schematic. Here is the actual fitted tree on Iris (`max_depth=3`, Gini), drawn straight from the model with every split threshold, Gini value, and sample count — **this is the full 4-feature Iris tree (test accuracy 0.978); the from-scratch 2-feature slice used in the [code section](#code-a-tree-from-scratch-verified-and-the-overfitting-curve) later reaches 0.933 — same algorithm, fewer features:**
 
 ![A learned decision tree on the real Iris dataset (max_depth 3, Gini criterion), test accuracy 0.978. The root splits on 'petal length ≤ 2.45', which sends all 35 setosa training samples into a pure leaf (Gini 0, value [35,0,0]). The right subtree then splits on petal width ≤ 1.55 and further on petal length/width, separating versicolor from virginica down to nearly-pure leaves. Each box shows the split test, the Gini, the sample count, the per-class counts, and the majority class.](../images/sup07_tree_structure.png)
 
@@ -231,7 +233,7 @@ A big selling point of trees is telling you **which features mattered**. There a
 
 The right panel is the trap in real numbers: **MDI ranks a pure-noise column above a genuine signal**, purely because the noise column has more distinct values (hence more candidate thresholds). Permutation importance, measured on held-out data, is not fooled.
 
-> **Gotcha:** never trust raw MDI / `feature_importances_` for a feature-selection or "what drives the model" claim when you have high-cardinality features (IDs, timestamps, free-text categories). It will rank a meaningless unique key near the top. Use **permutation importance** (or SHAP) on a **held-out** set instead — this is a favorite "gotcha" interview question and a real production footgun.
+> **Gotcha:** never trust raw MDI / `feature_importances_` for a feature-selection or "what drives the model" claim when you have high-cardinality features (IDs, timestamps, free-text categories). It will rank a meaningless unique key near the top. Use **permutation importance** (or SHAP) on a **held-out** set instead — this is a favorite "gotcha" interview question and a real-world footgun.
 
 ---
 

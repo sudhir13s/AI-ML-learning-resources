@@ -255,7 +255,11 @@ add_code(
     "plt.title('Axis-aligned decision boundary (from-scratch tree, depth 4)')\n"
     "plt.legend()\n"
     "plt.tight_layout()\n"
-    "plt.show()"
+    "plt.show()\n"
+    "\n"
+    "# the boundary above is the from-scratch tree's OWN surface — how close is it to scikit-learn?\n"
+    "agree = verify_against_sklearn(iris2d, max_depth=4).prediction_agreement\n"
+    "print(f'from-scratch <-> scikit-learn agreement at depth 4: {agree*100:.1f}% of test points')"
 )
 
 # ---- Step 8: overfitting table ----
