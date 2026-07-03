@@ -3,7 +3,7 @@ id: "04-unsupervised-learning/k-means/references"
 topic: "K-Means Clustering — References"
 parent: "04-unsupervised-learning/k-means"
 type: references
-updated: 2026-06-22
+updated: 2026-07-03
 ---
 
 # K-Means Clustering — references and further reading
@@ -54,5 +54,7 @@ updated: 2026-06-22
 - Concept page (full explanation): [K-Means Clustering](01-K-Means-Clustering.md)
 - Concept depth (the *why*): [AI-ML-intuition 1.18 K-Means Clustering](../../../AI-ML-intuition/Module_1_Representation/1.18_KMeans_Clustering.md)
 - Next concepts: [02 Hierarchical Clustering](../02-Hierarchical-Clustering/02-Hierarchical-Clustering.md) · [03 DBSCAN](../03-DBSCAN/03-DBSCAN.md) · [04 Gaussian Mixture Models & EM](../04-Gaussian-Mixture-Models-and-EM/04-Gaussian-Mixture-Models-and-EM.md) · [05 Spectral Clustering](../05-Spectral-Clustering/05-Spectral-Clustering.md)
+- Always scale first: [02 Feature Scaling & Normalization](../../02.%20Data_Preprocessing/02-Feature-Scaling-and-Normalization/02-Feature-Scaling-and-Normalization.md) — k-means uses Euclidean distance, so standardize features (as we do on Wine) before clustering.
+- Reduce dimension first: [Foundations 06 — Singular Value Decomposition](../../01.%20Foundations/06-Singular-Value-Decomposition/06-Singular-Value-Decomposition.md) · [Foundations 07 — Principal Component Analysis](../../01.%20Foundations/07-Principal-Component-Analysis-Math/07-Principal-Component-Analysis-Math.md) — PCA-then-cluster tames the curse of dimensionality that degrades k-means in high dimensions.
 - Prereq math: [Foundations — Linear Algebra (vectors & matrices)](../../01.%20Foundations/Maths%20for%20AI-ML/1.%20Linear%20Algebra/VectorsAndMatrices.md)
 - Field overview: [4. Unsupervised Learning](../README.md)
