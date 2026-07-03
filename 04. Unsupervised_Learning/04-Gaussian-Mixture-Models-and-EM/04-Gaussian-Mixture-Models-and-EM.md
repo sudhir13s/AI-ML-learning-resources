@@ -124,7 +124,7 @@ Read it as "of all the probability mass landing on $x_n$, what fraction came fro
 
 **Responsibilities also quantify uncertainty.** Because each point's $\gamma$ is a distribution over components, its **entropy** $-\sum_k\gamma_{nk}\log\gamma_{nk}$ measures how *undecided* the model is about that point: near **zero** for a confidently-assigned point (one $\gamma\approx 1$, the rest $\approx 0$), and near its **maximum** $\log K$ for a point split evenly across components (deep in an overlap). This is information k-means simply doesn't have — and it's directly useful: rank points by assignment entropy to surface the ambiguous cases, or to decide which points need human review. The soft assignment isn't just "nicer"; it's an actionable confidence signal.
 
-> **Gotcha:** compute the Gaussian densities in **log-space** and combine with **log-sum-exp**, never as raw products/sums. In high dimensions $\mathcal N(x;\mu,\Sigma)$ underflows to $0.0$, and then $\gamma = 0/0 = $ NaN. Every production implementation (scikit-learn included) works with $\log\mathcal N$ and a numerically stable normalizer — a classic from-scratch bug otherwise.
+> **Gotcha:** compute the Gaussian densities in **log-space** and combine with **log-sum-exp**, never as raw products/sums. In high dimensions $\mathcal N(x;\mu,\Sigma)$ underflows to $0.0$, and then $\gamma = 0/0 = $ NaN. Every real-world implementation (scikit-learn included) works with $\log\mathcal N$ and a numerically stable normalizer — a classic from-scratch bug otherwise.
 
 > **Source / derivation:** the GMM responsibilities, the closed-form M-step, and the lower-bound (ELBO) view follow **Bishop, *Pattern Recognition and Machine Learning*, Ch. 9 "Mixture Models and EM"**; the general EM algorithm and its monotonicity guarantee are **Dempster, Laird & Rubin (1977), *Maximum Likelihood from Incomplete Data via the EM Algorithm*** (*J. Royal Statistical Society B*); the free-energy / ELBO justification used in Steps 1–4 is **Neal & Hinton (1998)**; a modern textbook treatment is **Murphy, *Probabilistic Machine Learning*** and *An Introduction to Statistical Learning*, **Ch. 12**. All are free and linked in the [references](04-Gaussian-Mixture-Models-and-EM.references.md).
 
@@ -226,7 +226,7 @@ $$
 - **(2)** The M-step maximizes $\mathcal L$ over $\theta$, so it can only *raise* it: $\mathcal L(\gamma^t,\theta^{t+1})\ge\mathcal L(\gamma^t,\theta^t)$.
 - **(3)** $\mathcal L$ is a *lower bound* on $\ell$ for **any** $q$, so in particular $\mathcal L(\gamma^t,\theta^{t+1})\le\ell(\theta^{t+1})$.
 
-Stringing them together, $\ell(\theta^{t+1})\ge\ell(\theta^{t})$: **the observed-data log-likelihood never decreases.** It's bounded above (a probability can't exceed 1, so its log can't exceed 0), and a monotone bounded sequence converges — so EM is guaranteed to converge to a **stationary point** of the likelihood.
+Stringing them together, $\ell(\theta^{t+1})\ge\ell(\theta^{t})$: **the observed-data log-likelihood never decreases.** For a monotone sequence to converge it must also be **bounded above** — and here is the subtlety unique to mixtures: the GMM log-likelihood is a sum of log-*densities*, not log-probabilities, so it is **not** automatically $\le 0$ (a Gaussian density exceeds 1 when its covariance is small, so a log-density can be positive). In fact the unregularized objective is genuinely **unbounded above** — a component can collapse onto a single point, drive $|\Sigma_k|\to 0$, and send the likelihood to $+\infty$ (the *singularity* failure mode we dissect below). The boundedness that makes the argument go through comes from **regularizing the covariances** (the `reg_covar`/$\epsilon I$ floor, always on in any real implementation): flooring the eigenvalues of every $\Sigma_k$ caps each density and so bounds $\ell$ from above. With that floor in place, a monotone-increasing, bounded-above sequence converges — so EM is guaranteed to converge to a **stationary point** of the (regularized) likelihood.
 
 ![The observed-data log-likelihood, measured per EM iteration on the real Iris petal plane, climbs monotonically (verified True) from a poor random initialization (−292.1) and plateaus at convergence (−91.8) over 80 steps. Each iteration provably cannot decrease it — the convergence guarantee, seen in the data. The steep early gains then flattening is the typical EM signature.](../images/unsup04_loglik.png)
 
@@ -394,7 +394,7 @@ Note the soft assignments: $x{=}1,2$ are almost surely A, $x{=}7$ almost surely 
 
 **M-step — re-estimate from the soft counts.** First the effective counts $N_A=\sum_n\gamma_A=0.9975+0.982+0.5+0.0025=\mathbf{2.482}$ and $N_B=4-2.482=\mathbf{1.518}$.
 
-- **Weights:** $\pi_A=N_A/4=\mathbf{0.620}$, $\pi_B=\mathbf{0.380}$ — A now claims more of the data (it owns 2½ of the 4 points).
+- **Weights:** $\pi_A=N_A/4=2.482/4=\mathbf{0.621}$, $\pi_B=\mathbf{0.379}$ — A now claims more of the data (it owns 2½ of the 4 points).
 - **Means:** $\mu_A=\frac{1}{N_A}\sum_n\gamma_A x_n=\frac{0.9975(1)+0.982(2)+0.5(4)+0.0025(7)}{2.482}=\mathbf{2.006}$; similarly $\mu_B=\mathbf{5.943}$ — both pulled toward the data they're responsible for.
 - **Variances:** $\sigma_A^2=\frac{1}{N_A}\sum_n\gamma_A(x_n-\mu_A)^2$. Spelling out the numerator with $\mu_A=2.006$: $0.9975(1{-}2.006)^2 + 0.982(2{-}2.006)^2 + 0.5(4{-}2.006)^2 + 0.0025(7{-}2.006)^2 = 1.010 + 0.00004 + 1.988 + 0.062 = 3.060$, divided by $N_A=2.482$ gives $\sigma_A^2=\mathbf{1.233}$; similarly $\sigma_B^2=\mathbf{2.202}$. Notice component A's variance *shrank* from the initial 2.0 (it's now tightly explaining points 1 and 2) while B's *grew* (it's stretching to cover the gap up to 7) — the covariances adapt to the data each component owns, exactly as they should.
 
@@ -472,24 +472,41 @@ def _em(x, weights, means, covs, tol=1e-6): # alternate E/M; log-likelihood may 
 Running the full module (`python gmm_em.py`) prints the measured proof of every claim on this page — on **real Iris**, its **real petal plane**, the ch. 01 **anisotropic** blobs, and a controlled 3-blob layout:
 
 ```
+numpy 2.4.6 | scipy 1.17.1 | scikit-learn 1.9.0
+
 === 1. Verify from-scratch EM == scikit-learn on Iris (4 features, standardized) (k=3, full cov) ===
   from-scratch log-likelihood : -290.5311
   scikit-learn log-likelihood : -290.5390
   ARI (from-scratch vs sklearn): 1.0000  (1.0 = same partition)
   ARI vs true species — GMM    : 0.9039
   ARI vs true species — k-means: 0.6201  (soft/elliptical beats hard/round)
+  -> same log-likelihood, same partition: the from-scratch EM is the real thing.
 
 === 2. EM log-likelihood is monotone on the real Iris petal plane (2-D view) ===
   iterations         : 81
   log-likelihood     : -292.13 -> -91.79  (rose every step: True)
+  -> the E/M loop provably cannot lower the likelihood; here it is, climbing to convergence.
+
+=== 2b. Soft vs hard on the real Iris petal plane (2-D) ===
+  GMM (soft, elliptical) ARI vs species : 0.9410
+  k-means (hard, round)  ARI vs species : 0.8857  (the GMM keeps overlap points soft)
 
 === 3. GMM vs k-means on anisotropic blobs (sheared, controlled) — the clusters k-means fails on in ch. 01 ===
   full-covariance GMM : ARI = 1.0000  (fits a tilted ellipse to each stripe)
   k-means             : ARI = 0.6585  (round cells cut across the stripes)
+  -> the covariance matrix is the whole difference.
 
 === 4. Choosing k by BIC / AIC on make_blobs (3 clusters, controlled) (true k=3) ===
     k         BIC         AIC
+    1      6224.8      6203.8
+    2      4590.9      4544.5
     3      3988.2      3916.6   <- min
+    4      4018.5      3921.5
+    5      4048.5      3926.3
+    6      4079.8      3932.3
+    7      4114.1      3941.3
+    8      4146.8      3948.7
+  -> BIC minimized at k=3, AIC at k=3; both recover the true count.
 
 === 5. Covariance type on anisotropic blobs (sheared, controlled) (k=3): parameters vs fit ===
   type        n_params        BIC     ARI
@@ -497,21 +514,26 @@ Running the full module (`python gmm_em.py`) prints the measured proof of every 
   tied              11     2867.3   1.000
   diag              14     3890.5   0.548
   spherical         11     3942.4   0.653
+  -> the blobs share one shear, so 'tied' captures the tilt with the fewest params (best BIC);
+     'diag'/'spherical' cannot tilt, so they misfit the diagonal stripes (low ARI).
 
 === 6. k-means is the spherical, hard limit of a GMM (controlled 3-blob) ===
   spherical-GMM predictions vs k-means labels : ARI = 1.0000  (they nearly coincide)
+  k-means vs truth = 1.0000   spherical GMM vs truth = 1.0000
   responsibility (near center, sq-dists 1 & 4) at sigma^2=2.0: 0.6792
   responsibility (near center, sq-dists 1 & 4) at sigma^2=0.2: 0.9994
+  -> shrinking the (equal, spherical) variance sharpens the soft assignment toward k-means' hard cut.
 
 === 7. The by-hand worked examples, executed ===
   Ex1  gamma_A(x=1), equal prior   = 0.9820  (component A is N(0,1))
+  Ex1  gamma_A(x=1), prior 0.7/0.3 = 0.9922  (the prior tilts it further)
   Ex2  responsibilities gamma_A    = [0.9975 0.982  0.5    0.0025]
   Ex2  M-step: pi_A=0.621  mu_A=2.006  mu_B=5.943  var_A=1.233  var_B=2.202
 ```
 
 > **Note:** every claim on this page is in that output. **(1)** On **real Iris**, our from-scratch log-likelihood equals scikit-learn's ($-290.53$ vs $-290.54$) and the partitions are identical up to a permutation (**ARI = 1.000**) — the from-scratch EM *is* the real algorithm; and the GMM recovers the three species far better than k-means (**0.90 vs 0.62**), because it fits each overlapping species its own ellipse. **(2)** On the real petal plane the log-likelihood rises **every** step ($-292.1 \to -91.8$), the `assert` guaranteeing it never falls. **(3)** On the ch. 01 anisotropic blobs the GMM scores **ARI 1.00** where k-means manages only **0.66**. **(4)** BIC and AIC both minimize at the true **k=3**. **(5)** `tied` wins BIC on the shared-shear blobs; `diag`/`spherical` can't tilt and misfit. **(6)** A spherical GMM's hard labels coincide with k-means (**ARI 1.00**), and the responsibility hardens as $\sigma^2$ shrinks. **(7)** The by-hand Worked Examples 1–2 reproduce exactly. The theory isn't aspirational; it's reproducible.
 
-> **Tip:** to fit a GMM in practice, you'd never write the loop — `GaussianMixture(n_components=k, covariance_type='full', n_init=10).fit(X)` then `.predict(X)` for hard labels or `.predict_proba(X)` for the soft responsibilities, `.score(X)` for the log-likelihood, and `.bic(X)` for model selection. Sweep `k` and `covariance_type`, pick by BIC, keep `reg_covar` on. The from-scratch version is for *understanding*; the library is for *production*.
+> **Tip:** to fit a GMM in practice, you'd never write the loop — `GaussianMixture(n_components=k, covariance_type='full', n_init=10).fit(X)` then `.predict(X)` for hard labels or `.predict_proba(X)` for the soft responsibilities, `.score(X)` for the log-likelihood, and `.bic(X)` for model selection. Sweep `k` and `covariance_type`, pick by BIC, keep `reg_covar` on. The from-scratch version is for *understanding*; the library is for *real-world use*.
 
 ---
 
@@ -588,7 +610,7 @@ A GMM is the right tool for *Gaussian-ish, possibly-elliptical, possibly-overlap
 - *The GMM density?* $p(x)=\sum_k\pi_k\,\mathcal N(x;\mu_k,\Sigma_k)$, weights summing to 1.
 - *What's a responsibility?* The posterior $\gamma(z_{nk})=\pi_k\mathcal N_k/\sum_j\pi_j\mathcal N_j$ — the soft probability component $k$ generated $x_n$; they sum to 1 over $k$.
 - *The E-step and M-step?* E: compute responsibilities (tightens the bound). M: re-estimate $\pi,\mu,\Sigma$ as responsibility-weighted statistics (raises the bound).
-- *Why does EM work / converge?* It's coordinate ascent on a Jensen lower bound (ELBO); each step can't decrease the likelihood, which is bounded above ⇒ converges (to a local optimum).
+- *Why does EM work / converge?* It's coordinate ascent on a Jensen lower bound (ELBO); each step can't decrease the likelihood, which — **once covariances are regularized** (`reg_covar`; the unregularized objective is unbounded above via the singularity) — is bounded above ⇒ converges (to a local optimum).
 - *GMM vs k-means?* Soft vs hard; elliptical (`full` $\Sigma$) vs spherical; learned weights vs equal. K-means = GMM with equal spherical $\Sigma$, $\sigma^2\to0$ (hard limit).
 - *Covariance types?* full / tied / diag / spherical — most to least flexible; `full` for tilt, `diag` for high-dim, `tied` = LDA, `spherical` ≈ k-means.
 - *How to pick K?* Minimize **BIC** ($-2\ell+p\log N$) or AIC over K (not raw likelihood, which always rises). BIC's heavier penalty makes it the usual choice.
