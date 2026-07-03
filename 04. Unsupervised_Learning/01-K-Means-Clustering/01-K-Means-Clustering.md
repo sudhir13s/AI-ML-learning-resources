@@ -40,7 +40,7 @@ That immediately raises a question: *what makes a partition good?* You have to c
 
 ## The objective: within-cluster sum of squares (inertia)
 
-Let's make "compact round blobs" precise. We want to find $k$ cluster centers $\mu_1, \dots, \mu_k \in \mathbb{R}^d$ and an assignment of each point $x_i$ to a cluster $c_i \in \{1, \dots, k\}$ that minimizes the **within-cluster sum of squares (WCSS)**, also called the **inertia** or **distortion**:
+The flag-and-piles picture is the intuition; now let's write down the single number that intuition is secretly minimizing. Making "compact round blobs" precise: we want to find $k$ cluster centers $\mu_1, \dots, \mu_k \in \mathbb{R}^d$ and an assignment of each point $x_i$ to a cluster $c_i \in \{1, \dots, k\}$ that minimizes the **within-cluster sum of squares (WCSS)**, also called the **inertia** or **distortion**:
 
 $$J(\{c_i\}, \{\mu_c\}) \;=\; \sum_{i=1}^{n} \big\lVert x_i - \mu_{c_i} \big\rVert^2 \;=\; \sum_{c=1}^{k} \sum_{i \,:\, c_i = c} \big\lVert x_i - \mu_c \big\rVert^2 .$$
 
@@ -127,7 +127,7 @@ Chain the two: each full iteration produces $J^{(t+1)} \le J^{(t)}$ — the obje
 
 This isn't a claim you have to take on faith — it's *executed*. The curve below is the inertia at every iteration of the exact run in the snapshots above; our from-scratch loop `assert`s that $J$ never rises, and here is what that assertion is guarding:
 
-![The inertia J at every Lloyd iteration of the same run as the snapshots: J falls 25,329 → 15,020 → 14,316 → 14,216 → 12,693 → 2,161 → 949 over 6 steps, never once rising. There is a visible plateau at iterations 2–4 (two centroids trapped in one blob) followed by a sharp plunge at iteration 5 when a centroid escapes to the empty blob — a monotone descent to convergence.](../images/unsup01_inertia_curve.png)
+![The inertia J at every Lloyd iteration of the same run as the snapshots: J falls 25,329 → 15,020 → 14,316 → 14,216 → 12,694 → 2,161 → 949 over 6 steps, never once rising. There is a visible plateau at iterations 2–4 (two centroids trapped in one blob) followed by a sharp plunge at iteration 5 when a centroid escapes to the empty blob — a monotone descent to convergence.](../images/unsup01_inertia_curve.png)
 
 Notice the **plateau** at iterations 2–4 followed by the **plunge** at iteration 5: Lloyd's can sit near a poor configuration for several steps and then break through as one centroid finally migrates. The descent is still monotone throughout — it just isn't uniform. That plateau-then-plunge is exactly the local-optimum risk in action: had the trapped centroid *not* found a better home, the run would have converged to a worse $J$. Which is why where we start matters.
 
@@ -215,7 +215,7 @@ Read it: $s(i) \approx 1$ means $i$ is much closer to its own cluster than to an
 
 ![Two panels for choosing k on the real Wine dataset (178 wines, 13 standardized features). Left: the elbow method — inertia J falls steeply through k=3 then flattens, with the bend (elbow) circled at k=3. Right: the mean silhouette score, which peaks (not bends) at k=3 with s=0.285. Both methods independently select k=3 — the true number of Wine cultivars.](../images/unsup01_elbow_silhouette.png)
 
-This is measured on **real data** — standardized Wine, whose 178 samples are three cultivars — not a toy. Both methods agree: the elbow bends at $k=3$ (inertia $1{,}659 \to 1{,}278 \to 1{,}175$: a steep drop to 3, then a flattening) and the silhouette **peaks** at $k=3$ ($s=0.285$). Note the difference in *shape* you're hunting — the elbow is a **bend** in a monotone-falling curve (somewhat subjective), while the silhouette is an actual **maximum** (less ambiguous). Both landing on the true cultivar count $k=3$, with an adjusted Rand index of **0.90** against the real labels, is a genuinely strong result for a purely unsupervised method. When they disagree, trust the silhouette and your knowledge of the domain.
+This is measured on **real data** — standardized Wine, whose 178 samples are three cultivars — not a toy. Both methods agree: the elbow bends at $k=3$ (inertia $1{,}659 \to 1{,}278 \to 1{,}175$: a steep drop to 3, then a flattening) and the silhouette **peaks** at $k=3$ ($s=0.285$). Note the difference in *shape* you're hunting — the elbow is a **bend** in a monotone-falling curve (somewhat subjective), while the silhouette is an actual **maximum** (less ambiguous). Both landing on the true cultivar count $k=3$, with an adjusted Rand index of **0.897** against the real labels (printed by the module and the notebook), is a genuinely strong result for a purely unsupervised method. When they disagree, trust the silhouette and your knowledge of the domain.
 
 > **Gotcha:** clean agreement like this is not guaranteed on every real dataset. On **Iris** (also 3 species), the silhouette actually peaks at $k=2$, not 3 — because two of its species (*versicolor* and *virginica*) overlap heavily and the geometry genuinely looks like two blobs, not three. That is the honest face of unsupervised learning: the silhouette scores the *geometry*, which need not match your semantic labels. Wine's chemistry happens to separate its cultivars cleanly; Iris's petals do not.
 
@@ -236,7 +236,7 @@ Everything above scores a clustering with no ground truth — inertia and silhou
 
 ## Robustness gotchas: empty clusters, outliers, ties
 
-A few operational sharp edges that bite in production:
+A few operational sharp edges that bite in the real world:
 
 - **Empty clusters.** A centroid can end up with **zero** points assigned to it (especially with a bad init or too-large $k$) — and then its mean is undefined ($0/0$). Real implementations handle this by **reseeding** the orphaned centroid, usually onto the point currently *farthest* from its assigned center (the one contributing most to $J$). scikit-learn does this automatically; a from-scratch version must too, or it crashes.
 - **Outliers drag centroids.** Because the centroid is a **mean**, a single far-flung outlier can pull a whole centroid toward it, distorting the cluster. The mean has a breakdown point of $0\%$ — one bad point is enough. If you have outliers, either remove them first, or use **k-medoids/k-medians** (median has a $50\%$ breakdown point and is far more robust).
@@ -373,7 +373,7 @@ On the standardized **Wine** dataset (178 wines, 13 features, 3 true cultivars),
 | inertia $J$ | 1,659 | **1,278** | 1,175 | 1,110 | 1,046 | 982 |
 | silhouette $s$ | 0.259 | **0.285** | 0.260 | 0.202 | 0.237 | 0.204 |
 
-Read the inertia row: the *big* drop is $1{,}659 \to 1{,}278$ (to $k=3$), then it nearly flattens ($1{,}278 \to 1{,}175 \to 1{,}110 \dots$) — the **elbow is at $k=3$**. The silhouette row *peaks* at $k=3$ ($s=0.285$) and declines on either side. Both agree: **$k=3$** — the true number of Wine cultivars, recovered with adjusted Rand index **0.90** against the real labels. Notice how each tool reads differently — a **bend** for inertia, a **maximum** for silhouette — but they converge on the same answer, on genuinely real data.
+Read the inertia row: the *big* drop is $1{,}659 \to 1{,}278$ (to $k=3$), then it nearly flattens ($1{,}278 \to 1{,}175 \to 1{,}110 \dots$) — the **elbow is at $k=3$**. The silhouette row *peaks* at $k=3$ ($s=0.285$) and declines on either side. Both agree: **$k=3$** — the true number of Wine cultivars, recovered with adjusted Rand index **0.897** against the real labels. Notice how each tool reads differently — a **bend** for inertia, a **maximum** for silhouette — but they converge on the same answer, on genuinely real data.
 
 ---
 
@@ -441,13 +441,14 @@ Running the full module (`python kmeans.py`) prints the measured proof of every 
      5      1109.5        0.202
      6      1046.0        0.237
      7       981.6        0.204
+  adjusted Rand index at k=3 vs the true cultivars: 0.897  (unsupervised, yet close to the labels)
 
 === 5. Where k-means breaks (ARI vs the true structure; ~1.0 = perfect) ===
   two moons (k=2)        : ARI = 0.274
   anisotropic blobs (k=3): ARI = 0.659
 ```
 
-> **Note:** every claim on this page is in that output. **(1)** on the controlled blobs, $J$ falls $1882.6 \to 948.9$ and then *holds* — monotonic decrease and convergence, with the `assert` guaranteeing it never rises. **(2)** on **real Wine**, our from-scratch inertia equals scikit-learn's to three decimals ($1277.928 = 1277.928$) and the partitions are identical up to a permutation (**ARI = 1.000**) — the from-scratch loop *is* the real algorithm. **(3)** k-means++ is **~2.5× tighter** than random on the 12-cluster layout (std 185 vs 465). **(4)** on Wine the silhouette **peaks at $k=3$** (0.285), the true cultivar count. **(5)** k-means **fails honestly** on non-convex (moons, ARI 0.27) and anisotropic (ARI 0.66) structure. The theory isn't aspirational; it's reproducible.
+> **Note:** every claim on this page is in that output. **(1)** on the controlled blobs, $J$ falls $1882.6 \to 948.9$ and then *holds* — monotonic decrease and convergence, with the `assert` guaranteeing it never rises. **(2)** on **real Wine**, our from-scratch inertia equals scikit-learn's to three decimals ($1277.928 = 1277.928$) and the partitions are identical up to a permutation (**ARI = 1.000**) — the from-scratch loop *is* the real algorithm. **(3)** k-means++ is **~2.5× tighter** than random on the 12-cluster layout (std 185 vs 465). **(4)** on Wine the silhouette **peaks at $k=3$** (0.285), the true cultivar count — and that k=3 clustering matches the real labels at **ARI 0.897**. **(5)** k-means **fails honestly** on non-convex (moons, ARI 0.27) and anisotropic (ARI 0.66) structure. The theory isn't aspirational; it's reproducible.
 
 > **Tip:** to feel the failure modes for yourself, open the notebook and swap the moons for `make_moons(noise=0.05)` in the last steps — the silhouette will *refuse* to strongly prefer the true $k=2$, because k-means can't represent crescents. That refusal is the algorithm honestly telling you it's the wrong tool. Then try [DBSCAN](../03-DBSCAN/03-DBSCAN.md) on the same data and watch it nail both moons.
 

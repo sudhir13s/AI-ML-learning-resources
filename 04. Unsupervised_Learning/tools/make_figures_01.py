@@ -52,10 +52,10 @@ from kmeans import (  # noqa: E402  (resolved via the sys.path insert above)
     load_blobs_2d,
     load_blobs_many,
     load_moons,
+    load_wine_scaled,
     lloyd_history,
     measure_failure,
     sweep_k,
-    load_wine_scaled,
 )
 
 # ---- Palette (matches the chapter's muted Mermaid classDefs) ------------------------------------

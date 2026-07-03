@@ -31,9 +31,10 @@ What this module measures (all real, all reproducible from the seed):
     partitions agree up to a label permutation (adjusted Rand index ~1.0). Because cluster labels are
     arbitrary we compare *inertia* and *ARI*, never raw label equality — the honest proof.
 
-  * **k-means++ vs random seeding, as a measured distribution.** 50 single-start runs each way on real Wine:
-    random seeding scatters (some starts trapped in bad local optima), k-means++ piles tightly at the global
-    optimum. The O(log k) guarantee showing up as best/worst/spread numbers.
+  * **k-means++ vs random seeding, as a measured distribution.** 50 single-start runs each way on a controlled
+    12-cluster layout (init matters more as k grows; on well-separated few-cluster data like Wine it barely
+    moves): random seeding scatters (some starts trapped in bad local optima), k-means++ piles tightly at the
+    global optimum. The O(log k) guarantee showing up as best/worst/spread numbers.
 
   * **Choosing k on real data.** An inertia sweep (the elbow) and a mean-silhouette sweep on Wine: inertia
     bends and silhouette *peaks* at the true number of cultivars, k=3.
@@ -568,9 +569,14 @@ def main() -> None:
     for k, jj, ss in zip(sweep.ks, sweep.inertias, sweep.silhouettes):
         mark = "   <- peak" if k == sweep.best_k_silhouette else ""
         print(f"  {k:>4}{jj:>12.1f}{ss:>13.3f}{mark}")
-    print(f"  -> silhouette peaks at k={sweep.best_k_silhouette}, the true number of Wine cultivars.\n")
+    print(f"  -> silhouette peaks at k={sweep.best_k_silhouette}, the true number of Wine cultivars.")
+    wine_recovery = measure_failure(wine, k=WINE_K)  # ARI of the k=3 clustering vs the real cultivar labels
+    print(f"  adjusted Rand index at k={WINE_K} vs the true cultivars: {wine_recovery.ari:.3f}  "
+          "(unsupervised, yet close to the labels)\n")
     if sweep.best_k_silhouette != wine.true_k:
         raise AssertionError("silhouette should select the true number of Wine cultivars (k=3)")
+    if wine_recovery.ari < 0.85:
+        raise AssertionError("k-means on Wine should recover the cultivars well (ARI ~0.90)")
 
     # ---- 5. the failure modes, quantified ----
     moons = measure_failure(load_moons(), k=2)

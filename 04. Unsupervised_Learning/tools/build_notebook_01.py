@@ -323,7 +323,8 @@ add_md(
     "K needs to be chosen. Inertia **always** falls as k grows, so you can only read its **bend** (the "
     "elbow). The **silhouette** — for each point, (nearest-other-cluster distance − own-cluster "
     "distance) / max — has a genuine **peak**. Sweep k on Wine: both point to k=3, the true number of "
-    "cultivars."
+    "cultivars — and because we happen to know Wine's real labels, we can confirm the k=3 clustering "
+    "matches them at an adjusted Rand index of ~0.90."
 )
 add_code(
     "sweep = sweep_k(wine)\n"
@@ -343,7 +344,11 @@ add_code(
     "a2.set_ylabel('s')\n"
     "plt.tight_layout()\n"
     "plt.show()\n"
-    "print(f'\\nsilhouette peaks at k={sweep.best_k_silhouette} — the true number of Wine cultivars.')"
+    "print(f'\\nsilhouette peaks at k={sweep.best_k_silhouette} — the true number of Wine cultivars.')\n"
+    "# We happen to know Wine's true cultivar labels, so we can score the k=3 clustering against them.\n"
+    "recovery = measure_failure(wine, k=3)   # ARI of the sklearn k=3 partition vs the real labels\n"
+    "print(f'adjusted Rand index at k=3 vs the true cultivars: {recovery.ari:.3f} '\n"
+    "      '(unsupervised, yet close to the labels)')"
 )
 
 # ---- Step 11: failure — moons ----
