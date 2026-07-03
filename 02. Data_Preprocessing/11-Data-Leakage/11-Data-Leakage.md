@@ -21,7 +21,7 @@ That 86% is **pure fiction** — thirty-six points of skill on a problem with ze
 
 That gap — inflated score, honest truth, and the discipline that separates them — is what this chapter is about. Leakage is not a property of your model; it is a property of your **protocol**. It is the single most reliable way to fool yourself in ML, which is exactly why it is one of the most-asked applied interview questions: it separates people who have *shipped* models from people who have only *fit* them.
 
-> **The one-sentence core.** *Data leakage is any information available to the model at training time that will **not** be available at prediction time; it makes your validation score **optimistically biased** — great in the notebook, collapsing in production — and the cure is not a better model but a better protocol: **fit every data-dependent step (scale, impute, select, encode, target-statistics) using only the training portion of each split, and split time-ordered data by time**, which scikit-learn's `Pipeline` + correct cross-validation enforces structurally.*
+> **The one-sentence core.** *Data leakage is any information available to the model at training time that will **not** be available at prediction time; it makes your validation score **optimistically biased** — great in the notebook, collapsing in the real world — and the cure is not a better model but a better protocol: **fit every data-dependent step (scale, impute, select, encode, target-statistics) using only the training portion of each split, and split time-ordered data by time**, which scikit-learn's `Pipeline` + correct cross-validation enforces structurally.*
 
 I'll teach this the way I'd teach it at a whiteboard — **felt problem first** (a score you can't reproduce, measured on noise where the truth is *known*), then **intuition** (studying with the answer key taped inside your textbook), then the **mechanism** (where leakage physically enters a split or a CV loop, with a diagram), then the **taxonomy** (the four doors it walks through and *why each one inflates the estimate*), then three **worked, measured demos** — preprocessing leakage, target leakage on real medical data, and temporal leakage — each with the leaky number, the honest number, and the fix, then **pitfalls**, then the real-world **horror stories**. By the end you'll be able to:
 
@@ -35,7 +35,7 @@ I'll teach this the way I'd teach it at a whiteboard — **felt problem first** 
 
 ## The problem: a score you cannot reproduce
 
-Every practitioner meets leakage the same way: a model that is *too good*. Validation accuracy is suspiciously high, the ROC curve hugs the corner, and for a moment you believe you're brilliant. Then the model touches genuinely new data — a later month, a different hospital, actual production traffic — and the number falls off a cliff. The gap between the two is almost always leakage: at fit time the model drank in something it won't have at predict time.
+Every practitioner meets leakage the same way: a model that is *too good*. Validation accuracy is suspiciously high, the ROC curve hugs the corner, and for a moment you believe you're brilliant. Then the model touches genuinely new data — a later month, a different hospital, actual real-world traffic — and the number falls off a cliff. The gap between the two is almost always leakage: at fit time the model drank in something it won't have at predict time.
 
 The reason leakage is so dangerous is that **it is invisible in a single number.** A leaky 86% and an honest 86% look identical on the page. You cannot tell a real score from an inflated one by staring at it; the inflation only becomes visible when you build the *honest* protocol next to the leaky one and watch the number move. That is the entire method of this chapter, and it is why I opened on **pure noise**: when the data has no signal, the honest answer is *provably* chance (0.50), so every point above 0.50 is leakage you can *measure*, not merely suspect. The 86% in the figure above is 36 measured points of pure protocol error.
 
@@ -51,9 +51,9 @@ Imagine studying for an exam with a textbook that has **the answer key taped ins
 
 That is exactly data leakage, and the mapping is precise:
 
-- **The practice test** is your validation/test set — the stand-in for the real exam (production).
+- **The practice test** is your validation/test set — the stand-in for the real exam (the real world).
 - **The answer key taped inside** is any information that leaked from those evaluation rows into training. In the noise demo, the "answer key" was the *feature selection* peeking at which columns correlated with the label *across all rows, including the ones it would later be scored on.*
-- **The inflated practice score** is your leaky validation accuracy. **The real exam** is production, where the key is gone and the true ability shows.
+- **The inflated practice score** is your leaky validation accuracy. **The real exam** is the real world, where the key is gone and the true ability shows.
 - **The fix** is to study with the answer key *removed* — do your practice problems using only what you'll have in the real exam. In ML: fit every data-dependent step using only the *training* rows of each split, so the model never glimpses the evaluation rows while learning.
 
 The analogy holds up under pressure, which is how you know it's a good one:
@@ -92,7 +92,7 @@ graph TD
     classDef out fill:#3A6B96,stroke:#2A5B86,color:#fff
 ```
 
-The left path is the bug: `fit_transform(X)` on everything, *then* split. The transform has now seen the evaluation rows, so when you score on them the model has an unfair whisper of their distribution. The right path is the cure: split *first*, fit the transform on the training portion, apply those frozen statistics to the held-out portion. The held-out rows influence *nothing* about how they're processed — which is precisely the situation in production, where they don't exist yet.
+The left path is the bug: `fit_transform(X)` on everything, *then* split. The transform has now seen the evaluation rows, so when you score on them the model has an unfair whisper of their distribution. The right path is the cure: split *first*, fit the transform on the training portion, apply those frozen statistics to the held-out portion. The held-out rows influence *nothing* about how they're processed — which is precisely the situation in the real world, where they don't exist yet.
 
 Cross-validation makes this subtler and more dangerous, because it's easy to fit a transform *once* on all the training data and then cross-validate — and every fold's validation portion has still leaked into that transform. The transform must be **re-fit inside each fold**, on that fold's training rows only:
 
@@ -110,9 +110,9 @@ Leakage is one idea — train-time access to prediction-time-unavailable informa
 
 **1. Preprocessing leakage (train/test contamination).** A data-dependent transform is fit on data that includes the evaluation rows — the mechanism above. Fitting a `StandardScaler`, an imputer, `SelectKBest`, or a target encoder on the whole dataset before splitting, or once before a CV loop. *Why it inflates:* the transform encodes statistics of the evaluation rows (their mean, their label-correlation), so the model is evaluated on rows it partially shaped. This is our **Demo 1**, and the mildest-looking yet most pervasive door.
 
-**2. Target (feature) leakage.** A *feature* is a proxy for, or is computed from, the label — information that in reality only exists *after* the outcome you're predicting. Classic examples: a "was_contacted_by_collections" flag when predicting loan default (you only get contacted *because* you defaulted); a lab test that is ordered *because* the diagnosis is suspected; a `total_charges` column when predicting whether a customer churned (charges accrue over a tenure that ends at churn). *Why it inflates:* the feature carries the answer, so the model looks brilliant — but the feature won't exist at prediction time (you're predicting *before* the outcome), so in production the model loses its crutch. This is our **Demo 2**, on real medical data.
+**2. Target (feature) leakage.** A *feature* is a proxy for, or is computed from, the label — information that in reality only exists *after* the outcome you're predicting. Classic examples: a "was_contacted_by_collections" flag when predicting loan default (you only get contacted *because* you defaulted); a lab test that is ordered *because* the diagnosis is suspected; a `total_charges` column when predicting whether a customer churned (charges accrue over a tenure that ends at churn). *Why it inflates:* the feature carries the answer, so the model looks brilliant — but the feature won't exist at prediction time (you're predicting *before* the outcome), so in the real world the model loses its crutch. This is our **Demo 2**, on real medical data.
 
-**3. Temporal leakage.** For time-ordered data, training on rows from the *future* relative to the rows you predict. A random (shuffled) train/test split, or plain K-fold CV, scatters future observations into the training set, so the model interpolates answers it should have to *forecast*. *Why it inflates:* real forecasting only ever has the past; a shuffled split hands the model the future, which it cannot have in production. This is our **Demo 3**.
+**3. Temporal leakage.** For time-ordered data, training on rows from the *future* relative to the rows you predict. A random (shuffled) train/test split, or plain K-fold CV, scatters future observations into the training set, so the model interpolates answers it should have to *forecast*. *Why it inflates:* real forecasting only ever has the past; a shuffled split hands the model the future, which it cannot have in the real world. This is our **Demo 3**.
 
 **4. Group / duplicate contamination.** The same entity appears in both train and test — near-duplicate rows, multiple visits by the same patient, augmented copies of the same image, the same user split across folds. *Why it inflates:* the model memorizes the entity in training and "recognizes" it in test, scoring on identity rather than generalization. The fix is *grouped* splitting (scikit-learn's [`GroupKFold`](https://scikit-learn.org/stable/modules/cross_validation.html#group-cv)) so an entity is never on both sides.
 
@@ -132,7 +132,9 @@ The whole game is the phrase *"a fresh example the model has never touched."* An
 
 Leakage **breaks the independence.** When a transform is fit on all the data, the processing of a held-out row $x_i$ depends on $x_i$ itself (and on its label $y_i$, if selection or target-encoding used labels). The held-out rows are no longer fresh — the model was tuned, however slightly, *toward* them. So the estimator becomes **optimistically biased**:
 
-$$\mathbb{E}\big[\widehat{\text{Err}}_{\text{leaky}}\big] \;<\; \text{Err} \qquad (\text{for a loss; the accuracy is inflated}).$$
+$$\mathbb{E}\big[\widehat{\text{Err}}_{\text{leaky}}\big] \;<\; \text{Err} \qquad\Longleftrightarrow\qquad \mathbb{E}\big[\widehat{\text{Acc}}_{\text{leaky}}\big] \;>\; \text{Acc}.$$
+
+The left form is for a *loss* (the estimated error is too *low*); the right is the equivalent statement for *accuracy* (the estimated accuracy is too *high*) — and since every demo below reports accuracy (or R²), the right-hand inequality, $\mathbb{E}[\widehat{\text{Acc}}_{\text{leaky}}] > \text{Acc}$, is the one you'll see in the numbers: leaky > honest, every time.
 
 The size of the bias grows with *how much* of the evaluation rows' information leaked in. This is exactly what the noise demo measures, and it is why the leak *scales with $k$*:
 
@@ -177,6 +179,8 @@ The measured result, reproducible from the seed:
 ```
 
 The only difference between the two blocks is a `Pipeline`, and it moves the reported accuracy by **38 points** — from a confident lie to the honest truth, corroborated by a hold-out that never entered either computation. This is the whole chapter in six lines of code.
+
+> **On reproducibility.** All numbers on this page are from a single seed (42), so the exact figures (0.86, 0.48, …) are one-run point estimates and will wobble a little with the seed. The claim that *matters* — **leaky > honest** — is not a lucky draw: it is enforced by assertions in the module and reproduces across seeds, because on pure noise the honest score is chance *by construction*, so any excess is leakage no matter the seed. You'd pin the precise numbers down with more repeats; the *direction and mechanism* are what's robust.
 
 ---
 
@@ -290,7 +294,7 @@ That is why this chapter sits at the heart of preprocessing: every other step (s
 
 ## Recap and rapid-fire
 
-**If you remember nothing else:** data leakage is train-time access to information you won't have at prediction time; it makes your validation score **optimistically biased** — great in the notebook, collapsing in production. On pure noise (honest truth = chance), selecting features on all data before CV reported **0.86**; the `Pipeline` fix reported **0.48**, confirmed by a hold-out at **0.53**. On real medical data, a proxy-of-the-label column took accuracy to **1.00** (and predicted the label **1.00** on its own); dropping it returned the honest **0.96**. On a time series, a shuffled split scored **0.97** R²; a forward `TimeSeriesSplit` scored **0.69**. The cure is a **protocol**, not a model: fit every data-dependent step on training rows only (put it in a `Pipeline`, cross-validate the pipeline), split time-ordered data by time, and drop features that won't exist at prediction time.
+**If you remember nothing else:** data leakage is train-time access to information you won't have at prediction time; it makes your validation score **optimistically biased** — great in the notebook, collapsing in the real world. On pure noise (honest truth = chance), selecting features on all data before CV reported **0.86**; the `Pipeline` fix reported **0.48**, confirmed by a hold-out at **0.53**. On real medical data, a proxy-of-the-label column took accuracy to **1.00** (and predicted the label **1.00** on its own); dropping it returned the honest **0.96**. On a time series, a shuffled split scored **0.97** R²; a forward `TimeSeriesSplit` scored **0.69**. The cure is a **protocol**, not a model: fit every data-dependent step on training rows only (put it in a `Pipeline`, cross-validate the pipeline), split time-ordered data by time, and drop features that won't exist at prediction time.
 
 **Quick-fire — say these out loud:**
 
@@ -301,7 +305,7 @@ That is why this chapter sits at the heart of preprocessing: every other step (s
 - *A single feature predicts your target almost perfectly. Reaction?* Suspect target leakage — that feature is probably the label in disguise or a post-outcome proxy. Check whether it exists at prediction time.
 - *How do you evaluate a time-series model?* Split by time (`TimeSeriesSplit`) — train on the past, predict the future. Never shuffle; a random split trains on the future.
 - *How does a `Pipeline` prevent leakage?* `cross_val_score` fits the whole pipeline on each fold's training rows and only predicts on the validation rows, so every transform is fit on training data only — structurally, you can't leak.
-- *You get 99% in the notebook and 70% in production. First hypothesis?* Data leakage — build the honest protocol, check an untouched hold-out, and see whether the 99% reproduces.
+- *You get 99% in the notebook and 70% in the real world. First hypothesis?* Data leakage — build the honest protocol, check an untouched hold-out, and see whether the 99% reproduces.
 - *Is leakage a model problem or a protocol problem?* A protocol problem — it doesn't depend on the model; swap the classifier and the leak persists.
 
 ---

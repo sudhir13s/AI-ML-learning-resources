@@ -109,11 +109,14 @@ def fig_leaky_vs_honest() -> None:
 
     fig, ax = plt.subplots(figsize=(9.5, 6.0))
     bars = ax.bar(labels, values, color=colours, alpha=0.9, width=0.62)
-    for b, v in zip(bars, values):
-        ax.text(b.get_x() + b.get_width() / 2, v + 0.015, f"{v:.2f}", ha="center", fontsize=13,
-                fontweight="bold", color=INK)
-    ax.axhline(CHANCE, color=AMBER, linestyle="--", linewidth=1.8,
+    ax.axhline(CHANCE, color=AMBER, linestyle="--", linewidth=1.8, zorder=1,
                label=f"honest truth = chance ({CHANCE:.2f})  —  the data is pure noise")
+    # value labels drawn AFTER the chance line, each on a white patch so the dashed line never
+    # strikes through a digit (the 0.48 / 0.53 bars sit right at the 0.50 line)
+    for b, v in zip(bars, values):
+        ax.text(b.get_x() + b.get_width() / 2, v + 0.022, f"{v:.2f}", ha="center", fontsize=13,
+                fontweight="bold", color=INK, zorder=6,
+                bbox={"facecolor": "white", "edgecolor": "none", "pad": 1.5})
     ax.set_ylim(0, 1.02)
     ax.set_ylabel("cross-validated accuracy")
     ax.set_title(
@@ -304,9 +307,13 @@ def fig_temporal_leak() -> None:
     ax_series.axvspan(0, cut, color=BLUE, alpha=0.14)
     ax_series.axvspan(cut, n, color=AMBER, alpha=0.20)
     ax_series.axvline(cut, color=INK, linestyle=":", linewidth=1.2)
-    ax_series.text(cut / 2, ts.series.max(), "train = the PAST", ha="center", va="top", color=BLUE,
+    # add headroom above the series so the captions sit ABOVE the line, not over it
+    _ymin, _ymax = ts.series.min(), ts.series.max()
+    ax_series.set_ylim(_ymin - 0.05 * (_ymax - _ymin), _ymax + 0.30 * (_ymax - _ymin))
+    _label_y = _ymax + 0.14 * (_ymax - _ymin)
+    ax_series.text(cut / 2, _label_y, "train = the PAST", ha="center", va="center", color=BLUE,
                    fontsize=10, fontweight="bold")
-    ax_series.text((cut + n) / 2, ts.series.max(), "test = the FUTURE", ha="center", va="top",
+    ax_series.text((cut + n) / 2, _label_y, "test = the FUTURE", ha="center", va="center",
                    color=AMBER, fontsize=10, fontweight="bold")
     ax_series.set_title("Forward TimeSeriesSplit: train on the past, predict the future (HONEST)",
                         fontsize=10.5, color=GREEN)
