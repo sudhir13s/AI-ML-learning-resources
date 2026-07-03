@@ -360,7 +360,10 @@ add_md(
     "Reinforcement learning is famously high-variance *across random seeds*, and REINFORCE especially so — the "
     "same code and hyperparameters can solve on one seed and stall on another. This is not a bug to hide; it is a "
     "property of the method (single-episode Monte-Carlo gradients), and it is exactly why variance reduction "
-    "(baselines → actor-critic → PPO) is the through-line of the whole policy-gradient story."
+    "(baselines → actor-critic → PPO) is the through-line of the whole policy-gradient story.\n"
+    "\n"
+    "> (2 seeds here for a fast notebook run; the page's 3-seed spread is 498.5 ± 2.1 — policy-gradient variance "
+    "means the exact numbers wobble across seeds.)"
 )
 add_code(
     "for s, r in zip(seeds, with_bl):\n"
