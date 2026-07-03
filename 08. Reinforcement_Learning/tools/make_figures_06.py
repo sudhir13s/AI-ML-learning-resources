@@ -124,9 +124,13 @@ def _draw_frozenlake(ax: plt.Axes, values: np.ndarray, policy: np.ndarray, title
 def fig_policy_value(exp) -> None:
     assert exp.fl_result is not None
     learned_policy = greedy_policy(exp.fl_result.q_table)
+    # Plot the agent's OWN learned value estimate V = max_a Q(s, a) (matches the label and the notebook). On the
+    # optimal path this equals V* (so V(start) = 0.951), but off-path states show the agent's stale estimates —
+    # which is exactly the "not visited enough to converge" lesson the caption teaches.
+    learned_v = exp.fl_result.q_table.max(axis=1)
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10.4, 4.9))
-    _draw_frozenlake(ax1, exp.fl_learned_values, learned_policy,
-                     f"(a) Q-learning: learned policy + V (max_a Q)\nsuccess {exp.fl_eval.success_rate:.0%}, "
+    _draw_frozenlake(ax1, learned_v, learned_policy,
+                     f"(a) Q-learning: learned policy + V = maxₐ Q\nsuccess {exp.fl_eval.success_rate:.0%}, "
                      f"{exp.fl_eval.mean_length:.0f}-step optimal path")
     _draw_frozenlake(ax2, exp.fl_v_star, exp.fl_pi_star,
                      f"(b) value iteration ground truth: V* + optimal policy\nV*(start) = {exp.fl_v_start_star:.3f}")
@@ -192,6 +196,11 @@ def _draw_cliff(ax: plt.Axes, env: Env, q_path: list[int], sarsa_path: list[int]
 
     _plot_path(q_path, GREEN, "Q-learning (off-policy): optimal path, −13", -0.12)
     _plot_path(sarsa_path, AMBER, "SARSA (on-policy): safe path, −17", +0.12)
+    # make "hugging the razor's edge" legible: mark the boundary the Q-path runs along and label its row
+    ax.axhline(2.5, xmin=0.04, xmax=0.96, color=GREEN, linestyle=":", linewidth=1.1, alpha=0.7)
+    ax.annotate("row 2 — one tile above the drop", xy=(6.5, 2.0), xytext=(6.5, 1.15),
+                ha="center", fontsize=7.5, color=GREEN, fontweight="bold",
+                arrowprops={"arrowstyle": "->", "color": GREEN, "lw": 1.2})
     ax.legend(fontsize=8.5, frameon=False, loc="upper center", bbox_to_anchor=(0.5, -0.02))
     ax.set_title("(a) greedy paths — off-policy hugs the cliff edge (optimal),\non-policy detours to safety",
                  fontsize=10, color=INK)

@@ -20,9 +20,9 @@ updated: 2026-07-03
 **Videos**:
 - [RL Course, Lecture 5 — Model-Free Control](https://www.youtube.com/watch?v=0g4j2k_Ggc4) — **David Silver (DeepMind / UCL)** — the definitive Q-learning vs SARSA derivation, GLIE, and convergence, from a co-author of DQN.
 - [DeepMind × UCL RL Lecture Series — Model-Free Control](https://www.youtube.com/watch?v=t9uf9cuogBo) — **Hado van Hasselt (DeepMind)** — the modern DeepMind lecture on TD control and off-policy learning, by the author of Double Q-learning.
-- [Reinforcement Learning: Q-Learning](https://www.youtube.com/watch?v=0iqz4tcKN58) — **Steve Brunton (University of Washington)** — a crisp, geometric walk through the Bellman optimality equation and the Q-learning update.
-- [Reinforcement Learning Series](https://www.youtube.com/playlist?list=PLzvYlJMoZ02Dxtwe-Mmh4nOB5jYlMGBjr) — **Mutual Information** — clear, visual episodes on value functions, TD learning, and Q-learning with excellent animations.
-- [Q-Learning Explained — a hands-on RL tutorial](https://www.youtube.com/watch?v=qhRNvCVVJaA) — **deeplizard** — a step-by-step build of the Q-table and the ε-greedy update loop, code-first.
+- [Q-Learning: Model Free Reinforcement Learning and Temporal Difference Learning](https://www.youtube.com/watch?v=0iqz4tcKN58) — **Steve Brunton (University of Washington)** — a crisp, geometric walk through the Bellman optimality equation and the Q-learning update.
+- [Temporal Difference Learning — Reinforcement Learning, Chapter 6](https://www.youtube.com/watch?v=L64E_NTZJ_0) — **Mutual Information** — a beautifully animated tour of Sutton & Barto's Chapter 6: TD learning, SARSA, and Q-learning, with the on-policy/off-policy distinction made visual.
+- [Q-Learning Explained — A Reinforcement Learning Technique](https://www.youtube.com/watch?v=qhRNvCVVJaA) — **deeplizard** — a step-by-step build of the Q-table and the ε-greedy update loop, code-first.
 - [Reinforcement Learning: Machine Learning Meets Control Theory](https://www.youtube.com/watch?v=0MNVhXEX9to) — **Steve Brunton** — situates Q-learning among value- and policy-based methods, for the bigger picture.
 
 **Courses (free)**:

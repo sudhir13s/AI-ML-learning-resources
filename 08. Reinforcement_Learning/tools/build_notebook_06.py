@@ -256,9 +256,11 @@ add_md(
     "\n"
     "The clearest way to *see* what Q-learning found: draw the greedy action in every state (arrow) over the "
     "state-value heatmap $V(s)=\\max_a Q(s,a)$, beside the value-iteration optimum. On the route from start to "
-    "goal they match. (A few off-path states in the left column keep a suboptimal arrow — Q-learning only "
-    "guarantees optimality for state-actions it visits often enough, which is exactly the convergence condition; "
-    "those states are never entered on the optimal trajectory, so `V(start)` and the route are still optimal.)"
+    "goal they match. But look at the **left column**: state 4 keeps its arrow pointing **↑ (up, toward the "
+    "start)** and state 8's value stays **stale near ~0.1**, far below its true value. Those states are never "
+    "entered on the optimal trajectory from the start, so once ε has decayed Q-learning barely visits them and "
+    "their values do not converge — exactly the *visit-every-state-action* condition, made visible. Because the "
+    "executed policy never enters them, `V(start)` and the route are still optimal."
 )
 add_code(
     "arrows = {0: '←', 1: '↓', 2: '→', 3: '↑'}\n"
@@ -423,6 +425,42 @@ add_code(
     "plt.show()\n"
     "assert s_res.episode_returns[-200:].mean() > q_res.episode_returns[-200:].mean()\n"
     "print('OK: measured — SARSA online > Q-learning online, yet Q-learning greedy return (−13) is optimal.')"
+)
+
+# ---- Step 14: Try it — kill exploration early (predict, then check) ----
+add_md(
+    "## Step 14 — Try it: what if exploration dies too early?\n"
+    "\n"
+    "The convergence guarantee needs *every* state-action visited often enough. **Predict first:** if we drop the "
+    "ε floor to **0** and decay ε *fast* (so exploration is basically gone within ~40 episodes), what happens on "
+    "deterministic FrozenLake — does greedy success collapse, and does the whole state space still get learned? "
+    "Write down your guess, then run the cell.\n"
+    "\n"
+    "The result is subtler and more honest than \"it breaks\": on this *easy* deterministic task the optimal path "
+    "is found during the brief early exploration, so **greedy success stays ~100%** — but the fraction of the "
+    "state space that ever gets a learned value **collapses** (from ~11/16 states down to ~6/16). That missing "
+    "coverage is exactly where, on any harder or stochastic task, a prematurely-greedy agent locks in a "
+    "suboptimal policy. You are watching the *visit-every-state-action* condition fail, measured."
+)
+add_code(
+    "def n_states_learned(q):\n"
+    "    return int((q.max(axis=1) > 1e-6).sum())\n"
+    "\n"
+    "# baseline: ε decays gently to a 0.01 floor (exploration lingers)\n"
+    "base = ql.train_q_learning(env, gamma=GAMMA, alpha=0.1, epsilon_start=1.0, epsilon_end=0.01,\n"
+    "                           epsilon_decay=0.995, n_episodes=2000, max_steps=100, seed=0)\n"
+    "# variation #1: ε floor = 0 AND fast decay -> exploration is essentially gone within ~40 episodes\n"
+    "greedy_fast = ql.train_q_learning(env, gamma=GAMMA, alpha=0.1, epsilon_start=1.0, epsilon_end=0.0,\n"
+    "                                  epsilon_decay=0.9, n_episodes=2000, max_steps=100, seed=0)\n"
+    "eb = ql.evaluate_greedy(env, base.q_table, n_episodes=100, max_steps=100, seed=0)\n"
+    "ef = ql.evaluate_greedy(env, greedy_fast.q_table, n_episodes=100, max_steps=100, seed=0)\n"
+    "print(f'baseline (floor 0.01, decay 0.995): success {eb.success_rate:.0%}, '\n"
+    "      f'states learned {n_states_learned(base.q_table)}/16')\n"
+    "print(f'fast greedy (floor 0.00, decay 0.9): success {ef.success_rate:.0%}, '\n"
+    "      f'states learned {n_states_learned(greedy_fast.q_table)}/16')\n"
+    "print('\\nObserve: greedy success survives on this easy task, but coverage collapses — most of the state\\n'\n"
+    "      'space is never learned once exploration dies. That is the convergence condition failing, measured.')\n"
+    "assert n_states_learned(greedy_fast.q_table) < n_states_learned(base.q_table)"
 )
 
 # ---- close ----
