@@ -6,14 +6,14 @@ level: beginner
 prereqs: ["entropy", "gini-impurity", "supervised-learning-basics"]
 interview_frequency: very-high
 template: concept-deep
-updated: 2026-06-22
+updated: 2026-07-03
 ---
 
 # Decision trees: learning by asking the right questions
 
 A decision tree is the machine-learning version of the game *20 Questions*. To classify something, it asks a series of simple yes/no questions about its features — "is age ≤ 40?", "is income ≤ \$50k?" — and walks down the branches until it reaches a leaf that holds the answer. Each question splits the data into two cleaner groups, and the tree *learns* which questions to ask, and in what order, by greedily picking at every step the split that most reduces **impurity** (how mixed the labels are). The result is a model you can literally read as a flowchart — the most **interpretable** model in mainstream ML — that needs no feature scaling, handles numbers and categories together, and captures non-linear patterns. On its own a single tree is a bit fragile, but it is the fundamental building block of the algorithms that still dominate tabular data: **random forests** and **gradient boosting**.
 
-This page is the definitive treatment. We will build the tree from one idea — *recursive binary splitting* — and **derive** every result rather than state it: why the globally-optimal tree is NP-hard (so we go greedy), what Gini and entropy actually measure and how they differ, the **information-gain** objective derived as parent-minus-weighted-children impurity, regression trees as **variance reduction** (derived), the axis-aligned "staircase" boundary and why a rotation breaks a tree, *why* trees overfit and the exact knobs that stop them (including **cost-complexity pruning**, derived), the **bias–variance** reason a single tree is high-variance and why that *motivates* ensembles, the CART vs ID3/C4.5 lineage, and how **feature importance** is computed (and biased). We work **three** numeric examples of increasing complexity, then prove the from-scratch split selection matches scikit-learn and reproduce the overfitting curve in real numbers.
+This page is the definitive treatment. We will build the tree from one idea — *recursive binary splitting* — and **derive** every result rather than state it: why the globally-optimal tree is NP-hard (so we go greedy), what Gini and entropy actually measure and how they differ, the **information-gain** objective derived as parent-minus-weighted-children impurity, regression trees as **variance reduction** (derived), the axis-aligned "staircase" boundary and why a rotation breaks a tree, *why* trees overfit and the exact knobs that stop them (including **cost-complexity pruning**, derived), the **bias–variance** reason a single tree is high-variance and why that *motivates* ensembles, the CART vs ID3/C4.5 lineage, and how **feature importance** is computed (and biased). We work **three** numeric examples of increasing complexity, then — in a companion module and a runnable notebook — **grow a tree from scratch**, prove it matches scikit-learn, and measure the overfitting curve, feature-importance bias, and regression staircase. **Every figure and number on this page comes from an executed run on real scikit-learn datasets** — **Iris** (150 flowers) for the from-scratch tree and the boundary, **Breast Cancer Wisconsin** (569 tumours) for overfitting and importance, and **Diabetes** (442 patients) for the regression staircase — nothing is illustrative-only unless labelled so.
 
 By the end you will be able to:
 
@@ -37,6 +37,8 @@ Intuition and pictures first, then the math (with sources), then runnable, verif
 
 You want a model that captures non-linear structure, handles **mixed feature types** (age, zip code, blood type) without preprocessing, needs **no normalization**, copes with missing values, and — crucially — that a human can **inspect and trust**. Linear and logistic models give interpretability but only straight boundaries; kernel SVMs and neural nets are flexible but opaque, and they demand scaling and careful tuning. Decision trees hit a sweet spot: arbitrary **axis-aligned** regions, learned greedily from the data, expressed as a flowchart anyone can follow. That readability — you can point at the exact path that produced a decision — is why they remain a default in medicine, credit scoring, fraud, and operations, where a model that *can't* explain itself is often a non-starter.
 
+Make the inadequacy concrete: a **single straight line can't cleanly separate the three Iris species** — no one line puts setosa, versicolor, and virginica each on their own side. But the **axis-aligned staircase** a tree carves — a few horizontal/vertical cuts stacking into rectangles — separates them almost perfectly (you'll see exactly this in [the decision-boundary figure](#what-a-tree-computes-axis-aligned-regions-and-the-staircase) below). That is the felt gap this page fills: from "one boundary isn't enough" to "a stack of one-feature questions is."
+
 > **Tip:** the interview framing is "interpretable, non-parametric, scale-free, mixed-type — but unstable as a single model." Everything good and bad about trees flows from one design choice: they ask **threshold questions on one feature at a time**. That buys interpretability and scale-invariance; it costs you smooth boundaries and stability.
 
 ---
@@ -47,9 +49,9 @@ A tree is grown **top-down and greedily**. At the root, the whole dataset sits i
 
 ```mermaid
 graph TD
-    R{"petal length ≤ 2.5 cm?"}:::amber
+    R{"petal length ≤ 2.45 cm?"}:::amber
     R -->|"yes"| L1(["setosa<br/>pure leaf — Gini 0"]):::out
-    R -->|"no"| N{"petal width ≤ 1.8 cm?"}:::process
+    R -->|"no"| N{"petal width ≤ 1.55 cm?"}:::process
     N -->|"yes"| L2(["versicolor"]):::out
     N -->|"no"| L3(["virginica"]):::out
 
@@ -58,11 +60,15 @@ graph TD
     classDef out fill:#2E7A5A,stroke:#1E6A4A,color:#fff
 ```
 
-To **classify** a new point you walk it down the tree following the answers — $O(\text{depth})$ comparisons, with **no arithmetic on the feature values themselves** beyond comparing each to a threshold (hence no scaling needed; a monotone transform of a feature, like $\log$, leaves every split unchanged).
+That flowchart is not a cartoon — its thresholds (2.45, 1.55) are the **real values the algorithm learns**, though it is a simplified 3-leaf schematic. Here is the actual fitted tree on Iris (`max_depth=3`, Gini), drawn straight from the model with every split threshold, Gini value, and sample count — **this is the full 4-feature Iris tree (test accuracy 0.978); the from-scratch 2-feature slice used in the [code section](#code-a-tree-from-scratch-verified-and-the-overfitting-curve) later reaches 0.933 — same algorithm, fewer features:**
+
+![A learned decision tree on the real Iris dataset (max_depth 3, Gini criterion), test accuracy 0.978. The root splits on 'petal length ≤ 2.45', which sends all 35 setosa training samples into a pure leaf (Gini 0, value [35,0,0]). The right subtree then splits on petal width ≤ 1.55 and further on petal length/width, separating versicolor from virginica down to nearly-pure leaves. Each box shows the split test, the Gini, the sample count, the per-class counts, and the majority class.](../images/sup07_tree_structure.png)
+
+The first split alone — petal length ≤ 2.45 cm — isolates **every** setosa into a pure leaf (Gini 0). That is the greedy algorithm finding, in one question, the feature and threshold that most reduce impurity. To **classify** a new point you walk it down the tree following the answers — $O(\text{depth})$ comparisons, with **no arithmetic on the feature values themselves** beyond comparing each to a threshold (hence no scaling needed; a monotone transform of a feature, like $\log$, leaves every split unchanged). This scale-invariance is the flip side of the [feature-scaling](../../02.%20Data_Preprocessing/02-Feature-Scaling-and-Normalization/02-Feature-Scaling-and-Normalization.md) story: distance- and gradient-based models *need* scaling; a tree, splitting on thresholds, is immune to it.
 
 **For a numeric feature**, the candidate thresholds are the **midpoints between adjacent sorted values** — between two consecutive distinct values every threshold gives the identical partition, so you only need one per gap. With $n$ samples that's $O(n)$ thresholds per feature, $O(nd)$ candidate splits per node; sorting once dominates the cost. **For a categorical feature**, CART considers subset splits (which categories go left vs right); for a $K$-category feature there are $2^{K-1}-1$ non-trivial binary partitions, so high-cardinality categoricals are expensive (and, as we'll see, a source of bias).
 
-> **Note:** the search is **greedy** — at each node it picks the *locally* best split without looking ahead, then never revisits that choice. It does this because finding the **globally optimal** tree (the one that, over all possible trees of a given size, minimizes error) is **NP-hard** (Laurent & Rivest, 1976): the number of trees explodes combinatorially with features and thresholds, so exhaustive search is intractable. Greedy is a heuristic that works very well in practice but is *not* guaranteed optimal — it can miss a split that only pays off **after** a later split (an XOR pattern is the classic trap: neither feature alone reduces impurity, so a greedy root split sees no gain, even though two splits together separate the classes perfectly).
+> **Note:** the search is **greedy** — at each node it picks the *locally* best split without looking ahead, then never revisits that choice. It does this because finding the **globally optimal** tree (the one that, over all possible trees of a given size, minimizes error) is **NP-hard** (Hyafil & Rivest, 1976): the number of trees explodes combinatorially with features and thresholds, so exhaustive search is intractable. Greedy is a heuristic that works very well in practice but is *not* guaranteed optimal — it can miss a split that only pays off **after** a later split (an XOR pattern is the classic trap: neither feature alone reduces impurity, so a greedy root split sees no gain, even though two splits together separate the classes perfectly).
 
 > **Gotcha:** "the tree found the best split" almost never means the best *tree*. In an interview, say it precisely: *each node's split is locally optimal under a one-step impurity criterion; the overall tree is a greedy heuristic because the global problem is NP-hard.* That single sentence separates people who memorized "trees are greedy" from people who know *why*.
 
@@ -76,7 +82,7 @@ $$\text{Gini}(node) = \sum_c p_c(1-p_c) = 1 - \sum_c p_c^2 \qquad \text{Entropy}
 
 Both are **0 when a node is pure** (one class has $p=1$, the rest $0$) and **maximal when classes are evenly mixed**. For two classes: Gini peaks at $1-(0.5^2+0.5^2)=0.5$, entropy at $-(0.5\log_2 0.5 + 0.5\log_2 0.5)=1$ bit. Plotting them against the class proportion $p$ shows the shapes are nearly identical — both smooth, both concave — while a third measure, **misclassification error** $1-\max_c p_c$, is only piecewise-linear:
 
-![Three impurity measures for a binary node as the proportion p of one class sweeps from 0 to 1. Entropy (peak 1.0 bit), Gini = 2p(1-p) (peak 0.5), and misclassification error (peak 0.5) all reach 0 at the pure ends and maximum at p=0.5. Entropy/2 is overlaid to show its shape almost coincides with Gini. Gini and entropy are smooth and strictly concave; misclassification is piecewise-linear, which makes it a poor split criterion for tree growing.](../images/dt_impurity.png)
+![Three impurity measures for a binary node as the proportion p of one class sweeps from 0 to 1, each point computed by the chapter module's own Gini and entropy functions. Entropy (peak 1.0 bit), Gini = 1 − Σ p² (peak 0.5), and misclassification error 1 − max p (peak 0.5) all reach 0 at the pure ends and maximum at p=0.5. Entropy/2 is overlaid to show its shape almost coincides with Gini. Gini and entropy are smooth and strictly concave; misclassification is piecewise-linear, which makes it a poor split criterion for tree growing.](../images/sup07_impurity.png)
 
 A split's quality is its **information gain** — the parent's impurity minus the **weighted average** impurity of the two children, where the weights are the fraction of samples going each way:
 
@@ -90,7 +96,7 @@ The tree tries every (feature, threshold) pair and keeps the split with the **hi
 
 > **Note:** **Gini vs entropy** barely changes the resulting tree in practice — they agree on the chosen split the vast majority of the time. Gini is slightly cheaper (no logarithms) and is scikit-learn's **CART** default; entropy is Quinlan's **ID3 / C4.5** choice and has a clean "bits of information" interpretation. Pick Gini for speed, entropy if you want the information-theoretic story; don't agonize over it.
 
-> *Where this comes from: information-gain (entropy) tree induction is **Induction of Decision Trees** (Quinlan 1986, ID3) and its successor **C4.5** (Quinlan 1993); the Gini-based **CART** is Breiman, Friedman, Olshen & Stone, *Classification and Regression Trees* (1984). The unified textbook treatment is **The Elements of Statistical Learning** Ch. 9.2 and **ISLR** Ch. 8.1 — all in the references.*
+> **Source / derivation:** information-gain (entropy) tree induction is **Induction of Decision Trees** (Quinlan 1986, ID3) and its successor **C4.5** (Quinlan 1993); the Gini-based **CART** is Breiman, Friedman, Olshen & Stone, *Classification and Regression Trees* (1984). The unified textbook treatment is **The Elements of Statistical Learning** Ch. 9.2 and **An Introduction to Statistical Learning** Ch. 8.1 — all in the [references](07-Decision-Trees.references.md).
 
 ---
 
@@ -106,11 +112,13 @@ $$\frac{d}{d\hat y}\sum_i (y_i-\hat y)^2 = -2\sum_i(y_i-\hat y) = 0 \;\Longright
 
 So **the optimal leaf prediction is the mean** of the targets in that leaf, and the resulting minimum impurity is exactly the **variance** $\frac1n\sum_i (y_i-\bar y)^2$. A split is then chosen to minimize the weighted child variance $\frac{n_L}{n}\text{Var}(L) + \frac{n_R}{n}\text{Var}(R)$ — i.e. to **maximize variance reduction**, the regression analogue of information gain. The fitted function is therefore **piecewise-constant**: a staircase of flat segments, one per leaf, each at its interval's mean.
 
-![A regression tree fit to noisy sine data. The green curve (depth 2, four leaves) is a coarse piecewise-constant staircase capturing the broad up-down shape; the red curve (depth 8) chases the noise with many tiny steps. Each flat segment is one leaf predicting the mean of the points in its interval; splits are placed to cut within-leaf variance. The deep tree overfits while the shallow tree generalizes.](../images/dt_regression.png)
+![A regression tree fit to one real feature (bmi) of the scikit-learn Diabetes dataset (442 patients), predicting disease-progression score. The green curve (depth 2, four distinct leaf values) is a coarse piecewise-constant staircase capturing the broad upward trend; the red curve (depth 8, ~90 leaf values) chases the noise with many tiny steps. Each flat segment is one leaf predicting the mean target of the points in its interval; splits are placed to cut within-leaf variance. The deep tree overfits while the shallow tree generalizes.](../images/sup07_regression.png)
 
 > **Note:** a regression tree can only output **values it has seen averaged in training** — it is piecewise-constant, so it **cannot extrapolate** beyond the range of the training targets, and it produces visible "steps" rather than a smooth line. That blockiness is exactly what **gradient boosting** smooths out by summing many small trees, and what a forest softens by averaging.
 
 > **Tip:** classification and regression trees are the *same algorithm* with a different impurity: swap Gini/entropy for variance, and majority-vote for mean. If you can explain one, you can explain the other by naming the substitution — a clean thing to say in an interview.
+
+> **Source / derivation:** the regression-tree criterion (minimize within-node sum of squares, leaf = mean) and the growing/pruning algorithm are **CART**, Breiman, Friedman, Olshen & Stone, *Classification and Regression Trees* (1984); the textbook derivations are **An Introduction to Statistical Learning** §8.1.2 (regression trees) and **The Elements of Statistical Learning** §9.2.2. The staircase figure above is produced by `code/decision_trees.py::regression_staircase` on the real scikit-learn Diabetes dataset.
 
 ---
 
@@ -118,9 +126,9 @@ So **the optimal leaf prediction is the mean** of the targets in that leaf, and 
 
 Because every split is "feature $\le$ threshold," a tree carves the feature space into **axis-aligned hyper-rectangles** (boxes whose faces are perpendicular to the axes), predicting one label or value per box:
 
-![A decision tree (max_depth 5) fit on the two-moons dataset. The decision boundary is a staircase of horizontal and vertical segments — axis-aligned rectangles — separating the blue and red classes, rather than a smooth curve. The boundary follows the moons only by approximating the curve with many little steps.](../images/dt_partition.png)
+![The decision boundary of a from-scratch decision tree (max_depth 4) on the two petal features of the real Iris dataset. The feature space is carved into axis-aligned rectangles — a pale blue setosa region on the left, a purple versicolor band in the middle, and a green virginica region on the right, with a small versicolor notch — separated by purely horizontal and vertical edges, never a diagonal. Real training flowers are plotted on top. The from-scratch tree's boundary matches scikit-learn on 98% of test points.](../images/sup07_boundary.png)
 
-The tell-tale **staircase** boundary is a direct consequence of axis-aligned splits — a single tree can only cut **perpendicular to an axis**, so a diagonal or curved boundary is approximated by many little steps, each step a separate split. This has two important consequences:
+The tell-tale **staircase** boundary is a direct consequence of axis-aligned splits — a single tree can only cut **perpendicular to an axis**, so a diagonal or curved boundary is approximated by many little steps, each step a separate split. (The rectangles above are painted by classifying a dense grid with our *own* from-scratch tree, so this is the model's genuine decision surface — see the [code](#code-a-tree-from-scratch-verified-and-the-overfitting-curve).) This has two important consequences:
 
 - **A 45° rotation of the data changes the tree.** Rotate the features and a boundary that *was* axis-aligned (cheap — one split) becomes diagonal (expensive — a staircase of many splits), and vice versa. Trees are **not** rotation-invariant, unlike, say, a linear SVM whose boundary's *shape* is unchanged by rotation. This is also the reason a PCA rotation can sometimes help (or hurt) a tree, and why "oblique" trees that split on linear combinations of features exist.
 - **Interactions are captured automatically.** Because a child split happens *within* the region carved by its parent, a tree naturally models "if A and B then…" interactions with no manual feature engineering — a big part of why trees and tree ensembles are so strong on messy tabular data.
@@ -133,7 +141,7 @@ The tell-tale **staircase** boundary is a direct consequence of axis-aligned spl
 
 Keep splitting and a tree will eventually isolate **every** training point in its own pure leaf — a leaf per sample, zero training error, but it has **memorized the data, including its noise**. Training accuracy hits 100% while test accuracy peaks early and then *falls*:
 
-![Training and test accuracy as tree depth increases on a noisy two-moons dataset. Training accuracy climbs steadily to 100%, but test accuracy peaks early (around depth 2) and then declines and plateaus lower — the growing gap between the two curves is overfitting. A shaded region marks the overfitting zone past the sweet spot.](../images/dt_overfit.png)
+![Training and validation accuracy as tree depth increases on the real Breast Cancer Wisconsin dataset (398 training tumours). Training accuracy climbs steadily to 1.000 by depth 6, but validation accuracy peaks at 0.930 at depth 5 and then flattens/declines to ~0.918 — the growing gap between the two curves is overfitting. A dashed line marks the best-validation depth (5) and a shaded region marks the overfitting zone past it.](../images/sup07_overfit.png)
 
 The cure is to **limit complexity** — pre-pruning (stop early) or post-pruning (grow full, then cut back):
 
@@ -151,6 +159,8 @@ $$R_\alpha(T) = R(T) + \alpha\,|\widetilde T|,$$
 where $R(T)$ is the tree's training error (misclassification rate, or total leaf impurity) and $\alpha \ge 0$ is a **complexity penalty per leaf**. At $\alpha = 0$ the full tree wins (lowest training error). As $\alpha$ grows, each leaf must "pay rent" $\alpha$, so over-elaborate subtrees become net-negative and get collapsed. The elegant result (Breiman et al.) is that as $\alpha$ increases continuously from $0$ to $\infty$, you get a **finite, nested sequence of optimal subtrees** $T_0 \supset T_1 \supset \dots \supset \{\text{root}\}$ — each step prunes the "weakest link," the internal node whose subtree gives the smallest error increase per leaf removed. You then pick the $\alpha$ (hence the subtree) with the best **cross-validated** error. In scikit-learn this is the `ccp_alpha` hyperparameter, and `cost_complexity_pruning_path` returns the sequence of $\alpha$ breakpoints.
 
 > **Note:** the per-leaf penalty $\alpha$ is the tree analogue of $\lambda$ in ridge/lasso regularization: it buys lower variance at the cost of a little bias. $\alpha = 0$ → full, high-variance tree; large $\alpha$ → a stump that's all bias. Cross-validation finds the sweet spot — the same sweet spot the overfitting figure shows as the peak of the test curve.
+
+> **Source / derivation:** cost-complexity (weakest-link) pruning and the theorem that varying $\alpha$ yields a finite nested sequence of optimal subtrees are Chapter 3 of **CART** (Breiman, Friedman, Olshen & Stone, 1984); the compact textbook version is **The Elements of Statistical Learning** §9.2.2 ("Cost-Complexity Pruning") and **An Introduction to Statistical Learning** §8.1.1. scikit-learn exposes it as `ccp_alpha` / `cost_complexity_pruning_path`.
 
 > **Gotcha:** a single overgrown tree pruned by CV is *better* than an arbitrary `max_depth`, but it's still **one tree** — high-variance by nature. Pruning controls overfitting; it does **not** make a single tree stable. For stability you ensemble (next section). Don't oversell pruning as the fix for variance.
 
@@ -195,6 +205,8 @@ graph TD
 
 > **Note:** when you use `DecisionTreeClassifier` or `DecisionTreeRegressor` in scikit-learn, you are using a **CART** variant — **binary** splits, **Gini** by default (or entropy if you ask), cost-complexity pruning via `ccp_alpha`. ID3/C4.5's multi-way splits and gain ratio are not in scikit-learn; if someone says "the tree split into three branches," they're describing ID3/C4.5, not CART.
 
+> **Source / derivation:** **ID3** — Quinlan, "Induction of Decision Trees," *Machine Learning* 1(1), 1986; **C4.5** — Quinlan, *C4.5: Programs for Machine Learning*, 1993 (gain ratio, continuous features, pruning); **CART** — Breiman, Friedman, Olshen & Stone, *Classification and Regression Trees*, 1984 (binary splits, Gini/variance, cost-complexity pruning) — the basis of scikit-learn's trees. The greedy heuristic is forced by the hardness result **Hyafil & Rivest (1976)**, "Constructing Optimal Binary Decision Trees is NP-complete." All four are linked in the [references](07-Decision-Trees.references.md).
+
 ---
 
 ## Categorical features and missing values
@@ -217,7 +229,11 @@ A big selling point of trees is telling you **which features mattered**. There a
 
 **Permutation importance.** Train the model, measure validation accuracy, then **shuffle one feature's column** and measure how much accuracy drops; the drop is that feature's importance. It's **model-agnostic**, measures importance on **held-out** data, and **doesn't suffer the cardinality bias** (a useless ID column, when shuffled, changes nothing, so it correctly scores ~0). The cost is that it requires extra passes over the data and is sensitive to **correlated features** (shuffling one of two correlated features barely hurts, so both can look unimportant).
 
-> **Gotcha:** never trust raw MDI / `feature_importances_` for a feature-selection or "what drives the model" claim when you have high-cardinality features (IDs, timestamps, free-text categories). It will rank a meaningless unique key near the top. Use **permutation importance** (or SHAP) on a **held-out** set instead — this is a favorite "gotcha" interview question and a real production footgun.
+![Two panels of measured feature importance. Left: mean-decrease-in-impurity (MDI) importances on the real Breast Cancer dataset — 'worst radius' dominates at 0.727, followed by 'worst concave points' 0.131 and 'worst texture' 0.050. Right: the high-cardinality trap. On a controlled experiment with one weak-but-real binary signal and one pure-noise near-unique column ('random_id'), MDI ranks the noise column at 0.82 — far above the real signal's 0.18 — because its many distinct values offer more thresholds to luck into a spurious split, while permutation importance measured on held-out data correctly scores the noise at ≈0 (−0.01) and the signal at 0.10.](../images/sup07_importance.png)
+
+The right panel is the trap in real numbers: **MDI ranks a pure-noise column above a genuine signal**, purely because the noise column has more distinct values (hence more candidate thresholds). Permutation importance, measured on held-out data, is not fooled.
+
+> **Gotcha:** never trust raw MDI / `feature_importances_` for a feature-selection or "what drives the model" claim when you have high-cardinality features (IDs, timestamps, free-text categories). It will rank a meaningless unique key near the top. Use **permutation importance** (or SHAP) on a **held-out** set instead — this is a favorite "gotcha" interview question and a real-world footgun.
 
 ---
 
@@ -288,116 +304,87 @@ A massive reduction — this split cleanly separates the low group ($\approx 1.3
 
 ---
 
-## Code: split selection from scratch, and overfitting
+## Code: a tree from scratch, verified, and the overfitting curve
 
-This reproduces Worked Example 2's information-gain split from scratch, then runs the depth sweep that *is* the overfitting figure in numbers.
+Everything on this page is backed by a small, real, runnable codebase — no synthetic toy data:
 
-```python
-"""Gini / information-gain split selection from scratch + the overfitting curve.
-Verified on Python 3.12, CPU."""
-import numpy as np
-from sklearn.datasets import make_moons
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.model_selection import train_test_split
+- **`code/decision_trees.py`** — the chapter module. Gini/entropy, the greedy best-split search, a full **`DecisionTreeScratch`** (recursive `fit`/`predict` with a `max_depth` stop), the scikit-learn verification, the Breast-Cancer depth sweep, the feature-importance/MDI-bias experiment, and the diabetes regression staircase. Run `python decision_trees.py` for the printed proof.
+- **`code/07-Decision-Trees.ipynb`** — the same material as a 13-step, run-live notebook: impurity → information gain → best split → grow from scratch → verify → plot the tree → the boundary → the depth sweep → importance → the MDI trap → regression.
 
-def gini(y):
-    if len(y) == 0: return 0.0
-    p = np.bincount(y) / len(y); return 1 - (p**2).sum()
-
-def info_gain(y, mask):
-    yl, yr = y[mask], y[~mask]
-    w = len(yl) / len(y)
-    return gini(y) - (w*gini(yl) + (1-w)*gini(yr))
-
-# A perfectly-separable 50/50 node: 5 class-0 (x in 1..3), 5 class-1 (x in 6..9)
-y = np.array([0,0,0,0,0, 1,1,1,1,1]); x = np.array([1,2,2,3,3, 6,7,7,8,9])
-print(f"parent Gini = {gini(y):.3f}  (50/50, max impurity)")
-best = max(np.unique(x), key=lambda t: info_gain(y, x <= t))
-print(f"best split: feature <= {best}  ->  info-gain = {info_gain(y, x<=best):.3f}  (perfect split)")
-
-# Worked Example 2 by hand: parent 9 'yes' / 5 'no', split -> (6/2) and (3/3)
-parent = np.array([1]*9 + [0]*5)
-left, right = np.array([1]*6 + [0]*2), np.array([1]*3 + [0]*3)
-g_parent = gini(parent)
-weighted = (len(left)/len(parent))*gini(left) + (len(right)/len(parent))*gini(right)
-print(f"\nWorked Ex.2: parent Gini={g_parent:.3f}  weighted children={weighted:.4f}  "
-      f"gain={g_parent-weighted:.3f}")
-
-# The overfitting curve: train -> 100%, test peaks then drops
-X, Y = make_moons(n_samples=400, noise=0.35, random_state=1)
-Xtr, Xte, ytr, yte = train_test_split(X, Y, test_size=0.5, random_state=1)
-print("\ndepth sweep (overfitting):")
-for d in [2, 4, 8, 15]:
-    clf = DecisionTreeClassifier(max_depth=d, random_state=0).fit(Xtr, ytr)
-    print(f"  max_depth={d:>2}: train={clf.score(Xtr,ytr):.3f}  test={clf.score(Xte,yte):.3f}")
-```
-
-Output:
-
-```
-parent Gini = 0.500  (50/50, max impurity)
-best split: feature <= 3  ->  info-gain = 0.500  (perfect split)
-
-Worked Ex.2: parent Gini=0.459  weighted children=0.4286  gain=0.031
-
-depth sweep (overfitting):
-  max_depth= 2: train=0.915  test=0.830
-  max_depth= 4: train=0.920  test=0.815
-  max_depth= 8: train=0.995  test=0.795
-  max_depth=15: train=1.000  test=0.800
-```
-
-> **Note:** the from-scratch numbers match the derivations exactly: the perfectly-separable node gives information gain **0.500** = the full parent Gini, and **Worked Example 2 reproduces 0.459 → 0.4286 → gain 0.031** by hand. The depth sweep is the overfitting figure in numbers: at depth 2, train and test are close (0.915 / 0.830); by depth 15, train is **perfect (1.000)** while test has **dropped** (0.800) — the tree memorized the noise. *Limiting depth is the single knob standing between you and that 1.000/0.800 gap.*
-
-### Cost-complexity pruning and the importance bias, measured
-
-Two more things worth seeing in real numbers: **pruning a full tree by cross-validated `ccp_alpha`** actually *improves* the test score, and **MDI importance is fooled by a high-cardinality noise column** while permutation importance is not.
+The whole splitting engine is short enough to read. This is the actual code the figures use:
 
 ```python
-"""Cost-complexity pruning (it improves test acc) + the MDI high-cardinality bias.
-Verified on Python 3.12, CPU."""
-import numpy as np
-from sklearn.datasets import make_moons
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.inspection import permutation_importance
-from sklearn.model_selection import train_test_split, cross_val_score
+def gini(y):                        # 1 - sum_c p_c^2  (0 = pure, 0.5 = 50/50 for 2 classes)
+    if y.size == 0:
+        return 0.0
+    p = np.bincount(y) / y.size
+    return float(1.0 - np.sum(p**2))
 
-# --- 1. Cost-complexity pruning: grow full, then prune by CV-chosen alpha ---
-X, Y = make_moons(n_samples=400, noise=0.35, random_state=1)
-Xtr, Xte, ytr, yte = train_test_split(X, Y, test_size=0.5, random_state=1)
-full = DecisionTreeClassifier(random_state=0).fit(Xtr, ytr)
-alphas = full.cost_complexity_pruning_path(Xtr, ytr).ccp_alphas    # nested-subtree breakpoints
-best_a = max(alphas, key=lambda a:
-             cross_val_score(DecisionTreeClassifier(random_state=0, ccp_alpha=a), Xtr, ytr, cv=5).mean())
-pruned = DecisionTreeClassifier(random_state=0, ccp_alpha=best_a).fit(Xtr, ytr)
-print(f"full   : leaves={full.get_n_leaves():2d}  train={full.score(Xtr,ytr):.3f}  test={full.score(Xte,yte):.3f}")
-print(f"pruned : leaves={pruned.get_n_leaves():2d}  train={pruned.score(Xtr,ytr):.3f}  test={pruned.score(Xte,yte):.3f}"
-      f"  (ccp_alpha={best_a:.4f})")
+def information_gain(y, mask, criterion="gini"):   # parent - weighted children
+    impurity = gini if criterion == "gini" else entropy
+    y_left, y_right = y[mask], y[~mask]
+    if y_left.size == 0 or y_right.size == 0:
+        return 0.0                  # a split that separates nothing has no gain
+    w_left, w_right = y_left.size / y.size, y_right.size / y.size
+    return impurity(y) - (w_left * impurity(y_left) + w_right * impurity(y_right))
 
-# --- 2. MDI is biased toward a high-cardinality (many-valued) noise feature ---
-rng = np.random.default_rng(0); n = 2000
-informative = rng.integers(0, 2, size=n).astype(float)            # 2 values -> few thresholds
-y = ((informative == 1) ^ (rng.random(n) < 0.30)).astype(int)     # weak, noisy signal
-rand_id = rng.uniform(size=n)                                     # ~unique -> many thresholds, PURE NOISE
-Xb = np.column_stack([informative, rand_id])
-Xb_tr, Xb_te, yb_tr, yb_te = train_test_split(Xb, y, test_size=0.5, random_state=0)
-clf = DecisionTreeClassifier(random_state=0).fit(Xb_tr, yb_tr)
-print(f"\nMDI importance  : informative={clf.feature_importances_[0]:.3f}  random_id={clf.feature_importances_[1]:.3f}")
-pi = permutation_importance(clf, Xb_te, yb_te, n_repeats=20, random_state=0).importances_mean
-print(f"Permutation imp.: informative={pi[0]:.3f}  random_id={pi[1]:.3f}")
+def best_split(x, y, criterion="gini"):            # greedy search over features x thresholds
+    best = Split(feature=-1, threshold=0.0, gain=0.0)
+    for feature in range(x.shape[1]):
+        column = x[:, feature]
+        for threshold in _candidate_thresholds(column):   # midpoints between sorted values
+            gain = information_gain(y, column <= threshold, criterion)
+            if gain > best.gain:
+                best = Split(feature, float(threshold), gain)
+    return best if best.feature >= 0 else None
 ```
 
-Output:
+`DecisionTreeScratch.fit` just calls `best_split`, partitions the rows, and recurses on each side until a node is pure, too small, or at `max_depth`. Running the module prints, in order: the impurity anchors, the from-scratch tree, the scikit-learn verification, the depth sweep, the importances, and the regression staircase. The load-bearing parts of that output:
 
 ```
-full   : leaves=27  train=1.000  test=0.800
-pruned : leaves= 7  train=0.940  test=0.850  (ccp_alpha=0.0090)
+=== 0. Impurity anchors (the worked-example numbers, computed) ===
+  50/50 node : Gini=0.500  entropy=1.000 bits  (max impurity)
+  pure node  : Gini=0.000  entropy=0.000 bits  (zero impurity)
+  worked ex.2: parent Gini=0.459 -> split (6/2)&(3/3) -> Gini gain=0.031
 
-MDI importance  : informative=0.169  random_id=0.831
-Permutation imp.: informative=0.066  random_id=-0.004
+=== 1. A decision tree grown FROM SCRATCH on Iris (petal length, petal width) (max_depth=3) ===
+petal length (cm) <= 2.450?  (gini=0.667, n=105)
+    ├─ yes: predict 'setosa'  (n=35, gini=0.000)
+    └─ no:  petal width (cm) <= 1.550?  (gini=0.500, n=70)
+        ├─ yes: petal length (cm) <= 4.950?  (gini=0.057, n=34)  ...
+        └─ no:  petal length (cm) <= 4.850?  (gini=0.105, n=36)  ...
+  leaves=5  train_acc=0.981  test_acc=0.933
+
+=== 2. Verify: from-scratch tree == scikit-learn (same Gini, same max_depth) ===
+  from-scratch test accuracy : 0.933
+  scikit-learn test accuracy : 0.933
+  they agree on 100.0% of test predictions
+
+=== 3. The overfitting curve on Breast Cancer Wisconsin (depth sweep) ===
+   depth   train acc   val acc
+       1       0.927     0.912
+       2       0.965     0.918
+       3       0.980     0.924
+       5       0.995     0.930   <- best val
+       6       1.000     0.918
+      20       1.000     0.918
+  best validation accuracy 0.930 at max_depth=5; deepest tree memorizes train to 1.000
 ```
 
-> **Note:** pruning the 27-leaf full tree down to **7 leaves** *raised* test accuracy from 0.800 to **0.850** while training fell from 1.000 to 0.940 — variance traded for a little bias, exactly as the $R_\alpha = R + \alpha|\widetilde T|$ derivation predicts. And the importance demo is the high-cardinality trap in numbers: **MDI ranks the pure-noise `random_id` at 0.831** (far above the real signal's 0.169) purely because its many distinct values offer more thresholds to luck into, while **permutation importance** correctly pins it at ≈0. If you ever feature-select from `feature_importances_`, this is why you can be badly misled.
+> **Note:** the from-scratch numbers match the derivations exactly — the 50/50 node gives Gini **0.500** / entropy **1.000 bit**, and **Worked Example 2 reproduces the 0.459 → weighted 0.4286 → gain 0.031** split by hand. The from-scratch tree reaches the **same 0.933 test accuracy** as scikit-learn and agrees with it on **100%** of test predictions on this split — the proof that the greedy growing algorithm above *is* CART, not a lookalike. (We check accuracy + prediction agreement rather than demanding an identical tree, because when two candidate splits tie on gain, CART implementations break the tie by their own rule — a different-but-equally-good tree is legitimate.) And the depth sweep is the [overfitting figure](#why-trees-overfit-and-how-to-stop-them) in numbers: training accuracy climbs to a **perfect 1.000** while validation **peaks at 0.930 (depth 5)** and then plateaus lower. Limiting depth is the single knob standing between you and that 1.000 / 0.918 gap.
+
+### The importance bias, measured
+
+The MDI high-cardinality trap is not hypothetical. On a controlled experiment — one weak-but-**real** binary signal and one **pure-noise, near-unique** column — the module measures:
+
+```
+=== 4. Feature importance on Breast Cancer Wisconsin, and the MDI high-cardinality trap ===
+  the trap (weak real signal vs a pure-noise near-unique column):
+     MDI         : signal=0.176   random_id=0.824  <- noise ranked HIGHER
+     permutation : signal=0.096   random_id=-0.006  <- noise correctly ~0
+```
+
+> **Note:** **MDI ranks the pure-noise `random_id` at 0.824** — far above the real signal's 0.176 — purely because its many distinct values offer more thresholds to luck into a spurious impurity decrease, while **permutation importance** (measured on held-out data) correctly pins it at ≈0 (−0.006). If you ever feature-select from `feature_importances_` with high-cardinality features present, this is why you can be badly misled — use permutation importance or SHAP on a held-out set instead.
 
 ---
 
