@@ -100,4 +100,17 @@ Icon
 .env.*.local
 *.cache
 .cache/
+
+# ML datasets & downloaded model weights (never commit — regenerated on demand by the
+# runnable modules; e.g. torchvision CIFAR downloads to code/data/, pretrained backbones to *.pth)
+data/
+datasets/
+*.pth
+*.pt
+*.ckpt
+*.onnx
+*.safetensors
+cifar-10-batches-py/
+cifar-10-python.tar.gz
+.ipynb_checkpoints/
 # ==========================================
