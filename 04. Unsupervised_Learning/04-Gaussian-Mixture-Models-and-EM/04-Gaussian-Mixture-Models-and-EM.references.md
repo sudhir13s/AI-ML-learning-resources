@@ -3,7 +3,7 @@ id: "04-unsupervised-learning/gmm-em/references"
 topic: "Gaussian Mixture Models & EM — References"
 parent: "04-unsupervised-learning/gmm-em"
 type: references
-updated: 2026-06-22
+updated: 2026-07-03
 ---
 
 # Gaussian Mixture Models & EM — references and further reading
@@ -18,6 +18,7 @@ updated: 2026-06-22
 5. **Make it concrete** — fit and select with [scikit-learn — Gaussian mixtures](https://scikit-learn.org/stable/modules/mixture.html) + the [BIC selection example](https://scikit-learn.org/stable/auto_examples/mixture/plot_gmm_selection.html). *Covariance types, EM fitting, and choosing k.*
 
 **Videos**:
+- [Gaussian Mixture Models, Clearly Explained](https://www.youtube.com/watch?v=EWd1xRkyEog) — **StatQuest with Josh Starmer** — the friendliest visual intro to soft clustering and the EM idea; the ideal warm-up before the derivations.
 - [Clustering (4): Gaussian Mixture Models and EM](https://www.youtube.com/watch?v=qMTuMa86NzU) — **Alexander Ihler (UC Irvine)** — the rigorous derivation of responsibilities and the M-step updates.
 - [EM algorithm: how it works](https://www.youtube.com/watch?v=REypj2sy_5U) — **Victor Lavrenko (Edinburgh)** — the E/M loop and *why* the likelihood keeps improving, with a clean worked example.
 - [(ML 16.3) Expectation-Maximization (EM) algorithm](https://www.youtube.com/watch?v=AnbiNaVp3eQ) — **mathematicalmonk** — the general EM algorithm and its lower-bound/Jensen justification, beyond just GMMs.
@@ -46,15 +47,20 @@ updated: 2026-06-22
 - [Pattern Recognition and Machine Learning — **Ch. 9 "Mixture Models and EM"**](https://www.bishopbook.com/) — **Christopher Bishop** — the canonical, exhaustive derivation of GMMs, responsibilities, and EM (free PDF on the book site).
 - [Probabilistic Machine Learning: An Introduction — **mixture models & EM**](https://probml.github.io/pml-book/book1.html) — **Kevin Murphy** — modern, rigorous treatment with code; free online.
 - [The Elements of Statistical Learning — **§8.5 "The EM Algorithm"** (and §6.8 mixtures)](https://hastie.su.domains/ElemStatLearn/) — **Hastie, Tibshirani & Friedman** — free PDF; EM derived as maximizing a likelihood lower bound.
+- [An Introduction to Statistical Learning — **Ch. 12 "Unsupervised Learning"**](https://www.statlearning.com/) — **James, Witten, Hastie, Tibshirani & Taylor** — free PDF; the gentler companion to ESL, with clustering and mixture intuition and R/Python labs.
 - [Mathematics for Machine Learning — **Ch. 11 "Density Estimation with GMMs"**](https://mml-book.github.io/) — **Deisenroth, Faisal & Ong** — free; the full GMM + EM derivation from first principles.
 
 **In this platform**:
 - Concept page (full explanation): [Gaussian Mixture Models & EM](04-Gaussian-Mixture-Models-and-EM.md)
-- The hard-assignment special case: [01 K-Means Clustering](../01-K-Means-Clustering/01-K-Means-Clustering.md) (k-means = GMM with equal spherical covariance in the zero-variance limit)
-- Compare with: [02 Hierarchical Clustering](../02-Hierarchical-Clustering/02-Hierarchical-Clustering.md) · [03 DBSCAN](../03-DBSCAN/03-DBSCAN.md) · [05 Spectral Clustering](../05-Spectral-Clustering/05-Spectral-Clustering.md) (for non-Gaussian, non-convex clusters)
+- Runnable code: the from-scratch [`gmm_em.py` module](code/gmm_em.py) and the step-by-step [notebook](code/04-Gaussian-Mixture-Models-and-EM.ipynb) that measure every number on the page.
+- The hard-assignment special case: [01 K-Means Clustering](../01-K-Means-Clustering/01-K-Means-Clustering.md) (k-means = GMM with equal spherical covariance in the zero-variance limit — the anisotropic figures reuse k-means' exact failure data)
+- Contrast — density-based, no fixed *k*: [03 DBSCAN](../03-DBSCAN/03-DBSCAN.md) (arbitrary shapes and noise, where GMMs' ellipses fail); also [02 Hierarchical Clustering](../02-Hierarchical-Clustering/02-Hierarchical-Clustering.md) · [05 Spectral Clustering](../05-Spectral-Clustering/05-Spectral-Clustering.md)
+- The ELBO's KL term (why the E-step tightens the bound): [Foundations 23 — Cross-Entropy & KL Divergence](../../01.%20Foundations/23-Cross-Entropy-and-KL-Divergence/23-Cross-Entropy-and-KL-Divergence.md)
+- Why standardize first (GMMs, like k-means, are scale-sensitive): [02 Feature Scaling & Normalization](../../02.%20Data_Preprocessing/02-Feature-Scaling-and-Normalization/02-Feature-Scaling-and-Normalization.md)
 - Puts the density to work: [09 Anomaly & Outlier Detection](../09-Anomaly-Outlier-Detection/09-Anomaly-Outlier-Detection.md) · [10 Kernel Density Estimation](../10-Kernel-Density-Estimation/10-Kernel-Density-Estimation.md)
 - Same Gaussian family, supervised: [Gaussian Naive Bayes](../../03.%20Supervised_Learning/05-Naive-Bayes/05-Naive-Bayes.md) (the diagonal-covariance, labeled case)
 - Cluster learned embeddings: [07 t-SNE](../07-t-SNE/07-t-SNE.md) · [08 UMAP](../08-UMAP/08-UMAP.md)
+- Forward — latent-variable generative models: the "draw a latent, then decode" recipe and the ELBO scale up to VAEs and beyond in [10 GenAI](../../10.%20GenAI/README.md) (a VAE is loosely a GMM whose Gaussian components become a neural decoder and whose E-step becomes an amortized encoder)
 - Concept depth (the *why*): [AI-ML-intuition 5.06 GMMs & EM](../../../AI-ML-intuition/Module_5_Generation/5.06_GMMs_and_EM.md) · [0.02 Distributions & the Gaussian](../../../AI-ML-intuition/Module_0_Foundations/0.02_Distributions_and_the_Gaussian.md)
 - Prereq math: [Foundations — Linear Algebra (vectors & matrices)](../../01.%20Foundations/Maths%20for%20AI-ML/1.%20Linear%20Algebra/VectorsAndMatrices.md)
 - Field overview: [4. Unsupervised Learning](../README.md)
