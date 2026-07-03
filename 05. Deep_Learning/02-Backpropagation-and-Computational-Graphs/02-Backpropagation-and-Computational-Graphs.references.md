@@ -3,7 +3,7 @@ id: "05-deep-learning/backpropagation/references"
 topic: "Backpropagation & Computational Graphs — References"
 parent: "05-deep-learning/backpropagation"
 type: references
-updated: 2026-06-22
+updated: 2026-07-03
 ---
 
 # Backpropagation & Computational Graphs — references and further reading
@@ -51,10 +51,13 @@ updated: 2026-06-22
 
 **In this platform**:
 - Concept page (full explanation): [Backpropagation & Computational Graphs](02-Backpropagation-and-Computational-Graphs.md)
+- Runnable code: [the from-scratch backprop module](code/backpropagation.py) · [the step-by-step notebook](code/02-Backpropagation-and-Computational-Graphs.ipynb) — the module builds the backward pass, gradient-checks it, cross-checks it against PyTorch, and trains a net on scikit-learn digits; the notebook runs it one measurement at a time.
 - Concept depth (the *why*): [AI-ML-intuition 2.02 Backpropagation / Chain Rule](../../../AI-ML-intuition/Module_2_Optimization/2.02_Backpropagation_The_Chain_Rule.md) · [2.04 Computational Graphs & Autograd](../../../AI-ML-intuition/Module_2_Optimization/2.04_Computational_Graphs_Autograd.md)
+- The calculus this rests on: [Foundations 08 Derivatives & Gradients](../../01.%20Foundations/08-Derivatives-and-Gradients/08-Derivatives-and-Gradients.md) · [Foundations 09 The Chain Rule](../../01.%20Foundations/09-The-Chain-Rule/09-The-Chain-Rule.md) (backprop *is* the chain rule, run backward)
+- What the gradient is *for* — gradient descent, first principles: [Basics 04 How Models Learn](../../00.%20Basics/04-How-Models-Learn/04-How-Models-Learn.md)
 - The network being differentiated: [01 Perceptron & MLP](../01-Perceptron-and-MLP/01-Perceptron-and-MLP.md)
 - The activations whose derivatives gate the flow: [03 Activation Functions](../03-Activation-Functions/03-Activation-Functions.md)
 - The consequence of the backward product: [06 Vanishing & Exploding Gradients](../06-Vanishing-Exploding-Gradients/06-Vanishing-Exploding-Gradients.md)
 - What uses the gradient: [07 Optimizers](../07-Optimizers/07-Optimizers.md) (turns the gradient into a weight update)
-- Where it's applied: [13 CNNs & Convolution](../13-CNNs-and-Convolution/13-CNNs-and-Convolution.md) · [14 RNN / LSTM / GRU](../14-RNN-LSTM-GRU/14-RNN-LSTM-GRU.md) (backprop through time)
+- Where it's applied: [13 CNNs & Convolution](../13-CNNs-and-Convolution/13-CNNs-and-Convolution.md) · [14 RNN / LSTM / GRU](../14-RNN-LSTM-GRU/14-RNN-LSTM-GRU.md) (backprop through time) · forward to [09 LLMs](../../09.%20LLMs/README.md) (the same backward pass trains every transformer)
 - Field overview: [Deep Learning](../README.md)

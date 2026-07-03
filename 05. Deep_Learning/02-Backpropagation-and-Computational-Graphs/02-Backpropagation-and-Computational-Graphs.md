@@ -6,7 +6,7 @@ level: intermediate
 prereqs: ["calculus", "linear-algebra", "feedforward-networks"]
 interview_frequency: very-high
 template: concept-deep
-updated: 2026-06-22
+updated: 2026-07-03
 ---
 
 # Backpropagation: every gradient in one backward pass
@@ -149,7 +149,7 @@ These are the entire vocabulary. Any deep network's backward pass is a compositi
 
 Almost every backward pass is built from just four routing patterns. Memorize them and you can read gradient flow off a graph by eye, without writing a single derivative:
 
-![Four local-gradient gates with an upstream gradient of 2. add distributes the gradient unchanged to both inputs; multiply swaps the inputs (sends y to x's branch and x to y's); max/ReLU routes the whole gradient to the larger input and 0 to the other; copy (fan-out) sums the gradients coming back from its uses.](../images/bp_gates.png)
+![Four local-gradient gates with an upstream gradient of 2. add distributes the gradient unchanged to both inputs; multiply swaps the inputs (sends y to x's branch and x to y's); max/ReLU routes the whole gradient to the larger input and 0 to the other; copy (fan-out) sums the gradients coming back from its uses.](../images/dl02_gates.png)
 
 - **add = distributor:** copies the upstream gradient to every input unchanged ($\partial(x+y)/\partial x = 1$). A bias add, a residual connection, a skip — all distribute the gradient untouched. This is why **residual connections** create a gradient "highway": the add gate hands the upstream gradient straight back to the early layers.
 - **multiply = swapper:** each input's gradient is upstream × *the other* input ($\partial(xy)/\partial x = y$). The gate **swaps** the operands.
@@ -238,6 +238,8 @@ Two boxed rules — *"outer-product the upstream error with the input to get the
 
 > **Tip:** the bias $b$ in $z = Wx + b$ is the easiest of all: $z_i = (Wx)_i + b_i$ so $\partial z_i/\partial b_i = 1$, giving $\boxed{\partial L/\partial b = \delta}$ directly. For a *batch* of examples, the bias receives the **sum** of $\delta$ over the batch (the bias fans out to every example — the copy gate again).
 
+> **Source / derivation:** the vector-Jacobian-product view of reverse-mode autodiff — propagating a cotangent $v^\top J$ through each layer's Jacobian without ever forming it — is the formalism of *Automatic Differentiation in Machine Learning: a Survey* (Baydin et al., 2018) and the JAX *Autodiff Cookbook*; the matmul rules $\partial L/\partial W=\delta x^\top,\ \partial L/\partial x=W^\top\delta$ are the standard linear-layer VJPs (Goodfellow, Bengio & Courville, *Deep Learning*, §6.5). Both in the [references](02-Backpropagation-and-Computational-Graphs.references.md).
+
 ---
 
 ## Per-op Jacobians and how they compose
@@ -303,7 +305,7 @@ graph TD
     classDef frozen fill:#4A5B6E,stroke:#3A4B5E,color:#fff
 ```
 
-> *Where these come from: backprop for neural nets is **Learning representations by back-propagating errors** (Rumelhart, Hinton & Williams 1986); these **four equations** in exactly this $\delta$-form are derived in Michael Nielsen's **Neural Networks and Deep Learning**, Ch. 2; the general reverse-mode-autodiff view (the VJP chain) is **Automatic Differentiation in Machine Learning: a Survey** (Baydin et al. 2015); the computational-graph framing is Olah's **Calculus on Computational Graphs** and **Dive into Deep Learning** §5.3. All in the references.*
+> **Source / derivation:** backprop for neural nets is *Learning representations by back-propagating errors* (Rumelhart, Hinton & Williams, Nature 1986); these **four equations** in exactly this $\delta$-form are derived in Michael Nielsen's *Neural Networks and Deep Learning*, Ch. 2; the rigorous general-computational-graph / reverse-mode treatment is Goodfellow, Bengio & Courville, *Deep Learning*, §6.5 ("Back-Propagation and Other Differentiation Algorithms"); the reverse-mode-autodiff view (the VJP chain, forward vs reverse mode) is *Automatic Differentiation in Machine Learning: a Survey* (Baydin et al., 2018); the computational-graph framing is Olah's *Calculus on Computational Graphs* and *Dive into Deep Learning* §5.3. All in the [references](02-Backpropagation-and-Computational-Graphs.references.md).
 
 ---
 
@@ -348,7 +350,7 @@ $$x = [1,\ 2],\quad W^1 = \begin{bmatrix}0.1 & 0.3\\ 0.2 & 0.4\end{bmatrix},\ b^
 
 We use the row-vector convention $z = xW + b$ (so $W$ is shaped input×output). The annotated graph below has every forward value and every backward gradient on it — refer back to it as we walk through.
 
-![Computational graph of the 2 to 2 to 2 net: the forward pass computes z1, a1 (tanh), z2, then softmax probabilities p and loss L; the backward pass pulls the error delta back through each layer (delta2 = p minus y, then dL/da1 = W2 delta2, then delta1 by multiplying by tanh prime), and the weight gradients are the outer products dL/dW2 = a1-transpose delta2 and dL/dW1 = x-transpose delta1. All values shown are the hand-computed numbers verified against PyTorch.](../images/bp_compgraph.png)
+![Computational graph of the 2 to 2 to 2 net: the forward pass computes z1, a1 (tanh), z2, then softmax probabilities p and loss L; the backward pass pulls the error delta back through each layer (delta2 = p minus y, then dL/da1 = W2 delta2, then delta1 by multiplying by tanh prime), and the weight gradients are the outer products dL/dW2 = a1-transpose delta2 and dL/dW1 = x-transpose delta1. All values shown are the hand-computed numbers verified against PyTorch (max absolute difference 1e-16).](../images/dl02_compgraph.png)
 
 **Forward pass.**
 
@@ -370,6 +372,8 @@ Every one of those numbers is a single application of "upstream × local," and e
 
 > **Tip:** the convention $z = xW + b$ (row vectors) makes "pull back" read as $W\delta$ and the weight grad as $x^\top\delta$; the column convention $z = Wx + b$ makes them $W^\top\delta$ and $\delta x^\top$. They are the same computation — just transposed. In an interview, **state your convention first**, then the shapes police themselves.
 
+> **Your turn:** in this net the only place the hidden activation enters the backward pass is the local factor $\sigma'(z^1)$ in $\delta^1 = (W^2\delta^2)\odot\sigma'(z^1)$. Predict what $\delta^1$ becomes if the hidden layer were **sigmoid** instead of tanh — i.e. replace $1-(a^1)^2$ with $a^1(1-a^1)$ (recompute $a^1=\sigma(z^1)$ first, since $z^1$ is unchanged) — then check your answer by swapping `activation="tanh"` for `"sigmoid"` in the notebook's `MLP` and re-running. Which entries of $\delta^1$ shrink, and why does that hint at vanishing gradients?
+
 ---
 
 ## Forward mode vs reverse mode
@@ -381,7 +385,7 @@ Automatic differentiation comes in two directions, and choosing reverse mode is 
 
 A neural network has **millions of inputs (parameters)** and **one output (the scalar loss)**, so reverse mode gets *all* gradients for the price of roughly one extra pass, while forward mode would need millions of passes. The plot below makes the asymmetry concrete: with a single scalar loss, forward-mode cost grows linearly with parameter count while reverse-mode stays flat at one.
 
-![Forward mode vs reverse mode passes needed to obtain all gradients of one scalar loss, as the number of parameters grows. Forward mode needs one pass per input so its cost rises along the diagonal (1, 2, 5, ... 1000 passes); reverse mode (backprop) needs a single pass regardless, a flat line at one. For a real net with millions of parameters, forward mode is hopeless.](../images/bp_fwd_vs_rev.png)
+![Forward mode vs reverse mode passes needed to obtain all gradients of one scalar loss, as the number of parameters grows. Forward mode needs one pass per input so its cost rises along the diagonal (1, 2, 5, ... 1000 passes); reverse mode (backprop) needs a single pass regardless, a flat line at one. For a real net with millions of parameters, forward mode is hopeless.](../images/dl02_fwd_vs_rev.png)
 
 ```mermaid
 graph TD
@@ -443,9 +447,11 @@ $$\delta^1 \;\approx\; \Big(\prod_{l=2}^{L}(W^l)^\top\Big)\Big(\prod_{l=1}^{L}\t
 
 Products of many numbers are unstable. If the factors are consistently **less than 1** in magnitude (sigmoid's $\sigma'$ peaks at $0.25$, tanh's at $1$ but typically smaller, and weight matrices with small singular values shrink too), the gradient **shrinks geometrically** toward the early layers — they receive almost nothing and barely learn: **vanishing gradients**. If the factors are consistently **greater than 1**, the product **explodes** to NaN: **exploding gradients**. The two plots below show both effects directly — the $\delta$ magnitude pulled back layer by layer, and the resulting weight-gradient norm per layer.
 
-![Magnitude of the per-layer error delta pulled back through a 12-layer net, measured for tanh and ReLU. With tanh the delta magnitude drifts downward as it is pulled back toward the input layers; with ReLU it stays roughly stable. This is the delta recurrence in action: each backward step multiplies by W-transpose and by sigma-prime, so the magnitude compounds.](../images/bp_delta_recurrence.png)
+![Magnitude of the per-layer error delta pulled back through a 12-layer net (small-scale weight init), measured for tanh and ReLU. Both shrink toward the input layer (left) as the backward product drifts below one — tanh by about 2 orders of magnitude (1.7e-1 to 1.7e-3), ReLU by about 3.5 orders (1.7e-1 to 6e-5) — with tanh's error staying larger, because tanh's derivative is near 1 for small pre-activations while ReLU zeros out roughly half the units each layer. This is the delta recurrence in action: each backward step multiplies by W-transpose and by sigma-prime, so the magnitude compounds.](../images/dl02_delta_recurrence.png)
 
-![Weight-gradient norm per layer in a 20-layer net with identical initialization for both activations: with Sigmoid the gradient vanishes exponentially toward the early (input-side) layers, while with ReLU it stays roughly constant across depth.](../images/bp_vanishing.png)
+![Weight-gradient norm per layer in a 12-layer net with identical small-scale initialization for both activations: with Sigmoid the gradient vanishes exponentially toward the early (input-side) layers — measured here as roughly 2.3e8 (2.3×10⁸) times smaller at layer 1 than at the output layer — while with ReLU it stays roughly constant across depth.](../images/dl02_vanishing.png)
+
+**Reconciling the two plots (a subtle, important point).** The first plot shows ReLU's error $\delta$ *shrinking* toward the input, yet the second shows ReLU's *weight-gradient* staying flat — how can both be true? Because the weight gradient is not $\delta$ itself but the **product** $\partial L/\partial W^l = (a^{l-1})^\top\delta^l$. With this small-scale init the forward activation $a^{l-1}$ *grows* toward the input side at almost exactly the rate $\delta^l$ shrinks, so their product — the weight gradient — stays roughly constant across depth for ReLU. Sigmoid breaks that balance: its extra $\sigma'\le 0.25$ factor at every layer shrinks $\delta$ *faster* than the activation grows, so the product collapses and the weight gradient vanishes. The thing that actually vanishes is the weight gradient (the second plot) — the quantity the optimizer uses — and ReLU keeps it alive precisely by keeping that $\delta \times a$ product balanced.
 
 This single phenomenon — the backward product drifting away from 1 — motivates a huge fraction of deep-learning design: **ReLU**-like activations (local gradient exactly 1 in the active region, so they don't shrink the product), **residual connections** (an additive gradient shortcut — the add gate hands $\delta$ straight back, so the product has a "$+\,1$" path that never vanishes), **normalization** (batch/layer norm, which keeps $z$ in a healthy range so $\sigma'$ stays alive and conditions the weight matrices), careful **initialization** (He/Xavier, which set the weight scale so the product starts near 1), and **gradient clipping** for the exploding side.
 
@@ -483,7 +489,7 @@ $$\text{rel err} = \frac{|g_a - g_n|}{\max(|g_a| + |g_n|,\ \varepsilon)}.$$
 
 A relative error below $\sim 10^{-7}$ is a pass; $10^{-4}$ usually means a bug (or a kink, like ReLU at 0). The scatter below confirms a correct backward pass for every parameter of a small MLP; the U-curve shows why the choice of $\epsilon$ matters.
 
-![Analytic backprop gradients vs numerical finite-difference gradients for every parameter of a small MLP: all points lie exactly on the y = x line (max abs diff about 6e-13), confirming the backward pass is correct.](../images/bp_gradcheck.png)
+![Analytic backprop gradients vs numerical finite-difference gradients for every one of the 1210 parameters of a small MLP: all points lie exactly on the y = x line (median relative error 1.65e-10, max 7.7e-8 across all parameters), confirming the backward pass is correct.](../images/dl02_gradcheck.png)
 
 **Worked example 5 — the ε U-curve.** Take a scalar function $f(w) = \tfrac12(\tanh 3w - 0.5)^2$ at $w = 0.7$, whose analytic derivative is $(\tanh 3w - 0.5)(1 - \tanh^2 3w)\cdot 3 = 0.08217$. Sweep $\epsilon$ and measure the relative error of the centered difference:
 
@@ -497,7 +503,7 @@ A relative error below $\sim 10^{-7}$ is a pass; $10^{-4}$ usually means a bug (
 
 The error is a **U**: too-large $\epsilon$ leaves $O(\epsilon^2)$ **truncation error** (the finite difference isn't the true derivative); too-small $\epsilon$ subtracts two nearly equal floats and amplifies floating-point **round-off**. The bottom of the U sits around $\epsilon \approx 10^{-5}$ to $10^{-6}$ for double precision — which is exactly the default you'll see in gradient-check code.
 
-![Gradient-check relative error vs epsilon (log-log): a clear U shape. At large epsilon the relative error is dominated by O(epsilon squared) truncation error; at tiny epsilon it is dominated by floating-point round-off from subtracting two nearly-equal loss values; the minimum (sweet spot) sits near epsilon = 1e-6 at a relative error around 1e-12.](../images/bp_gradcheck_eps.png)
+![Gradient-check relative error vs epsilon (log-log): a clear U shape. At large epsilon the relative error is dominated by O(epsilon squared) truncation error; at tiny epsilon it is dominated by floating-point round-off from subtracting two nearly-equal loss values; the minimum (sweet spot) sits near epsilon = 1e-6 at a relative error around 4e-11.](../images/dl02_gradcheck_eps.png)
 
 > **Gotcha:** always use the **centered** difference (an order more accurate than one-sided), pick $\epsilon \approx 10^{-5}$, and compare with **relative** error. Also: gradient-check on **double precision** (`float64`) — `float32` has too little mantissa to show a clean pass — and **don't** straddle a kink (ReLU at exactly 0) or a single rare $\epsilon$ will look "wrong" when the code is fine.
 
@@ -599,117 +605,93 @@ In practice you write the forward pass and call `.backward()`; the skill is read
 
 ---
 
-## Code: hand-derived gradients that match autograd
+## Code: a from-scratch backward pass, proven three ways
 
-Two runnable scripts, both verified on Python 3.12 (torch 2.12), CPU, in well under a second. The **first** is the full 2-layer net from Worked example 4 — softmax+CE included — proving the hand-traced gradients match autograd to machine precision and that $\delta^2 = p - y$. The **second** is a generic MLP backward checked against autograd *and* a numerical gradient.
+Everything on this page is executable. The companion module — **[backpropagation.py](code/backpropagation.py)** — and the step-by-step **[runnable notebook](code/02-Backpropagation-and-Computational-Graphs.ipynb)** implement the backward pass from scratch in NumPy and prove it correct three independent ways: **(1) against hand calculus** (the four worked examples, each checked against autograd to ~1e-16), **(2) against a numerical finite-difference gradient** for every parameter (the from-scratch correctness proof), and **(3) against PyTorch's autograd**, after which the from-scratch net is *trained* on real scikit-learn digits. Every number quoted on this page is printed by that module; nothing is hand-typed.
+
+The heart of it is the backward pass — the four backprop equations, in code. Given the forward cache, this is the entire algorithm:
 
 ```python
-"""Worked example 4, in code: the 2->2->2 net (tanh hidden, softmax+CE head).
-Hand-derived forward + backward, checked against torch.autograd to machine precision.
-Verified on Python 3.12 (torch 2.12), CPU."""
+def backward(self, cache, y_onehot):
+    """The four backprop equations, applied from the output layer down."""
+    n = y_onehot.shape[0]
+    logits = cache[f"a{self.n_layers - 1}"]
+    delta = (softmax(logits) - y_onehot) / n        # dL/dz_last = (p - y)/N   (softmax+CE)
+    grads = {}
+    for i in reversed(range(self.n_layers)):
+        a_prev = cache[f"a{i - 1}"] if i > 0 else cache["a-1"]
+        grads[f"W{i}"] = a_prev.T @ delta            # dL/dW = a_prev^T delta   (outer-product rule)
+        grads[f"b{i}"] = delta.sum(axis=0)           # dL/db = sum over batch   (bias fan-out)
+        if i > 0:                                    # pull the error back one layer:
+            da_prev = delta @ self.params[f"W{i}"].T # W^T delta                (matmul VJP)
+            delta = da_prev * act_local_grad(cache[f"z{i - 1}"], ...)  # ⊙ σ'(z)  (activation gate)
+    return grads
+```
+
+That is a one-to-one transcription of $\delta^l = ((W^{l+1})^\top\delta^{l+1})\odot\sigma'(z^l)$, $\partial L/\partial W^l = \delta^l(a^{l-1})^\top$, $\partial L/\partial b^l = \delta^l$ — nothing more. The single most-loved special case, the 2→2→2 net of Worked example 4, is worth seeing in full because its hand-traced numbers match autograd to the last bit:
+
+```python
+"""Worked example 4, in code: the 2->2->2 net (tanh hidden, softmax+CE head)."""
 import numpy as np, torch, torch.nn.functional as F
 
 x  = np.array([1.0, 2.0])
 W1 = np.array([[0.1, 0.3], [0.2, 0.4]]); b1 = np.array([0.1, 0.2])
 W2 = np.array([[0.5, 0.1], [0.2, 0.3]]); b2 = np.array([0.1, 0.2])
-t  = 0;  y = np.array([1.0, 0.0])              # true class 0, one-hot target
+y  = np.array([1.0, 0.0])                       # true class 0, one-hot target
 
-# ---- forward (z = x @ W + b ; cache z1, a1 for the backward pass) ----
+# forward (z = x @ W + b ; cache z1, a1 for the backward pass)
 z1 = x @ W1 + b1                               # [0.6, 1.3]
 a1 = np.tanh(z1)                               # [0.5370, 0.8617]
 z2 = a1 @ W2 + b2                              # [0.5409, 0.5122]
 p  = np.exp(z2 - z2.max()); p /= p.sum()       # softmax -> [0.5072, 0.4928]
-L  = -np.log(p[t])                             # 0.6789
 
-# ---- backward (the four backprop equations, by hand) ----
+# backward (the four backprop equations, by hand)
 dz2 = p - y                                    # softmax+CE: delta^2 = p - y
-dW2 = np.outer(a1, dz2);  db2 = dz2            # outer-product rule
-da1 = W2 @ dz2                                 # pull error back through W2
-dz1 = da1 * (1 - a1**2)                        # x tanh'(z1) = 1 - a1^2  -> delta^1
-dW1 = np.outer(x, dz1);   db1 = dz1
+dW2 = np.outer(a1, dz2); db2 = dz2             # outer-product rule
+da1 = W2 @ dz2                                 # pull the error back through W2
+dz1 = da1 * (1 - a1**2)                        # tanh'(z1) = 1 - a1^2  -> delta^1
+dW1 = np.outer(x, dz1); db1 = dz1
 
-# ---- check against torch.autograd ----
-xt = torch.tensor(x)
-W1t = torch.tensor(W1, requires_grad=True); b1t = torch.tensor(b1, requires_grad=True)
-W2t = torch.tensor(W2, requires_grad=True); b2t = torch.tensor(b2, requires_grad=True)
-z2t = torch.tanh(xt @ W1t + b1t) @ W2t + b2t
-F.cross_entropy(z2t.unsqueeze(0), torch.tensor([t])).backward()
-
-print(f"L = {L:.4f}   p = {np.round(p,4)}   delta2 = p - y = {np.round(dz2,4)}")
-for name, manual, auto in [("W1", dW1, W1t.grad), ("b1", db1, b1t.grad),
-                           ("W2", dW2, W2t.grad), ("b2", db2, b2t.grad)]:
-    print(f"  {name}: max|manual-autograd| = {np.abs(manual - auto.numpy()).max():.2e}")
+# check against torch.autograd
+W1t, b1t = torch.tensor(W1, requires_grad=True), torch.tensor(b1, requires_grad=True)
+W2t, b2t = torch.tensor(W2, requires_grad=True), torch.tensor(b2, requires_grad=True)
+logits = torch.tanh(torch.tensor(x) @ W1t + b1t) @ W2t + b2t
+F.cross_entropy(logits.unsqueeze(0), torch.tensor([0])).backward()
+print("max|hand - autograd| for dW1 =", np.abs(dW1 - W1t.grad.numpy()).max())  # 1.1e-16
 ```
 
-Output:
+Running the whole module (`python backpropagation.py`) prints the consolidated, reproducible report — the three proofs in order, ending with backprop *training* a real network:
 
 ```
-L = 0.6789   p = [0.5072 0.4928]   delta2 = p - y = [-0.4928  0.4928]
-  W1: max|manual-autograd| = 1.11e-16
-  b1: max|manual-autograd| = 5.55e-17
-  W2: max|manual-autograd| = 1.11e-16
-  b2: max|manual-autograd| = 1.11e-16
+numpy 2.4.6 | torch 2.12.0 | scikit-learn 1.9.0  (CPU, seed=0)
+
+=== Worked example 3 — softmax + CE, logits=[2,1,0.1], true class 0 ===
+  p = [0.659  0.2424 0.0986]   dL/dz = p - y = [-0.341   0.2424  0.0986]   max|hand-torch| = 2.8e-17
+
+=== Worked example 4 — full 2->2->2 net, forward AND backward by hand ===
+  p=[0.5072 0.4928]  L=0.6789   delta2 = p - y = [-0.4928  0.4928]
+  max|hand-torch| over all grads = 1.1e-16  (machine precision)
+
+=== Gradient check — analytic backward vs centred finite difference (float64) ===
+  parameters checked : 1210
+  median relative error : 1.65e-10   max : 7.74e-08  (<< 1e-3 => correct)
+
+=== Torch cross-check — from-scratch MLP gradients vs loss.backward() ===
+  max abs diff = 8.33e-17   allclose(atol=1e-10) = True
+
+=== Train the from-scratch net on scikit-learn digits (SGD driven by backprop) ===
+  net = 64 -> 64 -> 10 ReLU, 4810 params; 1347 train / 450 test
+  loss: 2.796 -> 0.005 over 60 epochs
+  train accuracy = 1.0000   test accuracy = 0.9778
 ```
 
-Every hand-derived gradient matches autograd to machine epsilon — because they *are* the same chain-rule computation. The second script confirms a generic backward against both autograd and a finite-difference numerical gradient:
+The last block is the point of the whole page made concrete: feed the from-scratch gradients to plain SGD and a 4,810-parameter network learns to read handwritten digits at **97.8% test accuracy** — no autograd, no framework, just the backward pass above driving the update. The loss falls from $\log 10 \approx 2.30$ (random guessing over ten classes; it starts slightly higher at 2.80 because the initial logits are not uniform) toward zero:
 
-```python
-"""Manual backprop through a 2-layer MLP, checked against torch.autograd AND a
-numerical gradient. Verified on Python 3.12 (torch 2.12), CPU."""
-import torch
-torch.manual_seed(0)
+![Training cross-entropy loss of the from-scratch MLP on scikit-learn digits across 60 epochs: a steep drop in the first few epochs then a long tail toward 0.005, annotated with the real 97.8% test accuracy on 450 held-out digits. The gradients driving every SGD step are the from-scratch backward pass, not autograd.](../images/dl02_training_loss.png)
 
-# x -> (W1,b1) -> ReLU -> (W2,b2) -> out ,  loss = 1/2 (out - y)^2
-n_in, n_h = 4, 5
-x, y = torch.randn(1, n_in), torch.tensor([[1.0]])
-W1 = torch.randn(n_in, n_h, requires_grad=True); b1 = torch.randn(1, n_h, requires_grad=True)
-W2 = torch.randn(n_h, 1,  requires_grad=True); b2 = torch.randn(1, 1,  requires_grad=True)
+> **Note:** three independent confirmations, three different kinds of evidence. **Hand calculus** (Worked examples 1–4) and **autograd** agree to machine epsilon because they *are* the same chain-rule computation. The **finite-difference gradient check** (median relative error ~1e-10 over all 1,210 parameters) is an *independent* algorithm approximating the same derivative — so agreement rules out a shared bug. And **training to 97.8%** proves the gradients are not just numerically right but *useful*: they actually point downhill. If any of the four backprop equations had a wrong transpose or a dropped fan-out, one of these three would have caught it.
 
-# forward (cache the activations the backward pass needs)
-z1 = x @ W1 + b1
-a1 = torch.relu(z1)
-out = a1 @ W2 + b2
-loss = 0.5 * (out - y).pow(2).sum()
-
-# manual backward: chain rule + the matmul VJP (dL/dW = delta x^T, dL/dx = W^T delta)
-dout = (out - y)                       # dL/d out
-dW2_m = a1.t() @ dout                   # outer-product rule
-db2_m = dout.clone()
-da1   = dout @ W2.t()                    # pull through W2  (W^T delta)
-dz1   = da1 * (z1 > 0).float()          # ReLU gate (router)
-dW1_m = x.t() @ dz1
-db1_m = dz1.clone()
-
-loss.backward()                          # autograd does the same
-print("manual vs autograd (max abs diff):")
-for name, manual, auto in [("W1", dW1_m, W1.grad), ("b1", db1_m, b1.grad),
-                           ("W2", dW2_m, W2.grad), ("b2", db2_m, b2.grad)]:
-    print(f"  {name}: {(manual - auto).abs().max():.2e}  match={torch.allclose(manual, auto, atol=1e-5)}")
-
-# gradient check on the largest-gradient weight (centered difference)
-i, j = divmod(int(dW1_m.abs().argmax()), n_h); eps = 1e-4
-with torch.no_grad():
-    W1[i, j] += eps; lp = 0.5 * ((torch.relu(x @ W1 + b1) @ W2 + b2) - y).pow(2).sum()
-    W1[i, j] -= 2*eps; lm = 0.5 * ((torch.relu(x @ W1 + b1) @ W2 + b2) - y).pow(2).sum()
-    W1[i, j] += eps
-num = ((lp - lm) / (2 * eps)).item()
-print(f"grad check W1[{i},{j}]: analytic={dW1_m[i,j].item():.5f} numerical={num:.5f} diff={abs(dW1_m[i,j].item()-num):.2e}")
-```
-
-Output:
-
-```
-manual vs autograd (max abs diff):
-  W1: 0.00e+00  match=True
-  b1: 0.00e+00  match=True
-  W2: 0.00e+00  match=True
-  b2: 0.00e+00  match=True
-grad check W1[2,4]: analytic=-2.84959 numerical=-2.84985 diff=2.58e-04
-```
-
-> **Note:** the hand-derived gradients match autograd to the bit (`0.00e+00`) — because they *are* the same chain-rule computation, using the matmul VJP rules we derived. And the analytic gradient matches the finite-difference numerical one — the gradient check that proves the backward pass is correct. Two independent confirmations: autograd (exact, same algorithm) and finite differences (approximate, independent algorithm).
-
-> **Tip:** to *feel* the speed difference reverse mode buys, you'd have to compute every gradient by finite differences — two forward passes per parameter — and watch it crawl. The from-scratch [micrograd](https://www.youtube.com/watch?v=VMj-3S1tku0) build (references) does the opposite end: it implements the *whole* reverse-mode tape in ~100 lines, and seeing `+`, `*`, and `tanh` each carry a `_backward` closure makes the local-gradient rules permanent.
+> **Tip:** to *feel* the speed difference reverse mode buys, you'd have to compute every gradient by finite differences — two forward passes per parameter — and watch it crawl (the gradient check above does exactly that for 1,210 parameters and is already the slowest part of the module). The from-scratch [micrograd](https://www.youtube.com/watch?v=VMj-3S1tku0) build (references) does the opposite end: it implements the *whole* reverse-mode tape in ~100 lines, and seeing `+`, `*`, and `tanh` each carry a `_backward` closure makes the local-gradient rules permanent.
 
 ---
 
