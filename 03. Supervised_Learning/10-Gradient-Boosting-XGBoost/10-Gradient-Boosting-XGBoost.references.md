@@ -3,7 +3,7 @@ id: "03-supervised-learning/gradient-boosting/references"
 topic: "Gradient Boosting — References"
 parent: "03-supervised-learning/gradient-boosting"
 type: references
-updated: 2026-06-22
+updated: 2026-07-03
 ---
 
 # Gradient Boosting — references and further reading
@@ -21,6 +21,8 @@ updated: 2026-06-22
 - [Gradient Boost Part 1: Regression Main Ideas](https://www.youtube.com/watch?v=3CC4N4z3GJc) — **StatQuest (Josh Starmer)** — the clearest "fit trees to residuals" intuition.
 - [Gradient Boost Part 2: Regression Details](https://www.youtube.com/watch?v=2xudPOBz-vs) — **StatQuest (Josh Starmer)** — pseudo-residuals, learning rate, leaf outputs.
 - [Gradient Boost Part 3: Classification](https://www.youtube.com/watch?v=jxuNLH5dXCs) — **StatQuest (Josh Starmer)** — boosting for classification via log-odds and log-loss.
+- [Gradient Boost Part 4: Classification Details](https://www.youtube.com/watch?v=StWY5QWMXCw) — **StatQuest (Josh Starmer)** — the log-odds bookkeeping and Newton leaf values for classification boosting, worked out.
+- [XGBoost Part 1: Regression](https://www.youtube.com/watch?v=OtD8wVaFm6E) — **StatQuest (Josh Starmer)** — how XGBoost builds regression trees from similarity scores and gain, from scratch.
 - [XGBoost Part 3: Mathematical Details](https://www.youtube.com/watch?v=ZVFeW798-2I) — **StatQuest (Josh Starmer)** — the 2nd-order Taylor objective behind XGBoost, derived.
 
 **Interactive & visual**:
@@ -38,7 +40,8 @@ updated: 2026-06-22
 **Key papers**:
 - [A Decision-Theoretic Generalization of On-Line Learning (AdaBoost)](https://cseweb.ucsd.edu/~yfreund/papers/adaboost.pdf) — **Freund & Schapire (1997)** — the original boosting algorithm; the ancestor gradient boosting generalizes.
 - [Additive Logistic Regression: A Statistical View of Boosting](https://projecteuclid.org/journals/annals-of-statistics/volume-28/issue-2/Additive-logistic-regression-a-statistical-view-of-boosting/10.1214/aos/1016218223.full) — **Friedman, Hastie & Tibshirani (2000)** — shows AdaBoost = forward stagewise additive modeling under exponential loss (the bridge to gradient boosting).
-- [Greedy Function Approximation: A Gradient Boosting Machine](https://projecteuclid.org/journals/annals-of-statistics/volume-29/issue-5/Greedy-function-approximation-A-gradient-boosting-machine/10.1214/aos/1013203451.full) — **Friedman (2001)** — the original algorithm; "gradient descent in function space."
+- [Greedy Function Approximation: A Gradient Boosting Machine](https://projecteuclid.org/journals/annals-of-statistics/volume-29/issue-5/Greedy-function-approximation-A-gradient-boosting-machine/10.1214/aos/1013203451.full) — **Friedman (2001)** — the original algorithm; "gradient descent in function space." The primary source for the pseudo-residual = negative-gradient derivation and the additive update.
+- [Stochastic Gradient Boosting](https://www.sciencedirect.com/science/article/abs/pii/S0167947301000652) — **Friedman (2002)** — adds row subsampling (`subsample` < 1) to boosting: a bagging-like randomization that reduces variance and often improves generalization.
 - [XGBoost: A Scalable Tree Boosting System](https://arxiv.org/abs/1603.02754) — **Chen & Guestrin (2016)** — 2nd-order objective, regularization, sparsity-aware splits, system design.
 - [LightGBM: A Highly Efficient Gradient Boosting Decision Tree](https://papers.nips.cc/paper/6907-lightgbm-a-highly-efficient-gradient-boosting-decision-tree.pdf) — **Ke et al. (2017)** — histogram binning + leaf-wise growth for speed at scale.
 - [CatBoost: Unbiased Boosting with Categorical Features](https://arxiv.org/abs/1706.09516) — **Prokhorenkova et al. (2018)** — ordered boosting + native categorical handling.
@@ -51,6 +54,9 @@ updated: 2026-06-22
 
 **In this platform**:
 - Concept page (full explanation): [Gradient Boosting](10-Gradient-Boosting-XGBoost.md)
+- Runnable code: [gradient_boosting.py](code/gradient_boosting.py) — the from-scratch boosting loop, the pseudo-residual = negative-gradient check, the sklearn verification, the staged train/validation curve, the learning-rate sweep, the residual-shrinking movie, the XGBoost leaf-weight/gain worked example, the log-loss classifier, and the model comparison (real California Housing / Breast Cancer, real XGBoost) · [10-Gradient-Boosting-XGBoost.ipynb](code/10-Gradient-Boosting-XGBoost.ipynb) — the 13-step, run-live notebook
 - Concept depth (the *why*): [AI-ML-intuition 3.08 Ensembles (Bagging/Boosting)](../../../AI-ML-intuition/Module_3_Evaluation/3.08_Ensembles_Bagging_Boosting.md) · [2.05 Gradient Descent & SGD](../../../AI-ML-intuition/Module_2_Optimization/2.05_Gradient_Descent_and_SGD.md)
-- Related: [Decision Trees](../07-Decision-Trees/07-Decision-Trees.md) (the base learner) · [Random Forests](../09-Random-Forests/09-Random-Forests.md) (variance vs bias) · [Bagging](../08-Bagging/08-Bagging.md) · [Bias–Variance Tradeoff](../12-Bias-Variance-Tradeoff/12-Bias-Variance-Tradeoff.md)
+- Base learner and siblings: [Decision Trees](../07-Decision-Trees/07-Decision-Trees.md) (the weak learner boosting adds) · [Bagging](../08-Bagging/08-Bagging.md) / [Random Forests](../09-Random-Forests/09-Random-Forests.md) (↓ variance by averaging — the mirror image of boosting's ↓ bias) · [Bias–Variance Tradeoff](../12-Bias-Variance-Tradeoff/12-Bias-Variance-Tradeoff.md) (why each ensemble is configured as it is)
+- Why overfitting / early stopping matters: [Overfitting & Underfitting](../../00.%20Basics/05-Overfitting-and-Underfitting/05-Overfitting-and-Underfitting.md) — the U-curve the staged train/validation curve traces (early-stop at its minimum)
+- Downstream: [Deployment & MLOps](../../14.%20Deployment_and_MLOps/README.md) — serving, monitoring, and versioning boosted-tree models in production
 - Math prerequisites: [01. Foundations](../../01.%20Foundations/README.md) — gradient descent, Taylor expansion, loss functions

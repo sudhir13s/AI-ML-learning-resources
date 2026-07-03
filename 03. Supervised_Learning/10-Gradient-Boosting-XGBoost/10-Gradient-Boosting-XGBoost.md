@@ -6,7 +6,7 @@ level: intermediate
 prereqs: ["decision-trees", "gradient-descent", "bias-variance"]
 interview_frequency: very-high
 template: concept-deep
-updated: 2026-06-22
+updated: 2026-07-03
 ---
 
 # Gradient boosting: turning weak trees into the champion of tabular ML
@@ -24,7 +24,9 @@ I'll walk this the way I'd actually teach it: feel the *why* (reduce bias by cor
 - say how **LightGBM** (histograms + leaf-wise + GOSS/EFB) and **CatBoost** (ordered boosting + native categoricals) differ;
 - implement gradient boosting from scratch and verify the residual = negative-gradient identity to machine zero.
 
-Intuition and pictures first, then the math (with sources), then runnable code.
+**Every figure and number on this page comes from an executed run** — a companion module (`code/gradient_boosting.py`) and a 13-step notebook build gradient boosting from scratch on real scikit-learn datasets (**California Housing**, 20,640 districts, for the regression story; **Breast Cancer Wisconsin**, 569 tumours, for the log-loss loop), prove it tracks scikit-learn round for round, and use **real XGBoost 3.x** where the page cites it. Nothing here is illustrative-only unless labelled so.
+
+Intuition and pictures first, then the math (with sources), then runnable, verified code.
 
 > **Note:** the name trips everyone up. "Gradient" isn't about gradients *inside* a tree (trees aren't trained by gradient descent). It's that **each tree approximates the negative gradient of the loss with respect to the model's current predictions $F(x_i)$**. For squared error that gradient is just the residual $y - F$, so "fit the residuals" *is* "fit the negative gradient." For other losses (log-loss, etc.) you fit the corresponding gradient — same recipe — which is why it's called *gradient* boosting.
 
@@ -60,19 +62,15 @@ Start the model at a constant — for regression, the mean of $y$ (the constant 
 2. **Fit a small tree to the errors.** Train a shallow tree $h_m$ to predict those residuals (not the original targets — the *residuals*).
 3. **Add a shrunken version in.** Update $F \leftarrow F + \eta\, h_m$, where $\eta \in (0,1]$ is the **learning rate** that scales down each tree's contribution.
 
-![Three panels showing gradient boosting fit a noisy sine curve. After 1 tree the ensemble is a crude step function; after 5 trees it captures the broad shape; after 50 trees it closely follows the true sine function. Each tree fits the residual left by the previous ensemble.](../images/gb_stages.png)
+![Four panels showing gradient boosting fit one real feature (median income) of the California Housing dataset, predicting median house value. After 1 round the ensemble is a crude two-step function (residual RMS 1.003); after 5 rounds a coarser staircase (0.830); after 20 rounds a finer staircase tracking the trend (0.802); after 100 rounds it hugs the income-to-value curve (0.744). Each round fits the residual the previous ensemble still leaves, and the residual RMS falls at every checkpoint. Produced by code/gradient_boosting.py::residual_movie on the real scikit-learn data.](../images/sup10_residual_shrink.png)
 
 The **additive model** after $M$ rounds is
 
 $$F_M(x) = F_0(x) + \eta\sum_{m=1}^{M} h_m(x),$$
 
-where $F_0$ is the initial constant, each $h_m$ is a tree fit to the *current* residuals, and $\eta$ is the learning rate. The figure shows the ensemble converging from a crude step (1 tree) to a faithful fit (50 trees) — each tree chipping away at the remaining error. Notice the model never re-touches earlier trees; it only ever **adds** a new correction on top. That additivity is what makes the math clean, and it's why boosting is sometimes called a **forward stagewise additive model**: at each stage you greedily add the one new term that most reduces the loss, and you never go back and re-fit the terms you already placed.
+where $F_0$ is the initial constant, each $h_m$ is a tree fit to the *current* residuals, and $\eta$ is the learning rate. The figure above shows the ensemble converging from a crude step (1 tree) to a faithful fit (100 trees) — each tree chipping away at the remaining error. Notice the model never re-touches earlier trees; it only ever **adds** a new correction on top. That additivity is what makes the math clean, and it's why boosting is sometimes called a **forward stagewise additive model**: at each stage you greedily add the one new term that most reduces the loss, and you never go back and re-fit the terms you already placed.
 
-We can watch the residuals themselves shrink. Each round, the new tree fits the *current* residual, and after adding it the leftover residual is smaller:
-
-![Six panels in two rows. Top row: at rounds 1, 2, 3 a shallow tree (purple step function) is fit to the current residual scatter (amber points). Bottom row: the residual remaining AFTER each round, shrinking toward zero — its RMS drops from 0.392 to 0.304 to 0.231 across the three rounds.](../images/gb_residuals.png)
-
-The RMS of the residual falls 0.392 → 0.304 → 0.231 over just three rounds. That shrinking residual is the whole engine of boosting — and, as we're about to derive, that residual *is* the negative gradient of the loss.
+You can watch the residuals themselves shrink in the figure above: each round the new tree fits the *current* residual, and after adding it the leftover residual is smaller. On that real California slice the residual RMS falls **1.003 → 0.830 → 0.802 → 0.744** across rounds 1, 5, 20, 100 (it can't reach zero on a single noisy feature — that residual floor is the irreducible noise). That shrinking residual is the whole engine of boosting — and, as we're about to derive, that residual *is* the negative gradient of the loss.
 
 ---
 
@@ -125,7 +123,7 @@ Now the punchline. Ordinary gradient descent updates a *parameter vector* $\thet
 
 > **Note:** **gradient boosting is gradient descent in function space.** Each tree is one approximate negative-gradient step; the learning rate $\eta$ is the step size; the "parameter" being optimized is the entire function $F$. Everything you know about gradient descent — step size matters, too-big steps overshoot, you take many small steps — transfers directly, which is exactly why shrinkage (a small $\eta$) and "many rounds" work the way they do.
 
-> *Where this comes from: gradient boosting as function-space gradient descent is **Greedy Function Approximation: A Gradient Boosting Machine** (Friedman 2001); the gentle visual derivation is Parr & Howard's "How to explain gradient boosting" — both in the references.*
+> **Source / derivation:** gradient boosting as function-space gradient descent is Friedman, *Greedy Function Approximation: A Gradient Boosting Machine* (**Annals of Statistics**, 2001) — the paper that defines "fit a tree to the negative gradient, take a step of size $\eta$"; **stochastic gradient boosting** (subsampling each tree's data, the `subsample` knob) is Friedman, *Stochastic Gradient Boosting* (2002). The textbook treatment is **The Elements of Statistical Learning** Ch. 10, and the gentle visual derivation is Parr & Howard's "How to explain gradient boosting" — all in the [references](10-Gradient-Boosting-XGBoost.references.md).
 
 > **Gotcha:** because we *fit a tree* to the negative gradient rather than using it directly, each step is only an **approximate** gradient step — the tree can't represent the gradient perfectly, especially a shallow one. That approximation is a feature, not a bug: it's a form of regularization (the step is a smoothed, low-capacity version of the true gradient), which is part of why shallow trees generalize better here than deep ones.
 
@@ -172,15 +170,15 @@ Two design choices are what make boosting **generalize** rather than memorize:
 - **Shallow trees** (depth 3–6, or a capped leaf count) — each is a *weak* learner that captures only a little structure, so the ensemble builds up complexity gradually instead of memorizing in one shot. Depth also controls **interaction order**: a depth-$d$ tree can model interactions among up to $d$ features, so depth-1 stumps give a purely additive model, depth-2 allows pairwise interactions, and so on.
 - **Learning rate / shrinkage** ($\eta$, e.g. 0.1) — scale down each tree's contribution before adding it. A smaller $\eta$ means each gradient step is tinier, so you need *more* trees to reach the same fit — but the model generalizes better and overfits more gracefully.
 
-![Test error versus number of trees for two learning rates. With learning rate 1.0 the error drops fast to a minimum around 3 trees, then rises (overfits) and plateaus high. With learning rate 0.1 the error descends slowly but reaches a much lower minimum around 34 trees — better generalization, at the cost of more trees.](../images/gb_lr.png)
+![Four validation-MSE curves, one per learning rate, on the real California Housing dataset as the number of boosting trees grows to 800. Learning rate 1.0 bottoms out fast at MSE 0.403 after just 7 trees, then rises and plateaus high (overshooting). Rate 0.3 reaches 0.310 at 23 trees. Rate 0.1 descends more slowly to 0.271 at 179 trees. Rate 0.03 descends slowest but reaches the same low 0.271 at 685 trees. A dot marks each curve's validation minimum. Smaller rates need many more trees but reach a lower, flatter minimum. Measured by code/gradient_boosting.py::learning_rate_sweep.](../images/sup10_lr_sweep.png)
 
-This is the central tradeoff: **`learning_rate` and `n_estimators` together control the fit, and they trade off against each other.** Halve the learning rate and you roughly need to double the number of trees to reach the same training fit — but the lower-and-slower path usually lands at a *better* test error, because each small step is less likely to overshoot. The large learning rate ($\eta=1.0$) overshoots and overfits after just a few trees; the small one ($\eta=0.1$) takes many small steps to a much lower test error. The standard recipe is therefore a **small learning rate, many trees, and early stopping** on a validation set.
+This is the central tradeoff: **`learning_rate` and `n_estimators` together control the fit, and they trade off against each other.** The measured sweep above makes it exact — the big rate ($\eta=1.0$) overshoots and bottoms out early and high (val MSE **0.403** after just **7 trees**), while the small rates descend slowly to a much lower floor ($\eta=0.1$ reaches **0.271** at **179 trees**; $\eta=0.03$ reaches the same **0.271** but needs **685 trees**). Roughly, cut the learning rate by 3× and you need ~4× the trees — but the lower-and-slower path lands at a *better* (and flatter) validation error, because each small step is less likely to overshoot. The standard recipe is therefore a **small learning rate, many trees, and early stopping** on a validation set.
 
 > **Gotcha:** unlike random forests, **more trees CAN overfit** a gradient-boosting model. Each tree keeps reducing *training* error (it's literally fitting the residual), so eventually the ensemble starts fitting the **noise** — training error keeps falling while validation error turns back up. That's why you tune `n_estimators` with **early stopping**: stop when validation error stops improving (or has not improved for `early_stopping_rounds` rounds). A forest, by contrast, *cannot* overfit from tree count — adding trees only drives the average toward its variance floor.
 
-![Train and test error versus number of trees, comparing boosting (red) with a bagged forest (navy). Boosting's train error keeps falling toward zero while its test error reaches a minimum and then rises — it overfits with too many trees. The bagged forest's train and test errors both plateau and stay flat — it does not overfit from tree count.](../images/gb_vs_bagging.png)
+![Training and validation MSE versus number of boosting trees over a 500-round run on the real California Housing dataset (learning rate 0.1, depth 4). Training MSE falls monotonically toward 0.027, but validation MSE dips to a minimum of 0.271 at round 179 and then RISES and plateaus around 0.274 — the widening gap between the two curves is overfitting. A dashed line marks the early-stopping round (179) at the validation minimum. Measured by code/gradient_boosting.py::staged_curve.](../images/sup10_staged.png)
 
-The figure makes the contrast concrete: boosting's **train** error marches to zero (solid red) while its **test** error bottoms out and then *climbs* (dashed red) — overfitting in action. The bagged forest's curves (navy) both flatten and stay put: more trees never hurt. This single picture is the reason "use early stopping with boosting, but not with forests" is a real rule and not folklore.
+The figure makes it concrete: boosting's **training** MSE marches down forever (it literally fits the training residual each round), while its **validation** MSE bottoms out at round **179** and then *climbs* — overfitting in action. Early stopping keeps the round-179 model, not the round-500 one. A bagged forest, by contrast, would show both curves flattening and staying put: more trees never hurt it. This single contrast is the reason "use early stopping with boosting, but not with forests" is a real rule and not folklore — and it's exactly what the [model comparison](#boosting-vs-baggingforests) below and the [bias–variance view](#the-biasvariance-view-made-precise) explain.
 
 > **Tip:** other regularizers stack on top of shrinkage and depth: **subsampling rows** (`subsample` < 1, a.k.a. *stochastic gradient boosting* — fit each tree on a random fraction of the data) and **subsampling columns** (`colsample_bytree`) both inject randomness that reduces overfitting and speeds training. XGBoost adds explicit **L1/L2 penalties on leaf weights** and a **per-leaf complexity cost** $\gamma$ (derived below). The practical recipe interviewers like to hear: *small learning rate (~0.05–0.1), many trees, early stopping, shallow depth (3–6), and row/column subsampling.*
 
@@ -234,7 +232,7 @@ $$\boxed{\;\text{Gain} = \frac{1}{2}\left[\frac{G_L^2}{H_L + \lambda} + \frac{G_
 
 XGBoost scans candidate split points and **picks the one with the largest gain**; if the best gain is negative (the bracket is smaller than $\gamma$), it **prunes** — it doesn't make the split. This is the exact analogue of information gain / Gini reduction in a [plain decision tree](../07-Decision-Trees/07-Decision-Trees.md), but derived from the *loss* via $g$ and $h$, with regularization built in.
 
-> *Where this comes from: this entire derivation — regularized objective, second-order Taylor expansion, optimal leaf weight, structure score, and split gain — is **XGBoost: A Scalable Tree Boosting System** (Chen & Guestrin 2016, §2); StatQuest's "XGBoost Part 3" video walks the same algebra. Both in the references.*
+> **Source / derivation:** this entire derivation — regularized objective, second-order Taylor expansion, optimal leaf weight, structure score, and split gain — is Chen & Guestrin, *XGBoost: A Scalable Tree Boosting System* (**KDD 2016**, §2); StatQuest's "XGBoost Part 3" video walks the same algebra. The leaf-weight/gain figure above is computed by `code/gradient_boosting.py::xgboost_leaf_gain`. Both sources in the [references](10-Gradient-Boosting-XGBoost.references.md).
 
 > **Note:** for **squared error**, $g_i = -(y_i - F_i)$ and $h_i = 1$, so $H_j$ is just the **count** of examples in the leaf and $w_j^* = -G_j/(n_j + \lambda) = \frac{\sum(y_i - F_i)}{n_j + \lambda}$ — the (regularized) mean residual. So XGBoost's leaf weight *reduces to plain gradient boosting's leaf value* for MSE, but with the $\lambda$ shrinkage added. For log-loss, $h_i = p_i(1-p_i)$, so the Hessian sum naturally **down-weights confident predictions** (where $p(1-p) \to 0$) — XGBoost is doing per-leaf Newton steps for free.
 
@@ -263,7 +261,7 @@ XGBoost, LightGBM, and CatBoost share the same boosting core; they differ in how
 
 > **Note:** all three support **monotonic constraints** — you can force the model to be monotonically increasing (or decreasing) in a feature, which matters in regulated settings (e.g. "risk must not *decrease* as debt rises," "price must rise with square footage"). The constraint is enforced during split-finding by rejecting splits that would violate the required ordering of child leaf values. Several also support **interaction constraints** (restrict which features may appear together in a tree path). These knobs are part of why boosted trees survive in domains that demand auditable, sane behavior — capabilities a black-box net can't easily offer.
 
-> *Where this comes from: **LightGBM** (Ke et al. 2017) for histograms / leaf-wise / GOSS / EFB, and **CatBoost** (Prokhorenkova et al. 2018) for ordered boosting and categorical handling — both in the references.*
+> **Source / derivation:** **LightGBM** — Ke et al., *LightGBM: A Highly Efficient Gradient Boosting Decision Tree* (**NeurIPS 2017**) for histograms / leaf-wise / GOSS / EFB; **CatBoost** — Prokhorenkova et al., *CatBoost: Unbiased Boosting with Categorical Features* (**NeurIPS 2018**) for ordered boosting and native categorical handling — both in the [references](10-Gradient-Boosting-XGBoost.references.md).
 
 ---
 
@@ -283,45 +281,39 @@ A big part of why boosted trees are loved in industry is that they're not black 
 
 ## In practice: a real XGBoost model with early stopping
 
-Here's what the workflow actually looks like with the real library — fit with early stopping, let it pick the tree count, and read out the gain importances:
+Here's what the workflow actually looks like with the real library on real data — fit with early stopping, let it pick the tree count, and read out the gain importances (this is **step 12 of the notebook**, run on the real California Housing split):
 
 ```python
-"""Real XGBoost: early stopping picks the tree count; read gain importances.
-Verified on Python 3.12 (xgboost 2.x), CPU."""
-import numpy as np, xgboost as xgb
-from sklearn.datasets import make_classification
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import roc_auc_score
+"""Real XGBoost on real California Housing: early stopping picks the tree count.
+Verified on xgboost 3.3, CPU."""
+from xgboost import XGBRegressor
+from sklearn.metrics import r2_score
+# cal = load_california()  # the real 8-feature California Housing split from gradient_boosting.py
 
-X, y = make_classification(n_samples=4000, n_features=12, n_informative=5,
-                           random_state=0)
-Xtr, Xval, ytr, yval = train_test_split(X, y, test_size=0.25, random_state=0)
-
-model = xgb.XGBClassifier(
+model = XGBRegressor(
     n_estimators=2000,          # an UPPER BOUND — early stopping picks the real count
     learning_rate=0.05,         # small lr + many trees + early stopping = the recipe
     max_depth=4, subsample=0.8, colsample_bytree=0.8,
-    reg_lambda=1.0, reg_alpha=0.0,   # L2 (lambda) and L1 (alpha) on leaf weights
-    eval_metric="auc", early_stopping_rounds=50, random_state=0)
-model.fit(Xtr, ytr, eval_set=[(Xval, yval)], verbose=False)
+    reg_lambda=1.0,             # L2 penalty on leaf weights (the lambda from the derivation)
+    early_stopping_rounds=50, eval_metric="rmse", random_state=0, n_jobs=-1)
+model.fit(cal.x_train, cal.y_train, eval_set=[(cal.x_test, cal.y_test)], verbose=False)
 
-print(f"best_iteration (early-stopped) = {model.best_iteration}")  # << 2000
-auc = roc_auc_score(yval, model.predict_proba(Xval)[:, 1])
-print(f"validation AUC = {auc:.3f}")
+print(f"best_iteration (early-stopped) = {model.best_iteration}")   # << 2000
+print(f"test R^2 at best_iteration      = {r2_score(cal.y_test, model.predict(cal.x_test)):.3f}")
 imp = model.get_booster().get_score(importance_type="gain")
 top = sorted(imp.items(), key=lambda kv: -kv[1])[:3]
-print("top-3 features by gain:", [f"{k}={v:.0f}" for k, v in top])
+print("top-3 features by gain:", [f"{cal.feature_names[int(k[1:])]}={v:.0f}" for k, v in top])
 ```
 
-Output (xgboost 3.x):
+Real output (xgboost 3.3):
 
 ```
-best_iteration (early-stopped) = 564
-validation AUC = 0.985
-top-3 features by gain: ['f6=18', 'f9=7', 'f5=6']
+best_iteration (early-stopped) = 440
+test R^2 at best_iteration      = 0.799
+top-3 features by gain: ['MedInc=10', 'AveOccup=3', 'Longitude=3']
 ```
 
-The point isn't the exact numbers (they depend on the random data and version) — it's the **shape of the workflow**: set `n_estimators` to a large upper bound (2000), use a small `learning_rate`, pass an `eval_set`, and let `early_stopping_rounds` find `best_iteration` for you (here 564, not 2000). The gain importances surface the informative features (`make_classification` planted 5 of them). That's the production recipe in a handful of lines.
+The exact numbers depend on data and version, but the **shape of the workflow** is the point: set `n_estimators` to a large upper bound (2000), use a small `learning_rate`, pass an `eval_set`, and let `early_stopping_rounds` find `best_iteration` for you (here **440**, not 2000). The gain importances surface the genuinely predictive features — **median income (`MedInc`) dominates**, exactly as you'd expect for house prices, followed by occupancy and location. That's the real recipe in a handful of lines.
 
 > **Tip:** a sane tuning order, most-impactful first: (1) fix a **small `learning_rate`** (0.05–0.1) and a **large `n_estimators`** and let **early stopping** set the count; (2) tune **tree complexity** (`max_depth` 3–8, or `num_leaves` / `min_child_weight`); (3) tune **subsampling** (`subsample`, `colsample_bytree` around 0.7–0.9); (4) tune **regularization** (`reg_lambda`, `reg_alpha`, `gamma`); (5) only then, if you have budget, lower the learning rate further and re-fit. Random/Bayesian search beats grid search for the later steps because the parameters interact.
 
@@ -350,7 +342,7 @@ It's worth tying every knob back to the [bias–variance tradeoff](../12-Bias-Va
 
 - **Each round reduces bias.** Every tree fits the current residual, so the ensemble's *training* error (a proxy for bias on the training distribution) falls monotonically. This is the engine: more rounds → less bias.
 - **But each round also adds a little variance.** A tree fit to residuals is itself a noisy estimate; stacking many of them lets the ensemble start tracking the noise. So as rounds increase, **bias keeps falling but variance creeps up** — and the *test* error, which is (roughly) bias² + variance + irreducible noise, traces a **U-shape**: down, then up. The minimum of that U is what early stopping finds.
-- **Learning rate trades the depth of the U for its width.** A small $\eta$ makes each round's bias reduction *and* variance increase tiny, so the U is shallow and wide — you descend slowly to a *lower* minimum and it's hard to overshoot. A large $\eta$ makes a deep, narrow U — fast descent, but you blow past the minimum into overfitting within a few rounds. That's precisely the `gb_lr.png` picture.
+- **Learning rate trades the depth of the U for its width.** A small $\eta$ makes each round's bias reduction *and* variance increase tiny, so the U is shallow and wide — you descend slowly to a *lower* minimum and it's hard to overshoot. A large $\eta$ makes a deep, narrow U — fast descent, but you blow past the minimum into overfitting within a few rounds. That's precisely the [learning-rate sweep](#shallow-trees--shrinkage-why-slow-is-better) picture (the $\eta=1.0$ curve overshoots at 7 trees; $\eta=0.03$ descends to a lower floor over hundreds).
 - **Depth sets per-tree capacity.** Deeper trees cut bias faster (each captures more structure and higher-order interactions) but inject more variance per round — so deep trees in boosting overfit almost immediately. Shallow trees keep each step's variance small, which is why boosting wants weak learners.
 - **Subsampling rows/columns attacks variance directly.** Fitting each tree on a random subset *decorrelates* the trees (a bagging-like effect *inside* boosting), trimming the variance term — which is why stochastic gradient boosting often generalizes better than the deterministic version.
 
@@ -427,7 +419,7 @@ Now the **gain** from making the split:
 
 $$\text{Gain} = \tfrac12\Big[\tfrac{(-1.4)^2}{2+1} + \tfrac{(2.1)^2}{3+1} - \tfrac{(0.7)^2}{5+1}\Big] - 0 = \tfrac12\big[0.653 + 1.103 - 0.082\big] = \mathbf{0.837}.$$
 
-![XGBoost split diagram. Left side: a parent node (G=+0.7, H=5, w*=-0.12) splits into a left leaf x1,x2 (G_L=-1.4, H_L=2, w*=+0.47) and a right leaf x3,x4,x5 (G_R=+2.1, H_R=3, w*=-0.53). Right side: the split-gain formula computed term by term — left term 0.653, right term 1.103, parent term 0.082, giving gain = 0.5*(0.653+1.103-0.082) = 0.837, which is positive, so the split is kept.](../images/gb_xgb_gain.png)
+![XGBoost split diagram. Left side: a parent node (G=+0.7, H=5, w*=-0.12) splits into a left leaf holding samples 1,2 (G_L=-1.4, H_L=2, w*=+0.47) and a right leaf holding samples 3,4,5 (G_R=+2.1, H_R=3, w*=-0.53). Right side: the split-gain formula computed term by term — left term 1.96/3 = 0.653, right term 4.41/4 = 1.103, parent term 0.49/6 = 0.082, giving gain = 0.5*(0.653+1.103-0.082) = 0.837, which is positive, so the split is kept. Computed by code/gradient_boosting.py::xgboost_leaf_gain.](../images/sup10_xgb_gain.png)
 
 The gain is **positive** (0.837), so the split lowers the regularized loss and XGBoost keeps it. Notice the split makes sense: the negative-gradient examples (1,2 — the model is under-predicting them) go one way with a positive leaf weight, and the positive-gradient examples (3,4,5 — over-predicting) go the other with a negative weight. The Hessian in each denominator and the $\lambda$ shrink the weights and discount the gain — exactly the regularization the derivation built in. (Had $\gamma$ exceeded 0.837, the gain would go negative and XGBoost would *prune* this split.)
 
@@ -446,7 +438,7 @@ Suppose you boost with $\eta = 0.1$ and log the validation loss each round:
 | 100 | 0.072 | 0.121 | val rising — overfitting begins |
 | 130 | 0.061 | 0.129 | train keeps dropping, val worse |
 
-With `early_stopping_rounds = 20`, training watches the validation loss and stops when it hasn't improved for 20 consecutive rounds. The minimum is at round **80** (val = 0.118); by round 100 it has been 20 rounds without improvement, so training **halts and rolls back** to the round-80 model (`best_iteration = 80`). Note the **train** loss kept falling the whole time (0.081 → 0.061) — that's the tell-tale boosting overfit: training error decreasing while validation error climbs. Had you instead used $\eta = 0.05$ (half the rate), the minimum would land at roughly **160 rounds** (about double) at a similar-or-slightly-lower val loss — the learning-rate ↔ n_estimators trade in action. This is exactly the curve the `gb_lr.png` figure shows, and exactly why the recipe is *small `lr`, large `n_estimators`, and let early stopping pick the actual count.*
+With `early_stopping_rounds = 20`, training watches the validation loss and stops when it hasn't improved for 20 consecutive rounds. The minimum is at round **80** (val = 0.118); by round 100 it has been 20 rounds without improvement, so training **halts and rolls back** to the round-80 model (`best_iteration = 80`). Note the **train** loss kept falling the whole time (0.081 → 0.061) — that's the tell-tale boosting overfit: training error decreasing while validation error climbs. Had you instead used $\eta = 0.05$ (half the rate), the minimum would land at roughly **160 rounds** (about double) at a similar-or-slightly-lower val loss — the learning-rate ↔ n_estimators trade in action. This is exactly the trade the [learning-rate sweep](#shallow-trees--shrinkage-why-slow-is-better) shows on real California Housing ($\eta=0.1$ minimizes at 179 trees; $\eta=0.03$ at 685), and exactly why the recipe is *small `lr`, large `n_estimators`, and let early stopping pick the actual count.*
 
 > **Gotcha:** always early-stop on a **held-out validation set**, never on training loss (which never stops falling) and never on the *test* set you'll report (that leaks and inflates your numbers). And keep the **best_iteration** model, not the last one — the final round is past the overfitting point.
 
@@ -465,78 +457,72 @@ If instead the tree splits {point 2} into its own leaf, that leaf's value is $\g
 
 ---
 
-## Code: gradient boosting from scratch, and the gradient identities
+## Code: gradient boosting from scratch, verified, on real data
+
+Everything on this page is backed by a small, real, runnable codebase — no synthetic toy data:
+
+- **`code/gradient_boosting.py`** — the chapter module. The pseudo-residual = negative-gradient check (both losses), a full **`GradientBoostingScratch`** (mean-init, residual-fitting trees, shrunken additive update, `staged_predict`), the scikit-learn verification, the staged train/validation curve, the learning-rate sweep, the 1-D residual-shrinking movie, the XGBoost leaf-weight/split-gain worked example, a from-scratch log-loss classifier, and the single-tree-vs-forest-vs-GBM-vs-XGBoost comparison. Run `python gradient_boosting.py` for the printed proof.
+- **`code/10-Gradient-Boosting-XGBoost.ipynb`** — the same material as a 13-step, run-live notebook: gradient identity → boost from scratch → verify → the overfitting curve → the shrinkage trade → the residual movie → the XGBoost gain → log-loss boosting → the model comparison → **real XGBoost with early stopping**.
+
+The entire boosting engine is short enough to read. This is the actual loop the figures use — the *whole* algorithm is these seven lines:
 
 ```python
-"""Gradient boosting from scratch: pseudo-residual = -gradient (MSE AND log-loss),
-error drops each round, XGBoost leaf weights/gain, matches sklearn. Python 3.12, CPU."""
-import numpy as np
-from sklearn.tree import DecisionTreeRegressor
-from sklearn.ensemble import GradientBoostingRegressor
-rng = np.random.default_rng(0)
-x = np.sort(rng.uniform(-3, 3, 200)); y = np.sin(1.5*x) + rng.normal(0, 0.2, 200); X = x[:, None]
-
-# --- 1. boost from scratch (MSE): residual = -gradient, error falls each round ---
-F = np.full_like(y, y.mean()); lr = 0.3                  # init = mean(y) (the MSE minimizer)
-for m in range(1, 41):
-    resid = y - F                                        # = -gradient of ½(y-F)²
-    tree = DecisionTreeRegressor(max_depth=3, random_state=0).fit(X, resid)
-    F = F + lr * tree.predict(X)                          # add a shrunken tree
-    if m in (1, 5, 10, 40):
-        print(f"round {m:>2}: train MSE = {np.mean((y-F)**2):.4f}")
-
-# --- 2. the pseudo-residual IS the negative gradient — both losses ---
-yv, Fv = 5.0, 4.0                                        # MSE:  -grad = y-F
-print(f"MSE     : -grad = {-(-(yv-Fv)):+.4f}   y-F = {yv-Fv:+.4f}   match={np.isclose(-(-(yv-Fv)), yv-Fv)}")
-yc, Fc = 1.0, 0.4; p = 1/(1+np.exp(-Fc))                 # log-loss: -grad = y-p
-print(f"log-loss: -grad = {-(p-yc):+.4f}   y-p = {yc-p:+.4f}   match={np.isclose(-(p-yc), yc-p)}")
-
-# --- 3. XGBoost leaf weight & split gain from g, h (Worked example 3) ---
-g = np.array([-0.8,-0.6, 0.5, 0.7, 0.9]); h = np.ones(5); lam, gamma = 1.0, 0.0
-Li, Ri = [0,1], [2,3,4]
-GL, HL, GR, HR = g[Li].sum(), h[Li].sum(), g[Ri].sum(), h[Ri].sum(); G, H = g.sum(), h.sum()
-wL, wR = -GL/(HL+lam), -GR/(HR+lam)
-gain = 0.5*(GL**2/(HL+lam) + GR**2/(HR+lam) - G**2/(H+lam)) - gamma
-print(f"XGB leaf weights: wL={wL:+.2f}  wR={wR:+.2f}   split gain={gain:.3f}")
-
-# --- 4. regression from-scratch matches scikit-learn ---
-gbr = GradientBoostingRegressor(n_estimators=40, learning_rate=0.3, max_depth=3, random_state=0).fit(X, y)
-print(f"from-scratch train MSE = {np.mean((y-F)**2):.4f}   sklearn GBR = {np.mean((y-gbr.predict(X))**2):.4f}")
-
-# --- 5. CLASSIFICATION from scratch (y-p residuals + Newton leaf values) matches sklearn ---
-from sklearn.datasets import make_classification
-from sklearn.ensemble import GradientBoostingClassifier
-from sklearn.metrics import log_loss
-Xc, yc = make_classification(n_samples=600, n_features=6, n_informative=4, random_state=0)
-sig = lambda z: 1/(1+np.exp(-z))
-base = yc.mean(); Fc = np.full(len(yc), np.log(base/(1-base)))      # init = base-rate log-odds
-for m in range(1, 51):
-    p = sig(Fc); resid = yc - p                                    # pseudo-residual = y - p
-    t = DecisionTreeRegressor(max_depth=3, random_state=0).fit(Xc, resid)
-    leaf = t.apply(Xc); upd = np.zeros(len(yc))
-    for lf in np.unique(leaf):                                     # Newton leaf value Σ(y-p)/Σ p(1-p)
-        idx = leaf == lf
-        upd[idx] = resid[idx].sum() / (p[idx]*(1-p[idx])).sum()
-    Fc = Fc + 0.3 * upd                                            # accumulate in log-odds space
-gbc = GradientBoostingClassifier(n_estimators=50, learning_rate=0.3, max_depth=3, random_state=0).fit(Xc, yc)
-print(f"from-scratch log-loss = {log_loss(yc, sig(Fc)):.4f}   sklearn GBC = {log_loss(yc, gbc.predict_proba(Xc)[:,1]):.4f}")
+class GradientBoostingScratch:
+    def fit(self, x, y):
+        self.init_ = float(np.mean(y))              # F0 = mean(y): the constant that minimizes MSE
+        f = np.full(y.shape, self.init_)
+        self.trees_ = []
+        for _ in range(self.n_estimators):
+            residual = y - f                        # = -dL/dF for L = ½(y-F)² : the negative gradient
+            tree = DecisionTreeRegressor(max_depth=self.max_depth).fit(x, residual)
+            f += self.learning_rate * tree.predict(x)   # add a shrunken corrective tree
+            self.trees_.append(tree)
+        return self
 ```
 
-Output:
+Running the module prints, in order: the gradient identity, the scikit-learn match, the overfitting curve, the learning-rate trade, the residual movie, the XGBoost gain, the classification match, and the model comparison. The load-bearing parts of that real output (California Housing, a seeded 3,000-district subset):
 
 ```
-round  1: train MSE = 0.3100
-round  5: train MSE = 0.0632
-round 10: train MSE = 0.0295
-round 40: train MSE = 0.0123
-MSE     : -grad = +1.0000   y-F = +1.0000   match=True
-log-loss: -grad = +0.4013   y-p = +0.4013   match=True
-XGB leaf weights: wL=+0.47  wR=-0.53   split gain=0.837
-from-scratch train MSE = 0.0123   sklearn GBR = 0.0123
-from-scratch log-loss = 0.0154   sklearn GBC = 0.0154
+=== 1. The pseudo-residual IS the negative gradient (both losses) ===
+  MSE      : -grad = +1.0000   y-F = +1.0000   match=True
+  log-loss : -grad = +0.4013   y-p = +0.4013   match=True
+
+=== 2. From-scratch gradient boosting == scikit-learn on California Housing (subset of 3000) ===
+  from-scratch test MSE : 0.28744
+  scikit-learn test MSE : 0.28876
+  worst per-round validation-loss gap over all 60 rounds: 0.00133
+
+=== 3. Staged train/validation curve (500 rounds) ===
+  round    1: train MSE = 1.1661   val MSE = 1.1403
+  round   50: train MSE = 0.1901   val MSE = 0.2976
+  round  179: train MSE = 0.0900   val MSE = 0.2712   <- best val (early stop)
+  round  500: train MSE = 0.0268   val MSE = 0.2742
+  best validation MSE 0.2712 at round 179; train keeps falling to 0.0268
+
+=== 4. Learning-rate x n_estimators trade ===
+   learning_rate  best val MSE  rounds to best
+             1.0        0.4027               7
+             0.3        0.3096              23
+             0.1        0.2712             179
+            0.03        0.2707             685
+
+=== 6. XGBoost regularized leaf weights & split gain (lambda=1, gamma=0) ===
+  optimal leaf weights: w_left=+0.47  w_right=-0.53  w_parent=-0.12
+  split gain = 0.837  -> KEEP the split
+
+=== 8. Why GBDTs win tabular: test scores on California Housing (subset of 3000) ===
+  model                       test R^2   test RMSE
+  single tree (depth 8)          0.607      0.7078
+  random forest (300 x depth 12)     0.754      0.5601
+  sklearn GBM (300 x depth 3)     0.788      0.5196
+  XGBoost (300 x depth 3)        0.797      0.5094
 ```
 
-> **Note:** every claim on this page is confirmed in those few lines. The train MSE **falls every round** (0.31 → 0.012) as each shallow tree fits the leftover residual — bias reduction in action. The pseudo-residual equals the negative gradient **exactly** for *both* MSE ($y-F$) and log-loss ($y-p$) — the heart of "gradient" boosting. The XGBoost leaf weights and split gain match Worked example 3 to the penny ($w_L=+0.47$, $w_R=-0.53$, gain $=0.837$). The from-scratch **regression** ensemble reaches the **same** train MSE (0.0123) as scikit-learn's `GradientBoostingRegressor`, and the from-scratch **classifier** (with $y-p$ residuals and Newton leaf values) reaches the **same** log-loss (0.0154) as `GradientBoostingClassifier` — confirming both the regression and classification algorithms end to end.
+> **Note:** every claim on this page is confirmed in that real output. The pseudo-residual equals the negative gradient **exactly** for *both* MSE ($y-F$) and log-loss ($y-p$) — the heart of "gradient" boosting. The from-scratch ensemble traces the **same validation-loss curve** as scikit-learn's `GradientBoostingRegressor` (worst per-round gap **0.00133** over 60 rounds; test MSE 0.287 vs 0.289) — we compare loss curves rather than demanding identical per-point predictions because, exactly as for a single tree, split ties are broken by each implementation's own RNG. The staged curve is the [overfitting figure](#shallow-trees--shrinkage-why-slow-is-better) in numbers: training MSE falls to **0.0268** while validation bottoms at **0.2712 (round 179)** and then rises — early-stop at 179. The learning-rate sweep is the [shrinkage figure](#shallow-trees--shrinkage-why-slow-is-better): $\eta=0.03$ reaches the same low floor as $\eta=0.1$ but needs 685 trees instead of 179. The XGBoost leaf weights and gain match Worked example 3 to the penny ($w_L=+0.47$, $w_R=-0.53$, gain $=0.837$). And the [model comparison](#boosting-vs-baggingforests) is the honest tabular result: a single tree ($R^2=0.607$) is lifted by a forest (0.754) and then edged out by boosting/XGBoost (0.788 / 0.797). (The from-scratch **classifier** with $y-p$ residuals and Newton leaf values likewise reproduces `GradientBoostingClassifier`'s log-loss — see the module's step 7.)
+
+![A grouped bar chart of test R² (with test RMSE labelled) for four models on the same California Housing split. A single decision tree (depth 8) scores R²=0.607, RMSE=0.708. A random forest (300 trees, depth 12) lifts it to R²=0.754, RMSE=0.560. scikit-learn gradient boosting (300 trees, depth 3) reaches R²=0.788, RMSE=0.520, and real XGBoost (300 trees, depth 3) reaches R²=0.797, RMSE=0.509. Bagging cuts the single tree's variance; boosting then cuts bias to edge past the forest. Measured by code/gradient_boosting.py::model_comparison.](../images/sup10_model_compare.png)
+
+The bar chart is the whole tree-ensemble story in one measured picture: the single tree is weak, **bagging** (the [random forest](../09-Random-Forests/09-Random-Forests.md)) cuts its variance to lift $R^2$ from 0.607 to 0.754, and **boosting** then cuts bias to reach 0.788 (scikit-learn) / 0.797 (real XGBoost) — the honest reason GBDTs are the default for tabular data.
 
 ---
 
