@@ -309,15 +309,20 @@ add_md(
     "\n"
     "The same machine does classification: accumulate **log-odds** across trees, and read the output through a "
     "sigmoid. Init at the base-rate log-odds; each round the pseudo-residual is $y-p$, and each leaf's value is "
-    "the **Newton step** $\\sum(y-p)/\\sum p(1-p)$. Verify the from-scratch log-loss matches "
-    "`GradientBoostingClassifier` on real Breast Cancer data."
+    "the **Newton step** $\\sum(y-p)/\\sum p(1-p)$. We store each round's Newton leaf values and score on a "
+    "**held-out test split**, so both log-losses are clearly above zero — a real equality check, not two "
+    "memorized-to-zero numbers. The from-scratch log-loss should match `GradientBoostingClassifier` on the "
+    "unseen Breast Cancer tumours."
 )
 add_code(
     "cancer = load_cancer()\n"
     "cls = boost_classification(cancer)\n"
-    "print(f'from-scratch train log-loss : {cls.scratch_log_loss:.5f}')\n"
-    "print(f'scikit-learn train log-loss : {cls.sklearn_log_loss:.5f}')\n"
-    "print('\\ny-p residuals + Newton leaf values reproduce scikit-learn\\'s classifier — same algorithm.')"
+    "print(f'from-scratch test log-loss : {cls.scratch_test_log_loss:.5f}')\n"
+    "print(f'scikit-learn test log-loss : {cls.sklearn_test_log_loss:.5f}')\n"
+    "gap = abs(cls.scratch_test_log_loss - cls.sklearn_test_log_loss)\n"
+    "print(f'gap = {gap:.5f}   (both non-trivial, matched on held-out data)')\n"
+    "assert gap < 0.05\n"
+    "print('\\ny-p residuals + Newton leaf values reproduce scikit-learn\\'s classifier on UNSEEN data.')"
 )
 
 # ---- Step 11: model comparison ----

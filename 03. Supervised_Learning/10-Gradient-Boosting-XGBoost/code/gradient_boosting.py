@@ -82,6 +82,10 @@ RESIDUAL_FEATURE = "MedInc"  # the single real feature (median income) for the 1
 RESIDUAL_CHECKPOINTS = (1, 5, 20, 100)  # rounds at which we snapshot the converging ensemble
 RESIDUAL_DEPTH = 2  # shallow stumps so the 1-D staircase visibly refines round by round
 RESIDUAL_LR = 0.3  # learning rate for the residual movie
+CLS_N_ESTIMATORS = 30  # rounds for the from-scratch log-loss classifier (few enough to keep test loss non-trivial)
+CLS_LR = 0.3  # learning rate for the classification loop
+CLS_DEPTH = 3  # weak-learner depth for the classification loop
+CLS_TOLERANCE = 0.05  # max allowed |from-scratch - sklearn| HELD-OUT test log-loss
 COMPARE_N_ESTIMATORS = 300  # trees for the model-comparison ensembles
 COMPARE_DEPTH = 3  # boosting depth for the comparison
 RF_DEPTH = 12  # a deep-ish forest — bagging wants strong high-variance learners
@@ -479,45 +483,69 @@ def xgboost_leaf_gain(
 # ============================ 9. from-scratch classification (log-loss) =========================
 @dataclass
 class ClassificationMatch:
-    """The from-scratch log-loss booster vs scikit-learn's GradientBoostingClassifier."""
+    """The from-scratch log-loss booster vs scikit-learn's GradientBoostingClassifier, on a HELD-OUT split."""
 
-    scratch_log_loss: float
-    sklearn_log_loss: float
+    scratch_test_log_loss: float  # from-scratch log-loss on the held-out test tumours (non-trivial, > 0)
+    sklearn_test_log_loss: float  # scikit-learn log-loss on the same held-out tumours
+    n_estimators: int
 
 
 def boost_classification(
-    data: Dataset, *, n_estimators: int = 50, learning_rate: float = 0.3, max_depth: int = 3
+    data: Dataset,
+    *,
+    n_estimators: int = CLS_N_ESTIMATORS,
+    learning_rate: float = CLS_LR,
+    max_depth: int = CLS_DEPTH,
 ) -> ClassificationMatch:
-    """From-scratch log-loss boosting (``y - p`` residuals + Newton leaf values) vs scikit-learn.
+    """From-scratch log-loss boosting (``y - p`` residuals + Newton leaf values) vs scikit-learn, on TEST.
 
     Classification boosting accumulates *log-odds* across trees. Init at the base-rate log-odds; each round,
     the pseudo-residual is ``y - p`` (the negative log-loss gradient), and each leaf's value is the Newton
-    step ``sum(y-p) / sum p(1-p)`` (gradient over Hessian). The final probability is ``sigma(F)``. We verify
-    the from-scratch log-loss matches ``GradientBoostingClassifier`` on real data.
+    step ``sum(y-p) / sum p(1-p)`` (gradient over Hessian). The final probability is ``sigma(F)``.
+
+    We store each round's ``(tree, leaf -> Newton value)`` map and score on a **held-out test split**, exactly
+    like scikit-learn. This matters: a regression tree's own ``predict`` returns the *mean* residual per leaf,
+    but boosting must add the *Newton* leaf value out-of-sample too — so we route each test tumour to its leaf
+    and add the stored Newton value, not ``tree.predict``. Evaluating on held-out data (rather than the
+    memorized training set) makes the comparison a real, non-trivial equality check — both log-losses are
+    clearly above zero and still match to :data:`CLS_TOLERANCE`, matching the strength of the regression check.
     """
     x, y = data.x_train, data.y_train
     base = float(np.mean(y))
-    f = np.full(y.shape, np.log(base / (1.0 - base)), dtype=np.float64)  # base-rate log-odds init
+    init = float(np.log(base / (1.0 - base)))  # base-rate log-odds init
+    f = np.full(y.shape, init, dtype=np.float64)
+    steps: list[tuple[DecisionTreeRegressor, dict[int, float]]] = []
     for _ in range(n_estimators):
         p = 1.0 / (1.0 + np.exp(-f))
         residual = y - p  # pseudo-residual = -dL/dF for log-loss
         tree = DecisionTreeRegressor(max_depth=max_depth, random_state=RANDOM_STATE)
         tree.fit(x, residual)
         leaves = tree.apply(x)
+        leaf_values: dict[int, float] = {}
         update = np.zeros(y.shape, dtype=np.float64)
         for leaf in np.unique(leaves):  # Newton leaf value: sum(y-p) / sum p(1-p)
             mask = leaves == leaf
-            update[mask] = residual[mask].sum() / np.maximum((p[mask] * (1.0 - p[mask])).sum(), 1e-12)
+            value = residual[mask].sum() / np.maximum((p[mask] * (1.0 - p[mask])).sum(), 1e-12)
+            leaf_values[int(leaf)] = float(value)
+            update[mask] = value
         f += learning_rate * update  # accumulate in log-odds space
-    scratch_p = 1.0 / (1.0 + np.exp(-f))
+        steps.append((tree, leaf_values))
+
+    # Score on the HELD-OUT test set: route each tumour to its leaf and add the stored Newton value.
+    f_test = np.full(data.y_test.shape, init, dtype=np.float64)
+    for tree, leaf_values in steps:
+        test_leaves = tree.apply(data.x_test)
+        f_test += learning_rate * np.array([leaf_values[int(leaf)] for leaf in test_leaves])
+    scratch_p_test = 1.0 / (1.0 + np.exp(-f_test))
 
     sk = GradientBoostingClassifier(
         n_estimators=n_estimators, learning_rate=learning_rate, max_depth=max_depth, random_state=RANDOM_STATE
     )
     sk.fit(x, y)
     return ClassificationMatch(
-        scratch_log_loss=float(log_loss(y, scratch_p)),
-        sklearn_log_loss=float(log_loss(y, sk.predict_proba(x)[:, 1])),
+        scratch_test_log_loss=float(log_loss(data.y_test, scratch_p_test)),
+        sklearn_test_log_loss=float(log_loss(data.y_test, sk.predict_proba(data.x_test)[:, 1])),
+        n_estimators=n_estimators,
     )
 
 
@@ -645,12 +673,17 @@ def main() -> None:
     print(f"  split gain = {xgb_split.gain:.3f}  -> {'KEEP the split' if xgb_split.kept else 'PRUNE the split'}")
     print("  -> w* = -G/(H+lambda) (a regularized Newton step); gain>0 keeps the split, gain<0 prunes it.\n")
 
-    # ---- 7. from-scratch classification (log-loss) == scikit-learn ----
+    # ---- 7. from-scratch classification (log-loss) == scikit-learn, on HELD-OUT test ----
     cls = boost_classification(cancer)
-    print(f"=== 7. From-scratch log-loss boosting == scikit-learn on {cancer.name} ===")
-    print(f"  from-scratch train log-loss : {cls.scratch_log_loss:.5f}")
-    print(f"  scikit-learn train log-loss : {cls.sklearn_log_loss:.5f}")
-    print("  -> y-p residuals + Newton leaf values reproduce GradientBoostingClassifier.\n")
+    print(f"=== 7. From-scratch log-loss boosting == scikit-learn on {cancer.name} (held-out test, "
+          f"{cls.n_estimators} rounds) ===")
+    print(f"  from-scratch test log-loss : {cls.scratch_test_log_loss:.5f}")
+    print(f"  scikit-learn test log-loss : {cls.sklearn_test_log_loss:.5f}")
+    print(f"  gap = {abs(cls.scratch_test_log_loss - cls.sklearn_test_log_loss):.5f}  "
+          f"(both non-trivial, matched to < {CLS_TOLERANCE})")
+    if not np.isclose(cls.scratch_test_log_loss, cls.sklearn_test_log_loss, atol=CLS_TOLERANCE):
+        raise AssertionError("from-scratch and scikit-learn held-out test log-loss must match to tolerance")
+    print("  -> y-p residuals + Newton leaf values reproduce GradientBoostingClassifier on unseen data.\n")
 
     # ---- 8. why GBDTs win tabular: the measured comparison ----
     comp = model_comparison(cal)
