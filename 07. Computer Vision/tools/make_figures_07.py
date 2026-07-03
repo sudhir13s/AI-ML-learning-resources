@@ -39,7 +39,14 @@ import matplotlib.patches as mpatches  # noqa: E402
 import matplotlib.pyplot as plt  # noqa: E402
 import numpy as np  # noqa: E402
 
-from object_detection import box_iou_from_scratch, nms_from_scratch, run_experiment  # noqa: E402
+from object_detection import (  # noqa: E402
+    box_iou_from_scratch,
+    cxcywh_to_xyxy,
+    encode_boxes,
+    nms_from_scratch,
+    run_experiment,
+    xyxy_to_cxcywh,
+)
 
 # ---- Palette (matches the chapter's muted Mermaid classDefs) ------------------------------------
 BLUE = "#3A6B96"  # data / values
@@ -95,11 +102,22 @@ def fig_detections(exp) -> None:
     fig, ax = plt.subplots(figsize=(7.2, 5.4))
     ax.imshow(exp.image.array)
     ax.axis("off")
-    # colour high-confidence detections green, borderline (<0.6) amber -> the honest near-misses
+    # colour high-confidence detections green, borderline (<0.6) amber -> the honest near-misses.
+    # Boxes that share a top edge (e.g. the two overlapping couch boxes) would stack their labels;
+    # nudge each new label down until it clears the labels already placed near the same x.
     order = det.scores.argsort()[::-1]
+    placed: list[tuple[float, float]] = []  # (x, y) of labels already drawn
     for k in order:
         color = GREEN if det.scores[k] >= 0.6 else AMBER
-        _draw_box(ax, det.boxes[k], color, f"{det.names[k]} {det.scores[k]:.2f}")
+        box = det.boxes[k]
+        x0, y0 = float(box[0]), float(box[1])
+        label_y = max(y0 - 4, 2.0)
+        while any(abs(x0 - px) < 90 and abs(label_y - py) < 14 for px, py in placed):
+            label_y += 15.0
+        placed.append((x0, label_y))
+        ax.add_patch(mpatches.Rectangle((x0, y0), box[2] - x0, box[3] - y0, fill=False, edgecolor=color, linewidth=2.0))
+        ax.text(x0, label_y, f"{det.names[k]} {det.scores[k]:.2f}", fontsize=8, color="white", va="bottom",
+                bbox={"boxstyle": "square,pad=0.15", "fc": color, "ec": "none"})
     n_hi = int((det.scores >= 0.6).sum())
     n_lo = int((det.scores < 0.6).sum())
     ax.set_title(
@@ -246,12 +264,78 @@ def fig_iou(exp) -> None:
     _save(fig, f"{IMG_PREFIX}iou.png")
 
 
+# ================================================================================================
+# Figure: anchors + box regression — the spatial picture behind (tx, ty, tw, th)
+# ================================================================================================
+
+
+def fig_anchors() -> None:
+    """Schematic feature-map grid with a real anchor set and a real (tx, ty, tw, th) regression.
+
+    The geometry is schematic (a diagram, not a measured claim), but the anchor boxes and the printed
+    (tx, ty, tw, th) correction are computed with the module's own ``encode_boxes`` on the drawn coordinates,
+    so the arrow is the *actual* regression that lands the best anchor on the object, not a hand-drawn guess.
+    """
+    canvas_w, canvas_h, cell = 600, 400, 100
+    center_x, center_y = 300.0, 200.0  # the chosen feature-map cell's center
+
+    # 3 scales x 3 aspect ratios, all centered at the cell (the standard anchor set)
+    scales = [40.0, 70.0, 110.0]
+    aspects = [0.5, 1.0, 2.0]
+    anchors_cxcywh = np.array(
+        [[center_x, center_y, s * np.sqrt(a), s / np.sqrt(a)] for s in scales for a in aspects]
+    )
+    anchors = cxcywh_to_xyxy(anchors_cxcywh)
+
+    gt = cxcywh_to_xyxy(np.array([[368.0, 176.0, 150.0, 84.0]]))  # a target object box
+    best = int(box_iou_from_scratch(anchors, gt)[:, 0].argmax())  # the anchor the matcher assigns
+    tx, ty, tw, th = (float(v) for v in encode_boxes(gt, anchors[best : best + 1])[0])
+
+    fig, ax = plt.subplots(figsize=(7.8, 5.4))
+    ax.set_xlim(0, canvas_w)
+    ax.set_ylim(canvas_h, 0)  # image-style y-down
+    ax.set_aspect("equal")
+    ax.axis("off")
+
+    for x in range(0, canvas_w + 1, cell):
+        ax.plot([x, x], [0, canvas_h], color=GRID, linewidth=1.0)
+    for y in range(0, canvas_h + 1, cell):
+        ax.plot([0, canvas_w], [y, y], color=GRID, linewidth=1.0)
+
+    for i, bx in enumerate(anchors):
+        is_best = i == best
+        ax.add_patch(mpatches.Rectangle(
+            (bx[0], bx[1]), bx[2] - bx[0], bx[3] - bx[1], fill=False,
+            edgecolor=AMBER if is_best else SLATE, linewidth=2.4 if is_best else 1.0,
+            alpha=1.0 if is_best else 0.45, linestyle="--" if is_best else "-",
+        ))
+    ax.scatter([center_x], [center_y], color=INK, s=20, zorder=5)
+
+    _draw_box(ax, gt[0], GREEN, "ground-truth object", lw=2.6)
+    gcx, gcy = xyxy_to_cxcywh(gt)[0, :2]
+    ax.annotate("", xy=(gcx, gcy), xytext=(center_x, center_y),
+                arrowprops={"arrowstyle": "->", "color": RED, "lw": 2.2})
+    ax.text(210, center_y + 55,
+            f"regression\n$t=({tx:.2f}, {ty:.2f}, {tw:.2f}, {th:.2f})$",
+            fontsize=9.5, color=RED, ha="right", va="center")
+    ax.text(8, 384,
+            "9 anchors (3 scales × 3 aspect ratios) tiled at one cell.  The head picks the best-matching "
+            "anchor (amber, dashed)\nand predicts $t=(t_x,t_y,t_w,t_h)$ to nudge it onto the object — centers "
+            "in anchor-size units, sizes in log-space.",
+            fontsize=8.5, color=INK, va="bottom")
+    ax.set_title("Anchors + box regression: predict a box as a correction to a reference box",
+                 fontsize=11, color=INK)
+    fig.tight_layout()
+    _save(fig, f"{IMG_PREFIX}anchors.png")
+
+
 def main() -> None:
     exp = run_experiment()
     fig_detections(exp)
     fig_nms(exp)
     fig_pr_curve(exp)
     fig_iou(exp)
+    fig_anchors()
     # cross-check that the IoU matrix helper is the one the figures rely on (guards silent drift)
     assert box_iou_from_scratch(exp.iou_pair_boxes[:1], exp.iou_pair_boxes[1:2])[0, 0] >= 0.0
     print("all figures written to", OUT_DIR)

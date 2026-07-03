@@ -157,6 +157,8 @@ $$
 
 where $(a_x, a_y, a_w, a_h)$ and $(g_x, g_y, g_w, g_h)$ are the anchor and ground-truth boxes in **cxcywh** form. Read the design off the formula. The **center offsets** $t_x, t_y$ are measured *in units of the anchor's size*, so the same target works for a big anchor and a small one — scale-invariant. The **sizes** $t_w, t_h$ are predicted in **log-space**, so the head outputs an unbounded real number that maps to a strictly positive width/height ($w = a_w e^{t_w}$) — a box can never collapse to negative size, and "double the width" and "halve the width" are symmetric $\pm\log 2$ targets. Encoding a ground-truth box to $(t_x,t_y,t_w,t_h)$ and decoding it back recovers the box exactly; the code asserts the round-trip to $10^{-14}$. This regression target — a small, well-conditioned correction to a nearby reference box — is *far* easier to learn than absolute pixel coordinates, and it is why anchors exist.
 
+![Anchors and box regression, made spatial. Nine anchors — 3 scales × 3 aspect ratios — are tiled at a single feature-map cell (grey), giving the detector a rack of reference boxes to correct rather than coordinates to invent. The matcher assigns the best-overlapping anchor (amber, dashed) to the object (green), and the regression head predicts a correction $t = (t_x, t_y, t_w, t_h)$ — the red arrow — that nudges that anchor's center and size onto the ground-truth box. The correction shown, $t = (0.44, -0.31, -0.04, 0.08)$, is the *actual* value the module's `encode_boxes` returns for this anchor/object pair, not a hand-drawn guess: the small centre shift (in anchor-size units) and near-zero log-space size deltas say "this anchor is already about the right size and shape — just move it a little."](../images/cv07_anchors.png)
+
 > **Source / derivation:** learned region proposals via a Region Proposal Network over anchors, and the $(t_x, t_y, t_w, t_h)$ box parametrization, are Ren, He, Girshick & Sun, *Faster R-CNN: Towards Real-Time Object Detection with Region Proposal Networks* (2015), building on Girshick, Donahue, Darrell & Malik, *Rich feature hierarchies (R-CNN)* (2014) and Girshick, *Fast R-CNN* (2015). Both in the [references](07-Object-Detection.references.md).
 
 ### Average Precision: scoring the ranked list
@@ -174,17 +176,17 @@ Plotting precision against recall as you descend the ranked list traces the **PR
 
 A worked example makes the arithmetic concrete and pins the implementation. Take **3 ground-truth objects** and **5 detections** whose IoU-matching, ranked by score, gives the sequence **TP, TP, FP, TP, FP**:
 
-| rank | match | cumulative TP | cumulative FP | precision | recall |
-|---|---|---|---|---|---|
-| 1 | TP | 1 | 0 | 1/1 = 1.00 | 1/3 = 0.33 |
-| 2 | TP | 2 | 0 | 2/2 = 1.00 | 2/3 = 0.67 |
-| 3 | FP | 2 | 1 | 2/3 = 0.67 | 0.67 |
-| 4 | TP | 3 | 1 | 3/4 = 0.75 | 3/3 = 1.00 |
-| 5 | FP | 3 | 2 | 3/5 = 0.60 | 1.00 |
+| rank | match | cumulative TP | cumulative FP | precision | recall | interp. precision |
+|---|---|---|---|---|---|---|
+| 1 | TP | 1 | 0 | 1/1 = 1.00 | 1/3 = 0.33 | 1.00 |
+| 2 | TP | 2 | 0 | 2/2 = 1.00 | 2/3 = 0.67 | 1.00 |
+| 3 | FP | 2 | 1 | 2/3 = 0.67 | 0.67 | 1.00 |
+| 4 | TP | 3 | 1 | 3/4 = 0.75 | 3/3 = 1.00 | 0.75 |
+| 5 | FP | 3 | 2 | 3/5 = 0.60 | 1.00 | 0.75 |
 
-With interpolation, the area is $\tfrac{1}{3}(1.0) + \tfrac{1}{3}(1.0) + \tfrac{1}{3}(0.75) = \tfrac{1}{3} + \tfrac{1}{3} + \tfrac{1}{4} = \tfrac{11}{12} \approx 0.9167$. Our from-scratch AP reproduces **exactly 11/12** on this case — a hard `assert` pins it, so a bug in the matching or the integration *raises* rather than shipping a wrong number.
+The **interpolated precision** column is what `_all_point_ap` actually integrates: each raw precision is replaced by the *maximum* precision at any recall $\ge$ this one (the monotone envelope), which is why rank 3's raw 0.67 is lifted to 1.00 and ranks 4–5 sit at 0.75. Summing that envelope over the three distinct recall levels (0.33, 0.67, 1.00), each a step of width $\tfrac{1}{3}$, gives the area $\tfrac{1}{3}(1.0) + \tfrac{1}{3}(1.0) + \tfrac{1}{3}(0.75) = \tfrac{1}{3} + \tfrac{1}{3} + \tfrac{1}{4} = \tfrac{11}{12} \approx 0.9167$. Our from-scratch AP reproduces **exactly 11/12** on this case — a hard `assert` pins it, so a bug in the matching or the integration *raises* rather than shipping a wrong number.
 
-![Average Precision as the area under the precision-recall curve. Left: the worked example (TP,TP,FP,TP,FP) — the raw staircase (slate) and the interpolated envelope whose shaded area is AP = 0.917 = 11/12. Right: the same real cat detections scored two ways — before NMS (red), the 58 duplicate boxes each become a false positive and precision collapses, giving AP = 0.67; after NMS (green), 6 clean detections give AP = 1.00. NMS raises AP by removing duplicate false positives.](../images/cv07_pr_curve.png)
+![Average Precision as the area under the precision-recall curve. Left: the worked example (TP,TP,FP,TP,FP) — the raw staircase (slate) and the interpolated envelope whose shaded area is AP = 0.917 = 11/12. Right: the same real cat detections scored two ways — before NMS (red), 56 of the 58 boxes are false positives (only the 2 boxes matching the two cats are true positives), so precision collapses and AP = 0.67; after NMS (green), 6 clean detections give AP = 1.00. NMS raises AP by removing duplicate false positives.](../images/cv07_pr_curve.png)
 
 Two AP quantities you must distinguish:
 
@@ -217,9 +219,9 @@ Everything above is executable. The companion module — **[object_detection.py]
 
 **The real detector on a real image.** On the COCO photo (640×480), Faster R-CNN returns **7 detections at score ≥ 0.5**: `cat 0.989`, `remote 0.979`, `cat 0.953`, `remote 0.781`, and three borderline `couch 0.541`, `couch 0.540`, `bed 0.538`. The two cats and two remotes are found with high confidence; the couch/bed are the honest low-confidence hedges a score threshold trims.
 
-**NMS, verified on the real boxes.** With the detector's own NMS disabled, the `cat` class produces **44 overlapping boxes**; from-scratch greedy NMS at IoU 0.5 keeps **2**, with kept indices *identical* to `torchvision.ops.nms` (asserted).
+**NMS, verified on the real boxes.** With the detector's own NMS disabled, the `cat` class produces **44 overlapping boxes** (taking the score ≥ 0.30 subset for a legible figure); from-scratch greedy NMS at IoU 0.5 keeps **2**, with kept indices *identical* to `torchvision.ops.nms` (asserted).
 
-**AP, pinned and then measured.** The from-scratch AP reproduces the worked example **exactly (11/12 = 0.9167)**. On the real `cat` detections, scoring the *same* boxes before vs after NMS shows why NMS matters for the score: **pre-NMS 58 detections → AP@0.5 = 0.6667**, **post-NMS 6 detections → AP@0.5 = 1.0000** — NMS lifts AP by **+0.333** by deleting duplicate false positives. Per class, AP@0.5 is `cat 1.00`, `remote 1.00` → **mAP@0.5 = 1.00**, while the stricter **COCO mAP@[.5:.95] = 0.975**. The top cat detection's IoU with its ground-truth box is **0.980**.
+**AP, pinned and then measured.** The from-scratch AP reproduces the worked example **exactly (11/12 = 0.9167)**. On the real `cat` detections, scoring the *same* boxes before vs after NMS shows why NMS matters for the score. Here AP uses the fuller score ≥ 0.05 set (**58** cat boxes — a lower threshold than the NMS figure's 44 so the precision-recall curve extends to low confidence): **pre-NMS 58 detections → AP@0.5 = 0.6667** (56 of the 58 are false positives — only the 2 boxes matching the two cats are true positives — so precision collapses), **post-NMS 6 detections → AP@0.5 = 1.0000** — NMS lifts AP by **+0.333** by deleting those duplicate false positives. Per class, AP@0.5 is `cat 1.00`, `remote 1.00` → **mAP@0.5 = 1.00**, while the stricter **COCO mAP@[.5:.95] = 0.975**. The top cat detection's IoU with its ground-truth box is **0.980**.
 
 ### Reading the module's report
 
