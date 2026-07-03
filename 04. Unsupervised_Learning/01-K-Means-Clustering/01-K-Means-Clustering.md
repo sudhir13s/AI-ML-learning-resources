@@ -6,7 +6,7 @@ level: beginner
 prereqs: ["linear-algebra", "euclidean-distance", "variance"]
 interview_frequency: very-high
 template: concept-deep
-updated: 2026-06-22
+updated: 2026-07-03
 ---
 
 # K-Means: carve the data into k round piles
@@ -40,11 +40,13 @@ That immediately raises a question: *what makes a partition good?* You have to c
 
 ## The objective: within-cluster sum of squares (inertia)
 
-Let's make "compact round blobs" precise. We want to find $k$ cluster centers $\mu_1, \dots, \mu_k \in \mathbb{R}^d$ and an assignment of each point $x_i$ to a cluster $c_i \in \{1, \dots, k\}$ that minimizes the **within-cluster sum of squares (WCSS)**, also called the **inertia** or **distortion**:
+The flag-and-piles picture is the intuition; now let's write down the single number that intuition is secretly minimizing. Making "compact round blobs" precise: we want to find $k$ cluster centers $\mu_1, \dots, \mu_k \in \mathbb{R}^d$ and an assignment of each point $x_i$ to a cluster $c_i \in \{1, \dots, k\}$ that minimizes the **within-cluster sum of squares (WCSS)**, also called the **inertia** or **distortion**:
 
 $$J(\{c_i\}, \{\mu_c\}) \;=\; \sum_{i=1}^{n} \big\lVert x_i - \mu_{c_i} \big\rVert^2 \;=\; \sum_{c=1}^{k} \sum_{i \,:\, c_i = c} \big\lVert x_i - \mu_c \big\rVert^2 .$$
 
 Read it left to right: for every point, take the squared distance to **its own** cluster's center, and add them all up. A small $J$ means every point sits close to its center — tight, compact clusters. A large $J$ means points are stranded far from their centers. **Minimizing $J$ is the entire goal of k-means.**
+
+> **Source / derivation:** the within-cluster sum-of-squares objective and the coordinate-descent view (fix centers → optimal assignment is nearest-centroid; fix assignments → optimal center is the mean) follow *An Introduction to Statistical Learning*, **Ch. 12.4 "Clustering Methods"** (James, Witten, Hastie, Tibshirani & Taylor) and *The Elements of Statistical Learning* **§14.3**. Both are free PDFs, linked in the [references](01-K-Means-Clustering.references.md).
 
 > **Note:** the distance is **squared** Euclidean, and that's not cosmetic — it's the load-bearing choice. Squaring is what makes the optimal center the *mean* (we derive this next), ties k-means to *variance*, and makes it lean toward equal-sized round clusters. Swap squared-$L_2$ for $L_1$ and you get **k-medians** (centers become coordinate-wise medians); swap the mean-center for an actual data point and you get **k-medoids**. The objective you pick *is* the algorithm.
 
@@ -57,6 +59,8 @@ A useful reframing: because $J$ sums squared distances to cluster means, $J \pro
 ## Lloyd's algorithm: alternate assign and update
 
 The algorithm that minimizes $J$ is **Lloyd's algorithm** (1957, published 1982). It's the alternating minimization the tip above hinted at:
+
+> **Source / derivation:** the iterative assign-then-update loop is Stuart **Lloyd's** least-squares quantization for PCM, written at Bell Labs in **1957** and finally published in *IEEE Transactions on Information Theory* in **1982**. The name "k-means" comes from **MacQueen (1967)**, who gave an online (one-point-at-a-time) variant. See Lloyd (1982) and MacQueen (1967) in the [references](01-K-Means-Clustering.references.md); a modern textbook treatment is *An Introduction to Statistical Learning*, **Ch. 12.4** (James, Witten, Hastie, Tibshirani & Taylor).
 
 1. **Initialize** $k$ centroids $\mu_1, \dots, \mu_k$ (random points, or k-means++ — below).
 2. **Assign step.** Hold the centroids fixed. Assign each point to its **nearest** centroid:
@@ -79,9 +83,11 @@ graph TD
     classDef out fill:#2E7A5A,stroke:#1E6A4A,color:#fff
 ```
 
-That's the whole loop. Two cheap steps, alternated. The picture below shows it running on four blobs — watch the X-marked centroids slide into place and the inertia $J$ fall on every panel:
+That's the whole loop. Two cheap steps, alternated. The picture below shows it running on four blobs (a controlled 2-D illustration, so the motion is visible) from a deliberately poor random start — watch the X-marked centroids slide into place and the inertia $J$ fall on every panel:
 
-![Lloyd's algorithm on four blobs across three snapshots — initialization (iter 0), after one assign+update step (iter 1), and at convergence (iter 5). The inertia J printed above each panel falls monotonically: 12,901 → 4,770 → 2,500. The centroids (X marks) start poorly placed and migrate to the true cluster centers.](../images/kmeans_lloyd_iters.png)
+![Lloyd's algorithm on four 2-D blobs across four snapshots — random initialization (iter 0), a plateau where two centroids share one blob (iter 4), the breakthrough as one centroid escapes to the empty blob (iter 5), and convergence (iter 6). The inertia J printed above each panel falls monotonically: 25,329 → 12,694 → 2,161 → 949. The centroids (X marks) start poorly placed and migrate to the true cluster centers.](../images/unsup01_lloyd_iters.png)
+
+*Every number here is measured, not illustrative: this is the from-scratch `KMeansScratch` in [`code/kmeans.py`](code/kmeans.py) on scikit-learn's `make_blobs`, seed 7. Open [the notebook](code/01-K-Means-Clustering.ipynb) to run the same trajectory yourself.*
 
 > **Note:** people call this loop **EM-like**, and the analogy is exact: the assign step is the "E" (figure out which cluster each point belongs to) and the update step is the "M" (re-estimate the parameters given those memberships). We make the connection to Gaussian mixtures and real EM rigorous in a later section — k-means is the *hard-assignment* special case.
 
@@ -119,6 +125,12 @@ Here's the claim every interviewer wants you to defend: *Lloyd's algorithm alway
 
 Chain the two: each full iteration produces $J^{(t+1)} \le J^{(t)}$ — the objective is **monotonically non-increasing**. And $J \ge 0$ is bounded below. A sequence that keeps decreasing but can't go below zero must **settle**. The finishing argument: there are only **finitely many possible assignments** ($k^n$ of them), each iteration's assignment is determined by the centers, and $J$ strictly decreases whenever the assignment changes — so the assignment can change only finitely often. Once it stops changing, the centers stop moving, and we've **converged**. In practice that takes a handful of iterations (often <20), far fewer than the worst-case bound.
 
+This isn't a claim you have to take on faith — it's *executed*. The curve below is the inertia at every iteration of the exact run in the snapshots above; our from-scratch loop `assert`s that $J$ never rises, and here is what that assertion is guarding:
+
+![The inertia J at every Lloyd iteration of the same run as the snapshots: J falls 25,329 → 15,020 → 14,316 → 14,216 → 12,694 → 2,161 → 949 over 6 steps, never once rising. There is a visible plateau at iterations 2–4 (two centroids trapped in one blob) followed by a sharp plunge at iteration 5 when a centroid escapes to the empty blob — a monotone descent to convergence.](../images/unsup01_inertia_curve.png)
+
+Notice the **plateau** at iterations 2–4 followed by the **plunge** at iteration 5: Lloyd's can sit near a poor configuration for several steps and then break through as one centroid finally migrates. The descent is still monotone throughout — it just isn't uniform. That plateau-then-plunge is exactly the local-optimum risk in action: had the trapped centroid *not* found a better home, the run would have converged to a worse $J$. Which is why where we start matters.
+
 > **Note:** "converges" means the *algorithm halts at a fixed point* — it does **not** mean it found the best clustering. It found a **local** optimum of $J$: a partition where no single reassign-then-recenter step helps. There can be many such fixed points, and Lloyd's lands in whichever one its initialization flows to. That gap between *a* local optimum and *the* global optimum is the entire reason initialization matters.
 
 > **Gotcha:** the worst-case number of iterations can be **superpolynomial** (Arthur & Vassilvitskii constructed inputs needing $2^{\Omega(\sqrt n)}$ steps), but those are pathological. On real data with k-means++ seeding, convergence is fast. Don't confuse "exponential worst case" with "slow in practice."
@@ -147,13 +159,17 @@ A bad initialization is easy to construct: drop two centroids inside one true cl
 - **Random restarts.** Run Lloyd's from many random initializations and keep the result with the **lowest $J$**. scikit-learn does this by default — that's what `n_init=10` means: ten independent starts, best inertia wins.
 - **Smart seeding (k-means++).** Spread the initial centers out *on purpose* so they're unlikely to start clumped. This single idea, below, is so effective it's the default initializer everywhere.
 
-![Distribution of final inertia over 60 single-start runs on a six-blob layout: random initialization (red) versus k-means++ (green). Random init scatters widely (mean 2,474, up to 8,903 — those are bad local optima). k-means++ piles tightly near the optimum (mean 743, best 727). Smart seeding lands near the global optimum far more reliably.](../images/kmeans_init.png)
+![Distribution of final inertia over 50 single-start runs each on a controlled 12-cluster blob layout: random initialization (blue) versus k-means++ (green). Random init scatters widely with a heavy upper tail (mean 5,010, std 465, worst 7,025 — those are bad local optima). k-means++ piles tightly near the global optimum (mean 4,722, std 185, best 4,493, worst 5,145). k-means++ is about 2.5x tighter and lands near the optimum far more often.](../images/unsup01_init.png)
 
-The histogram makes the case viscerally: with **random** seeding, most starts land at terrible local optima (inertia in the thousands), and you'd need many restarts to stumble onto a good one. With **k-means++**, nearly every single start lands near the optimum. Same Lloyd's loop afterward — only the starting point differs.
+The histogram makes the case viscerally: with **random** seeding, a fair share of starts land at bad local optima (the long tail out past 6,000), and you'd need several restarts to reliably find the good one. With **k-means++**, nearly every single start lands near the optimum ($J \approx 4{,}493$) — the distribution is about **2.5× tighter** (std 185 vs 465). Same Lloyd's loop afterward — only the starting point differs.
+
+> **Note:** this comparison uses a **12-cluster** layout on purpose. On cleanly-separated *few*-cluster data — like the 3-cultivar Wine set below — random seeding almost always finds the clusters too, so init barely matters there. The cost of a naive start **grows with the number of clusters**: with more centers, a random start is far likelier to strand two seeds in one blob and leave another unseeded. That's the honest framing — k-means++ is insurance whose premium you feel most when $k$ is large.
 
 ---
 
 ## k-means++: spread the seeds with D² sampling
+
+> **Source / derivation:** the $D^2$-weighted seeding rule and the $\mathbb{E}[J_{\text{++}}] \le 8(\ln k + 2)\,J_{\text{OPT}}$ guarantee are from **Arthur & Vassilvitskii (2007)**, *"k-means++: The Advantages of Careful Seeding"* (SODA). The **greedy** variant used in `code/kmeans.py` (and by scikit-learn) — sample $2 + \lfloor\ln k\rfloor$ candidates per step and keep the one that lowers the potential most — is the same paper's practical recommendation. Linked in the [references](01-K-Means-Clustering.references.md).
 
 **k-means++** (Arthur & Vassilvitskii, 2007) seeds the centroids so they start far apart, using a probabilistic rule that's both simple and provably good. Let $D(x)$ be the distance from point $x$ to the **nearest centroid already chosen**. The procedure:
 
@@ -197,9 +213,11 @@ Read it: $s(i) \approx 1$ means $i$ is much closer to its own cluster than to an
 
 **4. Davies–Bouldin index.** The average over clusters of each cluster's worst-case ratio of (within-cluster scatter) to (between-cluster separation) with its most-similar neighbor. **Lower is better**, and you pick the $k$ that **minimizes** it.
 
-![Two panels for choosing k on a clean four-blob dataset. Left: the elbow method — inertia J falls steeply through k=4 then flattens, with a visible bend (elbow) circled at k=4. Right: the mean silhouette score, which peaks (not bends) at k=4 with s=0.791. Both methods independently select the true k=4.](../images/kmeans_elbow_silhouette.png)
+![Two panels for choosing k on the real Wine dataset (178 wines, 13 standardized features). Left: the elbow method — inertia J falls steeply through k=3 then flattens, with the bend (elbow) circled at k=3. Right: the mean silhouette score, which peaks (not bends) at k=3 with s=0.285. Both methods independently select k=3 — the true number of Wine cultivars.](../images/unsup01_elbow_silhouette.png)
 
-On a clean four-blob dataset both methods agree: the elbow bends at $k=4$ and the silhouette **peaks** at $k=4$ ($s=0.791$). Note the difference in *shape* you're hunting — the elbow is a **bend** in a monotone-falling curve (somewhat subjective), while the silhouette is an actual **maximum** (less ambiguous). When they disagree, trust the silhouette and your knowledge of the domain.
+This is measured on **real data** — standardized Wine, whose 178 samples are three cultivars — not a toy. Both methods agree: the elbow bends at $k=3$ (inertia $1{,}659 \to 1{,}278 \to 1{,}175$: a steep drop to 3, then a flattening) and the silhouette **peaks** at $k=3$ ($s=0.285$). Note the difference in *shape* you're hunting — the elbow is a **bend** in a monotone-falling curve (somewhat subjective), while the silhouette is an actual **maximum** (less ambiguous). Both landing on the true cultivar count $k=3$, with an adjusted Rand index of **0.897** against the real labels (printed by the module and the notebook), is a genuinely strong result for a purely unsupervised method. When they disagree, trust the silhouette and your knowledge of the domain.
+
+> **Gotcha:** clean agreement like this is not guaranteed on every real dataset. On **Iris** (also 3 species), the silhouette actually peaks at $k=2$, not 3 — because two of its species (*versicolor* and *virginica*) overlap heavily and the geometry genuinely looks like two blobs, not three. That is the honest face of unsupervised learning: the silhouette scores the *geometry*, which need not match your semantic labels. Wine's chemistry happens to separate its cultivars cleanly; Iris's petals do not.
 
 > **Gotcha:** the elbow is genuinely subjective — on messy real data the "bend" is often soft or absent, and two analysts will read it differently. Prefer the **silhouette** (or gap statistic) when you can, because they have an unambiguous optimum rather than a judgment call. And always sanity-check against what you *know* about the domain: the best $k$ is frequently the one that yields **interpretable, actionable** clusters, not the one a curve technically prefers.
 
@@ -218,7 +236,7 @@ Everything above scores a clustering with no ground truth — inertia and silhou
 
 ## Robustness gotchas: empty clusters, outliers, ties
 
-A few operational sharp edges that bite in production:
+A few operational sharp edges that bite in the real world:
 
 - **Empty clusters.** A centroid can end up with **zero** points assigned to it (especially with a bad init or too-large $k$) — and then its mean is undefined ($0/0$). Real implementations handle this by **reseeding** the orphaned centroid, usually onto the point currently *farthest* from its assigned center (the one contributing most to $J$). scikit-learn does this automatically; a from-scratch version must too, or it crashes.
 - **Outliers drag centroids.** Because the centroid is a **mean**, a single far-flung outlier can pull a whole centroid toward it, distorting the cluster. The mean has a breakdown point of $0\%$ — one bad point is enough. If you have outliers, either remove them first, or use **k-medoids/k-medians** (median has a $50\%$ breakdown point and is far more robust).
@@ -251,9 +269,9 @@ Every strength of k-means traces back to one decision: *a cluster is a round blo
 
 And one structural limit on top of those: k-means only ever produces **convex, linearly-separable (Voronoi) partitions** — each cluster is the region closest to its center, so the boundaries between clusters are straight lines (hyperplanes). It **cannot** represent a non-convex shape like a crescent or a ring.
 
-![Four panels showing k-means failing on non-spherical structure. Top row: two interleaving moons — the TRUE clusters are the two crescents, but k-means (k=2) cuts straight across both, splitting each moon. Bottom row: three anisotropic (sheared, stretched) blobs — the TRUE clusters are diagonal stripes, but k-means (k=3) carves them into round Voronoi cells that cut across the stripes. K-means assumes round, equal clusters and breaks on curved or stretched structure.](../images/kmeans_failure.png)
+![Two panels showing k-means failing on non-spherical structure, colored by the k-means assignment. Left: two interleaving moons (k=2) — the TRUE clusters are the two crescents, but k-means cuts a straight vertical line across both, splitting each moon; adjusted Rand index vs the truth is only 0.27. Right: three anisotropic (sheared, stretched) blobs (k=3) — the TRUE clusters are diagonal stripes, but k-means carves them into round Voronoi cells that cut across the stripes; ARI 0.66. K-means assumes round, equal clusters and breaks on curved or stretched structure.](../images/unsup01_failure.png)
 
-The figure is the lesson. On the **two moons**, the true clusters are interleaving crescents — non-convex — and k-means slices a straight line through both because it can only draw convex boundaries. On the **anisotropic blobs**, the true clusters are diagonal stripes, but k-means' round-cluster bias carves them into Voronoi cells that cut *across* the stripes. Neither failure is a bug; both are the *direct, predictable consequence* of the spherical-equal-cluster assumption. This is exactly the setup for the next algorithms you learn:
+The figure is the lesson, and the numbers put a scale on it. We *know* the true labels here, so we can score k-means against them with the **adjusted Rand index** (1.0 = perfect recovery, 0 = chance). On the **two moons**, the true clusters are interleaving crescents — non-convex — and k-means slices a straight line through both because it can only draw convex boundaries: **ARI = 0.27**, barely above chance. On the **anisotropic blobs**, the true clusters are diagonal stripes, but k-means' round-cluster bias carves them into Voronoi cells that cut *across* the stripes: **ARI = 0.66** — better, but still far from the ~1.0 it scores on round blobs. Neither failure is a bug; both are the *direct, predictable consequence* of the spherical-equal-cluster assumption. This is exactly the setup for the next algorithms you learn:
 
 - **[DBSCAN](../03-DBSCAN/03-DBSCAN.md)** clusters by *density* and recovers arbitrary shapes (the moons) — and discovers $k$ itself.
 - **[Gaussian Mixture Models](../04-Gaussian-Mixture-Models-and-EM/04-Gaussian-Mixture-Models-and-EM.md)** give each cluster its own *covariance* (shape + orientation), handling the anisotropic blobs.
@@ -333,129 +351,106 @@ Four points: $A(1,1)$, $B(1,2)$, $C(8,8)$, $D(9,8)$, with $k=2$. Bad init: $\mu_
 **Iter 2 — update.** $\mu_1=(1,1.5)$, $\mu_2=(8.5,8)$.
 **Inertia.** $J = [0+0.25] + [0+0.25] + [0.25+0] + [0.25+0] = 1.0$.
 
-$J$ fell **62 → 1.0** in one iteration once the assignment corrected itself — a vivid demonstration of monotonic decrease and of how a poor init can recover (here it did; on harder data it may not). One more iteration leaves assignments unchanged → converged at $J=1.0$. (The Lloyd's figure earlier shows this same $J$-falls-each-step behavior on real blobs: $12{,}901 \to 4{,}770 \to 2{,}500$.)
+$J$ fell **62 → 1.0** in one iteration once the assignment corrected itself — a vivid demonstration of monotonic decrease and of how a poor init can recover (here it did; on harder data it may not). One more iteration leaves assignments unchanged → converged at $J=1.0$. (The Lloyd's and inertia-curve figures earlier show this same $J$-falls-each-step behavior on the 2-D blobs: $25{,}329 \to 12{,}694 \to 2{,}161 \to 949$.)
 
 ### Example 3 — k-means++ vs random init, measured
 
-This is the histogram above, made concrete. On a six-blob layout, run **60 single-start** clusterings each way and record the final inertia:
+This is the histogram above, made concrete. On a controlled **12-cluster** layout, run **50 single-start** clusterings each way and record the final inertia:
 
 | Init | mean $J$ | std | worst $J$ | best $J$ |
 |---|---|---|---|---|
-| random | 2,474 | 2,011 | 8,903 | — |
-| k-means++ | **743** | **127** | 1,720 | **727** |
+| random | 5,010 | 465 | 7,025 | 4,493 |
+| k-means++ | **4,722** | **185** | 5,145 | **4,493** |
 
-Random seeding's huge spread (std 2,011, worst case 8,903) means most single starts land at bad local optima — you'd need many restarts to find the good one. k-means++ is **3.3× lower on average** and **16× tighter** (std 127 vs 2,011): nearly every start lands near the optimum (727). This is the $O(\log k)$ guarantee showing up as a measured distribution — and exactly why `init="k-means++"` is the default.
+Random seeding's wide spread (std 465, worst case 7,025) means a fair share of single starts land at bad local optima — you'd need several restarts to reliably find the good one. k-means++ is lower on average and **about 2.5× tighter** (std 185 vs 465), landing near the optimum (4,493) far more often. This is the $O(\log k)$ guarantee showing up as a measured distribution — and exactly why `init="k-means++"` is the default. (Both schemes *can* reach 4,493 on a lucky start; the difference is how *often* they do.)
 
-### Example 4 — choosing k by elbow + silhouette, measured
+### Example 4 — choosing k by elbow + silhouette on real Wine, measured
 
-On the clean four-blob dataset, sweep $k = 1\dots8$ and measure both inertia and mean silhouette:
+On the standardized **Wine** dataset (178 wines, 13 features, 3 true cultivars), sweep $k = 2\dots7$ and measure both inertia and mean silhouette:
 
-| k | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
-|---|---|---|---|---|---|---|---|---|
-| inertia $J$ | 33,904 | 15,737 | 3,426 | **949** | 856 | 769 | 681 | 593 |
-| silhouette $s$ | — | 0.596 | 0.761 | **0.791** | 0.665 | 0.561 | 0.442 | 0.348 |
+| k | 2 | 3 | 4 | 5 | 6 | 7 |
+|---|---|---|---|---|---|---|
+| inertia $J$ | 1,659 | **1,278** | 1,175 | 1,110 | 1,046 | 982 |
+| silhouette $s$ | 0.259 | **0.285** | 0.260 | 0.202 | 0.237 | 0.204 |
 
-Read the inertia row: the *big* drops are $33{,}904 \to 15{,}737 \to 3{,}426 \to 949$ (through $k=4$), then it nearly flattens ($949 \to 856 \to 769 \dots$) — the **elbow is at $k=4$**. The silhouette row *peaks* at $k=4$ ($s=0.791$) and declines on either side. Both agree: **$k=4$** — the true number of blobs. Notice how each tool reads differently — a **bend** for inertia, a **maximum** for silhouette — but they converge on the same answer.
+Read the inertia row: the *big* drop is $1{,}659 \to 1{,}278$ (to $k=3$), then it nearly flattens ($1{,}278 \to 1{,}175 \to 1{,}110 \dots$) — the **elbow is at $k=3$**. The silhouette row *peaks* at $k=3$ ($s=0.285$) and declines on either side. Both agree: **$k=3$** — the true number of Wine cultivars, recovered with adjusted Rand index **0.897** against the real labels. Notice how each tool reads differently — a **bend** for inertia, a **maximum** for silhouette — but they converge on the same answer, on genuinely real data.
 
 ---
 
 ## Code: implement Lloyd's, verify the theory, match sklearn
 
-A from-scratch k-means that runs Lloyd's loop, **prints $J$ at every iteration to confirm it decreases monotonically**, compares **k-means++ vs random** seeding, picks $k$ by **silhouette**, and checks the result against scikit-learn. Runs on CPU in a second; no GPU.
+Everything above is backed by a **real, runnable** four-file chapter — no pseudocode, no toy stubs:
+
+- **[`code/kmeans.py`](code/kmeans.py)** — the from-scratch `KMeansScratch` (k-means++ and random seeding, assign/update, empty-cluster reseed, `n_init` restarts) plus a `main()` that measures every claim on this page and *asserts* each one. This is the single source of truth for every number here.
+- **[`code/01-K-Means-Clustering.ipynb`](code/01-K-Means-Clustering.ipynb)** — the same story as a 13-step notebook you open and run cell by cell: the objective, the two steps, the mean-is-optimal check, Lloyd's monotone descent, the centroid animation, the scikit-learn match, the init distribution, choosing $k$, and both failure modes.
+- Figures are regenerated from that exact module by **`tools/make_figures_01.py`**.
+
+The **heart** of the module is the Lloyd loop — the two cheap steps, alternated, with the monotonicity `assert` that turns the convergence proof into executed code:
 
 ```python
-"""From-scratch k-means: prove J decreases monotonically, beat random init with
-k-means++, pick k by silhouette, and match sklearn. Verified on Python 3.12, CPU."""
-import numpy as np
-from sklearn.datasets import make_blobs
-from sklearn.cluster import KMeans
-from sklearn.metrics import silhouette_score
+def assign(x, centers):                 # E-step: label each point by its nearest centroid
+    return pairwise_sq_dists(x, centers).argmin(axis=1)
 
-def inertia(X, labels, C):
-    return float(sum(((X[labels == c] - C[c])**2).sum() for c in range(len(C))))
+def update(x, labels, k, old):          # M-step: move each centroid to its members' mean
+    new = old.copy()
+    for c in range(k):
+        members = x[labels == c]
+        if members.size:                # (empty clusters are reseeded elsewhere)
+            new[c] = members.mean(axis=0)
+    return new
 
-def assign(X, C):                       # E-step: nearest centroid
-    d = ((X[:, None, :] - C[None, :, :])**2).sum(-1)
-    return d.argmin(1)
+def inertia(x, labels, centers):        # J = sum_i ||x_i - mu_{c_i}||^2
+    diff = x - centers[labels]
+    return float(np.sum(diff * diff))
 
-def update(X, labels, k, C):            # M-step: cluster means (keep empty centers)
-    return np.array([X[labels == c].mean(0) if (labels == c).any() else C[c]
-                     for c in range(k)])
-
-def kpp_init(X, k, seed):               # k-means++: D^2-weighted seeding
-    r = np.random.default_rng(seed)
-    C = [X[r.integers(len(X))]]
-    for _ in range(k - 1):
-        D2 = ((X[:, None, :] - np.array(C)[None, :, :])**2).sum(-1).min(1)
-        C.append(X[r.choice(len(X), p=D2 / D2.sum())])
-    return np.array(C)
-
-def lloyd(X, k, C, verbose=False):      # full loop; returns labels, centers, J
-    labels = assign(X, C); J_prev = np.inf
-    for it in range(100):
-        J = inertia(X, labels, C)
-        if verbose: print(f"  iter {it:2d}: J = {J:10.1f}")
-        assert J <= J_prev + 1e-9, "J increased — bug!"     # monotonic decrease
-        C_new = update(X, labels, k, C)
-        new_labels = assign(X, C_new)
-        if (new_labels == labels).all() and np.allclose(C_new, C):
-            return labels, C, J                              # converged
-        labels, C, J_prev = new_labels, C_new, J
-    return labels, C, inertia(X, labels, C)
-
-X, _ = make_blobs(n_samples=500, centers=4, cluster_std=1.0, random_state=42)
-
-# 1) J decreases every iteration
-print("Lloyd's from k-means++ seed (J must never rise):")
-_, _, Jpp = lloyd(X, 4, kpp_init(X, 4, 0), verbose=True)
-
-# 2) k-means++ beats random, averaged over seeds
-def mean_J(init, k, n_seeds=20):
-    out = []
-    for s in range(n_seeds):
-        C0 = kpp_init(X, k, s) if init == "kpp" else X[np.random.default_rng(s).choice(len(X), k, False)]
-        out.append(lloyd(X, k, C0)[2])
-    return np.mean(out), np.std(out)
-mr, sr = mean_J("rand", 4); mp, sp = mean_J("kpp", 4)
-print(f"\nfinal J over 20 seeds:  random  mean={mr:8.1f} std={sr:7.1f}")
-print(f"                        k++     mean={mp:8.1f} std={sp:7.1f}   (lower + tighter)")
-
-# 3) pick k by silhouette
-print("\nchoosing k by silhouette:")
-for k in range(2, 7):
-    lab, _, _ = lloyd(X, k, kpp_init(X, k, 0))
-    print(f"  k={k}: silhouette = {silhouette_score(X, lab):.3f}")
-
-# 4) match sklearn
-mine_lab, _, mine_J = lloyd(X, 4, kpp_init(X, 4, 0))
-sk = KMeans(n_clusters=4, n_init=10, random_state=0).fit(X)
-print(f"\nour inertia = {mine_J:.1f}   sklearn inertia = {sk.inertia_:.1f}   (match)")
+def lloyd(x, k, centers):               # alternate until stable; J may never rise
+    labels, prev = assign(x, centers), np.inf
+    while True:
+        j = inertia(x, labels, centers)
+        assert j <= prev + 1e-9, "inertia rose — Lloyd's must be monotone"
+        new_centers = update(x, labels, k, centers)
+        new_labels = assign(x, new_centers)
+        if np.array_equal(new_labels, labels) and np.allclose(new_centers, centers):
+            return labels, centers, j   # converged
+        labels, centers, prev = new_labels, new_centers, j
 ```
 
-Output:
+Running the full module (`python kmeans.py`) prints the measured proof of every claim on this page — on **real Wine**, controlled blobs, and the failure cases:
 
 ```
-Lloyd's from k-means++ seed (J must never rise):
-  iter  0: J =     1900.5
-  iter  1: J =      949.1
-  iter  2: J =      948.9
+=== 1. Lloyd's from a k-means++ seed on 2-D blobs (J must never rise) ===
+  iter  0: J =     1882.6
+  iter  1: J =      948.9
+  converged in 2 iterations; monotone decrease held (asserted).
 
-final J over 20 seeds:  random  mean=  2571.6 std= 2929.7
-                        k++     mean=  1187.7 std=  716.4   (lower + tighter)
+=== 2. Verify from-scratch == scikit-learn on Wine (13 features, standardized) (k=3) ===
+  from-scratch inertia : 1277.928
+  scikit-learn inertia : 1277.928
+  adjusted Rand index  : 1.000  (1.0 = same partition up to a permutation)
 
-choosing k by silhouette:
-  k=2: silhouette = 0.596
-  k=3: silhouette = 0.761
-  k=4: silhouette = 0.791
-  k=5: silhouette = 0.665
-  k=6: silhouette = 0.536
+=== 3. k-means++ vs random seeding on make_blobs (12 clusters, controlled), 50 single starts each ===
+  init            mean J      std    best J   worst J
+  random          5010.0    465.2    4492.9    7025.1
+  k-means++       4721.7    185.2    4492.9    5145.1
 
-our inertia = 948.9   sklearn inertia = 948.9   (match)
+=== 4. Choosing k on Wine (13 features, standardized): inertia (elbow) + silhouette (peak) ===
+     k     inertia   silhouette
+     2      1658.8        0.259
+     3      1277.9        0.285   <- peak
+     4      1175.4        0.260
+     5      1109.5        0.202
+     6      1046.0        0.237
+     7       981.6        0.204
+  adjusted Rand index at k=3 vs the true cultivars: 0.897  (unsupervised, yet close to the labels)
+
+=== 5. Where k-means breaks (ARI vs the true structure; ~1.0 = perfect) ===
+  two moons (k=2)        : ARI = 0.274
+  anisotropic blobs (k=3): ARI = 0.659
 ```
 
-> **Note:** every claim on this page is in that output. **(1)** $J$ falls $1900.5 \to 949.1 \to 948.9$ and then *holds* — monotonic decrease and convergence, with the `assert` guaranteeing it never rises. **(2)** k-means++ averages **1187.7** versus random's **2571.6**, and is **4× tighter** (std 716 vs 2930) — random seeding leaves many starts trapped in bad local optima while k-means++ reliably lands near the optimum. **(3)** the silhouette **peaks at $k=4$** (0.791) — the true cluster count. **(4)** our from-scratch inertia equals sklearn's to the decimal (948.9 = 948.9). The theory isn't aspirational; it's reproducible.
+> **Note:** every claim on this page is in that output. **(1)** on the controlled blobs, $J$ falls $1882.6 \to 948.9$ and then *holds* — monotonic decrease and convergence, with the `assert` guaranteeing it never rises. **(2)** on **real Wine**, our from-scratch inertia equals scikit-learn's to three decimals ($1277.928 = 1277.928$) and the partitions are identical up to a permutation (**ARI = 1.000**) — the from-scratch loop *is* the real algorithm. **(3)** k-means++ is **~2.5× tighter** than random on the 12-cluster layout (std 185 vs 465). **(4)** on Wine the silhouette **peaks at $k=3$** (0.285), the true cultivar count — and that k=3 clustering matches the real labels at **ARI 0.897**. **(5)** k-means **fails honestly** on non-convex (moons, ARI 0.27) and anisotropic (ARI 0.66) structure. The theory isn't aspirational; it's reproducible.
 
-> **Tip:** to feel the failure modes, swap `make_blobs` for `make_moons(noise=0.05)` and rerun — the silhouette will *refuse* to strongly prefer the true $k=2$, because k-means can't represent crescents. That refusal is the algorithm honestly telling you it's the wrong tool. Then try [DBSCAN](../03-DBSCAN/03-DBSCAN.md) on the same data and watch it nail both moons.
+> **Tip:** to feel the failure modes for yourself, open the notebook and swap the moons for `make_moons(noise=0.05)` in the last steps — the silhouette will *refuse* to strongly prefer the true $k=2$, because k-means can't represent crescents. That refusal is the algorithm honestly telling you it's the wrong tool. Then try [DBSCAN](../03-DBSCAN/03-DBSCAN.md) on the same data and watch it nail both moons.
 
 ---
 
