@@ -3,15 +3,16 @@
 This is not a toy. Every number the chapter, the figures, and the notebook show is produced here from
 a real pipeline (``numpy`` + ``scikit-learn``) on the real **Wine** dataset that ships with
 scikit-learn (178 wines, 13 chemical measurements, 3 cultivars). Wine is the canonical scaling
-example precisely because its features live on wildly different scales: ``proline`` ranges over
-~1400 units while ``nonflavanoid_phenols`` ranges over ~0.5 — a **~2,600x** disparity. A distance- or
+example precisely because its features live on wildly different scales: on the training split
+``proline`` ranges over ~1,237 units while ``nonflavanoid_phenols`` ranges over ~0.5 — a **2,474x**
+disparity. A distance- or
 gradient-based model that treats those raw numbers as comparable is, without being told, letting
 ``proline`` alone decide almost everything.
 
 What this module measures (all real, all reproducible from the seed):
 
   * **The problem, quantified.** The share of the average squared Euclidean distance between wines that
-    each feature contributes. On the raw data ``proline`` alone is **~99.8%** of the distance — the
+    each feature contributes. On the raw data ``proline`` alone is **99.7%** of the distance — the
     other twelve measurements are effectively invisible. After standardization every feature
     contributes its fair ~1/13. Nearest-neighbour "closeness" is, before scaling, almost purely
     "closeness in proline".
