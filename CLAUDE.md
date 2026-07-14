@@ -103,11 +103,12 @@ deep home. (Topic-level `README.md`s stay link-only as described above.)
 ## Topics (numbered folders; **zero-padded** `NN. Name` so they sort correctly everywhere, incl. GitHub)
 Ordered by learning progression: 00 Basics · 01 Foundations (+ `Maths for AI-ML/` deep math curriculum) ·
 02 Data-Preprocessing · 03 Supervised · 04 Unsupervised · 05 Deep-Learning · 06 NLP · 07 Computer-Vision ·
-08 Reinforcement-Learning · 09 LLMs · 10 GenAI · 11 RAG-and-LLM-Apps · 12 Agentic-AI ·
-13 Tools-and-Frameworks · 14 MLOps-and-Deployment · 15 Advanced-Research-Math · 16 Neuroscience ·
-17 Frontier-Staying-Current.
+08 Reinforcement-Learning · 09 LLMs · 10 GenAI · 11 Diffusion · 12 Multimodal · 13 Video-Understanding ·
+14 Audio-and-Speech · 15 RAG-and-LLM-Apps · 16 Agentic-AI · 17 Tools-and-Frameworks ·
+18 MLOps-and-Deployment · 19 Advanced-Research-Math · 20 Neuroscience · 21 Frontier-Staying-Current.
+(Renumbered 2026-07-14, decision-10 in the parent store: 11–14 inserted after GenAI, old 11–17 → 15–21.)
 
-Specialization folders (07/13/14) hold deeper *curricula* (what/why/resources by sub-module);
+Specialization folders (07/17/18) hold deeper *curricula* (what/why/resources by sub-module);
 `llm_systems_curriculum.md` is the 14-chapter LLM-systems syllabus. The root `README.md` is the
 master index.
 

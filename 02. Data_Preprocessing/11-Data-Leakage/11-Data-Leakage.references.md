@@ -62,4 +62,4 @@ updated: 2026-07-03
 - Building past-only features so time series don't leak: [08 Date-Time & Cyclical Features](../08-Date-Time-and-Cyclical-Features/08-Date-Time-and-Cyclical-Features.md)
 - Why an inflated score is really an overfitting/generalization story: [00 Basics — 05 Overfitting & Underfitting](../../00.%20Basics/05-Overfitting-and-Underfitting/05-Overfitting-and-Underfitting.md)
 - The concept depth (the *why* of generalization): [AI-ML-intuition 3.07 Bias–Variance & Generalization](../../../AI-ML-intuition/Module_3_Evaluation/3.07_Bias_Variance_and_Generalization.md)
-- Where leakage meets production — train/serve skew: [14 Deployment & MLOps](../../14.%20Deployment_and_MLOps/README.md) · [12 Data & Concept Drift](../../14.%20Deployment_and_MLOps/12-Data-and-Concept-Drift-Detection/README.md)
+- Where leakage meets production — train/serve skew: [14 Deployment & MLOps](../../18.%20Deployment_and_MLOps/README.md) · [12 Data & Concept Drift](../../18.%20Deployment_and_MLOps/12-Data-and-Concept-Drift-Detection/README.md)

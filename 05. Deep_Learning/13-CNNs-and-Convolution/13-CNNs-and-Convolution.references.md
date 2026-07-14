@@ -65,5 +65,5 @@ updated: 2026-07-03
 - Normalization in conv blocks: [11 Normalization](../11-Normalization/11-Normalization.md) (BatchNorm normalizes per channel over batch+space — natural for weight-shared kernels)
 - What made CNNs go deep: [18 Residual / Skip Connections](../18-Residual-Skip-Connections/18-Residual-Skip-Connections.md) (ResNet) · the problem they solve: [06 Vanishing & Exploding Gradients](../06-Vanishing-Exploding-Gradients/06-Vanishing-Exploding-Gradients.md)
 - The CNN-vs-Transformer trade: [15 Attention Mechanism](../15-Attention-Mechanism/15-Attention-Mechanism.md) · forward to [09 LLMs](../../09.%20LLMs/README.md) (ViT and multimodal models)
-- Where CNNs go next: [Computer Vision](../../07.%20Computer%20Vision/README.md) (detection, segmentation, modern backbones) · biological inspiration: [Neuroscience & Brain-Inspired AI](../../16.%20Neuroscience_and_Brain_Inspired_AI/README.md) (Hubel & Wiesel's edge-selective cells → CNN first-layer filters)
+- Where CNNs go next: [Computer Vision](../../07.%20Computer%20Vision/README.md) (detection, segmentation, modern backbones) · biological inspiration: [Neuroscience & Brain-Inspired AI](../../20.%20Neuroscience_and_Brain_Inspired_AI/README.md) (Hubel & Wiesel's edge-selective cells → CNN first-layer filters)
 - Field overview: [Deep Learning](../README.md)
