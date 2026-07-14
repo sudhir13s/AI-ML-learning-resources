@@ -53,11 +53,26 @@ each concept is **two files** (canonical example: [09. LLMs/05-KV-Cache/05-KV-Ca
 
 - **`NN-Concept.md` — the content.** A progressive, intuition-first page written in the voice of a
   researcher-teacher writing a tech blog (style bar = Practitioner-Workflows `RLHF-and-Alignment.md`).
-  Section flow: **Problem / why it was introduced → What it is → Intuition (analogy) → Why it matters
-  → How it works → The math (derived, every symbol defined) → Where/when used → Application
-  (step-by-step playbook) → Code (runnable, verified in `~/.uv/envs/ml-py312`) → Recap & rapid-fire**.
+  **Tiered beat flow (v2, decision-10 in the parent store — the page's `tier` decides which beats it
+  owes; headings stay natural narrative `##` sections, in this order):**
+  - **CORE (every page):** The problem / why it was introduced → What it is → Intuition (analogy) →
+    Why it works / why it matters → How it works → The math (derived, every symbol defined) →
+    Numerical example(s) (minimal scalar → realistic vector → end-to-end trace) → Code (**PyTorch
+    ONLY** — no NumPy/TF variants; runnable, verified in `~/.uv/envs/ml-py312`) → Where it is used —
+    **and where it is NOT** (trade-offs, when-not-to-use) → Production failure modes → Recap &
+    rapid-fire → Related concepts → References.
+  - **STANDARD adds:** **Common misconceptions** (after intuition — consolidates the traps
+    interviewers probe; woven Gotcha callouts stay) and **What-if analysis** (after code — X↑ / X↓ /
+    remove-the-component ablations, each with expected behavior, failure case, and trade-off).
+  - **FLAGSHIP adds:** **Interactive explorer** and **Implementation visualization** (step-player) —
+    each authored as a widget marker (`<!-- EXPLORER: <id> -->` / `<!-- STEP-PLAYER: <id> -->`) plus
+    2–4 lines of spec-fallback prose so the page reads complete with zero renderer support. Never an
+    empty section; a non-applicable beat is omitted entirely.
+  **Related concepts is RENDERED from frontmatter `built_from`/`leads_to` — never authored prose.
+  References is ALWAYS the last section** (the one-line pointer to the companion file).
   Plus: **many woven visuals** (matplotlib PNGs via `tools/` generators + palette mermaid — author is
-  a visual learner, multiple images encouraged, placed at the moment each idea needs one); inline
+  a visual learner, multiple images encouraged, placed at the moment each idea needs one); **no GIFs,
+  ever** — animation stack is animated SVG/CSS → React-driven SVG → Manim muted looping MP4; inline
   **Note / Tip / Gotcha** callouts wherever a point earns one (book-margin style, not bucketed);
   **bold** for emphasis (no highlighter); **no emoji in headings**; keep contextual links inline in
   the body. Generators live in `tools/`; every code block and PNG must actually run/render and be
@@ -70,6 +85,16 @@ each concept is **two files** (canonical example: [09. LLMs/05-KV-Cache/05-KV-Ca
   explainers — Raschka, Olah/Distill, 3Blue1Brown, Karpathy, Lilian Weng, the paper's authors — not
   generic popular tutorials); every link verified. The content page ends with a one-line pointer to
   this companion.
+
+**Frontmatter contract (v2 — field names harmonized with decision-9 / AI-ML-intuition):**
+`id`, `topic`, `parent`, `level`, `tier` (core | standard | flagship), `est_minutes`,
+`built_from` (upstream prereq concepts — **renames the old `prereqs` field**), `leads_to`
+(downstream concepts), `interview_frequency`, `template`, `updated`. The hub hero renders
+difficulty, tier badge, est-minutes, and prereq chips from these fields — never author hero
+content in the body. **Migration is additive:** existing v1 pages stay valid; the tier sweep
+(T-73) and Standard upgrade (T-74) land the new fields/beats without big-bang rewrites. The 20
+gold LLM chapters default to `tier: standard`; the owner-approved Flagship shortlist gets
+`flagship` (pilot: KV-Cache, T-75, which also fixes the explorer/step-player spec format).
 
 This **intentionally inverts** the old "curated links only — don't duplicate depth" rule for
 `concepts/` pages: when a concept has no `AI-ML-intuition` page, its concept page is the canonical
