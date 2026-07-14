@@ -3,10 +3,12 @@ id: "15-rag-and-llm-apps/long-context-vs-rag"
 topic: "Long-Context vs RAG"
 parent: "15-rag-and-llm-apps"
 level: intermediate
-prereqs: ["rag-fundamentals", "long-context-methods"]
+built_from: ["rag-fundamentals", "long-context-methods"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-07-02
+tier: core
+est_minutes: 20
 ---
 
 # Long-Context vs RAG: a cost-and-accuracy decision

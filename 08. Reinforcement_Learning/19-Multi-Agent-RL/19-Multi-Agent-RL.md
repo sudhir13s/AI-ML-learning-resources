@@ -3,9 +3,11 @@ id: "08-rl/multi-agent-rl"
 topic: "Multi-Agent RL"
 parent: "08-reinforcement-learning"
 level: advanced
-prereqs: ["policy-gradients-reinforce", "actor-critic", "continuous-control"]
+built_from: ["policy-gradients-reinforce", "actor-critic", "continuous-control"]
 interview_frequency: medium
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Multi-Agent RL (MARL)

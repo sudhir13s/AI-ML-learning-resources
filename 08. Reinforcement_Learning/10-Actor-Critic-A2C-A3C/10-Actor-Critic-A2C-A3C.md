@@ -3,9 +3,11 @@ id: "08-rl/actor-critic"
 topic: "Actor-Critic (A2C / A3C)"
 parent: "08-reinforcement-learning"
 level: advanced
-prereqs: ["policy-gradients-reinforce", "temporal-difference-learning"]
+built_from: ["policy-gradients-reinforce", "temporal-difference-learning"]
 interview_frequency: high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Actor-Critic (A2C · A3C · GAE)

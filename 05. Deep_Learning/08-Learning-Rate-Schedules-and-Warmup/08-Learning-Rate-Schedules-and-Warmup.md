@@ -3,10 +3,12 @@ id: "05-deep-learning/lr-schedules-warmup"
 topic: "Learning-Rate Schedules & Warmup"
 parent: "05-deep-learning"
 level: intermediate
-prereqs: ["optimizers", "backpropagation", "gradient-descent"]
+built_from: ["optimizers", "backpropagation", "gradient-descent"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-22
+tier: core
+est_minutes: 35
 ---
 
 # Learning-Rate Schedules & Warmup: the step size that should change over time

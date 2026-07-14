@@ -3,9 +3,11 @@ id: "16-agentic-ai/evaluation"
 topic: "Agent Evaluation & Benchmarks"
 parent: "16-agentic-ai"
 level: advanced
-prereqs: ["llm-agents-overview", "code-agents"]
+built_from: ["llm-agents-overview", "code-agents"]
 interview_frequency: high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Agent Evaluation & Benchmarks

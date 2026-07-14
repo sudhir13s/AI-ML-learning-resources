@@ -3,10 +3,12 @@ id: "03-supervised-learning/gradient-boosting"
 topic: "Gradient Boosting (XGBoost · LightGBM · CatBoost)"
 parent: "03-supervised-learning"
 level: intermediate
-prereqs: ["decision-trees", "gradient-descent", "bias-variance"]
+built_from: ["decision-trees", "gradient-descent", "bias-variance"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-07-03
+tier: core
+est_minutes: 55
 ---
 
 # Gradient boosting: turning weak trees into the champion of tabular ML

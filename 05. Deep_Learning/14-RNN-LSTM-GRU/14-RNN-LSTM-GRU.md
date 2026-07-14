@@ -3,10 +3,12 @@ id: "05-deep-learning/rnn-lstm-gru"
 topic: "RNN / LSTM / GRU"
 parent: "05-deep-learning"
 level: intermediate
-prereqs: ["feedforward-networks", "backpropagation", "vanishing-exploding-gradients"]
+built_from: ["feedforward-networks", "backpropagation", "vanishing-exploding-gradients"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-22
+tier: core
+est_minutes: 45
 ---
 
 # RNNs, LSTMs, and GRUs: networks with memory

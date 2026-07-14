@@ -3,9 +3,11 @@ id: "19-advanced-math/statistical-learning-theory"
 topic: "Statistical Learning Theory (PAC Learning)"
 parent: "19-advanced-research-mathematics"
 level: advanced
-prereqs: ["probability", "concentration-inequalities", "supervised-learning"]
+built_from: ["probability", "concentration-inequalities", "supervised-learning"]
 interview_frequency: medium
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Statistical Learning Theory — PAC Learning

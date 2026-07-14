@@ -3,9 +3,11 @@ id: "17-tools-and-frameworks/pytorch"
 topic: "PyTorch (tensors, autograd, nn, training loops)"
 parent: "17-tools-and-frameworks"
 level: intermediate
-prereqs: ["python", "numpy", "neural-networks"]
+built_from: ["python", "numpy", "neural-networks"]
 interview_frequency: very-high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # PyTorch — Tensors · Autograd · nn · Training Loops

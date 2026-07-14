@@ -3,9 +3,11 @@ id: "01-foundations/hypothesis-testing-and-confidence-intervals"
 topic: "Hypothesis Testing & Confidence Intervals"
 parent: "01-foundations"
 level: intermediate
-prereqs: ["01-foundations/lln-and-clt"]
+built_from: ["01-foundations/lln-and-clt"]
 interview_frequency: high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Hypothesis Testing & Confidence Intervals

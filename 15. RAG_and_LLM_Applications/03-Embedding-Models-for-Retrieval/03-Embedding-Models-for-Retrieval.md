@@ -3,10 +3,12 @@ id: "15-rag-and-llm-apps/embedding-models-for-retrieval"
 topic: "Embedding Models for Retrieval"
 parent: "15-rag-and-llm-apps"
 level: intermediate
-prereqs: ["rag-fundamentals", "document-chunking", "sentence-embeddings", "cosine-similarity"]
+built_from: ["rag-fundamentals", "document-chunking", "sentence-embeddings", "cosine-similarity"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-27
+tier: core
+est_minutes: 25
 ---
 
 # Embedding Models for Retrieval: the model that decides what's near what

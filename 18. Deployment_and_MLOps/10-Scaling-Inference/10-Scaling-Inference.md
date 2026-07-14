@@ -3,9 +3,11 @@ id: "18-mlops/scaling-inference"
 topic: "Scaling Inference (autoscaling · GPU · Ray Serve)"
 parent: "18-mlops-and-deployment"
 level: advanced
-prereqs: ["model-serving", "distributed-systems"]
+built_from: ["model-serving", "distributed-systems"]
 interview_frequency: high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Scaling Inference — Autoscaling · GPU · Ray Serve

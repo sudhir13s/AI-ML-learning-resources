@@ -3,9 +3,11 @@ id: "19-advanced-math/differential-geometry-manifolds"
 topic: "Differential Geometry & Manifolds"
 parent: "19-advanced-research-mathematics"
 level: advanced
-prereqs: ["linear-algebra", "multivariable-calculus", "topology"]
+built_from: ["linear-algebra", "multivariable-calculus", "topology"]
 interview_frequency: low
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Differential Geometry & Manifolds

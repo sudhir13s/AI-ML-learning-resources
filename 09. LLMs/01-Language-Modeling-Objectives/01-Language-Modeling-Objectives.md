@@ -3,10 +3,13 @@ id: "09-llms/language-modeling-objectives"
 topic: "Language Modeling Objectives (causal vs masked)"
 parent: "09-llms"
 level: intermediate
-prereqs: ["softmax", "cross-entropy", "transformer-architecture"]
+built_from: ["softmax", "cross-entropy", "transformer-architecture"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-06-26
+tier: standard
+est_minutes: 30
+leads_to: ["pretraining-at-scale"]
 ---
 
 # Language Modeling Objectives: how a model learns language with no labels

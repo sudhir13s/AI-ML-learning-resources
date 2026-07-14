@@ -3,10 +3,12 @@ id: "02-data-preprocessing/feature-scaling"
 topic: "Feature Scaling & Normalization (standardization, min-max, robust — and the models that need them)"
 parent: "02-data-preprocessing"
 level: beginner
-prereqs: ["mean-variance", "distance-metrics", "train-test-split"]
+built_from: ["mean-variance", "distance-metrics", "train-test-split"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-07-03
+tier: core
+est_minutes: 30
 ---
 
 # Feature Scaling & Normalization: putting every feature on the same ruler

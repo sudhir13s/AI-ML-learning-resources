@@ -3,10 +3,12 @@ id: "16-agentic-ai/react"
 topic: "ReAct — Reason + Act"
 parent: "16-agentic-ai"
 level: advanced
-prereqs: ["16-agentic-ai/llm-agents-overview", "09-llms/chain-of-thought-reasoning", "16-agentic-ai/tool-use-and-function-calling"]
+built_from: ["16-agentic-ai/llm-agents-overview", "09-llms/chain-of-thought-reasoning", "16-agentic-ai/tool-use-and-function-calling"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-07-02
+tier: core
+est_minutes: 25
 ---
 
 # ReAct: teaching a language model to think *and* act

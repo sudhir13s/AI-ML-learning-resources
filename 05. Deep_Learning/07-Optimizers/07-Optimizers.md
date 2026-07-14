@@ -3,10 +3,12 @@ id: "05-deep-learning/optimizers"
 topic: "Optimizers (SGD · Momentum · Adam · AdamW · RMSprop)"
 parent: "05-deep-learning"
 level: intermediate
-prereqs: ["backpropagation", "gradient-descent", "calculus"]
+built_from: ["backpropagation", "gradient-descent", "calculus"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-06-22
+tier: core
+est_minutes: 45
 ---
 
 # Optimizers: turning gradients into good weight updates

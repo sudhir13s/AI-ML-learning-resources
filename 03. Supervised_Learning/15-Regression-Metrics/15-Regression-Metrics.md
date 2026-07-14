@@ -3,10 +3,12 @@ id: "03-supervised-learning/regression-metrics"
 topic: "Regression Metrics (MSE · RMSE · MAE · R²)"
 parent: "03-supervised-learning"
 level: beginner
-prereqs: ["linear-regression", "mean-squared-error", "variance"]
+built_from: ["linear-regression", "mean-squared-error", "variance"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-22
+tier: core
+est_minutes: 45
 ---
 
 # Regression metrics: how wrong is a number, and which "wrong" do you care about?

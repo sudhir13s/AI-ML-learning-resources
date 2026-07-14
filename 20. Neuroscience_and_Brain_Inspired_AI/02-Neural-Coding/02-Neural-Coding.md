@@ -3,9 +3,11 @@ id: "20-neuroscience/neural-coding"
 topic: "Neural Coding (rate · temporal · population)"
 parent: "20-neuroscience"
 level: intermediate
-prereqs: ["probability", "information-theory", "biological-neurons"]
+built_from: ["probability", "information-theory", "biological-neurons"]
 interview_frequency: low
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Neural Coding — Rate · Temporal · Population

@@ -3,9 +3,11 @@ id: "19-advanced-math/rkhs"
 topic: "Hilbert Spaces & RKHS (Kernels)"
 parent: "19-advanced-research-mathematics"
 level: advanced
-prereqs: ["functional-analysis", "linear-algebra", "kernel-trick"]
+built_from: ["functional-analysis", "linear-algebra", "kernel-trick"]
 interview_frequency: medium
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Hilbert Spaces & RKHS — the Math of Kernels

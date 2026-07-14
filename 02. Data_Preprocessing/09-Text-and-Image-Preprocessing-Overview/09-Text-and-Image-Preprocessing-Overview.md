@@ -3,9 +3,11 @@ id: "02-data-preprocessing/text-image-overview"
 topic: "Text & Image Preprocessing (overview)"
 parent: "02-data-preprocessing"
 level: beginner
-prereqs: ["python", "numpy"]
+built_from: ["python", "numpy"]
 interview_frequency: medium
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Text & Image Preprocessing — Overview

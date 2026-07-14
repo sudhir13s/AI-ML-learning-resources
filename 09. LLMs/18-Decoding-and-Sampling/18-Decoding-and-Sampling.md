@@ -3,10 +3,13 @@ id: "09-llms/decoding-and-sampling"
 topic: "Decoding & Sampling (greedy · beam · temperature · top-k · top-p)"
 parent: "09-llms"
 level: intermediate
-prereqs: ["language-modeling-objectives", "softmax", "decoder-only-architecture"]
+built_from: ["language-modeling-objectives", "softmax", "decoder-only-architecture"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-06-27
+tier: flagship
+est_minutes: 25
+leads_to: ["llm-evaluation-and-benchmarks"]
 ---
 
 # Decoding & Sampling: turning the next-token distribution into text

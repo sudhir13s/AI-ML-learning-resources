@@ -3,10 +3,12 @@ id: "16-agentic-ai/tool-use-function-calling"
 topic: "Tool Use & Function Calling"
 parent: "16-agentic-ai"
 level: advanced
-prereqs: ["16-agentic-ai/llm-agents-overview", "16-agentic-ai/react", "09-llms/prompting-and-in-context-learning"]
+built_from: ["16-agentic-ai/llm-agents-overview", "16-agentic-ai/react", "09-llms/prompting-and-in-context-learning"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-07-02
+tier: core
+est_minutes: 30
 ---
 
 # Tool Use & Function Calling: give the model a typed API, not a text box

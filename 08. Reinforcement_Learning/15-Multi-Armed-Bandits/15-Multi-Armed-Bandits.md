@@ -3,9 +3,11 @@ id: "08-rl/multi-armed-bandits"
 topic: "Multi-Armed Bandits"
 parent: "08-reinforcement-learning"
 level: intermediate
-prereqs: ["probability", "expectation", "exploration-vs-exploitation"]
+built_from: ["probability", "expectation", "exploration-vs-exploitation"]
 interview_frequency: high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Multi-Armed Bandits

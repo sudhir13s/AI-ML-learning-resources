@@ -3,9 +3,11 @@ id: "21-frontier/survey-papers"
 topic: "Survey Papers (how to use them)"
 parent: "21-frontier"
 level: intermediate
-prereqs: ["how-to-read-papers"]
+built_from: ["how-to-read-papers"]
 interview_frequency: low
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Survey Papers (how to use them)

@@ -3,10 +3,12 @@ id: "01-foundations/singular-value-decomposition"
 topic: "Singular Value Decomposition (SVD)"
 parent: "01-foundations"
 level: intermediate
-prereqs: ["01-foundations/eigenvalues-and-eigenvectors", "01-foundations/norms-inner-products-and-orthogonality"]
+built_from: ["01-foundations/eigenvalues-and-eigenvectors", "01-foundations/norms-inner-products-and-orthogonality"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-07-02
+tier: core
+est_minutes: 25
 ---
 
 # Singular Value Decomposition: the natural axes of any matrix

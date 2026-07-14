@@ -3,9 +3,11 @@ id: "00-basics/jupyter-and-google-colab"
 topic: "Jupyter & Google Colab"
 parent: "00-basics"
 level: beginner
-prereqs: ["python-for-ml"]
+built_from: ["python-for-ml"]
 interview_frequency: low
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Jupyter & Google Colab

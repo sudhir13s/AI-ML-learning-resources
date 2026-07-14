@@ -3,10 +3,12 @@ id: "04-unsupervised-learning/dimensionality-reduction-overview"
 topic: "Dimensionality Reduction — overview (PCA-centric)"
 parent: "04-unsupervised-learning"
 level: intermediate
-prereqs: ["linear-algebra", "eigendecomposition", "variance-covariance", "svd"]
+built_from: ["linear-algebra", "eigendecomposition", "variance-covariance", "svd"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-06-22
+tier: core
+est_minutes: 40
 ---
 
 # Dimensionality Reduction: keeping what matters, dropping the rest

@@ -3,9 +3,11 @@ id: "08-rl/deep-q-networks"
 topic: "Deep Q-Networks (DQN)"
 parent: "08-reinforcement-learning"
 level: advanced
-prereqs: ["q-learning", "deep-learning", "function-approximation"]
+built_from: ["q-learning", "deep-learning", "function-approximation"]
 interview_frequency: very-high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Deep Q-Networks (DQN + variants)

@@ -3,9 +3,11 @@ id: "00-basics/python-for-ml"
 topic: "Python for ML"
 parent: "00-basics"
 level: beginner
-prereqs: []
+built_from: []
 interview_frequency: medium
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Python for ML

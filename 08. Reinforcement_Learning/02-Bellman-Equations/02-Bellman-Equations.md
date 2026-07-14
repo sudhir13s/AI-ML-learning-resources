@@ -3,9 +3,11 @@ id: "08-rl/bellman-equations"
 topic: "Bellman Equations"
 parent: "08-reinforcement-learning"
 level: intermediate
-prereqs: ["markov-decision-processes", "expectation", "recursion"]
+built_from: ["markov-decision-processes", "expectation", "recursion"]
 interview_frequency: very-high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Bellman Equations

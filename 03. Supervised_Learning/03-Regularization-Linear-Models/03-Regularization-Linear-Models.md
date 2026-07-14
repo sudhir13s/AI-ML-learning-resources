@@ -3,10 +3,12 @@ id: "03-supervised-learning/regularization-linear-models"
 topic: "Regularization for Linear Models (Ridge · Lasso · Elastic-Net)"
 parent: "03-supervised-learning"
 level: intermediate
-prereqs: ["linear-regression", "logistic-regression", "bias-variance", "gradient-descent"]
+built_from: ["linear-regression", "logistic-regression", "bias-variance", "gradient-descent"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-06-22
+tier: core
+est_minutes: 40
 ---
 
 # Regularization for Linear Models: shrink the weights, fix the fit

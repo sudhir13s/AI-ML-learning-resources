@@ -3,9 +3,11 @@ id: "01-foundations/lln-and-clt"
 topic: "Law of Large Numbers & the CLT"
 parent: "01-foundations"
 level: intermediate
-prereqs: ["01-foundations/expectation-variance-covariance"]
+built_from: ["01-foundations/expectation-variance-covariance"]
 interview_frequency: high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Law of Large Numbers & the Central Limit Theorem

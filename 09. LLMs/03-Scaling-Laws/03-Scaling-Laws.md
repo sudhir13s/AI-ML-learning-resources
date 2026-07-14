@@ -3,10 +3,13 @@ id: "09-llms/scaling-laws"
 topic: "Scaling Laws (Kaplan → Chinchilla)"
 parent: "09-llms"
 level: advanced
-prereqs: ["pretraining-at-scale", "language-modeling-objectives", "power-laws"]
+built_from: ["pretraining-at-scale", "language-modeling-objectives", "power-laws"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-06-22
+tier: standard
+est_minutes: 45
+leads_to: ["decoder-only-architecture"]
 ---
 
 # Scaling Laws: predicting loss before you spend the money

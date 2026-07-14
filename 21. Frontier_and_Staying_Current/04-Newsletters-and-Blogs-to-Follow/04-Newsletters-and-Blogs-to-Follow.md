@@ -3,9 +3,11 @@ id: "21-frontier/newsletters-and-blogs"
 topic: "Newsletters & Blogs to Follow"
 parent: "21-frontier"
 level: beginner
-prereqs: []
+built_from: []
 interview_frequency: low
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Newsletters & Blogs to Follow

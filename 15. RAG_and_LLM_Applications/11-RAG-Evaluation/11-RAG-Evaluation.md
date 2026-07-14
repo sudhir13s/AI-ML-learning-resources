@@ -3,10 +3,12 @@ id: "15-rag-and-llm-apps/rag-evaluation"
 topic: "RAG Evaluation (RAGAS · faithfulness · groundedness)"
 parent: "15-rag-and-llm-apps"
 level: intermediate
-prereqs: ["rag-fundamentals", "embedding-models-for-retrieval", "re-ranking-cross-encoders"]
+built_from: ["rag-fundamentals", "embedding-models-for-retrieval", "re-ranking-cross-encoders"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-07-02
+tier: core
+est_minutes: 20
 ---
 
 # RAG Evaluation: measure retrieval AND generation

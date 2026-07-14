@@ -3,10 +3,12 @@ id: "00-basics/overfitting-and-underfitting"
 topic: "Overfitting & Underfitting (bias-variance, the U-curve, regularization)"
 parent: "00-basics"
 level: beginner
-prereqs: ["how-models-learn"]
+built_from: ["how-models-learn"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-07-03
+tier: core
+est_minutes: 35
 ---
 
 # Overfitting & Underfitting: scoring 100% on the practice test, failing the real exam

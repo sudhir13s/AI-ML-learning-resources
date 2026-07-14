@@ -2,7 +2,7 @@
 id: "00-getting-started"
 topic: "Getting Started with AI/ML"
 level: beginner
-prereqs: []
+built_from: []
 updated: 2026-06-27
 ---
 

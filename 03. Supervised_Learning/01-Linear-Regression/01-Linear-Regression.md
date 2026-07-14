@@ -3,10 +3,12 @@ id: "03-supervised-learning/linear-regression"
 topic: "Linear Regression"
 parent: "03-supervised-learning"
 level: beginner
-prereqs: ["linear-algebra", "gradient-descent", "calculus"]
+built_from: ["linear-algebra", "gradient-descent", "calculus"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-06-22
+tier: core
+est_minutes: 35
 ---
 
 # Linear regression: the model everything else is built on

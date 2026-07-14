@@ -3,9 +3,11 @@ id: "02-data-preprocessing/encoding-categoricals"
 topic: "Encoding Categorical Variables"
 parent: "02-data-preprocessing"
 level: beginner
-prereqs: ["pandas", "one-hot-encoding"]
+built_from: ["pandas", "one-hot-encoding"]
 interview_frequency: very-high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Encoding Categorical Variables

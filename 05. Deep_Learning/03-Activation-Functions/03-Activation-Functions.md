@@ -3,10 +3,12 @@ id: "05-deep-learning/activation-functions"
 topic: "Activation Functions (ReLU · GELU · sigmoid · tanh · softmax)"
 parent: "05-deep-learning"
 level: beginner
-prereqs: ["feedforward-networks", "calculus"]
+built_from: ["feedforward-networks", "calculus"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-22
+tier: core
+est_minutes: 40
 ---
 
 # Activation functions: the nonlinearity that makes a network a network

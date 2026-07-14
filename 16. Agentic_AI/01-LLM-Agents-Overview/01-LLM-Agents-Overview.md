@@ -3,9 +3,11 @@ id: "16-agentic-ai/llm-agents-overview"
 topic: "LLM Agents — Overview & the Agent Loop"
 parent: "16-agentic-ai"
 level: advanced
-prereqs: ["llms", "prompting-and-in-context-learning"]
+built_from: ["llms", "prompting-and-in-context-learning"]
 interview_frequency: very-high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # LLM Agents — Overview & the Agent Loop

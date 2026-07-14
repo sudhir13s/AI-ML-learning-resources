@@ -3,10 +3,13 @@ id: "09-llms/kv-cache"
 topic: "KV Cache"
 parent: "09-llms"
 level: advanced
-prereqs: ["decoder-only-architecture", "attention", "softmax-attention"]
+built_from: ["decoder-only-architecture", "attention", "softmax-attention"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-06-21
+tier: flagship
+est_minutes: 40
+leads_to: ["efficient-attention-flashattention", "inference-optimization-and-serving"]
 ---
 
 # KV Cache: don't recompute the past

@@ -3,9 +3,11 @@ id: "02-data-preprocessing/data-pipelines"
 topic: "Data Pipelines (sklearn Pipeline · ColumnTransformer)"
 parent: "02-data-preprocessing"
 level: intermediate
-prereqs: ["scaling", "encoding", "imputation", "cross-validation"]
+built_from: ["scaling", "encoding", "imputation", "cross-validation"]
 interview_frequency: high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Data Pipelines (sklearn Pipeline · ColumnTransformer)

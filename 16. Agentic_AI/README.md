@@ -2,7 +2,7 @@
 id: "16-agentic-ai"
 topic: "Agentic AI & Tool Use"
 level: advanced
-prereqs: ["llms"]
+built_from: ["llms"]
 updated: 2026-06-27
 ---
 

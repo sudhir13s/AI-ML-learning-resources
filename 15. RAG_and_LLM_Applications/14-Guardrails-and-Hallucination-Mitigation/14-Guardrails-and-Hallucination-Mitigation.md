@@ -3,10 +3,12 @@ id: "15-rag-and-llm-apps/guardrails-hallucination-mitigation"
 topic: "Guardrails & Hallucination Mitigation (input/output rails · grounding abstention · false-refuse/false-allow)"
 parent: "15-rag-and-llm-apps"
 level: intermediate
-prereqs: ["rag-fundamentals", "rag-evaluation", "citations-and-attribution"]
+built_from: ["rag-fundamentals", "rag-evaluation", "citations-and-attribution"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-07-02
+tier: core
+est_minutes: 20
 ---
 
 # Guardrails & Hallucination Mitigation: sanitize in, ground out, abstain when unsure

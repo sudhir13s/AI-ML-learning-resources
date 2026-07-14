@@ -3,9 +3,11 @@ id: "08-rl/reward-shaping"
 topic: "Reward Shaping"
 parent: "08-reinforcement-learning"
 level: intermediate
-prereqs: ["markov-decision-processes", "q-learning"]
+built_from: ["markov-decision-processes", "q-learning"]
 interview_frequency: medium
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Reward Shaping

@@ -3,10 +3,13 @@ id: "09-llms/quantization"
 topic: "Quantization (GPTQ · AWQ · GGUF · LLM.int8 · NF4)"
 parent: "09-llms"
 level: advanced
-prereqs: ["decoder-only-architecture", "kv-cache", "numerical-precision"]
+built_from: ["decoder-only-architecture", "kv-cache", "numerical-precision"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-26
+tier: flagship
+est_minutes: 30
+leads_to: ["knowledge-distillation"]
 ---
 
 # Quantization: run a 140 GB model on a single GPU

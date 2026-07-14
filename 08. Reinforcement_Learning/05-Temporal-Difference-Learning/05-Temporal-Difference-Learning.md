@@ -3,9 +3,11 @@ id: "08-rl/temporal-difference-learning"
 topic: "Temporal-Difference Learning"
 parent: "08-reinforcement-learning"
 level: intermediate
-prereqs: ["monte-carlo-methods", "bellman-equations"]
+built_from: ["monte-carlo-methods", "bellman-equations"]
 interview_frequency: very-high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Temporal-Difference Learning

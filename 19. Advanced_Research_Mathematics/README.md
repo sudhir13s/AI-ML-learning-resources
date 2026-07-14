@@ -2,7 +2,7 @@
 id: "19-advanced-research-mathematics"
 topic: "Advanced Research Mathematics"
 level: advanced
-prereqs: ["foundations"]
+built_from: ["foundations"]
 updated: 2026-06-27
 ---
 

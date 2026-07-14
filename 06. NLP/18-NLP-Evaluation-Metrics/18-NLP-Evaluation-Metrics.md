@@ -3,10 +3,12 @@ id: "06-nlp/evaluation-metrics"
 topic: "NLP Evaluation Metrics (BLEU · ROUGE · METEOR · chrF · perplexity · BERTScore · F1/EM · LLM-as-judge)"
 parent: "06-nlp"
 level: intermediate
-prereqs: ["ngram-language-models", "classification-metrics", "decoding-strategies"]
+built_from: ["ngram-language-models", "classification-metrics", "decoding-strategies"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-27
+tier: core
+est_minutes: 35
 ---
 
 # NLP evaluation metrics: how do we know the text is any good?

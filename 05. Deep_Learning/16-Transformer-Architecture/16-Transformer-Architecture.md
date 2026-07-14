@@ -3,10 +3,12 @@ id: "05-deep-learning/transformer"
 topic: "Transformer Architecture"
 parent: "05-deep-learning"
 level: intermediate
-prereqs: ["attention", "backpropagation", "layer-normalization", "rnn-lstm-gru"]
+built_from: ["attention", "backpropagation", "layer-normalization", "rnn-lstm-gru"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-06-22
+tier: core
+est_minutes: 55
 ---
 
 # The Transformer: attention is (almost) all you need

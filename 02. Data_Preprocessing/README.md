@@ -2,7 +2,7 @@
 id: "02-data-preprocessing"
 topic: "Data Handling & Feature Engineering"
 level: beginner
-prereqs: ["python", "statistics"]
+built_from: ["python", "statistics"]
 updated: 2026-06-27
 ---
 

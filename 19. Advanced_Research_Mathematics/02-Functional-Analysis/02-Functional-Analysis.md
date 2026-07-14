@@ -3,9 +3,11 @@ id: "19-advanced-math/functional-analysis"
 topic: "Functional Analysis"
 parent: "19-advanced-research-mathematics"
 level: advanced
-prereqs: ["linear-algebra", "real-analysis", "measure-theory"]
+built_from: ["linear-algebra", "real-analysis", "measure-theory"]
 interview_frequency: low
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Functional Analysis — Banach & Operator Theory

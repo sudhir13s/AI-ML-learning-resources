@@ -3,9 +3,11 @@ id: "21-frontier/conferences-and-venues"
 topic: "Key Conferences & Venues"
 parent: "21-frontier"
 level: beginner
-prereqs: []
+built_from: []
 interview_frequency: low
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Key Conferences & Venues

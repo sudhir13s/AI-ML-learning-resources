@@ -3,10 +3,12 @@ id: "06-nlp/contextual-embeddings"
 topic: "Contextual Embeddings (ELMo · BERT)"
 parent: "06-nlp"
 level: intermediate
-prereqs: ["word-embeddings", "transformer-architecture", "attention", "tokenization"]
+built_from: ["word-embeddings", "transformer-architecture", "attention", "tokenization"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-06-22
+tier: core
+est_minutes: 45
 ---
 
 # Contextual embeddings: one word, many vectors

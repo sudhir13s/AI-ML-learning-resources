@@ -3,9 +3,11 @@ id: "18-mlops/cost-optimization"
 topic: "Cost Optimization for ML Systems"
 parent: "18-mlops-and-deployment"
 level: advanced
-prereqs: ["scaling-inference", "model-serving"]
+built_from: ["scaling-inference", "model-serving"]
 interview_frequency: medium
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Cost Optimization for ML Systems

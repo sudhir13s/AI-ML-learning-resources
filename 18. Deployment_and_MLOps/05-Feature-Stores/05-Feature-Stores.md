@@ -3,9 +3,11 @@ id: "18-mlops/feature-stores"
 topic: "Feature Stores (Feast)"
 parent: "18-mlops-and-deployment"
 level: advanced
-prereqs: ["data-and-model-versioning", "feature-engineering"]
+built_from: ["data-and-model-versioning", "feature-engineering"]
 interview_frequency: medium
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Feature Stores — Feast

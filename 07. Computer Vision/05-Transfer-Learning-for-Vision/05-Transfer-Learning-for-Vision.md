@@ -3,9 +3,11 @@ id: "07-computer-vision/transfer-learning-for-vision"
 topic: "Transfer Learning for Vision"
 parent: "07-computer-vision"
 level: intermediate
-prereqs: ["cnns", "classic-cnn-architectures", "image-classification"]
+built_from: ["cnns", "classic-cnn-architectures", "image-classification"]
 interview_frequency: very-high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Transfer Learning for Vision

@@ -3,9 +3,11 @@ id: "01-foundations/matrix-decompositions"
 topic: "Matrix Decompositions (LU · QR · Cholesky)"
 parent: "01-foundations"
 level: intermediate
-prereqs: ["01-foundations/matrices-and-matrix-operations", "01-foundations/norms-inner-products-orthogonality"]
+built_from: ["01-foundations/matrices-and-matrix-operations", "01-foundations/norms-inner-products-orthogonality"]
 interview_frequency: medium
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Matrix Decompositions — LU · QR · Cholesky

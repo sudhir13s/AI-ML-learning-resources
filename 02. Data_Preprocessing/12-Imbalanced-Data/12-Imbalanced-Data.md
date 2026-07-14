@@ -3,9 +3,11 @@ id: "02-data-preprocessing/imbalanced-data"
 topic: "Imbalanced Data (resampling · SMOTE · class weights)"
 parent: "02-data-preprocessing"
 level: intermediate
-prereqs: ["classification-metrics", "train-test-split"]
+built_from: ["classification-metrics", "train-test-split"]
 interview_frequency: very-high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Imbalanced Data

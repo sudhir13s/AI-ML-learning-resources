@@ -3,9 +3,11 @@ id: "19-advanced-math/optimal-transport"
 topic: "Optimal Transport (Wasserstein)"
 parent: "19-advanced-research-mathematics"
 level: advanced
-prereqs: ["convex-analysis-duality", "probability", "linear-programming"]
+built_from: ["convex-analysis-duality", "probability", "linear-programming"]
 interview_frequency: medium
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Optimal Transport — Wasserstein Distances

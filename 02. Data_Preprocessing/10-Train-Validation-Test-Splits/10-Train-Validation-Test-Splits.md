@@ -3,9 +3,11 @@ id: "02-data-preprocessing/data-splits"
 topic: "Train / Validation / Test Splits & Cross-Validation"
 parent: "02-data-preprocessing"
 level: beginner
-prereqs: ["generalization", "bias-variance"]
+built_from: ["generalization", "bias-variance"]
 interview_frequency: very-high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Train / Validation / Test Splits & Cross-Validation

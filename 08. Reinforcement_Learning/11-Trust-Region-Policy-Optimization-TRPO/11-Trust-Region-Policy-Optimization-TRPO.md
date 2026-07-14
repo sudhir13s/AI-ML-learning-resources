@@ -3,9 +3,11 @@ id: "08-rl/trpo"
 topic: "Trust Region Policy Optimization (TRPO)"
 parent: "08-reinforcement-learning"
 level: advanced
-prereqs: ["policy-gradients-reinforce", "actor-critic", "kl-divergence"]
+built_from: ["policy-gradients-reinforce", "actor-critic", "kl-divergence"]
 interview_frequency: medium
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Trust Region Policy Optimization (TRPO)

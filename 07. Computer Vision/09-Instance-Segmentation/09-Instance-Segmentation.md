@@ -3,9 +3,11 @@ id: "07-computer-vision/instance-segmentation"
 topic: "Instance Segmentation (Mask R-CNN)"
 parent: "07-computer-vision"
 level: advanced
-prereqs: ["object-detection", "semantic-segmentation"]
+built_from: ["object-detection", "semantic-segmentation"]
 interview_frequency: high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Instance Segmentation — Mask R-CNN

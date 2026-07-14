@@ -3,10 +3,12 @@ id: "03-supervised-learning/logistic-regression"
 topic: "Logistic Regression"
 parent: "03-supervised-learning"
 level: beginner
-prereqs: ["linear-regression", "sigmoid", "maximum-likelihood", "gradient-descent"]
+built_from: ["linear-regression", "sigmoid", "maximum-likelihood", "gradient-descent"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-06-22
+tier: core
+est_minutes: 35
 ---
 
 # Logistic regression: from a linear score to a calibrated probability

@@ -3,9 +3,11 @@ id: "16-agentic-ai/computer-use"
 topic: "Computer-Use & GUI Agents"
 parent: "16-agentic-ai"
 level: advanced
-prereqs: ["llm-agents-overview", "tool-use-function-calling"]
+built_from: ["llm-agents-overview", "tool-use-function-calling"]
 interview_frequency: medium
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Computer-Use & GUI Agents

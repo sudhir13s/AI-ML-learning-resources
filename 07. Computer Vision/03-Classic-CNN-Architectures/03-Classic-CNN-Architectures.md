@@ -3,9 +3,11 @@ id: "07-computer-vision/classic-cnn-architectures"
 topic: "Classic CNN Architectures (LeNet, AlexNet, VGG, ResNet, Inception, EfficientNet)"
 parent: "07-computer-vision"
 level: intermediate
-prereqs: ["cnns", "pooling-and-receptive-fields", "batch-normalization"]
+built_from: ["cnns", "pooling-and-receptive-fields", "batch-normalization"]
 interview_frequency: very-high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Classic CNN Architectures — LeNet · AlexNet · VGG · ResNet · Inception · EfficientNet

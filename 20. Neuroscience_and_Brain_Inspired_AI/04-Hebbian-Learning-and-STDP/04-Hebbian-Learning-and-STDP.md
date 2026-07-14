@@ -3,9 +3,11 @@ id: "20-neuroscience/hebbian-learning-and-stdp"
 topic: "Hebbian Learning & STDP"
 parent: "20-neuroscience"
 level: advanced
-prereqs: ["biological-neurons", "neural-coding", "linear-algebra"]
+built_from: ["biological-neurons", "neural-coding", "linear-algebra"]
 interview_frequency: low
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Hebbian Learning & STDP

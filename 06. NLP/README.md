@@ -2,7 +2,7 @@
 id: "06-nlp"
 topic: "Natural Language Processing"
 level: intermediate
-prereqs: ["deep-learning"]
+built_from: ["deep-learning"]
 updated: 2026-06-27
 ---
 

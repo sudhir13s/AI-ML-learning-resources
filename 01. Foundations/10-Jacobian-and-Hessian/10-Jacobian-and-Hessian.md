@@ -3,9 +3,11 @@ id: "01-foundations/jacobian-and-hessian"
 topic: "Jacobian & Hessian"
 parent: "01-foundations"
 level: intermediate
-prereqs: ["01-foundations/derivatives-and-gradients", "01-foundations/chain-rule"]
+built_from: ["01-foundations/derivatives-and-gradients", "01-foundations/chain-rule"]
 interview_frequency: high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Jacobian & Hessian

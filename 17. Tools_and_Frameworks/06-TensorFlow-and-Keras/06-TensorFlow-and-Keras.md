@@ -3,9 +3,11 @@ id: "17-tools-and-frameworks/tensorflow-keras"
 topic: "TensorFlow & Keras (graphs, layers, fit/serve)"
 parent: "17-tools-and-frameworks"
 level: intermediate
-prereqs: ["python", "numpy", "neural-networks"]
+built_from: ["python", "numpy", "neural-networks"]
 interview_frequency: high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # TensorFlow & Keras — Graphs · Layers · fit / serve

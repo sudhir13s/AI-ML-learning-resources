@@ -3,10 +3,12 @@ id: "05-deep-learning/vanishing-exploding-gradients"
 topic: "Vanishing / Exploding Gradients & Gradient Clipping"
 parent: "05-deep-learning"
 level: intermediate
-prereqs: ["backpropagation", "activation-functions"]
+built_from: ["backpropagation", "activation-functions"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-22
+tier: core
+est_minutes: 50
 ---
 
 # Vanishing and exploding gradients: why deep networks wouldn't train

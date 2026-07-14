@@ -3,10 +3,12 @@ id: "04-unsupervised-learning/gmm-em"
 topic: "Gaussian Mixture Models & EM"
 parent: "04-unsupervised-learning"
 level: intermediate
-prereqs: ["k-means", "probability", "multivariate-gaussian", "maximum-likelihood"]
+built_from: ["k-means", "probability", "multivariate-gaussian", "maximum-likelihood"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-07-03
+tier: core
+est_minutes: 50
 ---
 
 # Gaussian Mixture Models & EM: soft clustering you can actually reason about

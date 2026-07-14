@@ -3,9 +3,11 @@ id: "21-frontier/model-hubs-and-demos"
 topic: "Open Model Hubs & Demos (Hugging Face / Spaces)"
 parent: "21-frontier"
 level: beginner
-prereqs: []
+built_from: []
 interview_frequency: low
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Open Model Hubs & Demos (Hugging Face / Spaces)

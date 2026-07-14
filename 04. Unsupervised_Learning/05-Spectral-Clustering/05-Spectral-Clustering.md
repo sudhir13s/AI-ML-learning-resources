@@ -3,10 +3,12 @@ id: "04-unsupervised-learning/spectral-clustering"
 topic: "Spectral Clustering"
 parent: "04-unsupervised-learning"
 level: intermediate
-prereqs: ["k-means", "linear-algebra", "eigendecomposition", "graphs"]
+built_from: ["k-means", "linear-algebra", "eigendecomposition", "graphs"]
 interview_frequency: medium
 template: concept-deep
 updated: 2026-06-22
+tier: core
+est_minutes: 55
 ---
 
 # Spectral Clustering: cluster by connectivity, not by distance to a center

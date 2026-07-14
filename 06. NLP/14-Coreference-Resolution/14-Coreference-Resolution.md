@@ -3,10 +3,12 @@ id: "06-nlp/coreference-resolution"
 topic: "Coreference Resolution"
 parent: "06-nlp"
 level: advanced
-prereqs: ["sequence-labeling-pos-ner", "contextual-embeddings", "attention"]
+built_from: ["sequence-labeling-pos-ner", "contextual-embeddings", "attention"]
 interview_frequency: medium
 template: concept-deep
 updated: 2026-06-27
+tier: core
+est_minutes: 45
 ---
 
 # Coreference Resolution: who is "he," and which "it" did you mean?

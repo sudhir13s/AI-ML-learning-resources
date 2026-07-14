@@ -3,10 +3,12 @@ id: "06-nlp/information-retrieval-semantic-search"
 topic: "Information Retrieval & Semantic Search"
 parent: "06-nlp"
 level: advanced
-prereqs: ["bow-tfidf", "sentence-document-embeddings", "k-nearest-neighbors", "vector-similarity"]
+built_from: ["bow-tfidf", "sentence-document-embeddings", "k-nearest-neighbors", "vector-similarity"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-06-22
+tier: core
+est_minutes: 45
 ---
 
 # Information Retrieval & Semantic Search: finding the needle in a billion-document haystack

@@ -3,9 +3,11 @@ id: "19-advanced-math/fourier-analysis-signal-processing"
 topic: "Fourier Analysis & Signal Processing"
 parent: "19-advanced-research-mathematics"
 level: advanced
-prereqs: ["linear-algebra", "complex-numbers", "functional-analysis"]
+built_from: ["linear-algebra", "complex-numbers", "functional-analysis"]
 interview_frequency: low
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Fourier Analysis & Signal Processing

@@ -3,9 +3,11 @@ id: "01-foundations/bayesian-inference"
 topic: "Bayesian Inference (priors, posteriors, MAP)"
 parent: "01-foundations"
 level: advanced
-prereqs: ["01-foundations/probability-and-bayes-theorem", "01-foundations/maximum-likelihood-estimation"]
+built_from: ["01-foundations/probability-and-bayes-theorem", "01-foundations/maximum-likelihood-estimation"]
 interview_frequency: high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Bayesian Inference — priors, posteriors, MAP

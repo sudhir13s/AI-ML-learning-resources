@@ -3,9 +3,11 @@ id: "01-foundations/chain-rule"
 topic: "The Chain Rule (& Backpropagation)"
 parent: "01-foundations"
 level: intermediate
-prereqs: ["01-foundations/derivatives-and-gradients"]
+built_from: ["01-foundations/derivatives-and-gradients"]
 interview_frequency: very-high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # The Chain Rule (& Backpropagation)

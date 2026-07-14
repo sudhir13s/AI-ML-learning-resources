@@ -2,7 +2,7 @@
 id: "04-unsupervised-learning"
 topic: "Unsupervised Learning"
 level: intermediate
-prereqs: ["foundations", "linear-algebra"]
+built_from: ["foundations", "linear-algebra"]
 updated: 2026-06-27
 ---
 

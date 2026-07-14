@@ -3,10 +3,12 @@ id: "03-supervised-learning/bagging"
 topic: "Bagging (Bootstrap Aggregating)"
 parent: "03-supervised-learning"
 level: intermediate
-prereqs: ["decision-trees", "bias-variance", "bootstrap"]
+built_from: ["decision-trees", "bias-variance", "bootstrap"]
 interview_frequency: medium
 template: concept-deep
 updated: 2026-06-22
+tier: core
+est_minutes: 40
 ---
 
 # Bagging: averaging away the variance

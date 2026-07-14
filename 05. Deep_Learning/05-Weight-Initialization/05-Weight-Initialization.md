@@ -3,10 +3,12 @@ id: "05-deep-learning/weight-initialization"
 topic: "Weight Initialization (Xavier/Glorot · He/Kaiming)"
 parent: "05-deep-learning"
 level: intermediate
-prereqs: ["feedforward-networks", "backpropagation", "linear-algebra", "variance-and-expectation"]
+built_from: ["feedforward-networks", "backpropagation", "linear-algebra", "variance-and-expectation"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-22
+tier: core
+est_minutes: 45
 ---
 
 # Weight initialization: the starting point that decides if training works

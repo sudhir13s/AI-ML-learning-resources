@@ -3,9 +3,11 @@ id: "19-advanced-math/rademacher-complexity"
 topic: "Rademacher Complexity & Generalization Bounds"
 parent: "19-advanced-research-mathematics"
 level: advanced
-prereqs: ["statistical-learning-theory", "vc-dimension", "concentration-inequalities"]
+built_from: ["statistical-learning-theory", "vc-dimension", "concentration-inequalities"]
 interview_frequency: medium
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Rademacher Complexity & Generalization Bounds

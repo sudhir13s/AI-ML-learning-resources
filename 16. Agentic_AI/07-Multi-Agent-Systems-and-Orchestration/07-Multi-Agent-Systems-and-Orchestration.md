@@ -3,9 +3,11 @@ id: "16-agentic-ai/multi-agent"
 topic: "Multi-Agent Systems & Orchestration"
 parent: "16-agentic-ai"
 level: advanced
-prereqs: ["llm-agents-overview", "planning"]
+built_from: ["llm-agents-overview", "planning"]
 interview_frequency: high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Multi-Agent Systems & Orchestration

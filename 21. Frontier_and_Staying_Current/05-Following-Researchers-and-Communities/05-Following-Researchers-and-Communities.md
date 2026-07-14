@@ -3,9 +3,11 @@ id: "21-frontier/following-researchers-communities"
 topic: "Following Researchers & Communities"
 parent: "21-frontier"
 level: beginner
-prereqs: []
+built_from: []
 interview_frequency: low
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Following Researchers & Communities

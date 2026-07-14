@@ -3,9 +3,11 @@ id: "10-generative-ai/score-sde"
 topic: "Score-Based & SDE Diffusion"
 parent: "10-generative-ai"
 level: advanced
-prereqs: ["diffusion-ddpm", "gradients", "stochastic-processes", "langevin-dynamics"]
+built_from: ["diffusion-ddpm", "gradients", "stochastic-processes", "langevin-dynamics"]
 interview_frequency: medium
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Score-Based & SDE Diffusion

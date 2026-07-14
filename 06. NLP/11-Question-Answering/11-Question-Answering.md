@@ -3,10 +3,12 @@ id: "06-nlp/question-answering"
 topic: "Question Answering (extractive & generative)"
 parent: "06-nlp"
 level: intermediate
-prereqs: ["contextual-embeddings", "seq2seq-encoder-decoder", "information-retrieval"]
+built_from: ["contextual-embeddings", "seq2seq-encoder-decoder", "information-retrieval"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-27
+tier: core
+est_minutes: 45
 ---
 
 # Question Answering: from finding the span to grounding the answer

@@ -3,10 +3,12 @@ id: "15-rag-and-llm-apps/graphrag"
 topic: "GraphRAG"
 parent: "15-rag-and-llm-apps"
 level: advanced
-prereqs: ["rag-fundamentals", "advanced-rag-parent-doc-fusion-self-rag", "embedding-models-for-retrieval"]
+built_from: ["rag-fundamentals", "advanced-rag-parent-doc-fusion-self-rag", "embedding-models-for-retrieval"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-07-02
+tier: core
+est_minutes: 30
 ---
 
 # GraphRAG: turn the pile of documents into a connected map

@@ -3,9 +3,11 @@ id: "02-data-preprocessing/feature-selection"
 topic: "Feature Selection"
 parent: "02-data-preprocessing"
 level: intermediate
-prereqs: ["correlation", "mutual-information", "regularization"]
+built_from: ["correlation", "mutual-information", "regularization"]
 interview_frequency: high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Feature Selection

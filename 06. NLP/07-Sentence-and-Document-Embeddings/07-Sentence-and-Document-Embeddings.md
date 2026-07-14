@@ -3,10 +3,12 @@ id: "06-nlp/sentence-document-embeddings"
 topic: "Sentence & Document Embeddings"
 parent: "06-nlp"
 level: intermediate
-prereqs: ["word-embeddings", "contextual-embeddings", "vector-similarity", "contrastive-learning"]
+built_from: ["word-embeddings", "contextual-embeddings", "vector-similarity", "contrastive-learning"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-27
+tier: core
+est_minutes: 50
 ---
 
 # Sentence & Document Embeddings: one vector for a whole passage

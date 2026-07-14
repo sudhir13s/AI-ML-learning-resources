@@ -3,10 +3,12 @@ id: "07-computer-vision/image-classification"
 topic: "Image Classification"
 parent: "07-computer-vision"
 level: beginner
-prereqs: ["cnns", "softmax", "cross-entropy"]
+built_from: ["cnns", "softmax", "cross-entropy"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-07-03
+tier: core
+est_minutes: 30
 ---
 
 # Image classification: the applied workflow that reuses what a big model already knows

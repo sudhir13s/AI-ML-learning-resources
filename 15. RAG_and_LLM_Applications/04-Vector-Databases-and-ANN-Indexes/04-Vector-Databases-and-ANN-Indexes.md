@@ -3,10 +3,12 @@ id: "15-rag-and-llm-apps/vector-databases-ann-indexes"
 topic: "Vector Databases & ANN Indexes (HNSW · IVF)"
 parent: "15-rag-and-llm-apps"
 level: intermediate
-prereqs: ["embedding-models-for-retrieval", "cosine-similarity", "k-means-clustering"]
+built_from: ["embedding-models-for-retrieval", "cosine-similarity", "k-means-clustering"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-07-02
+tier: core
+est_minutes: 35
 ---
 
 # Vector Databases & ANN Indexes: searching millions of vectors in milliseconds

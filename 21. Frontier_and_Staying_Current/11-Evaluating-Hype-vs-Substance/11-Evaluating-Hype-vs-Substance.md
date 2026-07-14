@@ -3,9 +3,11 @@ id: "21-frontier/hype-vs-substance"
 topic: "Evaluating Hype vs Substance"
 parent: "21-frontier"
 level: intermediate
-prereqs: ["how-to-read-papers", "model-evaluation-basics"]
+built_from: ["how-to-read-papers", "model-evaluation-basics"]
 interview_frequency: medium
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Evaluating Hype vs Substance

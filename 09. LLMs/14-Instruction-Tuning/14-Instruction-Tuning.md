@@ -3,10 +3,13 @@ id: "09-llms/instruction-tuning"
 topic: "Instruction Tuning"
 parent: "09-llms"
 level: advanced
-prereqs: ["supervised-fine-tuning", "prompting-and-in-context-learning", "language-modeling-objectives"]
+built_from: ["supervised-fine-tuning", "prompting-and-in-context-learning", "language-modeling-objectives"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-27
+tier: standard
+est_minutes: 25
+leads_to: ["rlhf-and-dpo"]
 ---
 
 # Instruction Tuning: teach the meta-skill, not the task

@@ -3,9 +3,11 @@ id: "07-computer-vision/data-augmentation"
 topic: "Data Augmentation"
 parent: "07-computer-vision"
 level: beginner
-prereqs: ["image-classification", "regularization"]
+built_from: ["image-classification", "regularization"]
 interview_frequency: high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Data Augmentation

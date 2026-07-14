@@ -3,10 +3,12 @@ id: "05-deep-learning/hyperparameter-tuning"
 topic: "Hyperparameter Tuning"
 parent: "05-deep-learning"
 level: intermediate
-prereqs: ["optimizers", "lr-schedules-warmup", "regularization", "cross-validation"]
+built_from: ["optimizers", "lr-schedules-warmup", "regularization", "cross-validation"]
 interview_frequency: medium
 template: concept-deep
 updated: 2026-06-22
+tier: core
+est_minutes: 35
 ---
 
 # Hyperparameter tuning: searching the knobs that gradient descent can't

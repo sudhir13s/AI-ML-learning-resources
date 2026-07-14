@@ -3,10 +3,12 @@ id: "05-deep-learning/regularization"
 topic: "Regularization (weight decay · early stopping · augmentation · mixup · label smoothing · dropout · implicit)"
 parent: "05-deep-learning"
 level: intermediate
-prereqs: ["loss-functions", "optimizers", "bias-variance"]
+built_from: ["loss-functions", "optimizers", "bias-variance"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-22
+tier: core
+est_minutes: 55
 ---
 
 # Regularization: making a deep network generalize instead of memorize

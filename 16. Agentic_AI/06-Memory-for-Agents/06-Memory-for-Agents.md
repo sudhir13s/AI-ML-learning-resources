@@ -3,9 +3,11 @@ id: "16-agentic-ai/memory"
 topic: "Memory for Agents (short- & long-term)"
 parent: "16-agentic-ai"
 level: advanced
-prereqs: ["llm-agents-overview"]
+built_from: ["llm-agents-overview"]
 interview_frequency: high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Memory for Agents (short- & long-term)

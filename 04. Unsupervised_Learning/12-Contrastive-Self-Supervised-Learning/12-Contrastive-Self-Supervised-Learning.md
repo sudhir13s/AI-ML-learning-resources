@@ -3,10 +3,12 @@ id: "04-unsupervised-learning/contrastive-self-supervised"
 topic: "Contrastive / Self-Supervised Learning"
 parent: "04-unsupervised-learning"
 level: advanced
-prereqs: ["neural-networks", "embeddings", "cross-entropy", "data-augmentation", "softmax"]
+built_from: ["neural-networks", "embeddings", "cross-entropy", "data-augmentation", "softmax"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-22
+tier: core
+est_minutes: 40
 ---
 
 # Contrastive / Self-Supervised Learning: invent the labels

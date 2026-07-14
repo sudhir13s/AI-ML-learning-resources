@@ -2,7 +2,7 @@
 id: "05-deep-learning"
 topic: "Deep Learning"
 level: intermediate
-prereqs: ["linear-algebra", "calculus", "python", "machine-learning-basics"]
+built_from: ["linear-algebra", "calculus", "python", "machine-learning-basics"]
 updated: 2026-06-27
 ---
 

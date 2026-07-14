@@ -3,9 +3,11 @@ id: "18-mlops/ml-lifecycle-and-mlops-maturity"
 topic: "ML Lifecycle & MLOps Maturity"
 parent: "18-mlops-and-deployment"
 level: intermediate
-prereqs: ["software-engineering", "ml-basics"]
+built_from: ["software-engineering", "ml-basics"]
 interview_frequency: high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # ML Lifecycle & MLOps Maturity

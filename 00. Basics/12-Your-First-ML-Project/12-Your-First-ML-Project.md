@@ -3,9 +3,11 @@ id: "00-basics/your-first-ml-project"
 topic: "Your First ML Project (end-to-end with scikit-learn)"
 parent: "00-basics"
 level: beginner
-prereqs: ["how-models-learn", "pandas-essentials", "numpy-essentials"]
+built_from: ["how-models-learn", "pandas-essentials", "numpy-essentials"]
 interview_frequency: medium
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Your First ML Project — End-to-End with scikit-learn

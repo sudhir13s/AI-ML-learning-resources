@@ -3,10 +3,12 @@ id: "03-supervised-learning/decision-trees"
 topic: "Decision Trees"
 parent: "03-supervised-learning"
 level: beginner
-prereqs: ["entropy", "gini-impurity", "supervised-learning-basics"]
+built_from: ["entropy", "gini-impurity", "supervised-learning-basics"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-07-03
+tier: core
+est_minutes: 35
 ---
 
 # Decision trees: learning by asking the right questions

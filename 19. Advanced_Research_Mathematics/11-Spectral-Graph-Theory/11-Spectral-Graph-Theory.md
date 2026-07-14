@@ -3,9 +3,11 @@ id: "19-advanced-math/spectral-graph-theory"
 topic: "Spectral Graph Theory"
 parent: "19-advanced-research-mathematics"
 level: advanced
-prereqs: ["linear-algebra", "eigenvalues", "graph-theory"]
+built_from: ["linear-algebra", "eigenvalues", "graph-theory"]
 interview_frequency: low
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Spectral Graph Theory

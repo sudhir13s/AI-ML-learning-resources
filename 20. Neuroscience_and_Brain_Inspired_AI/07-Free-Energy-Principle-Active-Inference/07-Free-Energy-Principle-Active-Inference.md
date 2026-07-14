@@ -3,9 +3,11 @@ id: "20-neuroscience/free-energy-principle-active-inference"
 topic: "The Free Energy Principle / Active Inference"
 parent: "20-neuroscience"
 level: advanced
-prereqs: ["bayesian-inference", "variational-inference", "predictive-coding"]
+built_from: ["bayesian-inference", "variational-inference", "predictive-coding"]
 interview_frequency: low
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # The Free Energy Principle / Active Inference

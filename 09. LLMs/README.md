@@ -2,7 +2,7 @@
 id: "09-llms"
 topic: "Large Language Models"
 level: advanced
-prereqs: ["nlp", "deep-learning"]
+built_from: ["nlp", "deep-learning"]
 updated: 2026-06-20
 ---
 

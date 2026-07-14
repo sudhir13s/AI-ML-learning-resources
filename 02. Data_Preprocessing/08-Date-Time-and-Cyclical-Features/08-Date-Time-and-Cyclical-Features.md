@@ -3,9 +3,11 @@ id: "02-data-preprocessing/datetime-cyclical"
 topic: "Handling Date/Time & Cyclical Features"
 parent: "02-data-preprocessing"
 level: intermediate
-prereqs: ["pandas", "feature-engineering", "trigonometry"]
+built_from: ["pandas", "feature-engineering", "trigonometry"]
 interview_frequency: medium
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Handling Date/Time & Cyclical Features

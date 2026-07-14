@@ -3,10 +3,12 @@ id: "03-supervised-learning/support-vector-machines"
 topic: "Support Vector Machines (SVM)"
 parent: "03-supervised-learning"
 level: intermediate
-prereqs: ["linear-algebra", "convex-optimization", "kernel-trick"]
+built_from: ["linear-algebra", "convex-optimization", "kernel-trick"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-22
+tier: core
+est_minutes: 40
 ---
 
 # Support vector machines: the widest street, and the kernel trick

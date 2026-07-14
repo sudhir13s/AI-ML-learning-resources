@@ -3,10 +3,13 @@ id: "09-llms/knowledge-distillation"
 topic: "Knowledge Distillation"
 parent: "09-llms"
 level: intermediate
-prereqs: ["softmax", "cross-entropy", "language-modeling-objectives"]
+built_from: ["softmax", "cross-entropy", "language-modeling-objectives"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-26
+tier: standard
+est_minutes: 30
+leads_to: ["lora-and-peft"]
 ---
 
 # Knowledge Distillation: teach a small model to think like a big one

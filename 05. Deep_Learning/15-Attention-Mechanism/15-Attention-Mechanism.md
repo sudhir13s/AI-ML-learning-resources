@@ -3,10 +3,12 @@ id: "05-deep-learning/attention-mechanism"
 topic: "Attention Mechanism"
 parent: "05-deep-learning"
 level: intermediate
-prereqs: ["rnn-lstm-gru", "linear-algebra", "softmax", "loss-functions"]
+built_from: ["rnn-lstm-gru", "linear-algebra", "softmax", "loss-functions"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-06-22
+tier: core
+est_minutes: 50
 ---
 
 # Attention: let every token look at every other token

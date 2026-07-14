@@ -3,9 +3,11 @@ id: "07-computer-vision/pose-estimation"
 topic: "Pose Estimation"
 parent: "07-computer-vision"
 level: advanced
-prereqs: ["cnns", "object-detection", "semantic-segmentation"]
+built_from: ["cnns", "object-detection", "semantic-segmentation"]
 interview_frequency: medium
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Pose Estimation

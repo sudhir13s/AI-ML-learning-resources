@@ -2,7 +2,7 @@
 id: "15-rag-and-llm-apps"
 topic: "RAG & LLM Applications"
 level: advanced
-prereqs: ["llms", "nlp"]
+built_from: ["llms", "nlp"]
 updated: 2026-06-27
 ---
 

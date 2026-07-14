@@ -3,9 +3,11 @@ id: "00-basics/types-of-machine-learning"
 topic: "Types of Machine Learning (supervised / unsupervised / reinforcement)"
 parent: "00-basics"
 level: beginner
-prereqs: ["what-is-ai-ml-dl"]
+built_from: ["what-is-ai-ml-dl"]
 interview_frequency: very-high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Types of Machine Learning — Supervised · Unsupervised · Reinforcement

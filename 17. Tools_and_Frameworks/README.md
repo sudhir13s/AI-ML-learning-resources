@@ -2,7 +2,7 @@
 id: "17-tools-and-frameworks"
 topic: "Tools & Frameworks"
 level: beginner
-prereqs: ["python"]
+built_from: ["python"]
 updated: 2026-06-27
 ---
 

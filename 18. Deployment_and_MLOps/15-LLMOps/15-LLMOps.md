@@ -3,9 +3,11 @@ id: "18-mlops/llmops"
 topic: "LLMOps (eval · guardrails · prompt versioning · cost/latency)"
 parent: "18-mlops-and-deployment"
 level: advanced
-prereqs: ["model-serving", "model-monitoring-and-observability", "llms"]
+built_from: ["model-serving", "model-monitoring-and-observability", "llms"]
 interview_frequency: very-high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # LLMOps — Eval · Guardrails · Prompt Versioning · Cost/Latency

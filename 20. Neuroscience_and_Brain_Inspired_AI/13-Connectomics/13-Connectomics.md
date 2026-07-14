@@ -3,9 +3,11 @@ id: "20-neuroscience/connectomics"
 topic: "Connectomics"
 parent: "20-neuroscience"
 level: intermediate
-prereqs: ["biological-neurons", "graph-theory"]
+built_from: ["biological-neurons", "graph-theory"]
 interview_frequency: low
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Connectomics

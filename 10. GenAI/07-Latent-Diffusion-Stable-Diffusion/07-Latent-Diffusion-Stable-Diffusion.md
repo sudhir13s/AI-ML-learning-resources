@@ -3,9 +3,11 @@ id: "10-generative-ai/latent-diffusion"
 topic: "Latent Diffusion & Stable Diffusion"
 parent: "10-generative-ai"
 level: advanced
-prereqs: ["diffusion-ddpm", "vae", "conditional-cfg", "attention", "clip"]
+built_from: ["diffusion-ddpm", "vae", "conditional-cfg", "attention", "clip"]
 interview_frequency: high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Latent Diffusion & Stable Diffusion

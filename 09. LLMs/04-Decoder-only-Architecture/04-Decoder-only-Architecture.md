@@ -3,10 +3,13 @@ id: "09-llms/decoder-only-architecture"
 topic: "Decoder-only Architecture (the GPT family)"
 parent: "09-llms"
 level: advanced
-prereqs: ["transformer-architecture", "attention", "language-modeling-objectives"]
+built_from: ["transformer-architecture", "attention", "language-modeling-objectives"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-06-26
+tier: standard
+est_minutes: 45
+leads_to: ["kv-cache", "efficient-attention-flashattention"]
 ---
 
 # Decoder-only Architecture: why GPT's shape won

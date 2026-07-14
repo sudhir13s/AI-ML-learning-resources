@@ -3,9 +3,11 @@ id: "17-tools-and-frameworks/data-visualization"
 topic: "Data Visualization (Matplotlib · Seaborn · Plotly)"
 parent: "17-tools-and-frameworks"
 level: beginner
-prereqs: ["python", "numpy", "pandas"]
+built_from: ["python", "numpy", "pandas"]
 interview_frequency: medium
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Data Visualization — Matplotlib · Seaborn · Plotly

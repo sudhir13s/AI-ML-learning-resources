@@ -3,9 +3,11 @@ id: "20-neuroscience/dopamine-and-rl-in-the-brain"
 topic: "Dopamine & Reinforcement Learning in the Brain"
 parent: "20-neuroscience"
 level: advanced
-prereqs: ["temporal-difference-learning", "q-learning", "neural-coding"]
+built_from: ["temporal-difference-learning", "q-learning", "neural-coding"]
 interview_frequency: medium
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Dopamine & Reinforcement Learning in the Brain

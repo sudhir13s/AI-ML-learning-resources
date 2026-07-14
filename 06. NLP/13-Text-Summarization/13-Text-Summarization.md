@@ -3,10 +3,12 @@ id: "06-nlp/text-summarization"
 topic: "Text Summarization (extractive & abstractive)"
 parent: "06-nlp"
 level: intermediate
-prereqs: ["seq2seq-encoder-decoder", "attention", "contextual-embeddings", "decoding-strategies", "tf-idf"]
+built_from: ["seq2seq-encoder-decoder", "attention", "contextual-embeddings", "decoding-strategies", "tf-idf"]
 interview_frequency: medium
 template: concept-deep
 updated: 2026-06-27
+tier: core
+est_minutes: 40
 ---
 
 # Text Summarization: keep the signal, drop the rest

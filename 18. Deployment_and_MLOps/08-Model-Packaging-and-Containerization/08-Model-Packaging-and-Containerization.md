@@ -3,9 +3,11 @@ id: "18-mlops/model-packaging-and-containerization"
 topic: "Model Packaging & Containerization (Docker)"
 parent: "18-mlops-and-deployment"
 level: intermediate
-prereqs: ["reproducibility", "software-engineering"]
+built_from: ["reproducibility", "software-engineering"]
 interview_frequency: high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Model Packaging & Containerization — Docker

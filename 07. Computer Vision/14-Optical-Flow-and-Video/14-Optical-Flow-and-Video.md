@@ -3,9 +3,11 @@ id: "07-computer-vision/optical-flow-and-video"
 topic: "Optical Flow & Video Understanding"
 parent: "07-computer-vision"
 level: advanced
-prereqs: ["image-representation-and-filtering", "cnns"]
+built_from: ["image-representation-and-filtering", "cnns"]
 interview_frequency: medium
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Optical Flow & Video Understanding

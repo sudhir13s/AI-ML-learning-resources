@@ -3,10 +3,13 @@ id: "09-llms/efficient-attention-flashattention"
 topic: "Efficient Attention (FlashAttention)"
 parent: "09-llms"
 level: advanced
-prereqs: ["attention", "softmax-attention", "kv-cache", "gpu-memory-hierarchy"]
+built_from: ["attention", "softmax-attention", "kv-cache", "gpu-memory-hierarchy"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-26
+tier: flagship
+est_minutes: 30
+leads_to: ["long-context-methods", "inference-optimization-and-serving"]
 ---
 
 # FlashAttention: the bottleneck was never the math

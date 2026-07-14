@@ -3,9 +3,11 @@ id: "01-foundations/norms-inner-products-orthogonality"
 topic: "Norms, Inner Products & Orthogonality"
 parent: "01-foundations"
 level: beginner
-prereqs: ["01-foundations/vectors-and-vector-spaces"]
+built_from: ["01-foundations/vectors-and-vector-spaces"]
 interview_frequency: high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Norms, Inner Products & Orthogonality

@@ -3,10 +3,12 @@ id: "03-supervised-learning/k-nearest-neighbors"
 topic: "k-Nearest Neighbors (k-NN)"
 parent: "03-supervised-learning"
 level: beginner
-prereqs: ["distance-metrics", "bias-variance", "feature-scaling"]
+built_from: ["distance-metrics", "bias-variance", "feature-scaling"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-22
+tier: core
+est_minutes: 40
 ---
 
 # k-Nearest Neighbors: let the data speak for itself

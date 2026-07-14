@@ -3,9 +3,11 @@ id: "18-mlops/experiment-tracking"
 topic: "Experiment Tracking (MLflow · Weights & Biases)"
 parent: "18-mlops-and-deployment"
 level: intermediate
-prereqs: ["ml-lifecycle", "reproducibility"]
+built_from: ["ml-lifecycle", "reproducibility"]
 interview_frequency: high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Experiment Tracking — MLflow · Weights & Biases

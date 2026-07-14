@@ -3,9 +3,11 @@ id: "10-generative-ai/normalizing-flows"
 topic: "Normalizing Flows"
 parent: "10-generative-ai"
 level: advanced
-prereqs: ["change-of-variables", "jacobian", "maximum-likelihood", "neural-networks"]
+built_from: ["change-of-variables", "jacobian", "maximum-likelihood", "neural-networks"]
 interview_frequency: medium
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Normalizing Flows — RealNVP · Glow

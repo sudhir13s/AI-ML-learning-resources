@@ -3,10 +3,12 @@ id: "15-rag-and-llm-apps/document-chunking"
 topic: "Document Chunking Strategies"
 parent: "15-rag-and-llm-apps"
 level: intermediate
-prereqs: ["rag-fundamentals", "tokenization", "embeddings", "cosine-similarity"]
+built_from: ["rag-fundamentals", "tokenization", "embeddings", "cosine-similarity"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-27
+tier: core
+est_minutes: 25
 ---
 
 # Document Chunking Strategies: where you cut decides what you can find

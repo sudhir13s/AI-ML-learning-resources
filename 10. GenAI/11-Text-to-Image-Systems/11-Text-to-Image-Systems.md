@@ -3,9 +3,11 @@ id: "10-generative-ai/text-to-image"
 topic: "Text-to-Image Systems"
 parent: "10-generative-ai"
 level: advanced
-prereqs: ["diffusion-ddpm", "latent-diffusion", "conditional-cfg", "clip", "transformers"]
+built_from: ["diffusion-ddpm", "latent-diffusion", "conditional-cfg", "clip", "transformers"]
 interview_frequency: high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Text-to-Image Systems — DALL·E · Imagen · Stable Diffusion

@@ -3,9 +3,11 @@ id: "07-computer-vision/detection-and-segmentation-metrics"
 topic: "Detection & Segmentation Metrics (IoU, mAP)"
 parent: "07-computer-vision"
 level: intermediate
-prereqs: ["object-detection", "precision-recall"]
+built_from: ["object-detection", "precision-recall"]
 interview_frequency: very-high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Detection & Segmentation Metrics — IoU · mAP

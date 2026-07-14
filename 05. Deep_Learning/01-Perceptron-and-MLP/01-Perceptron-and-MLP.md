@@ -3,10 +3,12 @@ id: "05-deep-learning/perceptron-mlp"
 topic: "Perceptron & MLP (Feedforward Networks)"
 parent: "05-deep-learning"
 level: beginner
-prereqs: ["linear-algebra", "calculus", "logistic-regression"]
+built_from: ["linear-algebra", "calculus", "logistic-regression"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-22
+tier: core
+est_minutes: 35
 ---
 
 # Perceptron and MLP: from one neuron to a universal function approximator

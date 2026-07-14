@@ -2,7 +2,7 @@
 id: "20-neuroscience-and-brain-inspired-ai"
 topic: "Neuroscience & Brain-Inspired AI"
 level: advanced
-prereqs: ["foundations", "deep-learning"]
+built_from: ["foundations", "deep-learning"]
 updated: 2026-06-27
 ---
 

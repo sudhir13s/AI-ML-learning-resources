@@ -3,10 +3,13 @@ id: "09-llms/pretraining-at-scale"
 topic: "Pretraining at Scale"
 parent: "09-llms"
 level: advanced
-prereqs: ["language-modeling-objectives", "transformer-architecture", "optimization"]
+built_from: ["language-modeling-objectives", "transformer-architecture", "optimization"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-26
+tier: standard
+est_minutes: 40
+leads_to: ["scaling-laws"]
 ---
 
 # Pretraining at Scale: turning a trillion tokens into a base model

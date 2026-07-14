@@ -3,10 +3,12 @@ id: "15-rag-and-llm-apps/re-ranking-cross-encoders"
 topic: "Re-ranking (Cross-Encoders)"
 parent: "15-rag-and-llm-apps"
 level: intermediate
-prereqs: ["embedding-models-for-retrieval", "hybrid-search", "bi-encoder", "attention"]
+built_from: ["embedding-models-for-retrieval", "hybrid-search", "bi-encoder", "attention"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-07-02
+tier: core
+est_minutes: 35
 ---
 
 # Re-ranking with Cross-Encoders: cheap recall, then expensive precision

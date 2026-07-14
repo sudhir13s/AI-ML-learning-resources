@@ -3,9 +3,11 @@ id: "20-neuroscience/brain-computer-interfaces"
 topic: "Brain-Computer Interfaces (BCIs)"
 parent: "20-neuroscience"
 level: advanced
-prereqs: ["neural-coding", "machine-learning", "signal-processing"]
+built_from: ["neural-coding", "machine-learning", "signal-processing"]
 interview_frequency: low
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Brain-Computer Interfaces (BCIs)

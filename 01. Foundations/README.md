@@ -2,7 +2,7 @@
 id: "01-foundations"
 topic: "Math & Programming Foundations"
 level: beginner
-prereqs: []
+built_from: []
 updated: 2026-06-27
 ---
 

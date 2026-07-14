@@ -3,10 +3,12 @@ id: "04-unsupervised-learning/dbscan"
 topic: "DBSCAN (Density-Based Clustering)"
 parent: "04-unsupervised-learning"
 level: intermediate
-prereqs: ["euclidean-distance", "k-means", "nearest-neighbors"]
+built_from: ["euclidean-distance", "k-means", "nearest-neighbors"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-22
+tier: core
+est_minutes: 50
 ---
 
 # DBSCAN: clustering by density, not by distance to a center

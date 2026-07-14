@@ -3,9 +3,11 @@ id: "20-neuroscience/biologically-plausible-backprop-alternatives"
 topic: "Biologically-Plausible Backprop Alternatives"
 parent: "20-neuroscience"
 level: advanced
-prereqs: ["backpropagation", "hebbian-learning", "predictive-coding"]
+built_from: ["backpropagation", "hebbian-learning", "predictive-coding"]
 interview_frequency: medium
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Biologically-Plausible Backprop Alternatives

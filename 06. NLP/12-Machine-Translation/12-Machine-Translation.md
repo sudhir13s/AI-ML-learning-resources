@@ -3,10 +3,12 @@ id: "06-nlp/machine-translation"
 topic: "Machine Translation"
 parent: "06-nlp"
 level: intermediate
-prereqs: ["seq2seq-encoder-decoder", "attention", "tokenization"]
+built_from: ["seq2seq-encoder-decoder", "attention", "tokenization"]
 interview_frequency: medium
 template: concept-deep
 updated: 2026-06-27
+tier: core
+est_minutes: 35
 ---
 
 # Machine Translation: teaching a machine to say the same thing in another language — and how we *score* whether it did

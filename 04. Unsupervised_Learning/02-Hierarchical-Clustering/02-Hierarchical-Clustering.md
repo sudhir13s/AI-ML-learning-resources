@@ -3,10 +3,12 @@ id: "04-unsupervised-learning/hierarchical-clustering"
 topic: "Hierarchical Clustering"
 parent: "04-unsupervised-learning"
 level: intermediate
-prereqs: ["euclidean-distance", "k-means", "variance"]
+built_from: ["euclidean-distance", "k-means", "variance"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-22
+tier: core
+est_minutes: 40
 ---
 
 # Hierarchical Clustering: build the whole tree, then choose where to cut
