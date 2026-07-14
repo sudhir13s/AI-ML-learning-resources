@@ -54,7 +54,8 @@ each concept is **two files** (canonical example: [09. LLMs/05-KV-Cache/05-KV-Ca
 - **`NN-Concept.md` — the content.** A progressive, intuition-first page written in the voice of a
   researcher-teacher writing a tech blog (style bar = Practitioner-Workflows `RLHF-and-Alignment.md`).
   **Tiered beat flow (v2, decision-10 in the parent store — the page's `tier` decides which beats it
-  owes; headings stay natural narrative `##` sections, in this order):**
+  owes; `##` section headings are CAPITALIZED (owner directive 2026-07-14, e.g. `## THE PROBLEM:
+  DECODING REPEATS ITSELF`; the `#` page title stays natural), in this order):**
   - **CORE (every page):** The problem / why it was introduced → What it is → Intuition (analogy) →
     Why it works / why it matters → How it works → The math (derived, every symbol defined) →
     Numerical example(s) (minimal scalar → realistic vector → end-to-end trace) → Code (**PyTorch
@@ -75,8 +76,20 @@ each concept is **two files** (canonical example: [09. LLMs/05-KV-Cache/05-KV-Ca
   ever** — animation stack is animated SVG/CSS → React-driven SVG → Manim muted looping MP4; inline
   **Note / Tip / Gotcha** callouts wherever a point earns one (book-margin style, not bucketed);
   **bold** for emphasis (no highlighter); **no emoji in headings**; keep contextual links inline in
-  the body. Generators live in `tools/`; every code block and PNG must actually run/render and be
+  the body. **Lead-then-bullets (owner directive 2026-07-14):** every section/block opens with a
+  1–3 line lead sentence, then bullets / sub-sections carry the detail — never a dense multi-line
+  paragraph. Generators live in `tools/`; every code block and PNG must actually run/render and be
   visually verified.
+- **Chaptered concepts (pilot: KV-Cache, T-85, 2026-07-14).** When one page can't hold the depth
+  (main page pushing past ~550 lines with production/kernel/variant material), split into the
+  **main page + numbered chapter files in the SAME topic folder**: `NN-Concept.md` (the tiered
+  core/standard/flagship page — complete on its own) plus `NN-Concept.chK-<slug>.md` depth
+  chapters (each: own frontmatter with `chapter: K` + `chapter_of: <main id>`, CAPS headings,
+  lead-then-bullets, recap + next-chapter link, references pointer last). The main page lists
+  chapters in a `chapters:` frontmatter array AND a `## GOING DEEPER: THE CHAPTERS` section
+  (1-line-per-chapter index). The reader surfaces every chapter `.md` as an ordered lesson under
+  the topic card (main page first). Canonical example: `09. LLMs/05-KV-Cache/` (main + ch1
+  variants · ch2 optimization-ladder · ch3 flashattention-flashdecoding · ch4 production).
 - **`NN-Concept.references.md` — the links.** The curated link library for that concept, kept
   **separate on purpose**: later it doubles as a standalone references list, and it holds **internal**
   links (to our own pages, incl. the content page itself) alongside **external** ones. Flat (one
