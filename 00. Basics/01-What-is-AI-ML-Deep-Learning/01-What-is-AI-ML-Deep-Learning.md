@@ -3,9 +3,11 @@ id: "00-basics/what-is-ai-ml-dl"
 topic: "What is AI / ML / Deep Learning"
 parent: "00-basics"
 level: beginner
-prereqs: []
+built_from: []
 interview_frequency: high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # What is AI · Machine Learning · Deep Learning

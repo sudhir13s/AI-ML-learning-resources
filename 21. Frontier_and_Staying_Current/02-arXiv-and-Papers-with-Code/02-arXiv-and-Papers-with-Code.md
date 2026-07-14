@@ -3,9 +3,11 @@ id: "21-frontier/arxiv-papers-with-code"
 topic: "arXiv & Papers with Code (finding & tracking)"
 parent: "21-frontier"
 level: beginner
-prereqs: []
+built_from: []
 interview_frequency: low
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # arXiv & Papers with Code — Finding & Tracking Research

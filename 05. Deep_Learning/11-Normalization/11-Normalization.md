@@ -3,10 +3,12 @@ id: "05-deep-learning/normalization"
 topic: "Normalization (Batch · Layer · Group · RMS)"
 parent: "05-deep-learning"
 level: intermediate
-prereqs: ["feedforward-networks", "backpropagation", "vanishing-exploding-gradients"]
+built_from: ["feedforward-networks", "backpropagation", "vanishing-exploding-gradients"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-06-22
+tier: core
+est_minutes: 60
 ---
 
 # Normalization: keeping activations in a sane range

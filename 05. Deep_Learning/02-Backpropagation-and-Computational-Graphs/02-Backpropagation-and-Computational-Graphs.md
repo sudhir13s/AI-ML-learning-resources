@@ -3,10 +3,12 @@ id: "05-deep-learning/backpropagation"
 topic: "Backpropagation & Computational Graphs"
 parent: "05-deep-learning"
 level: intermediate
-prereqs: ["calculus", "linear-algebra", "feedforward-networks"]
+built_from: ["calculus", "linear-algebra", "feedforward-networks"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-07-03
+tier: core
+est_minutes: 55
 ---
 
 # Backpropagation: every gradient in one backward pass

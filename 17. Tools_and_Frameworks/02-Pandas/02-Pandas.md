@@ -3,9 +3,11 @@ id: "17-tools-and-frameworks/pandas"
 topic: "Pandas (DataFrames, ETL, time series)"
 parent: "17-tools-and-frameworks"
 level: beginner
-prereqs: ["python", "numpy"]
+built_from: ["python", "numpy"]
 interview_frequency: high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Pandas — DataFrames · ETL · Time Series

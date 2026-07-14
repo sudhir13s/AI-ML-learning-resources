@@ -3,10 +3,12 @@ id: "02-data-preprocessing/data-leakage"
 topic: "Data Leakage (preprocessing, target, and temporal leakage — and the Pipeline that prevents it)"
 parent: "02-data-preprocessing"
 level: intermediate
-prereqs: ["train-test-split", "cross-validation", "pipelines"]
+built_from: ["train-test-split", "cross-validation", "pipelines"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-07-03
+tier: core
+est_minutes: 30
 ---
 
 # Data Leakage: when your model studies with the answer key

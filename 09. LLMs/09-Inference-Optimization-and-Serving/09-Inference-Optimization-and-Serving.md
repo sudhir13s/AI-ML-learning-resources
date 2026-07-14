@@ -3,10 +3,13 @@ id: "09-llms/inference-optimization-and-serving"
 topic: "Inference Optimization & Serving (vLLM · PagedAttention · continuous batching)"
 parent: "09-llms"
 level: advanced
-prereqs: ["kv-cache", "decoder-only-architecture", "efficient-attention-flashattention"]
+built_from: ["kv-cache", "decoder-only-architecture", "efficient-attention-flashattention"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-26
+tier: standard
+est_minutes: 30
+leads_to: ["quantization"]
 ---
 
 # Inference Optimization & Serving: turning a trained model into tokens/second

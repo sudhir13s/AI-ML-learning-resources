@@ -3,9 +3,11 @@ id: "20-neuroscience/memory-systems-hippocampus-replay"
 topic: "Memory Systems (hippocampus · replay · consolidation)"
 parent: "20-neuroscience"
 level: advanced
-prereqs: ["biological-neurons", "hebbian-learning", "reinforcement-learning"]
+built_from: ["biological-neurons", "hebbian-learning", "reinforcement-learning"]
 interview_frequency: low
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Memory Systems — Hippocampus · Replay · Consolidation

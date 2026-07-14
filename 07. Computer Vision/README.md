@@ -2,7 +2,7 @@
 id: "07-computer-vision"
 topic: "Computer Vision"
 level: intermediate
-prereqs: ["deep-learning", "linear-algebra"]
+built_from: ["deep-learning", "linear-algebra"]
 updated: 2026-06-27
 ---
 

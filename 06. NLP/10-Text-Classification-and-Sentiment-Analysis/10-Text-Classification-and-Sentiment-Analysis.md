@@ -3,10 +3,12 @@ id: "06-nlp/text-classification-sentiment"
 topic: "Text Classification & Sentiment Analysis"
 parent: "06-nlp"
 level: intermediate
-prereqs: ["bow-tfidf", "word-embeddings", "naive-bayes", "logistic-regression"]
+built_from: ["bow-tfidf", "word-embeddings", "naive-bayes", "logistic-regression"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-06-22
+tier: core
+est_minutes: 50
 ---
 
 # Text Classification & Sentiment Analysis: assigning a label to a span of text

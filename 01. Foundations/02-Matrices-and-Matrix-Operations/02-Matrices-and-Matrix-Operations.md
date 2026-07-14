@@ -3,9 +3,11 @@ id: "01-foundations/matrices-and-matrix-operations"
 topic: "Matrices & Matrix Operations"
 parent: "01-foundations"
 level: beginner
-prereqs: ["01-foundations/vectors-and-vector-spaces"]
+built_from: ["01-foundations/vectors-and-vector-spaces"]
 interview_frequency: high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Matrices & Matrix Operations

@@ -3,9 +3,11 @@ id: "08-rl/ppo"
 topic: "Proximal Policy Optimization (PPO)"
 parent: "08-reinforcement-learning"
 level: advanced
-prereqs: ["policy-gradients-reinforce", "actor-critic", "trpo"]
+built_from: ["policy-gradients-reinforce", "actor-critic", "trpo"]
 interview_frequency: very-high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Proximal Policy Optimization (PPO)

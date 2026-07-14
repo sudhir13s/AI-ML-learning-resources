@@ -3,9 +3,11 @@ id: "19-advanced-math/measure-theory"
 topic: "Measure Theory & Probability Foundations"
 parent: "19-advanced-research-mathematics"
 level: advanced
-prereqs: ["real-analysis", "probability", "calculus"]
+built_from: ["real-analysis", "probability", "calculus"]
 interview_frequency: low
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Measure Theory & Probability Foundations

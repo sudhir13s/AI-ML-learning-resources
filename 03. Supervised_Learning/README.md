@@ -2,7 +2,7 @@
 id: "03-supervised-learning"
 topic: "Supervised Learning"
 level: intermediate
-prereqs: ["foundations", "data-preprocessing"]
+built_from: ["foundations", "data-preprocessing"]
 updated: 2026-06-27
 ---
 

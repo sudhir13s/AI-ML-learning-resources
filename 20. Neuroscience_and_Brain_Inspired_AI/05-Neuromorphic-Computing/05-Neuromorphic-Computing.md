@@ -3,9 +3,11 @@ id: "20-neuroscience/neuromorphic-computing"
 topic: "Neuromorphic Computing"
 parent: "20-neuroscience"
 level: advanced
-prereqs: ["spiking-neural-networks", "computer-architecture", "neural-coding"]
+built_from: ["spiking-neural-networks", "computer-architecture", "neural-coding"]
 interview_frequency: low
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Neuromorphic Computing

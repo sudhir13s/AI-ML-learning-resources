@@ -3,9 +3,11 @@ id: "02-data-preprocessing/feature-engineering"
 topic: "Feature Engineering"
 parent: "02-data-preprocessing"
 level: intermediate
-prereqs: ["pandas", "domain-knowledge", "transformations"]
+built_from: ["pandas", "domain-knowledge", "transformations"]
 interview_frequency: very-high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Feature Engineering

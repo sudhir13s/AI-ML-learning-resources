@@ -3,9 +3,11 @@ id: "21-frontier/stay-current-routine"
 topic: "Building a Stay-Current Routine"
 parent: "21-frontier"
 level: beginner
-prereqs: []
+built_from: []
 interview_frequency: low
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Building a "Stay-Current" Routine

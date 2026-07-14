@@ -3,9 +3,11 @@ id: "16-agentic-ai/planning"
 topic: "Planning — Task Decomposition & Plan-and-Execute"
 parent: "16-agentic-ai"
 level: advanced
-prereqs: ["llm-agents-overview", "react", "chain-of-thought-reasoning"]
+built_from: ["llm-agents-overview", "react", "chain-of-thought-reasoning"]
 interview_frequency: high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Planning — Task Decomposition & Plan-and-Execute

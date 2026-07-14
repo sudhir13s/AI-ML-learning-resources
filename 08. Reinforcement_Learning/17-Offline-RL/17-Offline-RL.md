@@ -3,9 +3,11 @@ id: "08-rl/offline-rl"
 topic: "Offline RL"
 parent: "08-reinforcement-learning"
 level: advanced
-prereqs: ["q-learning", "policy-gradients-reinforce", "continuous-control"]
+built_from: ["q-learning", "policy-gradients-reinforce", "continuous-control"]
 interview_frequency: medium
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Offline RL (batch RL)

@@ -3,10 +3,12 @@ id: "05-deep-learning/cnns"
 topic: "CNNs & Convolution"
 parent: "05-deep-learning"
 level: intermediate
-prereqs: ["feedforward-networks", "backpropagation", "linear-algebra"]
+built_from: ["feedforward-networks", "backpropagation", "linear-algebra"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-07-03
+tier: core
+est_minutes: 55
 ---
 
 # CNNs and convolution: networks that exploit the structure of images

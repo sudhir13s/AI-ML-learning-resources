@@ -3,9 +3,11 @@ id: "16-agentic-ai/frameworks"
 topic: "Agent Frameworks (LangGraph, etc., conceptual)"
 parent: "16-agentic-ai"
 level: advanced
-prereqs: ["llm-agents-overview", "tool-use-function-calling"]
+built_from: ["llm-agents-overview", "tool-use-function-calling"]
 interview_frequency: medium
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Agent Frameworks (LangGraph, etc., conceptual)

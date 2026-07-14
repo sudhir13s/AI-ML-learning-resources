@@ -3,9 +3,11 @@ id: "01-foundations/mutual-information"
 topic: "Mutual Information"
 parent: "01-foundations"
 level: advanced
-prereqs: ["01-foundations/entropy", "01-foundations/cross-entropy-and-kl-divergence"]
+built_from: ["01-foundations/entropy", "01-foundations/cross-entropy-and-kl-divergence"]
 interview_frequency: medium
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Mutual Information

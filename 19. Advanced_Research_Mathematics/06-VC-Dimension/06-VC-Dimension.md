@@ -3,9 +3,11 @@ id: "19-advanced-math/vc-dimension"
 topic: "VC Dimension"
 parent: "19-advanced-research-mathematics"
 level: advanced
-prereqs: ["statistical-learning-theory", "probability", "combinatorics"]
+built_from: ["statistical-learning-theory", "probability", "combinatorics"]
 interview_frequency: medium
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # VC Dimension

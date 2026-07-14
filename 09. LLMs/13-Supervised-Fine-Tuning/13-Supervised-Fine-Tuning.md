@@ -3,10 +3,13 @@ id: "09-llms/supervised-fine-tuning"
 topic: "Supervised Fine-Tuning (SFT)"
 parent: "09-llms"
 level: advanced
-prereqs: ["language-modeling-objectives", "decoder-only-architecture", "lora-and-peft"]
+built_from: ["language-modeling-objectives", "decoder-only-architecture", "lora-and-peft"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-27
+tier: standard
+est_minutes: 25
+leads_to: ["instruction-tuning"]
 ---
 
 # Supervised Fine-Tuning: teach the base model how to answer

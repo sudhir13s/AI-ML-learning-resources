@@ -3,10 +3,12 @@ id: "08-rl/q-learning"
 topic: "Q-Learning"
 parent: "08-reinforcement-learning"
 level: intermediate
-prereqs: ["markov-decision-processes", "bellman-equations", "temporal-difference-learning"]
+built_from: ["markov-decision-processes", "bellman-equations", "temporal-difference-learning"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-07-03
+tier: core
+est_minutes: 30
 ---
 
 # Q-learning: learning to act well from reward alone, with no map of the world

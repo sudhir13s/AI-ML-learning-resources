@@ -3,10 +3,12 @@ id: "07-computer-vision/object-detection"
 topic: "Object Detection (IoU, NMS, anchors, Average Precision)"
 parent: "07-computer-vision"
 level: intermediate
-prereqs: ["cnns", "classic-cnn-architectures", "image-classification"]
+built_from: ["cnns", "classic-cnn-architectures", "image-classification"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-07-03
+tier: core
+est_minutes: 35
 ---
 
 # Object detection: classification tells you *what*, detection tells you *what, where, and how many*

@@ -2,7 +2,7 @@
 id: "21-frontier-staying-current"
 topic: "Frontier & Staying Current"
 level: advanced
-prereqs: []
+built_from: []
 updated: 2026-06-27
 ---
 

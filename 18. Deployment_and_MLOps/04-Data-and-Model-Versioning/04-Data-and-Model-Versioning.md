@@ -3,9 +3,11 @@ id: "18-mlops/data-and-model-versioning"
 topic: "Data & Model Versioning (DVC · lakeFS)"
 parent: "18-mlops-and-deployment"
 level: intermediate
-prereqs: ["reproducibility", "git"]
+built_from: ["reproducibility", "git"]
 interview_frequency: high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Data & Model Versioning — DVC · lakeFS

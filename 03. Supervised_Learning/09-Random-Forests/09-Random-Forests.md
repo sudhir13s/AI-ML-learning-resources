@@ -3,10 +3,12 @@ id: "03-supervised-learning/random-forests"
 topic: "Random Forests"
 parent: "03-supervised-learning"
 level: intermediate
-prereqs: ["decision-trees", "bagging", "bias-variance"]
+built_from: ["decision-trees", "bagging", "bias-variance"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-06-22
+tier: core
+est_minutes: 30
 ---
 
 # Random forests: many decorrelated trees beat one

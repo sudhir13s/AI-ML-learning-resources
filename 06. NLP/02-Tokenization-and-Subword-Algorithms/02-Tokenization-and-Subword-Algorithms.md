@@ -3,10 +3,12 @@ id: "06-nlp/tokenization"
 topic: "Tokenization & Subword Algorithms (BPE · WordPiece · SentencePiece · Unigram)"
 parent: "06-nlp"
 level: intermediate
-prereqs: ["text-preprocessing", "language-modeling"]
+built_from: ["text-preprocessing", "language-modeling"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-06-27
+tier: core
+est_minutes: 45
 ---
 
 # Tokenization and subword algorithms: how text becomes numbers

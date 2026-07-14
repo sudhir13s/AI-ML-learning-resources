@@ -3,9 +3,11 @@ id: "17-tools-and-frameworks/hugging-face"
 topic: "Hugging Face (Transformers · Datasets · Hub)"
 parent: "17-tools-and-frameworks"
 level: intermediate
-prereqs: ["python", "pytorch", "transformers"]
+built_from: ["python", "pytorch", "transformers"]
 interview_frequency: very-high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Hugging Face — Transformers · Datasets · Hub

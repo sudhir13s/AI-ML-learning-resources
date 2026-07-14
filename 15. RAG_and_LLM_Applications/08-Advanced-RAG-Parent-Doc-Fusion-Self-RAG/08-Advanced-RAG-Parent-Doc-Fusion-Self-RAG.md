@@ -3,10 +3,12 @@ id: "15-rag-and-llm-apps/advanced-rag-parent-doc-fusion-self-rag"
 topic: "Advanced RAG (Parent-Document · RAG-Fusion · Self-RAG)"
 parent: "15-rag-and-llm-apps"
 level: advanced
-prereqs: ["rag-fundamentals", "document-chunking", "hybrid-search-rrf", "query-transformation-hyde-multi-query"]
+built_from: ["rag-fundamentals", "document-chunking", "hybrid-search-rrf", "query-transformation-hyde-multi-query"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-07-01
+tier: core
+est_minutes: 20
 ---
 
 # Advanced RAG: decouple the units, then let the model check its own work

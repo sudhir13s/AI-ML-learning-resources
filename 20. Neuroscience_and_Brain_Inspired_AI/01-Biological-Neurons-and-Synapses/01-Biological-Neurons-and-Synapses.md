@@ -3,9 +3,11 @@ id: "20-neuroscience/biological-neurons-and-synapses"
 topic: "Biological Neurons & Synapses"
 parent: "20-neuroscience"
 level: intermediate
-prereqs: ["differential-equations", "basic-circuits", "activation-functions"]
+built_from: ["differential-equations", "basic-circuits", "activation-functions"]
 interview_frequency: low
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Biological Neurons & Synapses

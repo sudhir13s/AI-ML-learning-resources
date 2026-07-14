@@ -3,10 +3,12 @@ id: "04-unsupervised-learning/umap"
 topic: "UMAP (Uniform Manifold Approximation and Projection)"
 parent: "04-unsupervised-learning"
 level: intermediate
-prereqs: ["dimensionality-reduction", "t-sne", "graphs", "topology-intuition"]
+built_from: ["dimensionality-reduction", "t-sne", "graphs", "topology-intuition"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-22
+tier: core
+est_minutes: 55
 ---
 
 # UMAP: build the neighbor graph, then lay it out

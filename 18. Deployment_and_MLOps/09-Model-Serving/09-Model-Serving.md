@@ -3,9 +3,11 @@ id: "18-mlops/model-serving"
 topic: "Model Serving (REST/gRPC · batch vs online · BentoML/Triton/TF-Serving)"
 parent: "18-mlops-and-deployment"
 level: advanced
-prereqs: ["model-packaging-and-containerization", "apis"]
+built_from: ["model-packaging-and-containerization", "apis"]
 interview_frequency: very-high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Model Serving — REST/gRPC · Batch vs Online · BentoML · Triton · TF-Serving

@@ -3,10 +3,12 @@ id: "06-nlp/decoding-strategies"
 topic: "Decoding Strategies"
 parent: "06-nlp"
 level: intermediate
-prereqs: ["seq2seq-encoder-decoder", "softmax", "autoregressive-generation"]
+built_from: ["seq2seq-encoder-decoder", "softmax", "autoregressive-generation"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-06-27
+tier: core
+est_minutes: 50
 ---
 
 # Decoding Strategies: turning probabilities into text

@@ -3,10 +3,12 @@ id: "15-rag-and-llm-apps/citations-and-attribution"
 topic: "Citations & Attribution (post-hoc attribution · citation precision/recall)"
 parent: "15-rag-and-llm-apps"
 level: intermediate
-prereqs: ["rag-fundamentals", "rag-evaluation", "advanced-rag-parent-doc-fusion-self-rag"]
+built_from: ["rag-fundamentals", "rag-evaluation", "advanced-rag-parent-doc-fusion-self-rag"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-07-02
+tier: core
+est_minutes: 25
 ---
 
 # Citations & Attribution: make every claim checkable

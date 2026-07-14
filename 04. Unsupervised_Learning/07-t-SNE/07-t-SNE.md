@@ -3,10 +3,12 @@ id: "04-unsupervised-learning/t-sne"
 topic: "t-SNE (t-Distributed Stochastic Neighbor Embedding)"
 parent: "04-unsupervised-learning"
 level: intermediate
-prereqs: ["dimensionality-reduction", "probability", "kl-divergence", "gradient-descent"]
+built_from: ["dimensionality-reduction", "probability", "kl-divergence", "gradient-descent"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-22
+tier: core
+est_minutes: 45
 ---
 
 # t-SNE: making high-dimensional neighborhoods visible

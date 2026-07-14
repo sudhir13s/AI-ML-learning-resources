@@ -3,10 +3,13 @@ id: "09-llms/mixture-of-experts"
 topic: "Mixture-of-Experts (MoE)"
 parent: "09-llms"
 level: advanced
-prereqs: ["decoder-only-architecture", "softmax", "scaling-laws", "transformer-architecture"]
+built_from: ["decoder-only-architecture", "softmax", "scaling-laws", "transformer-architecture"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-22
+tier: flagship
+est_minutes: 45
+leads_to: ["inference-optimization-and-serving"]
 ---
 
 # Mixture-of-Experts: more parameters, not more compute

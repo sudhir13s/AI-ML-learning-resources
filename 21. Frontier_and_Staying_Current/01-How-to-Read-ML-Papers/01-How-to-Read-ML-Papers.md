@@ -3,9 +3,11 @@ id: "21-frontier/how-to-read-papers"
 topic: "How to Read ML Papers"
 parent: "21-frontier"
 level: intermediate
-prereqs: ["basic-deep-learning", "linear-algebra"]
+built_from: ["basic-deep-learning", "linear-algebra"]
 interview_frequency: medium
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # How to Read ML Papers

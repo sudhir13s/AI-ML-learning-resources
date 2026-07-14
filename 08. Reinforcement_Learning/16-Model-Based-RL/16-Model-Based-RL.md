@@ -3,9 +3,11 @@ id: "08-rl/model-based-rl"
 topic: "Model-Based RL"
 parent: "08-reinforcement-learning"
 level: advanced
-prereqs: ["dynamic-programming-value-and-policy-iteration", "temporal-difference-learning"]
+built_from: ["dynamic-programming-value-and-policy-iteration", "temporal-difference-learning"]
 interview_frequency: medium
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Model-Based RL

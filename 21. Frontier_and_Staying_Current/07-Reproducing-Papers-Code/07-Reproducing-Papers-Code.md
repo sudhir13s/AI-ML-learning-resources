@@ -3,9 +3,11 @@ id: "21-frontier/reproducing-papers"
 topic: "Reproducing Papers (code)"
 parent: "21-frontier"
 level: intermediate
-prereqs: ["pytorch-basics", "how-to-read-papers"]
+built_from: ["pytorch-basics", "how-to-read-papers"]
 interview_frequency: medium
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Reproducing Papers (code)

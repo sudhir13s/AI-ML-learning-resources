@@ -3,9 +3,11 @@ id: "08-rl/markov-decision-processes"
 topic: "Markov Decision Processes"
 parent: "08-reinforcement-learning"
 level: intermediate
-prereqs: ["probability", "expectation", "discounting"]
+built_from: ["probability", "expectation", "discounting"]
 interview_frequency: very-high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Markov Decision Processes (MDPs)

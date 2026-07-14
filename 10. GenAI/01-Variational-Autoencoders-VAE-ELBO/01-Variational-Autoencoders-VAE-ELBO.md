@@ -3,10 +3,12 @@ id: "10-generative-ai/vae"
 topic: "Variational Autoencoders (VAE · ELBO)"
 parent: "10-generative-ai"
 level: advanced
-prereqs: ["autoencoders", "kl-divergence", "multivariate-gaussian", "maximum-likelihood", "backpropagation"]
+built_from: ["autoencoders", "kl-divergence", "multivariate-gaussian", "maximum-likelihood", "backpropagation"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-07-03
+tier: core
+est_minutes: 40
 ---
 
 # Variational autoencoders (VAE): turn a compressor into a generator by making the code a distribution

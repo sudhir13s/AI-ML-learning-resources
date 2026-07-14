@@ -3,9 +3,11 @@ id: "19-advanced-math/convex-analysis-duality"
 topic: "Convex Analysis & Duality"
 parent: "19-advanced-research-mathematics"
 level: advanced
-prereqs: ["convexity", "lagrange-multipliers", "linear-algebra"]
+built_from: ["convexity", "lagrange-multipliers", "linear-algebra"]
 interview_frequency: medium
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Convex Analysis & Duality

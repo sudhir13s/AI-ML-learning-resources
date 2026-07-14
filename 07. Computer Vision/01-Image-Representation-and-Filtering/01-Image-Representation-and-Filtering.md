@@ -3,9 +3,11 @@ id: "07-computer-vision/image-representation-and-filtering"
 topic: "Image Representation & Filtering (edges, HOG, SIFT)"
 parent: "07-computer-vision"
 level: beginner
-prereqs: ["linear-algebra", "convolution", "gradients"]
+built_from: ["linear-algebra", "convolution", "gradients"]
 interview_frequency: medium
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Image Representation & Filtering — Edges · HOG · SIFT

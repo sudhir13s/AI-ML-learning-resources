@@ -3,9 +3,11 @@ id: "17-tools-and-frameworks/jupyter-colab"
 topic: "Jupyter & Colab (notebooks, kernels, free GPUs)"
 parent: "17-tools-and-frameworks"
 level: beginner
-prereqs: ["python"]
+built_from: ["python"]
 interview_frequency: low
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Jupyter & Colab — Notebooks · Kernels · Free GPUs

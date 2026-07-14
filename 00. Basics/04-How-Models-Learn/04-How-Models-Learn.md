@@ -3,10 +3,12 @@ id: "00-basics/how-models-learn"
 topic: "How Models Learn (loss, gradient descent, the training loop)"
 parent: "00-basics"
 level: beginner
-prereqs: ["what-is-ai-ml-dl", "types-of-machine-learning"]
+built_from: ["what-is-ai-ml-dl", "types-of-machine-learning"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-07-03
+tier: core
+est_minutes: 30
 ---
 
 # How Models Learn: measure how wrong, then nudge to be less wrong

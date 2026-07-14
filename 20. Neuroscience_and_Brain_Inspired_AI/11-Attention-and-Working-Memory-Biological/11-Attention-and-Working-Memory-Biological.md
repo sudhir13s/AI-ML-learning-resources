@@ -3,9 +3,11 @@ id: "20-neuroscience/attention-and-working-memory-biological"
 topic: "Attention & Working Memory (biological)"
 parent: "20-neuroscience"
 level: advanced
-prereqs: ["neural-coding", "memory-systems", "attention-mechanism"]
+built_from: ["neural-coding", "memory-systems", "attention-mechanism"]
 interview_frequency: medium
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Attention & Working Memory (biological)

@@ -3,9 +3,11 @@ id: "19-advanced-math/information-geometry"
 topic: "Information Geometry"
 parent: "19-advanced-research-mathematics"
 level: advanced
-prereqs: ["differential-geometry", "probability", "kl-divergence"]
+built_from: ["differential-geometry", "probability", "kl-divergence"]
 interview_frequency: low
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Information Geometry — Fisher–Rao & the Natural Gradient

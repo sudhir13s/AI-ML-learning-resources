@@ -3,10 +3,12 @@ id: "03-supervised-learning/bias-variance-tradeoff"
 topic: "Bias–Variance Tradeoff"
 parent: "03-supervised-learning"
 level: intermediate
-prereqs: ["supervised-learning-basics", "expectation", "generalization"]
+built_from: ["supervised-learning-basics", "expectation", "generalization"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-06-22
+tier: core
+est_minutes: 45
 ---
 
 # The bias–variance tradeoff: why a model that fits perfectly can still fail

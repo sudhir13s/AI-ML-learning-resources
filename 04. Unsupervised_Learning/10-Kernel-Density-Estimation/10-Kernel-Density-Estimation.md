@@ -3,10 +3,12 @@ id: "04-unsupervised-learning/kernel-density-estimation"
 topic: "Kernel Density Estimation"
 parent: "04-unsupervised-learning"
 level: intermediate
-prereqs: ["probability", "histograms", "bias-variance", "gaussian-mixture-models"]
+built_from: ["probability", "histograms", "bias-variance", "gaussian-mixture-models"]
 interview_frequency: medium
 template: concept-deep
 updated: 2026-06-22
+tier: core
+est_minutes: 45
 ---
 
 # Kernel Density Estimation: a histogram that forgot its bins

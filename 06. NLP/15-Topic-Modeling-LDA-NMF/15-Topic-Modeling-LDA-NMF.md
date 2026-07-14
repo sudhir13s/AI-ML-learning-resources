@@ -3,10 +3,12 @@ id: "06-nlp/topic-modeling"
 topic: "Topic Modeling (LDA · NMF)"
 parent: "06-nlp"
 level: intermediate
-prereqs: ["bow-tfidf", "probability", "linear-algebra", "gmm-em"]
+built_from: ["bow-tfidf", "probability", "linear-algebra", "gmm-em"]
 interview_frequency: medium
 template: concept-deep
 updated: 2026-06-27
+tier: core
+est_minutes: 50
 ---
 
 # Topic Modeling: discovering the hidden themes in a pile of text

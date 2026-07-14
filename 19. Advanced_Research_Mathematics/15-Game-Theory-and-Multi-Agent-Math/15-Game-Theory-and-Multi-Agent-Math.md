@@ -3,9 +3,11 @@ id: "19-advanced-math/game-theory-multi-agent"
 topic: "Game Theory & Multi-Agent Math"
 parent: "19-advanced-research-mathematics"
 level: advanced
-prereqs: ["probability", "convex-analysis-duality", "optimization"]
+built_from: ["probability", "convex-analysis-duality", "optimization"]
 interview_frequency: medium
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Game Theory & Multi-Agent Math

@@ -3,10 +3,12 @@ id: "15-rag-and-llm-apps/hybrid-search-bm25-and-dense"
 topic: "Hybrid Search (BM25 + Dense)"
 parent: "15-rag-and-llm-apps"
 level: intermediate
-prereqs: ["bm25", "dense-embeddings", "cosine-similarity", "rag-fundamentals"]
+built_from: ["bm25", "dense-embeddings", "cosine-similarity", "rag-fundamentals"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-27
+tier: core
+est_minutes: 30
 ---
 
 # Hybrid Search: two lenses, fused

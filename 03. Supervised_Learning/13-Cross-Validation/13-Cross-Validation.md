@@ -3,10 +3,12 @@ id: "03-supervised-learning/cross-validation"
 topic: "Cross-Validation"
 parent: "03-supervised-learning"
 level: beginner
-prereqs: ["supervised-learning-basics", "bias-variance", "overfitting"]
+built_from: ["supervised-learning-basics", "bias-variance", "overfitting"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-06-22
+tier: core
+est_minutes: 50
 ---
 
 # Cross-validation: an honest estimate of how your model will generalize

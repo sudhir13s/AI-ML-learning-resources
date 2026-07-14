@@ -3,9 +3,11 @@ id: "21-frontier/benchmarks-and-leaderboards"
 topic: "Benchmarks & Leaderboards to Watch"
 parent: "21-frontier"
 level: intermediate
-prereqs: ["model-evaluation-basics"]
+built_from: ["model-evaluation-basics"]
 interview_frequency: medium
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Benchmarks & Leaderboards to Watch

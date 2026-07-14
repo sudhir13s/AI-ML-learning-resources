@@ -3,9 +3,11 @@ id: "02-data-preprocessing/outliers"
 topic: "Outlier Detection & Treatment"
 parent: "02-data-preprocessing"
 level: beginner
-prereqs: ["mean-std", "quartiles-iqr", "gaussian"]
+built_from: ["mean-std", "quartiles-iqr", "gaussian"]
 interview_frequency: high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Outlier Detection & Treatment

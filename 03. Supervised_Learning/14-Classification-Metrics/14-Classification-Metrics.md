@@ -3,10 +3,12 @@ id: "03-supervised-learning/classification-metrics"
 topic: "Classification Metrics (precision · recall · F1 · ROC-AUC · PR-AUC · calibration)"
 parent: "03-supervised-learning"
 level: beginner
-prereqs: ["logistic-regression", "confusion-matrix", "probability"]
+built_from: ["logistic-regression", "confusion-matrix", "probability"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-06-22
+tier: core
+est_minutes: 50
 ---
 
 # Classification metrics: why accuracy lies, and what to use instead

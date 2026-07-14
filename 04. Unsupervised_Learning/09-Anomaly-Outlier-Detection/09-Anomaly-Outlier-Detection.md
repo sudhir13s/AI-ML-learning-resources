@@ -3,10 +3,12 @@ id: "04-unsupervised-learning/anomaly-outlier-detection"
 topic: "Anomaly / Outlier Detection (Isolation Forest · LOF · One-Class SVM)"
 parent: "04-unsupervised-learning"
 level: intermediate
-prereqs: ["k-means", "dbscan", "decision-trees", "kernel-methods", "gaussian-distribution"]
+built_from: ["k-means", "dbscan", "decision-trees", "kernel-methods", "gaussian-distribution"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-22
+tier: core
+est_minutes: 55
 ---
 
 # Anomaly / Outlier Detection: finding the points that don't belong

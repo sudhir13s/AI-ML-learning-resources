@@ -3,10 +3,12 @@ id: "01-foundations/cross-entropy-and-kl-divergence"
 topic: "Cross-Entropy & KL Divergence"
 parent: "01-foundations"
 level: intermediate
-prereqs: ["01-foundations/entropy", "01-foundations/maximum-likelihood-estimation"]
+built_from: ["01-foundations/entropy", "01-foundations/maximum-likelihood-estimation"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-07-02
+tier: core
+est_minutes: 30
 ---
 
 # Cross-Entropy & KL Divergence: the cost of being wrong, measured in bits

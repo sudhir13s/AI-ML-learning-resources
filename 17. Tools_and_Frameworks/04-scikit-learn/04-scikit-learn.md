@@ -3,9 +3,11 @@ id: "17-tools-and-frameworks/scikit-learn"
 topic: "scikit-learn (classical ML, pipelines, model selection)"
 parent: "17-tools-and-frameworks"
 level: beginner
-prereqs: ["python", "numpy", "pandas"]
+built_from: ["python", "numpy", "pandas"]
 interview_frequency: high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # scikit-learn — Classical ML · Pipelines · Model Selection

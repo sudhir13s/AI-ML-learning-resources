@@ -3,10 +3,12 @@ id: "15-rag-and-llm-apps/query-transformation-hyde-multi-query"
 topic: "Query Transformation (HyDE & Multi-Query)"
 parent: "15-rag-and-llm-apps"
 level: intermediate
-prereqs: ["dense-embeddings", "cosine-similarity", "rag-fundamentals", "hybrid-search-rrf"]
+built_from: ["dense-embeddings", "cosine-similarity", "rag-fundamentals", "hybrid-search-rrf"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-07-01
+tier: core
+est_minutes: 30
 ---
 
 # Query Transformation: fix the question before you retrieve

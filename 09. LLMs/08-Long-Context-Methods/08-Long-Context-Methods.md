@@ -3,10 +3,13 @@ id: "09-llms/long-context-methods"
 topic: "Long-Context Methods"
 parent: "09-llms"
 level: advanced
-prereqs: ["positional-encoding", "attention", "kv-cache", "rope"]
+built_from: ["positional-encoding", "attention", "kv-cache", "rope"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-26
+tier: standard
+est_minutes: 25
+leads_to: ["inference-optimization-and-serving"]
 ---
 
 # Long-context methods: how an LLM reads 128K tokens

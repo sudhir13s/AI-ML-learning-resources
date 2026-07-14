@@ -3,9 +3,11 @@ id: "17-tools-and-frameworks/jax-flax"
 topic: "JAX (+ Flax) (functional autodiff, jit, vmap, pmap)"
 parent: "17-tools-and-frameworks"
 level: advanced
-prereqs: ["python", "numpy", "neural-networks"]
+built_from: ["python", "numpy", "neural-networks"]
 interview_frequency: medium
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # JAX (+ Flax) — Functional Autodiff · jit · vmap · pmap

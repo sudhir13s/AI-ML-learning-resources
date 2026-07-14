@@ -3,10 +3,12 @@ id: "05-deep-learning/autoencoders"
 topic: "Autoencoders"
 parent: "05-deep-learning"
 level: intermediate
-prereqs: ["feedforward-networks", "backpropagation", "loss-functions", "pca"]
+built_from: ["feedforward-networks", "backpropagation", "loss-functions", "pca"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-22
+tier: core
+est_minutes: 45
 ---
 
 # Autoencoders: learning structure by reconstructing yourself

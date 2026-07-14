@@ -3,9 +3,11 @@ id: "20-neuroscience/spiking-neural-networks"
 topic: "Spiking Neural Networks (SNNs)"
 parent: "20-neuroscience"
 level: advanced
-prereqs: ["biological-neurons", "backpropagation", "neural-coding"]
+built_from: ["biological-neurons", "backpropagation", "neural-coding"]
 interview_frequency: low
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Spiking Neural Networks (SNNs)

@@ -3,9 +3,11 @@ id: "00-basics/ml-workflow-and-lifecycle"
 topic: "The ML Workflow & Lifecycle"
 parent: "00-basics"
 level: beginner
-prereqs: ["what-is-ai-ml-dl", "types-of-machine-learning"]
+built_from: ["what-is-ai-ml-dl", "types-of-machine-learning"]
 interview_frequency: high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # The ML Workflow & Lifecycle

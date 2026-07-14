@@ -3,10 +3,12 @@ id: "08-rl/policy-gradients-reinforce"
 topic: "Policy Gradients (REINFORCE)"
 parent: "08-reinforcement-learning"
 level: advanced
-prereqs: ["markov-decision-processes", "bellman-equations", "q-learning", "backpropagation", "gradient-ascent"]
+built_from: ["markov-decision-processes", "bellman-equations", "q-learning", "backpropagation", "gradient-ascent"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-07-03
+tier: core
+est_minutes: 30
 ---
 
 # Policy gradients (REINFORCE): learn the policy directly, then push up what worked

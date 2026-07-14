@@ -3,9 +3,11 @@ id: "01-foundations/derivatives-and-gradients"
 topic: "Derivatives & Gradients"
 parent: "01-foundations"
 level: beginner
-prereqs: ["01-foundations/vectors-and-vector-spaces"]
+built_from: ["01-foundations/vectors-and-vector-spaces"]
 interview_frequency: very-high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Derivatives & Gradients

@@ -3,10 +3,12 @@ id: "03-supervised-learning/naive-bayes"
 topic: "Naive Bayes"
 parent: "03-supervised-learning"
 level: beginner
-prereqs: ["probability", "bayes-theorem", "supervised-learning-basics"]
+built_from: ["probability", "bayes-theorem", "supervised-learning-basics"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-22
+tier: core
+est_minutes: 50
 ---
 
 # Naive Bayes: a "wrong" assumption that classifies astonishingly well

@@ -3,10 +3,12 @@ id: "04-unsupervised-learning/association-rule-learning"
 topic: "Association Rule Learning (Apriori · FP-Growth · Eclat)"
 parent: "04-unsupervised-learning"
 level: intermediate
-prereqs: ["sets", "probability", "conditional-probability"]
+built_from: ["sets", "probability", "conditional-probability"]
 interview_frequency: medium
 template: concept-deep
 updated: 2026-06-22
+tier: core
+est_minutes: 45
 ---
 
 # Association Rule Learning: mining "if-then" patterns from baskets

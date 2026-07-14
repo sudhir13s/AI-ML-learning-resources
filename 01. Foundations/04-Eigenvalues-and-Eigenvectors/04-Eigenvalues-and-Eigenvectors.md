@@ -3,9 +3,11 @@ id: "01-foundations/eigenvalues-and-eigenvectors"
 topic: "Eigenvalues & Eigenvectors"
 parent: "01-foundations"
 level: intermediate
-prereqs: ["01-foundations/matrices-and-matrix-operations"]
+built_from: ["01-foundations/matrices-and-matrix-operations"]
 interview_frequency: high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Eigenvalues & Eigenvectors

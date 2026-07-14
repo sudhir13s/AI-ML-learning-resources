@@ -3,9 +3,11 @@ id: "07-computer-vision/ocr"
 topic: "Optical Character Recognition (OCR)"
 parent: "07-computer-vision"
 level: intermediate
-prereqs: ["cnns", "rnn-lstm", "object-detection"]
+built_from: ["cnns", "rnn-lstm", "object-detection"]
 interview_frequency: medium
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Optical Character Recognition (OCR)

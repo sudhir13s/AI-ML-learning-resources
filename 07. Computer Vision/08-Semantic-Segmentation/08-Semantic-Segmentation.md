@@ -3,9 +3,11 @@ id: "07-computer-vision/semantic-segmentation"
 topic: "Semantic Segmentation (FCN, U-Net, DeepLab)"
 parent: "07-computer-vision"
 level: intermediate
-prereqs: ["cnns", "classic-cnn-architectures", "pooling-and-receptive-fields"]
+built_from: ["cnns", "classic-cnn-architectures", "pooling-and-receptive-fields"]
 interview_frequency: high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Semantic Segmentation — FCN · U-Net · DeepLab

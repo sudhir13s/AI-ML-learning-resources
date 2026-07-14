@@ -3,10 +3,12 @@ id: "05-deep-learning/loss-functions"
 topic: "Loss Functions (MSE · cross-entropy · and friends)"
 parent: "05-deep-learning"
 level: beginner
-prereqs: ["feedforward-networks", "probability", "softmax", "maximum-likelihood"]
+built_from: ["feedforward-networks", "probability", "softmax", "maximum-likelihood"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-06-22
+tier: core
+est_minutes: 45
 ---
 
 # Loss functions: the number the network is trying to make small

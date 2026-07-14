@@ -3,9 +3,11 @@ id: "18-mlops/model-registry-and-governance"
 topic: "Model Registry & Governance"
 parent: "18-mlops-and-deployment"
 level: advanced
-prereqs: ["experiment-tracking", "ml-lifecycle"]
+built_from: ["experiment-tracking", "ml-lifecycle"]
 interview_frequency: medium
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Model Registry & Governance

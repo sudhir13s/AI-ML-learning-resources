@@ -3,10 +3,13 @@ id: "09-llms/chain-of-thought-reasoning"
 topic: "Chain-of-Thought Reasoning"
 parent: "09-llms"
 level: advanced
-prereqs: ["prompting-and-in-context-learning", "decoding-and-sampling"]
+built_from: ["prompting-and-in-context-learning", "decoding-and-sampling"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-27
+tier: standard
+est_minutes: 30
+leads_to: ["decoding-and-sampling"]
 ---
 
 # Chain-of-Thought: make the model show its work

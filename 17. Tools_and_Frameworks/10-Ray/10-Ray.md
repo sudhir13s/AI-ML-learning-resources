@@ -3,9 +3,11 @@ id: "17-tools-and-frameworks/ray"
 topic: "Ray (distributed training, tuning, serving)"
 parent: "17-tools-and-frameworks"
 level: advanced
-prereqs: ["python", "pytorch"]
+built_from: ["python", "pytorch"]
 interview_frequency: medium
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Ray — Distributed Training · Tuning · Serving

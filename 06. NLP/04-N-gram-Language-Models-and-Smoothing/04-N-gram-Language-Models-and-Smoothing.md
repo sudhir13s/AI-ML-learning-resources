@@ -3,10 +3,12 @@ id: "06-nlp/ngram-language-models"
 topic: "N-gram Language Models & Smoothing"
 parent: "06-nlp"
 level: intermediate
-prereqs: ["probability", "text-preprocessing", "bag-of-words-and-tf-idf"]
+built_from: ["probability", "text-preprocessing", "bag-of-words-and-tf-idf"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-27
+tier: core
+est_minutes: 45
 ---
 
 # N-gram Language Models and Smoothing: counting your way to probability

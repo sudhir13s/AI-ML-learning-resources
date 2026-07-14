@@ -3,9 +3,11 @@ id: "20-neuroscience/predictive-coding"
 topic: "Predictive Coding"
 parent: "20-neuroscience"
 level: advanced
-prereqs: ["bayesian-inference", "backpropagation", "visual-cortex"]
+built_from: ["bayesian-inference", "backpropagation", "visual-cortex"]
 interview_frequency: low
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Predictive Coding

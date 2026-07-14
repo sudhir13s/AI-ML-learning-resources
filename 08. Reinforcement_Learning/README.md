@@ -2,7 +2,7 @@
 id: "08-reinforcement-learning"
 topic: "Reinforcement Learning"
 level: advanced
-prereqs: ["probability", "deep-learning"]
+built_from: ["probability", "deep-learning"]
 updated: 2026-06-27
 ---
 

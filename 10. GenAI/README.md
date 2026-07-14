@@ -2,7 +2,7 @@
 id: "10-generative-ai"
 topic: "Generative AI"
 level: advanced
-prereqs: ["deep-learning"]
+built_from: ["deep-learning"]
 updated: 2026-06-27
 ---
 

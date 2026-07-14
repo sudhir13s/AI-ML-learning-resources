@@ -2,7 +2,7 @@
 id: "18-mlops-and-deployment"
 topic: "MLOps & Deployment"
 level: advanced
-prereqs: ["tools-and-frameworks", "software-engineering"]
+built_from: ["tools-and-frameworks", "software-engineering"]
 updated: 2026-06-27
 ---
 

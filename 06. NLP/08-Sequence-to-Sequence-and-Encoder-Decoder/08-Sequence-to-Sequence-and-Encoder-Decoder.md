@@ -3,10 +3,12 @@ id: "06-nlp/seq2seq-encoder-decoder"
 topic: "Sequence-to-Sequence & Encoder–Decoder"
 parent: "06-nlp"
 level: intermediate
-prereqs: ["rnn-lstm-gru", "attention", "word-embeddings", "softmax"]
+built_from: ["rnn-lstm-gru", "attention", "word-embeddings", "softmax"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-27
+tier: core
+est_minutes: 45
 ---
 
 # Sequence-to-Sequence: turning one sequence into another

@@ -3,9 +3,11 @@ id: "18-mlops/data-and-concept-drift-detection"
 topic: "Data & Concept Drift Detection"
 parent: "18-mlops-and-deployment"
 level: advanced
-prereqs: ["model-monitoring-and-observability", "statistics"]
+built_from: ["model-monitoring-and-observability", "statistics"]
 interview_frequency: high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Data & Concept Drift Detection

@@ -3,9 +3,11 @@ id: "00-basics/pandas-essentials"
 topic: "Pandas Essentials"
 parent: "00-basics"
 level: beginner
-prereqs: ["python-for-ml", "numpy-essentials"]
+built_from: ["python-for-ml", "numpy-essentials"]
 interview_frequency: medium
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Pandas Essentials

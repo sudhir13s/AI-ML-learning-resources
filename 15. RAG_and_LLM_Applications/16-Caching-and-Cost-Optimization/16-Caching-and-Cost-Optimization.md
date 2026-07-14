@@ -3,10 +3,12 @@ id: "15-rag-and-llm-apps/caching-and-cost-optimization"
 topic: "Caching & Cost Optimization for LLM Apps (semantic cache · prompt caching · the cost model)"
 parent: "15-rag-and-llm-apps"
 level: intermediate
-prereqs: ["rag-fundamentals", "long-context-vs-rag", "llm-app-orchestration"]
+built_from: ["rag-fundamentals", "long-context-vs-rag", "llm-app-orchestration"]
 interview_frequency: medium
 template: concept-deep
 updated: 2026-07-02
+tier: core
+est_minutes: 20
 ---
 
 # Caching & Cost Optimization: serve repeated work for free

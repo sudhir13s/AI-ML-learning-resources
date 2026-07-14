@@ -3,9 +3,11 @@ id: "10-generative-ai/energy-based-models"
 topic: "Energy-Based Models"
 parent: "10-generative-ai"
 level: advanced
-prereqs: ["probability", "gradients", "mcmc", "langevin-dynamics", "maximum-likelihood"]
+built_from: ["probability", "gradients", "mcmc", "langevin-dynamics", "maximum-likelihood"]
 interview_frequency: low
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Energy-Based Models (EBM)

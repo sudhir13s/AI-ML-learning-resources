@@ -3,10 +3,12 @@ id: "15-rag-and-llm-apps/agentic-rag"
 topic: "Agentic RAG"
 parent: "15-rag-and-llm-apps"
 level: advanced
-prereqs: ["advanced-rag", "query-transformation", "rag-fundamentals"]
+built_from: ["advanced-rag", "query-transformation", "rag-fundamentals"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-07-02
+tier: core
+est_minutes: 25
 ---
 
 # Agentic RAG: put an LLM in the driver's seat

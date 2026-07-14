@@ -3,10 +3,12 @@ id: "15-rag-and-llm-apps/llm-app-orchestration"
 topic: "LLM App Orchestration (chains · routing · stateful graphs)"
 parent: "15-rag-and-llm-apps"
 level: intermediate
-prereqs: ["rag-fundamentals", "re-ranking-cross-encoders", "agentic-rag", "guardrails-hallucination-mitigation"]
+built_from: ["rag-fundamentals", "re-ranking-cross-encoders", "agentic-rag", "guardrails-hallucination-mitigation"]
 interview_frequency: medium
 template: concept-deep
 updated: 2026-07-02
+tier: core
+est_minutes: 20
 ---
 
 # LLM App Orchestration: wire real steps into one chain, route, and run a graph

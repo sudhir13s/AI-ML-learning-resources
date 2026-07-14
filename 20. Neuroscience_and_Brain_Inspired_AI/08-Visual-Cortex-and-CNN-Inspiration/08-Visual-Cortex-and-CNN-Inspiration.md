@@ -3,9 +3,11 @@ id: "20-neuroscience/visual-cortex-and-cnn-inspiration"
 topic: "Visual Cortex & CNN Inspiration"
 parent: "20-neuroscience"
 level: intermediate
-prereqs: ["convolution", "cnns", "biological-neurons"]
+built_from: ["convolution", "cnns", "biological-neurons"]
 interview_frequency: medium
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Visual Cortex & CNN Inspiration

@@ -3,9 +3,11 @@ id: "08-rl/monte-carlo-methods"
 topic: "Monte Carlo Methods"
 parent: "08-reinforcement-learning"
 level: intermediate
-prereqs: ["markov-decision-processes", "expectation", "law-of-large-numbers"]
+built_from: ["markov-decision-processes", "expectation", "law-of-large-numbers"]
 interview_frequency: high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Monte Carlo Methods

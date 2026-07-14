@@ -3,9 +3,11 @@ id: "07-computer-vision/vision-transformers"
 topic: "Vision Transformers (ViT)"
 parent: "07-computer-vision"
 level: advanced
-prereqs: ["transformers", "attention", "image-classification"]
+built_from: ["transformers", "attention", "image-classification"]
 interview_frequency: very-high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Vision Transformers (ViT)

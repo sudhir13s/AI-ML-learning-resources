@@ -3,10 +3,12 @@ id: "05-deep-learning/residual-skip-connections"
 topic: "Residual / Skip Connections"
 parent: "05-deep-learning"
 level: intermediate
-prereqs: ["backpropagation", "cnns", "vanishing-exploding-gradients"]
+built_from: ["backpropagation", "cnns", "vanishing-exploding-gradients"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-22
+tier: core
+est_minutes: 50
 ---
 
 # Residual connections: the trick that let networks go truly deep

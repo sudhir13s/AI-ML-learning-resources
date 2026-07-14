@@ -3,9 +3,11 @@ id: "10-generative-ai/gans-dcgan"
 topic: "GANs & DCGAN"
 parent: "10-generative-ai"
 level: advanced
-prereqs: ["neural-networks", "cnns", "cross-entropy", "minimax", "backprop"]
+built_from: ["neural-networks", "cnns", "cross-entropy", "minimax", "backprop"]
 interview_frequency: high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # GANs & DCGAN — the Adversarial Game

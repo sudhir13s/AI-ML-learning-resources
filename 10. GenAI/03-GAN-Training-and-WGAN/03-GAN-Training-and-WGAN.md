@@ -3,9 +3,11 @@ id: "10-generative-ai/gan-training-wgan"
 topic: "GAN Training Pathologies & WGAN"
 parent: "10-generative-ai"
 level: advanced
-prereqs: ["gans-dcgan", "kl-divergence", "optimization", "lipschitz-continuity"]
+built_from: ["gans-dcgan", "kl-divergence", "optimization", "lipschitz-continuity"]
 interview_frequency: high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # GAN Training Pathologies & WGAN

@@ -3,10 +3,12 @@ id: "10-generative-ai/diffusion-ddpm"
 topic: "Diffusion Models (DDPM)"
 parent: "10-generative-ai"
 level: advanced
-prereqs: ["vae", "elbo", "multivariate-gaussian", "kl-divergence", "markov-chain", "reparameterization-trick"]
+built_from: ["vae", "elbo", "multivariate-gaussian", "kl-divergence", "markov-chain", "reparameterization-trick"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-07-04
+tier: core
+est_minutes: 35
 ---
 
 # Diffusion models (DDPM): learn to generate by learning to un-noise, one tiny step at a time

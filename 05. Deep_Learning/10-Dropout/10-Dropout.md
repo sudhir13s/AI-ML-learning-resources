@@ -3,10 +3,12 @@ id: "05-deep-learning/dropout"
 topic: "Dropout"
 parent: "05-deep-learning"
 level: intermediate
-prereqs: ["feedforward-networks", "regularization"]
+built_from: ["feedforward-networks", "regularization"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-22
+tier: core
+est_minutes: 45
 ---
 
 # Dropout: regularizing by randomly breaking the network

@@ -3,9 +3,11 @@ id: "08-rl/sarsa"
 topic: "SARSA"
 parent: "08-reinforcement-learning"
 level: intermediate
-prereqs: ["temporal-difference-learning", "q-learning"]
+built_from: ["temporal-difference-learning", "q-learning"]
 interview_frequency: high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # SARSA (on-policy TD control)

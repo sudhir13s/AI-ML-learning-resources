@@ -3,10 +3,12 @@ id: "06-nlp/bow-tfidf"
 topic: "Bag-of-Words & TF-IDF"
 parent: "06-nlp"
 level: beginner
-prereqs: ["text-preprocessing", "linear-algebra"]
+built_from: ["text-preprocessing", "linear-algebra"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-27
+tier: core
+est_minutes: 40
 ---
 
 # Bag-of-Words & TF-IDF: turning text into vectors

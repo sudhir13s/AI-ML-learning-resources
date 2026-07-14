@@ -3,9 +3,11 @@ id: "19-advanced-math/random-matrix-theory"
 topic: "Random Matrix Theory"
 parent: "19-advanced-research-mathematics"
 level: advanced
-prereqs: ["linear-algebra", "probability", "eigenvalues"]
+built_from: ["linear-algebra", "probability", "eigenvalues"]
 interview_frequency: low
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Random Matrix Theory

@@ -3,10 +3,12 @@ id: "01-foundations/gradient-descent-theory"
 topic: "Gradient Descent — theory & convergence"
 parent: "01-foundations"
 level: intermediate
-prereqs: ["01-foundations/derivatives-and-gradients", "01-foundations/convexity"]
+built_from: ["01-foundations/derivatives-and-gradients", "01-foundations/convexity"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-06-21
+tier: core
+est_minutes: 10
 ---
 
 # Gradient descent: how almost every model learns

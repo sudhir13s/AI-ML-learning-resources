@@ -3,9 +3,11 @@ id: "16-agentic-ai/code-agents"
 topic: "Code Agents"
 parent: "16-agentic-ai"
 level: advanced
-prereqs: ["llm-agents-overview", "tool-use-function-calling", "planning"]
+built_from: ["llm-agents-overview", "tool-use-function-calling", "planning"]
 interview_frequency: high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Code Agents

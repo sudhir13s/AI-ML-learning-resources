@@ -3,9 +3,11 @@ id: "17-tools-and-frameworks/numpy"
 topic: "NumPy (arrays, broadcasting, vectorization)"
 parent: "17-tools-and-frameworks"
 level: beginner
-prereqs: ["python"]
+built_from: ["python"]
 interview_frequency: high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # NumPy — Arrays · Broadcasting · Vectorization

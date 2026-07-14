@@ -3,9 +3,11 @@ id: "01-foundations/taylor-expansion"
 topic: "Taylor Expansion"
 parent: "01-foundations"
 level: intermediate
-prereqs: ["01-foundations/derivatives-and-gradients", "01-foundations/jacobian-and-hessian"]
+built_from: ["01-foundations/derivatives-and-gradients", "01-foundations/jacobian-and-hessian"]
 interview_frequency: medium
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Taylor Expansion

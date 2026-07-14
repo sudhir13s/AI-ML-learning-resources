@@ -3,9 +3,11 @@ id: "10-generative-ai/conditional-cfg"
 topic: "Conditional Generation & Classifier-Free Guidance"
 parent: "10-generative-ai"
 level: advanced
-prereqs: ["gans-dcgan", "diffusion-ddpm", "bayes-rule", "cross-entropy"]
+built_from: ["gans-dcgan", "diffusion-ddpm", "bayes-rule", "cross-entropy"]
 interview_frequency: high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Conditional Generation & Classifier-Free Guidance

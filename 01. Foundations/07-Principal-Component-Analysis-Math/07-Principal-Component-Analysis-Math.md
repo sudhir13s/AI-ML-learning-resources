@@ -3,9 +3,11 @@ id: "01-foundations/pca-math"
 topic: "Principal Component Analysis (PCA) — the math"
 parent: "01-foundations"
 level: intermediate
-prereqs: ["01-foundations/eigenvalues-and-eigenvectors", "01-foundations/singular-value-decomposition"]
+built_from: ["01-foundations/eigenvalues-and-eigenvectors", "01-foundations/singular-value-decomposition"]
 interview_frequency: very-high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Principal Component Analysis (PCA) — the math

@@ -3,9 +3,11 @@ id: "18-mlops/ml-pipelines-and-orchestration"
 topic: "ML Pipelines & Orchestration (Airflow · Kubeflow)"
 parent: "18-mlops-and-deployment"
 level: advanced
-prereqs: ["ml-lifecycle", "reproducibility"]
+built_from: ["ml-lifecycle", "reproducibility"]
 interview_frequency: high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # ML Pipelines & Orchestration — Airflow · Kubeflow

@@ -3,10 +3,12 @@ id: "03-supervised-learning/stacking-blending"
 topic: "Stacking & Blending"
 parent: "03-supervised-learning"
 level: advanced
-prereqs: ["bagging", "random-forests", "gradient-boosting", "cross-validation"]
+built_from: ["bagging", "random-forests", "gradient-boosting", "cross-validation"]
 interview_frequency: medium
 template: concept-deep
 updated: 2026-06-22
+tier: core
+est_minutes: 45
 ---
 
 # Stacking and blending: let a model learn how to combine models

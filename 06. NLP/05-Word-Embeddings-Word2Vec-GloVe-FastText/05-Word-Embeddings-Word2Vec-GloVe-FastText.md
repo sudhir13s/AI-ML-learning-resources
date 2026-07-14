@@ -3,10 +3,12 @@ id: "06-nlp/word-embeddings"
 topic: "Word Embeddings (Word2Vec, GloVe, FastText)"
 parent: "06-nlp"
 level: intermediate
-prereqs: ["linear-algebra", "softmax", "logistic-regression"]
+built_from: ["linear-algebra", "softmax", "logistic-regression"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-06-27
+tier: core
+est_minutes: 45
 ---
 
 # Word Embeddings: turning words into geometry

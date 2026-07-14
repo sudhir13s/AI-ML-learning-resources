@@ -3,9 +3,11 @@ id: "10-generative-ai/autoregressive-pixelcnn"
 topic: "Autoregressive Image Generation (PixelCNN)"
 parent: "10-generative-ai"
 level: advanced
-prereqs: ["cnns", "softmax", "chain-rule-probability", "maximum-likelihood"]
+built_from: ["cnns", "softmax", "chain-rule-probability", "maximum-likelihood"]
 interview_frequency: low
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Autoregressive Image Generation — PixelRNN · PixelCNN

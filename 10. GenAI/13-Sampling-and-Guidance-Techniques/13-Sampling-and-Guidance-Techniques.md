@@ -3,9 +3,11 @@ id: "10-generative-ai/sampling-guidance"
 topic: "Sampling & Guidance Techniques"
 parent: "10-generative-ai"
 level: advanced
-prereqs: ["diffusion-ddpm", "score-sde", "conditional-cfg", "ode-solvers"]
+built_from: ["diffusion-ddpm", "score-sde", "conditional-cfg", "ode-solvers"]
 interview_frequency: medium
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Sampling & Guidance Techniques — DDIM · Solvers · Guidance Scale

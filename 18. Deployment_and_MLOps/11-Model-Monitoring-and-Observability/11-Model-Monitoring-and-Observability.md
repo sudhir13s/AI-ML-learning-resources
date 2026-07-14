@@ -3,9 +3,11 @@ id: "18-mlops/model-monitoring-and-observability"
 topic: "Model Monitoring & Observability"
 parent: "18-mlops-and-deployment"
 level: advanced
-prereqs: ["model-serving", "ml-lifecycle"]
+built_from: ["model-serving", "ml-lifecycle"]
 interview_frequency: very-high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Model Monitoring & Observability

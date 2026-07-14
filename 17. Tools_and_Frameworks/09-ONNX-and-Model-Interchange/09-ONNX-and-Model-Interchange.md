@@ -3,9 +3,11 @@ id: "17-tools-and-frameworks/onnx"
 topic: "ONNX & Model Interchange (export, runtime, portability)"
 parent: "17-tools-and-frameworks"
 level: intermediate
-prereqs: ["python", "pytorch", "neural-networks"]
+built_from: ["python", "pytorch", "neural-networks"]
 interview_frequency: medium
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # ONNX & Model Interchange — Export · Runtime · Portability

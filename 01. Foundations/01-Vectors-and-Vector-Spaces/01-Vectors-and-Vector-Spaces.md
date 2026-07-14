@@ -3,9 +3,11 @@ id: "01-foundations/vectors-and-vector-spaces"
 topic: "Vectors & Vector Spaces"
 parent: "01-foundations"
 level: beginner
-prereqs: []
+built_from: []
 interview_frequency: high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Vectors & Vector Spaces

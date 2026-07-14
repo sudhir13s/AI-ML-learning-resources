@@ -3,10 +3,12 @@ id: "04-unsupervised-learning/k-means"
 topic: "K-Means Clustering"
 parent: "04-unsupervised-learning"
 level: beginner
-prereqs: ["linear-algebra", "euclidean-distance", "variance"]
+built_from: ["linear-algebra", "euclidean-distance", "variance"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-07-03
+tier: core
+est_minutes: 40
 ---
 
 # K-Means: carve the data into k round piles

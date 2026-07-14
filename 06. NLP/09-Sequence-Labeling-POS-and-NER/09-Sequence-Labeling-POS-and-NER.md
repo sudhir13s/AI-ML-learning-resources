@@ -3,10 +3,12 @@ id: "06-nlp/sequence-labeling-pos-ner"
 topic: "Sequence Labeling — POS & NER (HMM/CRF → neural)"
 parent: "06-nlp"
 level: intermediate
-prereqs: ["probability", "text-preprocessing", "rnn-lstm"]
+built_from: ["probability", "text-preprocessing", "rnn-lstm"]
 interview_frequency: medium
 template: concept-deep
 updated: 2026-06-27
+tier: core
+est_minutes: 45
 ---
 
 # Sequence Labeling: a label for every token

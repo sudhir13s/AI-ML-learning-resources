@@ -3,9 +3,11 @@ id: "19-advanced-math/causal-inference"
 topic: "Causal Inference"
 parent: "19-advanced-research-mathematics"
 level: advanced
-prereqs: ["probability", "statistics", "graphical-models"]
+built_from: ["probability", "statistics", "graphical-models"]
 interview_frequency: medium
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Causal Inference

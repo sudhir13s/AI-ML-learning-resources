@@ -3,10 +3,12 @@ id: "05-deep-learning/positional-encoding"
 topic: "Positional Encoding"
 parent: "05-deep-learning"
 level: intermediate
-prereqs: ["attention", "transformer", "linear-algebra", "softmax"]
+built_from: ["attention", "transformer", "linear-algebra", "softmax"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-06-22
+tier: core
+est_minutes: 40
 ---
 
 # Positional Encoding: teaching a bag of words its order

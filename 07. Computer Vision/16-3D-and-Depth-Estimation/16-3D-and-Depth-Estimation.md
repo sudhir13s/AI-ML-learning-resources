@@ -3,9 +3,11 @@ id: "07-computer-vision/3d-and-depth-estimation"
 topic: "3D & Depth Estimation"
 parent: "07-computer-vision"
 level: advanced
-prereqs: ["cnns", "image-representation-and-filtering", "linear-algebra"]
+built_from: ["cnns", "image-representation-and-filtering", "linear-algebra"]
 interview_frequency: medium
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # 3D & Depth Estimation

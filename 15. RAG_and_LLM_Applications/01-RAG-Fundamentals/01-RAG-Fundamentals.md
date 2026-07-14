@@ -3,10 +3,12 @@ id: "15-rag-and-llm-apps/rag-fundamentals"
 topic: "RAG Fundamentals (retrieve-then-generate)"
 parent: "15-rag-and-llm-apps"
 level: intermediate
-prereqs: ["embeddings", "cosine-similarity", "transformers", "prompting"]
+built_from: ["embeddings", "cosine-similarity", "transformers", "prompting"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-06-27
+tier: core
+est_minutes: 25
 ---
 
 # RAG Fundamentals: retrieve, then generate

@@ -3,10 +3,12 @@ id: "06-nlp/text-preprocessing"
 topic: "Text Preprocessing & Normalization (clean, normalize, stem, lemmatize, stopwords)"
 parent: "06-nlp"
 level: beginner
-prereqs: ["regular-expressions"]
+built_from: ["regular-expressions"]
 interview_frequency: medium
 template: concept-deep
 updated: 2026-06-27
+tier: core
+est_minutes: 45
 ---
 
 # Text Preprocessing & Normalization: turning messy text into clean, consistent units

@@ -3,9 +3,11 @@ id: "16-agentic-ai/reflection"
 topic: "Reflection & Self-Critique"
 parent: "16-agentic-ai"
 level: advanced
-prereqs: ["llm-agents-overview", "react"]
+built_from: ["llm-agents-overview", "react"]
 interview_frequency: high
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Reflection & Self-Critique

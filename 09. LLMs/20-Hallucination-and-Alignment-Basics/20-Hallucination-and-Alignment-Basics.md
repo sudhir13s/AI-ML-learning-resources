@@ -3,10 +3,13 @@ id: "09-llms/hallucination-and-alignment-basics"
 topic: "Hallucination & Alignment Basics"
 parent: "09-llms"
 level: advanced
-prereqs: ["decoding-and-sampling", "rlhf-and-dpo", "llm-evaluation-and-benchmarks", "chain-of-thought-reasoning"]
+built_from: ["decoding-and-sampling", "rlhf-and-dpo", "llm-evaluation-and-benchmarks", "chain-of-thought-reasoning"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-27
+tier: standard
+est_minutes: 40
+leads_to: []
 ---
 
 # Hallucination & Alignment Basics: why fluent models lie, and how we ask them not to

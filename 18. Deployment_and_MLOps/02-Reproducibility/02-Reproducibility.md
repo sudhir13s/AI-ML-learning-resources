@@ -3,9 +3,11 @@ id: "18-mlops/reproducibility"
 topic: "Reproducibility (seeds, environments, lineage)"
 parent: "18-mlops-and-deployment"
 level: intermediate
-prereqs: ["software-engineering", "ml-lifecycle"]
+built_from: ["software-engineering", "ml-lifecycle"]
 interview_frequency: medium
 updated: 2026-06-20
+tier: core
+est_minutes: 10
 ---
 
 # Reproducibility — Seeds, Environments & Lineage
