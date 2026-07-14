@@ -6,7 +6,7 @@ level: advanced
 built_from: ["decoder-only-architecture", "attention", "softmax-attention"]
 interview_frequency: very-high
 template: concept-deep
-updated: 2026-06-21
+updated: 2026-07-14
 tier: flagship
 est_minutes: 40
 leads_to: ["efficient-attention-flashattention", "inference-optimization-and-serving"]
@@ -100,6 +100,19 @@ The reason it's K and V specifically — and the single most-asked KV-cache inte
 
 ---
 
+## Common misconceptions
+
+These are the wrong beliefs I hear most often — several of them in interviews, stated confidently. Each has a precise correction.
+
+- **"The KV cache makes the model smarter / changes its outputs."** No. It is a *speed and memory* mechanism only — with or without it, the model emits **bit-for-bit identical tokens** (the code below proves it with an `identical` column that stays `True`). If caching changed outputs, it would be a bug.
+- **"Q is cached too — it's the QKV cache."** Only **K and V** are cached. Each decode step has exactly one new query that is used once and discarded; old queries are never consulted again, but every old key and value is re-read on every step. Caching Q would store bytes nobody will ever read.
+- **"The cache helps training too."** Training uses teacher forcing — the whole target sequence is processed in one parallel pass, so there is nothing to carry between steps. The cache exists only for **autoregressive inference**.
+- **"The cache is a minor overhead next to the weights."** At 4K context a single Llama-2-7B sequence holds ~2 GiB of cache — and it scales *per sequence*. A batch of 32 holds ~64 GiB, **more than the weights** (we derive both numbers in the worked examples below). In serving, the cache — not the weights — usually caps your batch size and therefore your throughput.
+- **"Decode is slow because the GPU runs out of compute."** The opposite: decode's arithmetic intensity is ~1 FLOP/byte against hardware that balances at ~156 — numbers we derive from first principles below — so the compute units idle ~99% of the time waiting on **memory**. That is why *shrinking the cache* (GQA, FP8) speeds decoding up — fewer bytes to stream, not fewer FLOPs.
+- **"Longer context just means a slower prefill."** It also means a *linearly bigger cache held for the whole request* and more bytes streamed on *every* decode step — past a crossover we compute below (~28K tokens for 7B-MHA) the cache overtakes the weights as the thing you're streaming. Long context is a **memory-capacity and bandwidth** problem, not just a latency one.
+
+---
+
 ## The two phases: prefill vs decode
 
 The cache cleanly splits inference into two phases with **opposite performance characteristics** — and confusing them is the root of most serving mistakes.
@@ -145,6 +158,9 @@ The word "append" hides an important production detail: in a real engine it is a
 
 > **Gotcha:** the cache grows on **every** step and is **never** freed mid-sequence — it only releases when the request finishes. A naive engine therefore reserves memory for the *worst-case* length a request might reach, wasting most of it — exactly the problem **PagedAttention** solves (the concrete cost of that worst-case reservation is in Lever 2).
 
+<!-- STEP-PLAYER: kv-cache-decode-trace -->
+> **Step player — prefill to decode, tensor by tensor.** Steps through the lifecycle above on a toy config (1 layer, 2 KV heads, $d_{head}=4$): prefill writes K/V for all 4 prompt tokens at once (cache `[1, 2, 4, 4]`), then each decode step projects the new token's $q,k,v$, appends $k,v$ (`seq_len` 4 → 5 → 6), and attends the single query against the whole cache — with each step showing the exact tensor shapes and which entries are **written** (new) versus **read** (reused). Without the interactive player, the numbered lifecycle above plus the animated attention-matrix figure in the Intuition section tell the same story.
+
 ---
 
 ## The math: how big is the cache, really
@@ -176,6 +192,9 @@ So a single sequence at a **4,096-token** context holds $4096 \times 0.5\,\text{
 **Worked example 2 — how many requests fit on one GPU?** Take an 80 GB A100 serving that 7B model. Weights take ~14 GB and activations/overhead another ~6 GB, leaving **~60 GB for the cache**. At 0.5 MiB/token a 4K-context request needs 2 GiB, so you fit $60 / 2 \approx \mathbf{30}$ concurrent requests — and *that*, not the weights, is your throughput ceiling. Now switch to **GQA with 8 KV heads** (down from 32): the cache shrinks 4× to 0.125 MiB/token, i.e. 0.5 GiB/request, so the same GPU now holds $60 / 0.5 \approx \mathbf{120}$ requests. **Same hardware, 4× the throughput — purely from shrinking the cache.** That single calculation is *why* GQA exists, and why it's the first lever you reach for.
 
 **Worked example 3 — the long-context wall (128K).** Now push context to 128K tokens. At 0.5 MiB/token (7B MHA) that's $131072 \times 0.5\,\text{MiB} = \mathbf{64\ GiB}$ for **one** sequence — it alone overflows an 80 GB GPU once you add the 14 GB of weights. GQA-8 cuts it to 16 GiB; add an FP8 cache and it's 8 GiB; page it so you only allocate what's used, and now a handful of 128K requests coexist. This is *exactly* how "128K-context" models are served in practice — **not** by one trick but by the whole stack (GQA + quantized cache + paging) applied at once. Without them, long context is simply impossible.
+
+<!-- EXPLORER: kv-cache-memory -->
+> **Interactive explorer — the KV-cache memory calculator.** The formula above, as sliders: pick a model preset, then drag **KV heads** (MHA 32 → GQA 8 → MQA 1), **cache dtype** (FP16 → FP8 → INT4), **context length**, and **batch size** — and watch cache-per-token, total cache vs the weights, and **how many concurrent requests fit on an 80 GB GPU** respond instantly. Without the widget, work the formula by hand exactly as in the three worked examples above.
 
 ---
 
@@ -276,6 +295,26 @@ Output on a laptop CPU:
 > **Try it:** before you change anything, **predict**: the demo uses `n_heads=8, head_dim=64`. If you bump `n_heads` to 16 (and keep `head_dim=64`, so `d_model` doubles to 1024), does the **speedup curve** — the *ratio* of no-cache to kv-cache time at each `N` — shift up, shift down, or stay roughly the same? Now run it and check. (Hint: both paths do more work per step, but the *redundant* work the cache removes still grows like `O(n^2)` in `N` either way — so the curve's **shape** is driven by length, not by head count. Heavier heads change the absolute milliseconds, not the reason the ratio widens with `N`.)
 
 > **Tip:** to see the real thing, call `model.generate(..., use_cache=True)` vs `use_cache=False` in Hugging Face on a long generation and watch the wall-clock diverge. Same idea, full model.
+
+---
+
+## What-if analysis
+
+The cache's behavior under change is where the systems thinking lives — every serving decision is one of these dials. For each: what you should *expect*, how it *fails*, and the *trade* you're making. (Numbers below reuse the 7B-MHA baseline from the worked examples: 0.5 MiB/token, 80 GB GPU, ~60 GB free for cache.)
+
+**What if you remove the cache entirely?** *Expected:* identical outputs (proven above), but every decode step re-runs attention over the whole prefix — per-step cost grows with position, total cost $O(n^2)$. At 1K tokens the demo already shows 1.6×; a full multi-layer model at chat lengths becomes seconds per token. *Failure:* interactive latency dies; long generations become unusable. *Trade:* you'd save the cache memory — the trade training actually takes (teacher forcing has no per-step recurrence, as covered in the misconceptions).
+
+**What if context length doubles (4K → 8K)?** *Expected:* cache per sequence doubles linearly (2 GiB → 4 GiB), so the same GPU fits half the concurrent requests (30 → 15); TPOT degrades only mildly at these lengths (weights still dominate the streaming until ~28K). Prefill compute, though, grows ~quadratically in the attention term — TTFT hurts first. *Failure:* past the crossover, every decode step streams more cache than weights and TPOT falls off; naive slab allocation OOMs on worst-case reservations long before memory is truly full. *Trade:* longer memory for fewer concurrent users — or the full GQA+FP8+paging stack to claw it back.
+
+**What if batch size doubles?** *Expected:* weights are read once per step regardless, so arithmetic intensity ≈ doubles and total throughput climbs — decode walks toward the compute-bound regime. Cache memory also doubles (it's per-sequence). *Failure:* the cache hits the memory ceiling first; the scheduler starts preempting or swapping requests and tail latency spikes — the classic "throughput up, p99 destroyed" incident. *Trade:* throughput vs per-request latency and headroom; continuous batching exists to ride this line safely.
+
+**What if KV heads drop 32 → 8 (GQA) — or all the way to 1 (MQA)?** *Expected:* cache shrinks 4× (or 32×); requests-per-GPU scale by the same factor, and long-context decode gets faster because fewer bytes stream per step. *Failure:* the quality loss is not uniform — it concentrates in **long-context retrieval** (needle-in-haystack style lookups suffer first, because fewer distinct K/V views of the past are kept), mild at GQA-8, noticeable at MQA-1. And the switch is not free to *adopt*: a pretrained MHA checkpoint cannot be reshaped at inference — you pay an **up-training run** (mean-pool the KV heads, then continue training on a few percent of the original tokens), which is a real deployment-timeline cost, not a config flag. *Trade:* a small, retrieval-shaped quality delta plus one up-training bill for a 4× capacity/throughput win — the reason every modern open model ships GQA *from pretraining*.
+
+**What if the cache is quantized FP16 → FP8 → INT4?** *Expected:* bytes halve, then halve again; in the bandwidth-bound regime that converts almost directly into TPOT speedup and 2–4× more requests in memory. *Failure:* K is more outlier-prone than V — naive INT4-K collapses quality on long-context retrieval tasks; you need per-channel scales for K, and often an asymmetric scheme that keeps K at higher effective precision than V — the same K-sensitivity that drives KIVI's per-channel-K / per-token-V split in Lever 3. *Trade:* a quality tail-risk that must be *evaluated, not assumed* — quantize the cache after you have long-context evals in place.
+
+**What if you cap the cache with a sliding window (keep the last 4K only)?** *Expected:* memory becomes constant regardless of stream length — infinite generation on bounded VRAM. *Failure:* evict the **first few tokens** and attention collapses — they act as **attention sinks** absorbing probability mass the softmax has to put somewhere; drop them and perplexity blows up (the StreamingLLM result). Keep ~4 sink tokens + the window and generation stays stable — but the model still *remembers nothing* outside the window; it fails silently on "what did I say an hour ago." *Trade:* unbounded stream length for genuine forgetting — right for live transcription, wrong for document QA.
+
+> **Tip:** notice every what-if lands on the same seesaw: **bytes moved per step** (speed) vs **bytes held per request** (capacity) vs **fidelity of the attention view** (quality). Name which of the three you're spending and the right lever picks itself.
 
 ---
 
