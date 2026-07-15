@@ -45,7 +45,9 @@ The observation that makes the optimization possible:
 
 > **Note:** in a causal (decoder-only) transformer, a token's key and value depend **only on that token and the ones before it** — never on anything after. Once token 5's K and V are computed, they are **frozen for the rest of the generation**. Recomputing them yields bit-for-bit identical numbers. Pure waste.
 
-![Per-step K/V projection work: without a cache it grows linearly with position (quadratic in total); with a cache it is constant — one new token per step. The shaded region is pure redundant work.](../images/kv_recompute_waste.png)
+![Animated — six decode steps, side by side. Without a cache (left), every step re-projects ALL past K/V: the red columns pile up to 21 projections, O(n²). With a cache (right), each step projects exactly one new token (green) and reads the rest back (grey) — 6 projections, O(n) — while the amber bar underneath shows the cost you pay instead: cache memory growing one token per step, never freed until the request ends. Hand-authored animated SVG (loops).](../images/kv_decode_growth.svg)
+
+![Per-step K/V projection work as a chart: without a cache it grows linearly with position (quadratic in total); with a cache it is constant — one new token per step. The shaded region is pure redundant work.](../images/kv_recompute_waste.png)
 
 > **Gotcha:** people say the cache makes attention "$O(n)$ instead of $O(n^2)$." Be precise: the cache removes the redundant *recomputation of past tokens' K/V projections (and the rest of their forward pass)*. The attention **scores** for the current token still touch all $n$ past keys — a single step is still $O(n)$. What you never redo is the past tokens' work.
 
@@ -88,7 +90,7 @@ Think of a bartender keeping a **running tab**. Without a tab, every new drink m
 - each new token adds only its own line;
 - nobody ever re-derives the tab from the receipts.
 
-![Decode as a causal attention matrix: the current query row (green) is computed fresh and reads all earlier tokens' keys and values straight from the cache (the columns, reused); every past query row greys out — never recomputed. Exactly why K and V are cached but Q is not.](../images/kv_attention_cache.png)
+![Animated — the running tab, played out over four rounds. Left, no tab: every round the bartender re-adds EVERY receipt in the pile (they all flash), and the re-added count climbs 1 → 3 → 6 → 10 — O(n²). Right, the tab: one new line per round, the total just updates — O(n). Bottom row maps it: receipts = past tokens, re-adding = recomputing their K/V, the tab = the KV cache, the new line = the new token's K,V. Hand-authored animated SVG (loops).](../images/kv_running_tab.svg)
 
 ---
 
@@ -99,6 +101,8 @@ The single most-asked KV-cache interview question, and it reduces to **who needs
 - **Q is per-step and disposable** — each decode step has exactly one new query, used once, discarded.
 - **K and V are per-token and reused** — every old key and value is re-read on *every* subsequent step.
 - Caching Q would store bytes nobody will ever read.
+
+![Animated — one decode step, who talks to whom. The new token's q (green) interrogates every cached key, softmax weighs the cached values into the output — then q fades out, used once and discarded, while its k and v (amber) join the cache. The greyed, struck-through past queries already spoke and are never asked again — which is exactly why K and V are stored and Q never is. Hand-authored animated SVG (loops through the four phases).](../images/kv_why_not_q.svg)
 
 > **Note:** there is **no attention mask** in a decode step — the single new query attends to *every* cache entry, which is automatically causal because the cache only ever holds past tokens. The triangular causal mask matters during **prefill** (and training), where many query positions are processed in one pass.
 
