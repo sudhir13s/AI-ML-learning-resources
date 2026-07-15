@@ -27,7 +27,7 @@ What the cache *is* to a serving engine:
 
 ---
 
-## THE ENGINES AND WHAT THEY BET ON
+## The engines and what they bet on
 
 Four production engines dominate; each is a different bet on cache management.
 
@@ -42,7 +42,7 @@ Four production engines dominate; each is a different bet on cache management.
 
 ---
 
-## SCHEDULING AROUND THE CACHE
+## Scheduling around the cache
 
 Three scheduler mechanisms — all of them cache-shaped — define modern serving.
 
@@ -85,7 +85,7 @@ gantt
 
 ---
 
-## DISAGGREGATED PREFILL AND DECODE
+## Disaggregated prefill and decode
 
 The two phases have opposite bottlenecks — at sufficient scale you stop running them on the same GPUs.
 
@@ -112,7 +112,7 @@ graph LR
 
 ---
 
-## THE METRICS THAT EXPOSE THE CACHE
+## The metrics that expose the cache
 
 Four numbers on every serious serving dashboard, and what the cache does to each.
 
@@ -125,7 +125,7 @@ Four numbers on every serious serving dashboard, and what the cache does to each
 
 ---
 
-## THE INCIDENT PLAYBOOK
+## The incident playbook
 
 The five classic KV-cache incidents — mechanism, detection, mitigation. (The main page lists them; here is the dissection.)
 
@@ -161,7 +161,7 @@ The five classic KV-cache incidents — mechanism, detection, mitigation. (The m
 
 ---
 
-## THE PRE-LAUNCH CHECKLIST
+## The pre-launch checklist
 
 Before an LLM service takes real traffic, the cache questions to have answers for:
 
@@ -175,7 +175,7 @@ Before an LLM service takes real traffic, the cache questions to have answers fo
 
 ---
 
-## RECAP
+## Recap
 
 - In production the cache is the **currency of scheduling**: admission, preemption, sharing, and transfer are all denominated in cache blocks.
 - Continuous batching + chunked prefill + preemption are the three scheduler moves; all exist to keep cache occupancy high without letting it kill p99.
@@ -187,6 +187,6 @@ Back to the [main page](05-KV-Cache.md) · previous: [Chapter 3 — FlashAttenti
 
 ---
 
-## REFERENCES
+## References
 
 Shared with the topic's companion file — see [KV Cache — references and further reading](05-KV-Cache.references.md) (vLLM, SGLang, TensorRT-LLM, speculative-decoding, and serving-survey entries).

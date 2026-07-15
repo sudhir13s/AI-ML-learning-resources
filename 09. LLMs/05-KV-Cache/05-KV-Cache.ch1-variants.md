@@ -27,7 +27,7 @@ The map, before the details:
 
 ---
 
-## THE FAMILY TREE AT A GLANCE
+## The family tree at a glance
 
 Four attention variants, one axis: how much per-token K/V state survives.
 
@@ -52,7 +52,7 @@ graph LR
 
 ---
 
-## MQA AND GQA: SHARE THE K/V HEADS
+## MQA and GQA: share the K/V heads
 
 The biggest lever is architectural: **share K and V across query heads** so there are simply fewer of them to store.
 
@@ -81,7 +81,7 @@ The biggest lever is architectural: **share K and V across query heads** so ther
 
 ---
 
-## MLA: CACHE A LATENT, NOT THE HEADS
+## MLA: cache a latent, not the heads
 
 **Multi-head Latent Attention** (DeepSeek-V2/V3) is the frontier of the lever: stop storing per-head K and V entirely.
 
@@ -117,7 +117,7 @@ graph LR
 
 ---
 
-## QUANTIZED CACHES: FEWER BITS PER NUMBER
+## Quantized caches: fewer bits per number
 
 The cache is just numbers, and you rarely need 16 bits of precision for them. Store K and V in fewer bits and the bytes — and, in the bandwidth-bound decode regime, the latency — shrink proportionally.
 
@@ -144,7 +144,7 @@ That split — **keys per-channel, values per-token, ~2 bits each** — is preci
 
 ---
 
-## WINDOWED CACHES: FEWER TOKENS
+## Windowed caches: fewer tokens
 
 The variants above shrink bytes-per-token; this one caps the **number of tokens**. If you don't truly need unbounded history, keep only the most recent $w$:
 
@@ -161,7 +161,7 @@ The variants above shrink bytes-per-token; this one caps the **number of tokens*
 
 ---
 
-## THE VARIANTS IN REAL MODELS
+## The variants in real models
 
 Tie each variant to a model you know. Per-token figures are $2 \times n_{\text{layers}} \times n_{\text{kv\_heads}} \times d_{\text{head}} \times 2$ bytes (FP16), straight from each model's real config:
 
@@ -183,7 +183,7 @@ Read off the columns:
 
 ---
 
-## CHOOSING A VARIANT: THE DECISION RULES
+## Choosing a variant: the decision rules
 
 Three questions pick the variant; everything else is detail.
 
@@ -195,7 +195,7 @@ Three questions pick the variant; everything else is detail.
 
 ---
 
-## RECAP
+## Recap
 
 - Four variants, one axis: **how much per-token K/V state survives** — per-head (MHA), grouped (GQA), single (MQA), latent (MLA).
 - **GQA-8** is the modern default: ~MHA quality, 4–8× smaller cache; MHA→GQA conversion is a mean-pool + ~5% uptrain.
@@ -208,6 +208,6 @@ Next: [Chapter 2 — the optimization ladder](05-KV-Cache.ch2-optimization-ladde
 
 ---
 
-## REFERENCES
+## References
 
 Shared with the topic's companion file — see [KV Cache — references and further reading](05-KV-Cache.references.md) (GQA, MLA/DeepSeek-V2, KIVI, StreamingLLM, and Mistral entries).

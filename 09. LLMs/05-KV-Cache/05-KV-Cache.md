@@ -33,7 +33,7 @@ This is the **main page** of a multi-chapter topic — the complete core; four d
 
 ---
 
-## THE PROBLEM: DECODING REPEATS ITSELF
+## The problem: decoding repeats itself
 
 LLMs generate **autoregressively** — one token at a time, each conditioned on all before it — and the naive loop recomputes the past on every single step. Feel the waste first; the cache is just its removal.
 
@@ -45,13 +45,15 @@ The observation that makes the optimization possible:
 
 > **Note:** in a causal (decoder-only) transformer, a token's key and value depend **only on that token and the ones before it** — never on anything after. Once token 5's K and V are computed, they are **frozen for the rest of the generation**. Recomputing them yields bit-for-bit identical numbers. Pure waste.
 
-![Per-step K/V projection work: without a cache it grows linearly with position (quadratic in total); with a cache it is constant — one new token per step. The shaded region is pure redundant work.](../images/kv_recompute_waste.png)
+![Animated — six decode steps, side by side. Without a cache (left), every step re-projects ALL past K/V: the red columns pile up to 21 projections, O(n²). With a cache (right), each step projects exactly one new token (green) and reads the rest back (grey) — 6 projections, O(n) — while the amber bar underneath shows the cost you pay instead: cache memory growing one token per step, never freed until the request ends. Hand-authored animated SVG (loops).](../images/kv_decode_growth.svg)
+
+![Per-step K/V projection work as a chart: without a cache it grows linearly with position (quadratic in total); with a cache it is constant — one new token per step. The shaded region is pure redundant work.](../images/kv_recompute_waste.png)
 
 > **Gotcha:** people say the cache makes attention "$O(n)$ instead of $O(n^2)$." Be precise: the cache removes the redundant *recomputation of past tokens' K/V projections (and the rest of their forward pass)*. The attention **scores** for the current token still touch all $n$ past keys — a single step is still $O(n)$. What you never redo is the past tokens' work.
 
 ---
 
-## WHAT IT IS
+## What it is
 
 A **KV cache** is a per-layer buffer holding the **key** and **value** vectors of every token processed so far — compute each token's K and V exactly once, then reuse them forever. It splits generation into two phases:
 
@@ -80,7 +82,7 @@ graph TD
 
 ---
 
-## INTUITION: THE RUNNING TAB
+## Intuition: the running tab
 
 Think of a bartender keeping a **running tab**. Without a tab, every new drink means re-adding every drink you've had all night from the receipts — slower with every round. With a tab, the total is written down and each order just **adds one line**. The KV cache is that tab:
 
@@ -88,11 +90,11 @@ Think of a bartender keeping a **running tab**. Without a tab, every new drink m
 - each new token adds only its own line;
 - nobody ever re-derives the tab from the receipts.
 
-![Decode as a causal attention matrix: the current query row (green) is computed fresh and reads all earlier tokens' keys and values straight from the cache (the columns, reused); every past query row greys out — never recomputed. Exactly why K and V are cached but Q is not.](../images/kv_attention_cache.png)
+![Animated — the running tab, played out over four rounds. Left, no tab: every round the bartender re-adds EVERY receipt in the pile (they all flash), and the re-added count climbs 1 → 3 → 6 → 10 — O(n²). Right, the tab: one new line per round, the total just updates — O(n). Bottom row maps it: receipts = past tokens, re-adding = recomputing their K/V, the tab = the KV cache, the new line = the new token's K,V. Hand-authored animated SVG (loops).](../images/kv_running_tab.svg)
 
 ---
 
-## WHY K AND V, NEVER Q
+## Why K and V, never Q
 
 The single most-asked KV-cache interview question, and it reduces to **who needs to talk to whom**: a new token's query interrogates *all past keys* and gathers *all past values* — but past tokens' queries already did their job and are never asked again.
 
@@ -100,11 +102,13 @@ The single most-asked KV-cache interview question, and it reduces to **who needs
 - **K and V are per-token and reused** — every old key and value is re-read on *every* subsequent step.
 - Caching Q would store bytes nobody will ever read.
 
+![Animated — one decode step, who talks to whom. The new token's q (green) interrogates every cached key, softmax weighs the cached values into the output — then q fades out, used once and discarded, while its k and v (amber) join the cache. The greyed, struck-through past queries already spoke and are never asked again — which is exactly why K and V are stored and Q never is. Hand-authored animated SVG (loops through the four phases).](../images/kv_why_not_q.svg)
+
 > **Note:** there is **no attention mask** in a decode step — the single new query attends to *every* cache entry, which is automatically causal because the cache only ever holds past tokens. The triangular causal mask matters during **prefill** (and training), where many query positions are processed in one pass.
 
 ---
 
-## COMMON MISCONCEPTIONS
+## Common misconceptions
 
 The wrong beliefs I hear most often — several stated confidently in interviews. Each with the precise correction:
 
@@ -117,7 +121,7 @@ The wrong beliefs I hear most often — several stated confidently in interviews
 
 ---
 
-## THE TWO PHASES: PREFILL VS DECODE
+## The two phases: prefill vs decode
 
 The cache splits inference into two phases with **opposite performance characteristics** — and confusing them is the root of most serving mistakes.
 
@@ -146,7 +150,7 @@ graph LR
 
 ---
 
-## HOW IT WORKS: THE CACHE TENSOR AND THE APPEND
+## How it works: the cache tensor and the append
 
 Concretely: per layer, the cache is a pair of tensors shaped `[batch, n_kv_heads, seq_len, head_dim]` — one for K, one for V. The lifecycle has three moves:
 
@@ -167,7 +171,7 @@ The word "append" hides a production detail worth knowing:
 
 ---
 
-## THE MATH: HOW BIG IS THE CACHE
+## The math: how big is the cache
 
 One formula decides what you can serve — interviewers ask you to derive it on the spot:
 
@@ -204,7 +208,7 @@ $$2 \times 32 \times 32 \times 128 \times 2 \;=\; 524{,}288 \text{ bytes} \;\app
 
 ---
 
-## WHY DECODE IS MEMORY-BOUND
+## Why decode is memory-bound
 
 Worth deriving from first principles, because it is the insight the rest of the field is built on. The relevant quantity is **arithmetic intensity** — FLOPs done per byte moved from memory.
 
@@ -226,7 +230,7 @@ $$\text{arithmetic intensity} \approx \frac{2 \times \text{params}\ \text{ FLOP}
 
 ---
 
-## CODE: PROVE IT, THEN WATCH THE SPEEDUP GROW
+## Code: prove it, then watch the speedup grow
 
 A from-scratch single-layer attention that runs the decode loop **both ways** — recomputing everything vs keeping a cache — checks the outputs match to floating-point tolerance, then times both across growing lengths so you *watch the speedup widen*. CPU, a few seconds, no GPU needed.
 
@@ -312,7 +316,7 @@ Read the table top to bottom:
 
 ---
 
-## WHAT-IF ANALYSIS
+## What-if analysis
 
 Every serving decision is one of these dials. For each: what to *expect*, how it *fails*, the *trade* you make. (Numbers reuse the 7B-MHA baseline: 0.5 MiB/token, 80 GB GPU, ~60 GB free for cache.)
 
@@ -356,7 +360,7 @@ Every serving decision is one of these dials. For each: what to *expect*, how it
 
 ---
 
-## WHERE IT IS USED — AND WHERE IT IS NOT
+## Where it is used — and where it is not
 
 **Used:** essentially every autoregressive LLM at **inference** time. Every serving stack — [vLLM](https://github.com/vllm-project/vllm), TGI, TensorRT-LLM, llama.cpp — is built around a KV cache, and most of their cleverness is in *managing* it ([chapter 4](05-KV-Cache.ch4-production.md)).
 
@@ -372,7 +376,7 @@ Every serving decision is one of these dials. For each: what to *expect*, how it
 
 ---
 
-## GOING DEEPER: THE CHAPTERS
+## Going deeper: the chapters
 
 The core above is complete on its own; each chapter below takes one dimension to production depth. Read them in order the first time — each builds on the last:
 
@@ -383,7 +387,7 @@ The core above is complete on its own; each chapter below takes one dimension to
 
 ---
 
-## PRODUCTION FAILURE MODES
+## Production failure modes
 
 The cache is where a surprising number of production incidents live. The five that page you at 2 a.m. — each dissected with detection and mitigation in [chapter 4](05-KV-Cache.ch4-production.md):
 
@@ -395,7 +399,7 @@ The cache is where a surprising number of production incidents live. The five th
 
 ---
 
-## RECAP AND RAPID-FIRE
+## Recap and rapid-fire
 
 **If you remember nothing else:** during autoregressive decoding a token's K and V never change once computed — cache them and recompute only the *new* token's. This turns per-step work from $O(n)$ recompute into $O(1)$, splits inference into a compute-bound **prefill** and a memory-bound **decode**, and costs VRAM that **grows linearly with tokens × batch** — the real cap on what you can serve.
 
@@ -413,7 +417,7 @@ The cache is where a surprising number of production incidents live. The five th
 
 ---
 
-## REFERENCES AND FURTHER READING
+## References and further reading
 
 The curated link library for this topic — videos, courses, articles, papers, books, and internal cross-links — lives in a companion file so it can be reused as a standalone reference list:
 

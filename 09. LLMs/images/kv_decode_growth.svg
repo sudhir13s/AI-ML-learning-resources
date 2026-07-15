@@ -1,0 +1,101 @@
+<svg viewBox="0 0 860 430" xmlns="http://www.w3.org/2000/svg" font-family="DejaVu Sans, Verdana, sans-serif">
+  <!-- Animated: 6 decode steps loop (12s). Left: without cache, step t re-projects
+       ALL t tokens (red triangle = O(n^2) total work). Right: with cache, step t
+       projects 1 new token (green) and reads the rest back (grey) — and the cache
+       memory bar grows by one cell per step, linearly, never freed mid-request.
+       Muted palette, SMIL discrete steps, loops forever. Column 1 and the final
+       counters stay visible at t=0 so the first frame is never empty. -->
+  <style>
+    .title { font-size: 15px; font-weight: bold; fill: #4A5B6E; }
+    .lab   { font-size: 12px; fill: #4A5B6E; }
+    .big   { font-size: 13px; font-weight: bold; }
+    .red   { fill: #8B3B4A; }
+    .green { fill: #2E7A5A; }
+    .grey  { fill: #7d8b9a; }
+    .amber { fill: #7A6528; }
+  </style>
+
+  <text x="215" y="24" text-anchor="middle" class="title">Without cache</text>
+  <text x="215" y="42" text-anchor="middle" class="lab">every step re-projects ALL past K/V</text>
+  <text x="645" y="24" text-anchor="middle" class="title">With KV cache</text>
+  <text x="645" y="42" text-anchor="middle" class="lab">project 1 new token, read the rest back</text>
+
+  <!-- legends -->
+  <g class="lab">
+    <rect x="65"  y="52" width="14" height="12" rx="2" class="red"/><text x="84" y="62">recomputed this step</text>
+    <rect x="495" y="52" width="14" height="12" rx="2" class="green"/><text x="514" y="62">projected once (new token)</text>
+    <rect x="690" y="52" width="14" height="12" rx="2" class="grey"/><text x="709" y="62">read from cache</text>
+  </g>
+
+  <!-- projection counters (label + animated number, one line, below legends) -->
+  <text x="245" y="86" text-anchor="end" class="big red">projections so far:</text>
+  <g class="big red">
+    <text x="253" y="86" opacity="1">1<animate attributeName="opacity" values="1;0;0;0;0;0;1" keyTimes="0;0.166;0.333;0.5;0.666;0.833;0.999" calcMode="discrete" dur="12s" repeatCount="indefinite"/></text>
+    <text x="253" y="86" opacity="0">3<animate attributeName="opacity" values="0;1;0;0;0;0;0" keyTimes="0;0.166;0.333;0.5;0.666;0.833;1" calcMode="discrete" dur="12s" repeatCount="indefinite"/></text>
+    <text x="253" y="86" opacity="0">6<animate attributeName="opacity" values="0;0;1;0;0;0;0" keyTimes="0;0.166;0.333;0.5;0.666;0.833;1" calcMode="discrete" dur="12s" repeatCount="indefinite"/></text>
+    <text x="253" y="86" opacity="0">10<animate attributeName="opacity" values="0;0;0;1;0;0;0" keyTimes="0;0.166;0.333;0.5;0.666;0.833;1" calcMode="discrete" dur="12s" repeatCount="indefinite"/></text>
+    <text x="253" y="86" opacity="0">15<animate attributeName="opacity" values="0;0;0;0;1;0;0" keyTimes="0;0.166;0.333;0.5;0.666;0.833;1" calcMode="discrete" dur="12s" repeatCount="indefinite"/></text>
+    <text x="253" y="86" opacity="0">21 = O(n²)<animate attributeName="opacity" values="0;0;0;0;0;1;0" keyTimes="0;0.166;0.333;0.5;0.666;0.833;1" calcMode="discrete" dur="12s" repeatCount="indefinite"/></text>
+  </g>
+  <text x="675" y="86" text-anchor="end" class="big green">projections so far:</text>
+  <g class="big green">
+    <text x="683" y="86" opacity="1">1<animate attributeName="opacity" values="1;0;0;0;0;0;1" keyTimes="0;0.166;0.333;0.5;0.666;0.833;0.999" calcMode="discrete" dur="12s" repeatCount="indefinite"/></text>
+    <text x="683" y="86" opacity="0">2<animate attributeName="opacity" values="0;1;0;0;0;0;0" keyTimes="0;0.166;0.333;0.5;0.666;0.833;1" calcMode="discrete" dur="12s" repeatCount="indefinite"/></text>
+    <text x="683" y="86" opacity="0">3<animate attributeName="opacity" values="0;0;1;0;0;0;0" keyTimes="0;0.166;0.333;0.5;0.666;0.833;1" calcMode="discrete" dur="12s" repeatCount="indefinite"/></text>
+    <text x="683" y="86" opacity="0">4<animate attributeName="opacity" values="0;0;0;1;0;0;0" keyTimes="0;0.166;0.333;0.5;0.666;0.833;1" calcMode="discrete" dur="12s" repeatCount="indefinite"/></text>
+    <text x="683" y="86" opacity="0">5<animate attributeName="opacity" values="0;0;0;0;1;0;0" keyTimes="0;0.166;0.333;0.5;0.666;0.833;1" calcMode="discrete" dur="12s" repeatCount="indefinite"/></text>
+    <text x="683" y="86" opacity="0">6 = O(n)<animate attributeName="opacity" values="0;0;0;0;0;1;0" keyTimes="0;0.166;0.333;0.5;0.666;0.833;1" calcMode="discrete" dur="12s" repeatCount="indefinite"/></text>
+  </g>
+
+  <!-- LEFT: red triangle — column t holds t cells, ALL recomputed that step -->
+  <g>
+    <g><rect x="65" y="272" width="44" height="30" rx="3" class="red"/></g>
+    <g opacity="0"><animate attributeName="opacity" values="0;1;1" keyTimes="0;0.166;1" calcMode="discrete" dur="12s" repeatCount="indefinite"/>
+      <rect x="117" y="272" width="44" height="30" rx="3" class="red"/><rect x="117" y="238" width="44" height="30" rx="3" class="red"/></g>
+    <g opacity="0"><animate attributeName="opacity" values="0;1;1" keyTimes="0;0.333;1" calcMode="discrete" dur="12s" repeatCount="indefinite"/>
+      <rect x="169" y="272" width="44" height="30" rx="3" class="red"/><rect x="169" y="238" width="44" height="30" rx="3" class="red"/><rect x="169" y="204" width="44" height="30" rx="3" class="red"/></g>
+    <g opacity="0"><animate attributeName="opacity" values="0;1;1" keyTimes="0;0.5;1" calcMode="discrete" dur="12s" repeatCount="indefinite"/>
+      <rect x="221" y="272" width="44" height="30" rx="3" class="red"/><rect x="221" y="238" width="44" height="30" rx="3" class="red"/><rect x="221" y="204" width="44" height="30" rx="3" class="red"/><rect x="221" y="170" width="44" height="30" rx="3" class="red"/></g>
+    <g opacity="0"><animate attributeName="opacity" values="0;1;1" keyTimes="0;0.666;1" calcMode="discrete" dur="12s" repeatCount="indefinite"/>
+      <rect x="273" y="272" width="44" height="30" rx="3" class="red"/><rect x="273" y="238" width="44" height="30" rx="3" class="red"/><rect x="273" y="204" width="44" height="30" rx="3" class="red"/><rect x="273" y="170" width="44" height="30" rx="3" class="red"/><rect x="273" y="136" width="44" height="30" rx="3" class="red"/></g>
+    <g opacity="0"><animate attributeName="opacity" values="0;1;1" keyTimes="0;0.833;1" calcMode="discrete" dur="12s" repeatCount="indefinite"/>
+      <rect x="325" y="272" width="44" height="30" rx="3" class="red"/><rect x="325" y="238" width="44" height="30" rx="3" class="red"/><rect x="325" y="204" width="44" height="30" rx="3" class="red"/><rect x="325" y="170" width="44" height="30" rx="3" class="red"/><rect x="325" y="136" width="44" height="30" rx="3" class="red"/><rect x="325" y="102" width="44" height="30" rx="3" class="red"/></g>
+  </g>
+
+  <!-- RIGHT: green top cell (the ONE new projection) over grey reused cells -->
+  <g>
+    <g><rect x="495" y="272" width="44" height="30" rx="3" class="green"/></g>
+    <g opacity="0"><animate attributeName="opacity" values="0;1;1" keyTimes="0;0.166;1" calcMode="discrete" dur="12s" repeatCount="indefinite"/>
+      <rect x="547" y="272" width="44" height="30" rx="3" class="grey"/><rect x="547" y="238" width="44" height="30" rx="3" class="green"/></g>
+    <g opacity="0"><animate attributeName="opacity" values="0;1;1" keyTimes="0;0.333;1" calcMode="discrete" dur="12s" repeatCount="indefinite"/>
+      <rect x="599" y="272" width="44" height="30" rx="3" class="grey"/><rect x="599" y="238" width="44" height="30" rx="3" class="grey"/><rect x="599" y="204" width="44" height="30" rx="3" class="green"/></g>
+    <g opacity="0"><animate attributeName="opacity" values="0;1;1" keyTimes="0;0.5;1" calcMode="discrete" dur="12s" repeatCount="indefinite"/>
+      <rect x="651" y="272" width="44" height="30" rx="3" class="grey"/><rect x="651" y="238" width="44" height="30" rx="3" class="grey"/><rect x="651" y="204" width="44" height="30" rx="3" class="grey"/><rect x="651" y="170" width="44" height="30" rx="3" class="green"/></g>
+    <g opacity="0"><animate attributeName="opacity" values="0;1;1" keyTimes="0;0.666;1" calcMode="discrete" dur="12s" repeatCount="indefinite"/>
+      <rect x="703" y="272" width="44" height="30" rx="3" class="grey"/><rect x="703" y="238" width="44" height="30" rx="3" class="grey"/><rect x="703" y="204" width="44" height="30" rx="3" class="grey"/><rect x="703" y="170" width="44" height="30" rx="3" class="grey"/><rect x="703" y="136" width="44" height="30" rx="3" class="green"/></g>
+    <g opacity="0"><animate attributeName="opacity" values="0;1;1" keyTimes="0;0.833;1" calcMode="discrete" dur="12s" repeatCount="indefinite"/>
+      <rect x="755" y="272" width="44" height="30" rx="3" class="grey"/><rect x="755" y="238" width="44" height="30" rx="3" class="grey"/><rect x="755" y="204" width="44" height="30" rx="3" class="grey"/><rect x="755" y="170" width="44" height="30" rx="3" class="grey"/><rect x="755" y="136" width="44" height="30" rx="3" class="grey"/><rect x="755" y="102" width="44" height="30" rx="3" class="green"/></g>
+  </g>
+
+  <!-- step axis -->
+  <g class="lab" text-anchor="middle">
+    <text x="87"  y="318">1</text><text x="139" y="318">2</text><text x="191" y="318">3</text>
+    <text x="243" y="318">4</text><text x="295" y="318">5</text><text x="347" y="318">6</text>
+    <text x="517" y="318">1</text><text x="569" y="318">2</text><text x="621" y="318">3</text>
+    <text x="673" y="318">4</text><text x="725" y="318">5</text><text x="777" y="318">6</text>
+    <text x="217" y="336">decode step</text>
+    <text x="647" y="336">decode step</text>
+  </g>
+
+  <!-- the GROWING CACHE MEMORY bar (right panel only — the cost you pay instead) -->
+  <text x="495" y="366" class="lab">KV cache memory — +1 token per step, never freed:</text>
+  <rect x="495" y="374" width="304" height="18" rx="4" fill="none" stroke="#7d8b9a" stroke-width="1.2"/>
+  <rect x="497" y="376" height="14" rx="3" class="amber" width="48">
+    <animate attributeName="width" values="48;98;148;198;248;300" keyTimes="0;0.166;0.333;0.5;0.666;0.833" calcMode="discrete" dur="12s" repeatCount="indefinite"/>
+  </rect>
+  <text x="495" y="410" class="lab">memory ∝ tokens × layers × KV heads — linear</text>
+
+  <!-- left panel bottom note -->
+  <text x="65" y="366" class="lab">no cache memory needed…</text>
+  <text x="65" y="384" class="big red">…but total work climbs quadratically</text>
+</svg>

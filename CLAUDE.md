@@ -54,8 +54,9 @@ each concept is **two files** (canonical example: [09. LLMs/05-KV-Cache/05-KV-Ca
 - **`NN-Concept.md` — the content.** A progressive, intuition-first page written in the voice of a
   researcher-teacher writing a tech blog (style bar = Practitioner-Workflows `RLHF-and-Alignment.md`).
   **Tiered beat flow (v2, decision-10 in the parent store — the page's `tier` decides which beats it
-  owes; `##` section headings are CAPITALIZED (owner directive 2026-07-14, e.g. `## THE PROBLEM:
-  DECODING REPEATS ITSELF`; the `#` page title stays natural), in this order):**
+  owes; `##` section headings stay natural sentence case, e.g. `## The problem: decoding repeats
+  itself` — ALL-CAPS headings were piloted 2026-07-14 and REVERSED by the owner 2026-07-15
+  ("doesn't look good"); do not reintroduce them), in this order:**
   - **CORE (every page):** The problem / why it was introduced → What it is → Intuition (analogy) →
     Why it works / why it matters → How it works → The math (derived, every symbol defined) →
     Numerical example(s) (minimal scalar → realistic vector → end-to-end trace) → Code (**PyTorch
@@ -84,9 +85,9 @@ each concept is **two files** (canonical example: [09. LLMs/05-KV-Cache/05-KV-Ca
   (main page pushing past ~550 lines with production/kernel/variant material), split into the
   **main page + numbered chapter files in the SAME topic folder**: `NN-Concept.md` (the tiered
   core/standard/flagship page — complete on its own) plus `NN-Concept.chK-<slug>.md` depth
-  chapters (each: own frontmatter with `chapter: K` + `chapter_of: <main id>`, CAPS headings,
-  lead-then-bullets, recap + next-chapter link, references pointer last). The main page lists
-  chapters in a `chapters:` frontmatter array AND a `## GOING DEEPER: THE CHAPTERS` section
+  chapters (each: own frontmatter with `chapter: K` + `chapter_of: <main id>`, natural-case
+  headings, lead-then-bullets, recap + next-chapter link, references pointer last). The main page
+  lists chapters in a `chapters:` frontmatter array AND a `## Going deeper: the chapters` section
   (1-line-per-chapter index). The reader surfaces every chapter `.md` as an ordered lesson under
   the topic card (main page first). Canonical example: `09. LLMs/05-KV-Cache/` (main + ch1
   variants · ch2 optimization-ladder · ch3 flashattention-flashdecoding · ch4 production).

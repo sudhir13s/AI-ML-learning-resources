@@ -32,7 +32,7 @@ The ladder at a glance:
 
 ---
 
-## L0 → L1: CACHE AT ALL
+## L0 → L1: cache at all
 
 The main page covers this move in full; the ladder needs only its shape.
 
@@ -42,7 +42,7 @@ The main page covers this move in full; the ladder needs only its shape.
 
 ---
 
-## L1 → L2: STOP RE-ALLOCATING
+## L1 → L2: stop re-allocating
 
 The teaching-code `torch.cat` append hides a second quadratic. Real engines never grow a tensor per token.
 
@@ -54,7 +54,7 @@ The teaching-code `torch.cat` append hides a second quadratic. Real engines neve
 
 ---
 
-## L2 → L3: PAGE THE CACHE (PAGEDATTENTION)
+## L2 → L3: page the cache (PagedAttention)
 
 The waste L2 leaves behind is *allocation-shaped*, and the fix is the oldest trick in operating systems: **virtual memory**.
 
@@ -114,7 +114,7 @@ graph LR
 
 ---
 
-## L3 → L4: NEVER PREFILL THE SAME PREFIX TWICE
+## L3 → L4: never prefill the same prefix twice
 
 Once blocks are addressable, requests can **share** them — and most real traffic shares a lot.
 
@@ -129,7 +129,7 @@ Once blocks are addressable, requests can **share** them — and most real traff
 
 ---
 
-## L4 → L5: QUANTIZE THE CACHE
+## L4 → L5: quantize the cache
 
 With allocation and reuse solved, the remaining bytes are the numbers themselves — and FP16 is more precision than cached K/V needs.
 
@@ -140,7 +140,7 @@ With allocation and reuse solved, the remaining bytes are the numbers themselves
 
 ---
 
-## L5 → L6: BOUND OR SPILL THE GROWTH
+## L5 → L6: bound or spill the growth
 
 The top of the ladder handles the cases where even an optimized cache can't just keep growing.
 
@@ -152,7 +152,7 @@ The top of the ladder handles the cases where even an optimized cache can't just
 
 ---
 
-## SIZING A DEPLOYMENT, LEVEL BY LEVEL
+## Sizing a deployment, level by level
 
 The reasoning end to end, for "serve Llama-3-8B chat on one A100-80GB, 8K context, max throughput" — each step is the main-page formula plus one ladder level:
 
@@ -168,7 +168,7 @@ The reasoning end to end, for "serve Llama-3-8B chat on one A100-80GB, 8K contex
 
 ---
 
-## RECAP
+## Recap
 
 - The ladder: **cache → in-place → paged → shared → quantized → bounded/spilled** — each level kills the next dominant waste, and the order is not optional.
 - L2 hides in plain sight: `torch.cat` growth is a silent second $O(n^2)$; pre-allocate and write in place.
@@ -181,6 +181,6 @@ Next: [Chapter 3 — FlashAttention and FlashDecoding](05-KV-Cache.ch3-flashatte
 
 ---
 
-## REFERENCES
+## References
 
 Shared with the topic's companion file — see [KV Cache — references and further reading](05-KV-Cache.references.md) (vLLM/PagedAttention, SGLang/RadixAttention, StreamingLLM, KIVI entries).

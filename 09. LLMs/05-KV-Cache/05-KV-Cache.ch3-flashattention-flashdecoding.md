@@ -25,7 +25,7 @@ Two kernels matter, one per phase:
 
 ---
 
-## THE PROBLEM: THE SCORE MATRIX IS THE TRAFFIC
+## The problem: the score matrix is the traffic
 
 Standard attention is three matmuls with a giant intermediate in the middle — and the intermediate, not the math, is the cost.
 
@@ -39,7 +39,7 @@ Standard attention is three matmuls with a giant intermediate in the middle — 
 
 ---
 
-## FLASHATTENTION: TILE, STREAM, NEVER MATERIALIZE
+## FlashAttention: tile, stream, never materialize
 
 **FlashAttention** ([Dao et al. 2022](https://arxiv.org/abs/2205.14135)) computes *exact* attention while keeping every intermediate small enough to live in SRAM.
 
@@ -75,7 +75,7 @@ $$m_{\text{new}} = \max(m_{\text{old}}, m_{\text{tile}}), \quad \ell_{\text{new}
 
 ---
 
-## FLASHDECODING: THE LONE-QUERY PROBLEM
+## FlashDecoding: the lone-query problem
 
 Decode breaks FlashAttention's parallelism assumption, and the fix is to flip the axis of parallelism.
 
@@ -113,7 +113,7 @@ graph TD
 
 ---
 
-## THE LINEAGE: WHERE THE KERNELS WENT NEXT
+## The lineage: where the kernels went next
 
 The ideas above kept compounding; knowing the names lets you read a serving-engine changelog.
 
@@ -125,7 +125,7 @@ The ideas above kept compounding; knowing the names lets you read a serving-engi
 
 ---
 
-## HOW KERNELS AND CACHE LEVERS COMPOSE
+## How kernels and cache levers compose
 
 The cache stack and the kernel stack multiply; neither substitutes for the other.
 
@@ -138,7 +138,7 @@ The cache stack and the kernel stack multiply; neither substitutes for the other
 
 ---
 
-## RECAP
+## Recap
 
 - Naive attention's cost is the $n \times n$ score matrix's **HBM round-trips**, not its FLOPs.
 - **FlashAttention** = tiling + online softmax: exact attention, $O(n)$ memory traffic, intermediates never leave SRAM.
@@ -151,6 +151,6 @@ Next: [Chapter 4 — the KV cache in production](05-KV-Cache.ch4-production.md):
 
 ---
 
-## REFERENCES
+## References
 
 Shared with the topic's companion file — see [KV Cache — references and further reading](05-KV-Cache.references.md) (FlashAttention, FlashDecoding, and serving-kernel entries).
