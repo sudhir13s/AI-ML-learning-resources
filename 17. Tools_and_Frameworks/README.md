@@ -42,7 +42,7 @@ path plus the best **free, open** courses, videos, references, articles, and gui
 > These tools *implement* ideas that are taught in depth elsewhere — follow the links for the *why*.
 - **Experiment tracking, model serving & deployment** (the production discipline) → [Deployment & MLOps](../18.%20Deployment_and_MLOps/README.md)
 - **Transformers, attention & LLM internals** (what Hugging Face / PyTorch build) → [LLMs](../09.%20LLMs/README.md) · [Deep Learning](../05.%20Deep_Learning/README.md)
-- **Vector databases, LangChain & RAG pipelines** (tools layered on top) → [RAG & LLM Applications](../15.%20RAG_and_LLM_Applications/README.md) · [Agentic AI](../16.%20Agentic_AI/README.md)
+- **Vector databases, LangChain & RAG pipelines** (tools layered on top) → [RAG & LLM Applications](../llms-applications-and-agents/rag-and-knowledge-systems/overview.md) · [Agentic AI](../llms-applications-and-agents/agentic-ai/overview.md)
 
 ## 🎓 Courses / Tutorials (free)
 - [PyTorch official tutorials](https://pytorch.org/tutorials/) — **PyTorch team** — authoritative, from 60-min blitz to advanced.
