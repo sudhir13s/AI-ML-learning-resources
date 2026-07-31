@@ -43,8 +43,8 @@ best **free, open** courses, videos, papers, articles, and tools for staying cur
 > up with them. Go to the source domain for the concepts themselves.
 - **Large language models** — GPT/Llama, scaling, fine-tuning, prompting, RLHF → [09. LLMs](../09.%20LLMs/README.md)
 - **Generative AI** — diffusion, image/video/audio generation → [10. GenAI](../10.%20GenAI/README.md)
-- **Agentic AI** — tool use, planning, multi-agent systems → [12. Agentic AI](../16.%20Agentic_AI/README.md)
-- **Retrieval-augmented generation & LLM apps** → [11. RAG & LLM Applications](../15.%20RAG_and_LLM_Applications/README.md)
+- **Agentic AI** — tool use, planning, multi-agent systems → [12. Agentic AI](../llms-applications-and-agents/agentic-ai/overview.md)
+- **Retrieval-augmented generation & LLM apps** → [11. RAG & LLM Applications](../llms-applications-and-agents/rag-and-knowledge-systems/overview.md)
 
 ## 📰 High-signal newsletters / blogs (free)
 - [Import AI](https://importai.net/) — **Jack Clark** — weekly, policy + research, low hype.

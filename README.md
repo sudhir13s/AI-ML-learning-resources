@@ -49,8 +49,8 @@ dataset for the interview-prep project.*
 | 10 | [Generative AI](10.%20GenAI/README.md) | advanced |
 | 11 | [Diffusion Models](11.%20Diffusion/README.md) | advanced |
 | 12 | [Multimodal Models](12.%20Multimodal/README.md) | advanced |
-| 15 | [RAG & LLM Applications](15.%20RAG_and_LLM_Applications/README.md) | advanced |
-| 16 | [Agentic AI & Tool Use](16.%20Agentic_AI/README.md) | advanced |
+| 15 | [RAG & LLM Applications](llms-applications-and-agents/rag-and-knowledge-systems/overview.md) | advanced |
+| 16 | [Agentic AI & Tool Use](llms-applications-and-agents/agentic-ai/overview.md) | advanced |
 
 ### Engineering & Production
 | # | Topic | Level |
