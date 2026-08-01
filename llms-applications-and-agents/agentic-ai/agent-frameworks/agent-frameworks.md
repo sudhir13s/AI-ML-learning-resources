@@ -53,6 +53,6 @@ value but also indirection.
 - [Artificial Intelligence: A Modern Approach — **Ch. 2 "Intelligent Agents"** (agent program structure)](https://aima.cs.berkeley.edu/) — **Russell & Norvig** — the agent-program abstractions frameworks operationalize.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 8.03 Agents & Tool Use](../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.03_Agents_and_Tool_Use.md)
+- Concept depth (the *why*): [AI-ML-intuition 8.03 Agents & Tool Use](../../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.03_Agents_and_Tool_Use.md)
 - Prev / next: [08 Model Context Protocol (MCP)](../model-context-protocol/model-context-protocol.md) · [07 Multi-Agent Systems](../multi-agent-systems/multi-agent-systems.md) · [10 Code Agents](../coding-and-computer-use-agents/code-agents.md)
 - Related (canonical home): [Prompting & In-Context Learning](../../../09.%20LLMs/16-Prompting-and-In-Context-Learning/16-Prompting-and-In-Context-Learning.md)

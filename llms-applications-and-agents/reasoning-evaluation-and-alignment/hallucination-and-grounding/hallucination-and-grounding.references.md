@@ -59,7 +59,7 @@ updated: 2026-07-02
 
 **In this platform**:
 - Concept page (full explanation): [Guardrails & Hallucination Mitigation](hallucination-and-grounding.md)
-- Concept depth (the *why*): [AI-ML-intuition 8.02 Retrieval-Augmented Generation](../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.02_Retrieval_Augmented_Generation.md) · [8.01 In-Context Learning & Prompting](../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.01_In-Context_Learning_and_Prompting.md)
+- Concept depth (the *why*): [AI-ML-intuition 8.02 Retrieval-Augmented Generation](../../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.02_Retrieval_Augmented_Generation.md) · [8.01 In-Context Learning & Prompting](../../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.01_In-Context_Learning_and_Prompting.md)
 - Machinery reused here: [05 Hybrid Search (the DenseRetriever)](../../rag-and-knowledge-systems/hybrid-search/hybrid-search.md) · [11 RAG Evaluation (the faithfulness/grounding proxy)](../../rag-and-knowledge-systems/rag-evaluation/rag-evaluation.md) · [13 Citations & Attribution (the grounding cosine + cosine≠entailment caveat)](../../rag-and-knowledge-systems/citations-and-attribution/citations-and-attribution.md)
 - Foundations: [01 RAG Fundamentals](../../rag-and-knowledge-systems/rag-foundations/rag-foundations.md) · [08 Advanced RAG (Self-RAG support check)](../../rag-and-knowledge-systems/advanced-rag/advanced-rag.md)
 - Next / related: [15 LLM App Orchestration](../../agentic-ai/llm-app-orchestration/llm-app-orchestration.md)

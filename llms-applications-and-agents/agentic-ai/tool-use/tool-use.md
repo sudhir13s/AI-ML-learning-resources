@@ -31,7 +31,7 @@ The model *understood the task perfectly* — it named the right tool and the ri
 
 Same model, same task — but this is **structured JSON**, a data format with an unambiguous grammar. `json.loads` never has to guess. Across eight real single-tool queries the difference is stark: the structured path yields a usable, dispatchable call **8 out of 8** times; the text-parsing path, **1 out of 8**. That gap is what this chapter is about.
 
-> **For a fast, buzzword-level overview** of tool use, function calling, and MCP, skim the recall cards [AI Buzzword Knowledge — Tool Use & MCP](../../../AI-Buzzword-Knowledge/08-Tool-Use-and-MCP.md) and [AI Buzzword Knowledge — Agents](../../../AI-Buzzword-Knowledge/05-Agents.md). *This* page is the in-depth, build-it-yourself treatment.
+> **For a fast, buzzword-level overview** of tool use, function calling, and MCP, skim the recall cards [AI Buzzword Knowledge — Tool Use & MCP](../../../../AI-Buzzword-Knowledge/08-Tool-Use-and-MCP.md) and [AI Buzzword Knowledge — Agents](../../../../AI-Buzzword-Knowledge/05-Agents.md). *This* page is the in-depth, build-it-yourself treatment.
 
 Everything here is real and runnable. There is a genuine model with **native** tool-calling, three genuine JSON-schema tools, a genuine structured-call parser and validator, a genuine message loop with tool-role results, and a companion notebook that re-executes the whole thing headless with zero errors. No trace on this page was written by hand — every `<tool_call>` is what the model actually emitted (greedy decoding, so they reproduce exactly).
 

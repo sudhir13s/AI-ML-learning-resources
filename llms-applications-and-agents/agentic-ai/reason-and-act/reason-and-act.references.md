@@ -51,7 +51,7 @@ updated: 2026-07-02
 
 **🔗 In this platform**:
 - Concept page (full explanation): [ReAct — Reason + Act](reason-and-act.md)
-- Fast buzzword-level overview (the recall layer): [AI Buzzword Knowledge — Agents](../../../AI-Buzzword-Knowledge/05-Agents.md) · [AI Buzzword Knowledge — Agentic Workflows](../../../AI-Buzzword-Knowledge/06-Agentic-Workflows.md) · [AI Buzzword Knowledge — Tool Use & MCP](../../../AI-Buzzword-Knowledge/08-Tool-Use-and-MCP.md)
+- Fast buzzword-level overview (the recall layer): [AI Buzzword Knowledge — Agents](../../../../AI-Buzzword-Knowledge/05-Agents.md) · [AI Buzzword Knowledge — Agentic Workflows](../../../../AI-Buzzword-Knowledge/06-Agentic-Workflows.md) · [AI Buzzword Knowledge — Tool Use & MCP](../../../../AI-Buzzword-Knowledge/08-Tool-Use-and-MCP.md)
 - Prerequisite (the reasoning half): [Chain-of-Thought Reasoning](../../../09.%20LLMs/17-Chain-of-Thought-Reasoning/17-Chain-of-Thought-Reasoning.md) · prompting foundations in [09 LLMs — Prompting](../../../09.%20LLMs/README.md)
 - Prev / next in this domain: [01 LLM Agents Overview](../agent-foundations/agent-foundations.md) · [03 Tool Use & Function Calling](../tool-use/tool-use.md) · [04 Planning & Task Decomposition](../planning/planning.md)
 - Where it goes next: [05 Reflection & Self-Critique](../reflection/reflection.md) (the Reflexion outer loop) · [06 Memory for Agents](../memory/memory.md) (when the scratchpad outgrows the context)

@@ -57,7 +57,7 @@ updated: 2026-07-02
 
 **In this platform**:
 - Concept page (full explanation): [RAG Evaluation](rag-evaluation.md)
-- Concept depth (the *why*): [AI-ML-intuition 8.02 Retrieval-Augmented Generation](../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.02_Retrieval_Augmented_Generation.md)
+- Concept depth (the *why*): [AI-ML-intuition 8.02 Retrieval-Augmented Generation](../../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.02_Retrieval_Augmented_Generation.md)
 - Metrics reused here: [06 Re-ranking (nDCG@k, MRR — the ranking metrics this chapter imports)](../reranking/reranking.md) · [08 Advanced RAG (the encoder-cosine support check reused as the faithfulness proxy)](../advanced-rag/advanced-rag.md)
 - Foundations: [01 RAG Fundamentals](../rag-foundations/rag-foundations.md) · [03 Embedding Models](../embedding-models/embedding-models.md) · [05 Hybrid Search (the DenseRetriever this reuses)](../hybrid-search/hybrid-search.md)
 - Next / related: [12 Long-Context vs RAG](../long-context-vs-rag/long-context-vs-rag.md) · [14 Guardrails & Hallucination Mitigation](../../reasoning-evaluation-and-alignment/hallucination-and-grounding/hallucination-and-grounding.md)

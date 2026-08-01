@@ -34,7 +34,7 @@ Answer: 15411
 
 Same weights, same decoding, right answer. The only thing that changed is that the model was allowed to **do something and look at what happened**. That is ReAct — *Reason + Act* — and it is the single most important pattern in agentic AI. By the end of this page you'll have built the real agent that produced both traces above, understand every line of its loop, and know exactly why the second trace beats the first.
 
-> **For a fast, buzzword-level overview** of agents and agentic workflows, skim the recall cards [AI Buzzword Knowledge — Agents](../../../AI-Buzzword-Knowledge/05-Agents.md) and [AI Buzzword Knowledge — Agentic Workflows](../../../AI-Buzzword-Knowledge/06-Agentic-Workflows.md). *This* page is the in-depth, build-it-yourself treatment.
+> **For a fast, buzzword-level overview** of agents and agentic workflows, skim the recall cards [AI Buzzword Knowledge — Agents](../../../../AI-Buzzword-Knowledge/05-Agents.md) and [AI Buzzword Knowledge — Agentic Workflows](../../../../AI-Buzzword-Knowledge/06-Agentic-Workflows.md). *This* page is the in-depth, build-it-yourself treatment.
 
 Everything here is real and runnable. There is a genuine model, two genuine tools, a genuine loop, and a companion notebook that re-executes the whole thing headless with zero errors. No trace on this page was written by hand — they are what the model actually generated (greedy decoding, so they reproduce exactly).
 
