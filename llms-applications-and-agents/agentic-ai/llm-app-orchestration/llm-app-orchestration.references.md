@@ -55,7 +55,7 @@ updated: 2026-07-02
 
 **In this platform**:
 - Concept page (full explanation): [LLM App Orchestration](llm-app-orchestration.md)
-- Concept depth (the *why*): [AI-ML-intuition 8.03 Agents & Tool Use](../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.03_Agents_and_Tool_Use.md) · [8.01 In-Context Learning & Prompting](../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.01_In-Context_Learning_and_Prompting.md)
+- Concept depth (the *why*): [AI-ML-intuition 8.03 Agents & Tool Use](../../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.03_Agents_and_Tool_Use.md) · [8.01 In-Context Learning & Prompting](../../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.01_In-Context_Learning_and_Prompting.md)
 - Steps wired here: [05 Hybrid Search (the DenseRetriever)](../../rag-and-knowledge-systems/hybrid-search/hybrid-search.md) · [06 Re-ranking (the cross-encoder rerank)](../../rag-and-knowledge-systems/reranking/reranking.md) · [10 Agentic RAG (the cosine router + run loop)](../../rag-and-knowledge-systems/agentic-rag/agentic-rag.md) · [14 Guardrails (the grounding/abstention step)](../../reasoning-evaluation-and-alignment/hallucination-and-grounding/hallucination-and-grounding.md)
 - Foundations: [01 RAG Fundamentals](../../rag-and-knowledge-systems/rag-foundations/rag-foundations.md)
 - Next / related: [16 Caching & Cost Optimization](../../inference-and-runtime/caching-and-cost-optimization/caching-and-cost-optimization.md)

@@ -52,7 +52,7 @@ updated: 2026-07-02
 
 **🔗 In this platform**:
 - Concept page (full explanation): [Tool Use & Function Calling](tool-use.md)
-- Fast buzzword-level overview (the recall layer): [AI Buzzword Knowledge — Tool Use & MCP](../../../AI-Buzzword-Knowledge/08-Tool-Use-and-MCP.md) · [AI Buzzword Knowledge — Agents](../../../AI-Buzzword-Knowledge/05-Agents.md)
+- Fast buzzword-level overview (the recall layer): [AI Buzzword Knowledge — Tool Use & MCP](../../../../AI-Buzzword-Knowledge/08-Tool-Use-and-MCP.md) · [AI Buzzword Knowledge — Agents](../../../../AI-Buzzword-Knowledge/05-Agents.md)
 - The text-protocol contrast (read these together): [02 ReAct — Reason + Act](../reason-and-act/reason-and-act.md) — free-text actions parsed by regex; *this* page is the structured evolution.
 - Where tools get standardised across the ecosystem: [08 Model Context Protocol (MCP)](../model-context-protocol/model-context-protocol.md) — the forward-link; function calling is how *one model* calls a tool, MCP is how the *ecosystem* shares tools.
 - Prev / next in this domain: [02 ReAct](../reason-and-act/reason-and-act.md) · [04 Planning & Task Decomposition](../planning/planning.md)

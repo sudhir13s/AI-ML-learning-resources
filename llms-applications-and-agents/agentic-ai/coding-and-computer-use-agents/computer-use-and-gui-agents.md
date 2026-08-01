@@ -52,6 +52,6 @@ horizons, no structured feedback), the screenshot→action loop, why benchmarks 
 - [Artificial Intelligence: A Modern Approach — **Ch. 2 "Intelligent Agents"** (sensors & actuators)](https://aima.cs.berkeley.edu/) — **Russell & Norvig** — GUI agents are the literal sensor (screenshot) + actuator (click) agent.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 8.03 Agents & Tool Use](../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.03_Agents_and_Tool_Use.md)
+- Concept depth (the *why*): [AI-ML-intuition 8.03 Agents & Tool Use](../../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.03_Agents_and_Tool_Use.md)
 - Prev / next: [10 Code Agents](code-agents.md) · [12 Agent Evaluation & Benchmarks](../agent-evaluation/agent-evaluation.md) · [13 Safety, Guardrails & HITL](../agent-safety/agent-safety.md)
 - Related (canonical home): [Prompting & In-Context Learning](../../../09.%20LLMs/16-Prompting-and-In-Context-Learning/16-Prompting-and-In-Context-Learning.md)
