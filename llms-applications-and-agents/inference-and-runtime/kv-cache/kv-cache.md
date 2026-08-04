@@ -3,13 +3,13 @@ id: "09-llms/kv-cache"
 topic: "KV Cache"
 parent: "09-llms"
 level: advanced
-built_from: ["decoder-only-architecture", "attention", "softmax-attention"]
+built_from: ["09-llms/decoder-only-architecture", "attention", "softmax-attention"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-07-14
 tier: flagship
 est_minutes: 35
-leads_to: ["efficient-attention-flashattention", "inference-optimization-and-serving"]
+leads_to: ["09-llms/efficient-attention-flashattention", "09-llms/inference-optimization-and-serving"]
 chapters:
   - "kv-cache-variants.md"
   - "kv-cache-optimization-stack.md"

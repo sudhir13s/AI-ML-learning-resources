@@ -9,7 +9,7 @@ template: concept-deep
 updated: 2026-06-26
 tier: standard
 est_minutes: 30
-leads_to: ["pretraining-at-scale"]
+leads_to: ["09-llms/pretraining-at-scale"]
 title: "Language Modeling Objectives (causal vs masked)"
 minutes: 30
 category: large-language-model-foundations

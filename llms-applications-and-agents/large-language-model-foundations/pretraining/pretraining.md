@@ -3,13 +3,13 @@ id: "09-llms/pretraining-at-scale"
 topic: "Pretraining at Scale"
 parent: "09-llms"
 level: advanced
-built_from: ["language-modeling-objectives", "transformer-architecture", "optimization"]
+built_from: ["09-llms/language-modeling-objectives", "transformer-architecture", "optimization"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-26
 tier: standard
 est_minutes: 40
-leads_to: ["scaling-laws"]
+leads_to: ["09-llms/scaling-laws"]
 title: "Pretraining at Scale"
 minutes: 40
 category: large-language-model-foundations

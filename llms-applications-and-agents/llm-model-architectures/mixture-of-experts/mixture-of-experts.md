@@ -3,13 +3,13 @@ id: "09-llms/mixture-of-experts"
 topic: "Mixture-of-Experts (MoE)"
 parent: "09-llms"
 level: advanced
-built_from: ["decoder-only-architecture", "softmax", "scaling-laws", "transformer-architecture"]
+built_from: ["09-llms/decoder-only-architecture", "softmax", "09-llms/scaling-laws", "transformer-architecture"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-22
 tier: flagship
 est_minutes: 45
-leads_to: ["inference-optimization-and-serving"]
+leads_to: ["09-llms/inference-optimization-and-serving"]
 title: "Mixture-of-Experts (MoE)"
 minutes: 45
 category: llm-model-architectures

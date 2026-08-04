@@ -3,13 +3,13 @@ id: "09-llms/inference-optimization-and-serving"
 topic: "Inference Optimization & Serving (vLLM · PagedAttention · continuous batching)"
 parent: "09-llms"
 level: advanced
-built_from: ["kv-cache", "decoder-only-architecture", "efficient-attention-flashattention"]
+built_from: ["09-llms/kv-cache", "09-llms/decoder-only-architecture", "09-llms/efficient-attention-flashattention"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-26
 tier: standard
 est_minutes: 30
-leads_to: ["quantization"]
+leads_to: ["09-llms/quantization"]
 title: "Inference Optimization & Serving (vLLM · PagedAttention · continuous batching)"
 minutes: 30
 category: inference-and-runtime

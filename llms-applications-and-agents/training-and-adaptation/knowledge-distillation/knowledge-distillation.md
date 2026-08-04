@@ -3,13 +3,13 @@ id: "09-llms/knowledge-distillation"
 topic: "Knowledge Distillation"
 parent: "09-llms"
 level: intermediate
-built_from: ["softmax", "cross-entropy", "language-modeling-objectives"]
+built_from: ["softmax", "cross-entropy", "09-llms/language-modeling-objectives"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-26
 tier: standard
 est_minutes: 30
-leads_to: ["lora-and-peft"]
+leads_to: ["09-llms/lora-and-peft"]
 title: "Knowledge Distillation"
 minutes: 30
 category: training-and-adaptation

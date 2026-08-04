@@ -3,13 +3,13 @@ id: "09-llms/quantization"
 topic: "Quantization (GPTQ · AWQ · GGUF · LLM.int8 · NF4)"
 parent: "09-llms"
 level: advanced
-built_from: ["decoder-only-architecture", "kv-cache", "numerical-precision"]
+built_from: ["09-llms/decoder-only-architecture", "09-llms/kv-cache", "numerical-precision"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-26
 tier: flagship
 est_minutes: 30
-leads_to: ["knowledge-distillation"]
+leads_to: ["09-llms/knowledge-distillation"]
 title: "Quantization (GPTQ · AWQ · GGUF · LLM.int8 · NF4)"
 minutes: 30
 category: inference-and-runtime

@@ -3,13 +3,13 @@ id: "09-llms/llm-evaluation-and-benchmarks"
 topic: "LLM Evaluation & Benchmarks"
 parent: "09-llms"
 level: advanced
-built_from: ["language-modeling-objectives", "perplexity", "cross-entropy", "rlhf-and-dpo"]
+built_from: ["09-llms/language-modeling-objectives", "perplexity", "cross-entropy", "09-llms/rlhf-and-dpo"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-27
 tier: standard
 est_minutes: 35
-leads_to: ["hallucination-and-alignment-basics"]
+leads_to: ["09-llms/hallucination-and-alignment-basics"]
 title: "LLM Evaluation & Benchmarks"
 minutes: 35
 category: reasoning-evaluation-and-alignment

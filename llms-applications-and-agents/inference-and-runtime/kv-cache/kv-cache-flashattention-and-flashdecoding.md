@@ -5,13 +5,13 @@ parent: "09-llms"
 chapter_of: "09-llms/kv-cache"
 chapter: 3
 level: advanced
-built_from: ["kv-cache", "kv-cache/optimization-ladder"]
+built_from: ["09-llms/kv-cache", "09-llms/kv-cache/optimization-ladder"]
 interview_frequency: high
 template: concept-chapter
 updated: 2026-07-14
 tier: flagship
 est_minutes: 20
-leads_to: ["kv-cache/production", "efficient-attention-flashattention"]
+leads_to: ["09-llms/kv-cache/production", "09-llms/efficient-attention-flashattention"]
 title: "KV Cache — FlashAttention and FlashDecoding"
 minutes: 20
 category: inference-and-runtime

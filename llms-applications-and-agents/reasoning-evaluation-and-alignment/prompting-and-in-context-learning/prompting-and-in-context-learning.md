@@ -3,13 +3,13 @@ id: "09-llms/prompting-and-in-context-learning"
 topic: "Prompting & In-Context Learning"
 parent: "09-llms"
 level: intermediate
-built_from: ["language-modeling-objectives", "decoder-only-architecture", "attention", "softmax-attention"]
+built_from: ["09-llms/language-modeling-objectives", "09-llms/decoder-only-architecture", "attention", "softmax-attention"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-06-27
 tier: standard
 est_minutes: 30
-leads_to: ["chain-of-thought-reasoning"]
+leads_to: ["09-llms/chain-of-thought-reasoning"]
 title: "Prompting & In-Context Learning"
 minutes: 30
 category: reasoning-evaluation-and-alignment
