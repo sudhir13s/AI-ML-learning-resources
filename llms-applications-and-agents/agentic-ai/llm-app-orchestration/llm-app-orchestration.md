@@ -9,6 +9,9 @@ template: concept-deep
 updated: 2026-07-02
 tier: core
 est_minutes: 20
+title: "LLM App Orchestration (chains · routing · stateful graphs)"
+minutes: 20
+category: agentic-ai
 ---
 
 # LLM App Orchestration: wire real steps into one chain, route, and run a graph

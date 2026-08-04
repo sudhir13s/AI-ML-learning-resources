@@ -9,6 +9,9 @@ template: concept-deep
 updated: 2026-06-27
 tier: core
 est_minutes: 25
+title: "Document Chunking Strategies"
+minutes: 25
+category: rag-and-knowledge-systems
 ---
 
 # Document Chunking Strategies: where you cut decides what you can find

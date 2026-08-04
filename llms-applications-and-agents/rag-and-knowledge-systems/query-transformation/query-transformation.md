@@ -9,6 +9,9 @@ template: concept-deep
 updated: 2026-07-01
 tier: core
 est_minutes: 30
+title: "Query Transformation (HyDE & Multi-Query)"
+minutes: 30
+category: rag-and-knowledge-systems
 ---
 
 # Query Transformation: fix the question before you retrieve

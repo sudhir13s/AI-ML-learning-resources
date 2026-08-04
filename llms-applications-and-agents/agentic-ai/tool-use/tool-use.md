@@ -9,6 +9,9 @@ template: concept-deep
 updated: 2026-07-02
 tier: core
 est_minutes: 30
+title: "Tool Use & Function Calling"
+minutes: 30
+category: agentic-ai
 ---
 
 # Tool Use & Function Calling: give the model a typed API, not a text box

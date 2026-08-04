@@ -9,6 +9,9 @@ template: concept-deep
 updated: 2026-07-02
 tier: core
 est_minutes: 25
+title: "Agentic RAG"
+minutes: 25
+category: rag-and-knowledge-systems
 ---
 
 # Agentic RAG: put an LLM in the driver's seat

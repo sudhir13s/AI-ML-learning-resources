@@ -9,6 +9,9 @@ template: concept-deep
 updated: 2026-07-02
 tier: core
 est_minutes: 20
+title: "Caching & Cost Optimization for LLM Apps (semantic cache · prompt caching · the cost model)"
+minutes: 20
+category: inference-and-runtime
 ---
 
 # Caching & Cost Optimization: serve repeated work for free

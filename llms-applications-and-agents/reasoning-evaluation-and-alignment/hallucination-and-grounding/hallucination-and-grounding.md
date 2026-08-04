@@ -9,6 +9,9 @@ template: concept-deep
 updated: 2026-07-02
 tier: core
 est_minutes: 20
+title: "Guardrails & Hallucination Mitigation (input/output rails · grounding abstention · false-refuse/false-allow)"
+minutes: 20
+category: reasoning-evaluation-and-alignment
 ---
 
 # Guardrails & Hallucination Mitigation: sanitize in, ground out, abstain when unsure

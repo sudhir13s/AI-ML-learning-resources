@@ -9,6 +9,9 @@ template: concept-deep
 updated: 2026-07-02
 tier: core
 est_minutes: 20
+title: "Long-Context vs RAG"
+minutes: 20
+category: rag-and-knowledge-systems
 ---
 
 # Long-Context vs RAG: a cost-and-accuracy decision

@@ -1,0 +1,92 @@
+# course.yaml v1 — AI/ML Learning Resources.
+# Charter: docs/plans/structure-rework/ai-ml-blueprints/ai-ml-blueprint-index.md
+# § "Course declaration — AI-ML/AI-ML-study-notes/learning-resources/course.yaml".
+#
+# SCOPE OF THIS FILE (2026-08-04): the charter's full target is eight sections
+# (foundations, core-machine-learning, deep-learning, modalities-and-generative-models,
+# llms-applications-and-agents, deployment-and-mlops,
+# world-models-and-embodied-intelligence, specialized-studies). Only
+# `llms-applications-and-agents` exists on disk in charter shape today — it landed in
+# the P2 agentic wave (T-203.3), re-homing the old "15. RAG_and_LLM_Applications" and
+# "16. Agentic_AI" folders. The other seven sections still sit under 20 ordinal,
+# space-and-dot-named folders ("00. Basics" .. "21. Frontier_and_Staying_Current") that
+# T-86 has not yet restructured — declaring them here would require inventing folder
+# moves and content splits that are that task's job, not this file's. They are
+# reported as a gap, not fabricated (authoring-contract Rule 3: "restructure with the
+# content that exists").
+#
+# ROOT-FOLDER NAME (2026-08-04): the module root is still `AI-ML-learning-resources/`
+# on disk (this repo's own name) — the charter's target name `learning-resources/`
+# rides T-86 together with the section restructure. `module.id` already uses the
+# charter's target id so no downstream reference needs to change again when the
+# folder rename lands; only the WIRED_COURSES `moduleDir` value does.
+#
+# GROUP_BY (resolves one of the charter's two open questions, for this section only):
+# llms-applications-and-agents is a clean two-level tree — section -> sub-area ->
+# topic-package (each topic-package is a single lesson page that owns its own
+# code/references, so Rule 3's more-than-one-page nesting test never fires and no
+# `parent:` section is needed). `category` = the sub-area folder
+# (rag-and-knowledge-systems / agentic-ai / inference-and-runtime /
+# reasoning-evaluation-and-alignment), matching Rule 6 ("the grouping value equals the
+# folder it lives in"). The three-level sections (core-machine-learning,
+# deep-learning's neuro-symbolic corner, specialized-studies) are NOT part of this
+# file and their group_by ambiguity is still open, unresolved here.
+#
+# NOT DECLARED, deliberately: each sub-area's `overview.md` (still narrates topics by
+# their pre-move location per the P2 mapping notes; T-203.5 content-pass REFACTOR is
+# pending, so it is not presented as a course chapter yet), `images/`, `code/`,
+# `tools/`, and `.gitignore` — teaching assets, not lessons.
+version: 1
+
+module:
+  id: learning-resources
+  title: AI/ML Learning Resources
+  shape: course
+  naming: kebab-case
+
+enums:
+  categories:
+    - rag-and-knowledge-systems
+    - agentic-ai
+    - inference-and-runtime
+    - reasoning-evaluation-and-alignment
+
+sections:
+  - id: llms-applications-and-agents
+    title: LLMs, Applications and Agents
+    kind: lesson
+    group_by: category
+    chapters:
+      # rag-and-knowledge-systems
+      - path: llms-applications-and-agents/rag-and-knowledge-systems/advanced-rag/advanced-rag.md
+      - path: llms-applications-and-agents/rag-and-knowledge-systems/agentic-rag/agentic-rag.md
+      - path: llms-applications-and-agents/rag-and-knowledge-systems/chunking/chunking.md
+      - path: llms-applications-and-agents/rag-and-knowledge-systems/citations-and-attribution/citations-and-attribution.md
+      - path: llms-applications-and-agents/rag-and-knowledge-systems/embedding-models/embedding-models.md
+      - path: llms-applications-and-agents/rag-and-knowledge-systems/graph-rag/graph-rag.md
+      - path: llms-applications-and-agents/rag-and-knowledge-systems/hybrid-search/hybrid-search.md
+      - path: llms-applications-and-agents/rag-and-knowledge-systems/long-context-vs-rag/long-context-vs-rag.md
+      - path: llms-applications-and-agents/rag-and-knowledge-systems/query-transformation/query-transformation.md
+      - path: llms-applications-and-agents/rag-and-knowledge-systems/rag-evaluation/rag-evaluation.md
+      - path: llms-applications-and-agents/rag-and-knowledge-systems/rag-foundations/rag-foundations.md
+      - path: llms-applications-and-agents/rag-and-knowledge-systems/reranking/reranking.md
+      - path: llms-applications-and-agents/rag-and-knowledge-systems/vector-search/vector-search.md
+      # agentic-ai
+      - path: llms-applications-and-agents/agentic-ai/agent-evaluation/agent-evaluation.md
+      - path: llms-applications-and-agents/agentic-ai/agent-foundations/agent-foundations.md
+      - path: llms-applications-and-agents/agentic-ai/agent-frameworks/agent-frameworks.md
+      - path: llms-applications-and-agents/agentic-ai/agent-safety/agent-safety.md
+      - path: llms-applications-and-agents/agentic-ai/coding-and-computer-use-agents/code-agents.md
+      - path: llms-applications-and-agents/agentic-ai/coding-and-computer-use-agents/computer-use-and-gui-agents.md
+      - path: llms-applications-and-agents/agentic-ai/llm-app-orchestration/llm-app-orchestration.md
+      - path: llms-applications-and-agents/agentic-ai/memory/memory.md
+      - path: llms-applications-and-agents/agentic-ai/model-context-protocol/model-context-protocol.md
+      - path: llms-applications-and-agents/agentic-ai/multi-agent-systems/multi-agent-systems.md
+      - path: llms-applications-and-agents/agentic-ai/planning/planning.md
+      - path: llms-applications-and-agents/agentic-ai/reason-and-act/reason-and-act.md
+      - path: llms-applications-and-agents/agentic-ai/reflection/reflection.md
+      - path: llms-applications-and-agents/agentic-ai/tool-use/tool-use.md
+      # inference-and-runtime
+      - path: llms-applications-and-agents/inference-and-runtime/caching-and-cost-optimization/caching-and-cost-optimization.md
+      # reasoning-evaluation-and-alignment
+      - path: llms-applications-and-agents/reasoning-evaluation-and-alignment/hallucination-and-grounding/hallucination-and-grounding.md
