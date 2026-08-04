@@ -46,7 +46,7 @@ NAVY = "#2A5B80"
 INK = "#1C2530"
 GRID = "#D4D9DF"
 
-OUT_DIR = Path(__file__).resolve().parent.parent / "09. LLMs" / "images"
+OUT_DIR = Path(__file__).resolve().parent.parent / "llms-applications-and-agents/large-language-model-foundations/language-modeling-objectives" / "images"
 DPI = 92
 MAX_COLORS = 64  # keep the GIF small
 

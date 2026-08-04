@@ -1,0 +1,13 @@
+# Reading order for this category. `page-order:` is the ONE ordering key
+# estate-wide (structure-authoring-contract Rule 4); entries are relative
+# and extension-less. README.md is repo-facing and deliberately absent.
+page-order:
+  - kv-cache/kv-cache
+  - kv-cache/kv-cache-variants
+  - kv-cache/kv-cache-optimization-stack
+  - kv-cache/kv-cache-flashattention-and-flashdecoding
+  - kv-cache/kv-cache-in-production
+  - decoding-and-sampling/decoding-and-sampling
+  - quantization/quantization
+  - inference-optimization/inference-optimization
+  - caching-and-cost-optimization/caching-and-cost-optimization

@@ -1,6 +1,6 @@
 """Mixture-of-Experts concept-page diagrams (muted palette, parallel matplotlib scale).
 
-Five visuals for 09. LLMs/concepts/07-Mixture-of-Experts.md:
+Five visuals for llms-applications-and-agents/llm-model-architectures/mixture-of-experts/mixture-of-experts.md:
   1. moe_decoupling.png       -- MEASURED: active vs total params (and FLOPs/token)
      as the number of experts N grows; active stays flat, total grows linearly.
   2. moe_balance.png          -- MEASURED expert utilisation from a real tiny MoE
@@ -24,7 +24,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-OUT = os.path.join(os.path.dirname(__file__), "..", "09. LLMs", "concepts", "images")
+OUT = os.path.join(os.path.dirname(__file__), "..", "llms-applications-and-agents/llm-model-architectures/mixture-of-experts", "images")
 OUT = os.path.abspath(OUT)
 os.makedirs(OUT, exist_ok=True)
 

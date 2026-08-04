@@ -58,4 +58,4 @@ together serving, scaling, and LLMOps.
 
 ## 🔗 In this platform
 - Builds on: [09 Model Serving](../../packaging-and-serving/model-serving/model-serving.md) · [10 Scaling Inference](../../packaging-and-serving/scaling-inference/scaling-inference.md) · [15 LLMOps](../llmops/llmops.md)
-- Related concept (covered elsewhere): LLM inference cost techniques (quantization, KV-cache, batching) → [09. LLMs — Inference Optimization & Serving](../../../09.%20LLMs/09-Inference-Optimization-and-Serving/09-Inference-Optimization-and-Serving.md) · [Quantization](../../../09.%20LLMs/10-Quantization/10-Quantization.md)
+- Related concept (covered elsewhere): LLM inference cost techniques (quantization, KV-cache, batching) → [LLMs — Inference Optimization & Serving](../../../llms-applications-and-agents/inference-and-runtime/inference-optimization/inference-optimization.md) · [Quantization](../../../llms-applications-and-agents/inference-and-runtime/quantization/quantization.md)

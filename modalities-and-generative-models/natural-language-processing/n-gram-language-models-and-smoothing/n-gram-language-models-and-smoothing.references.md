@@ -57,5 +57,5 @@ updated: 2026-06-27
 - Precursor representation (counts → vectors): [Bag-of-Words and TF-IDF](../bag-of-words-and-tf-idf/bag-of-words-and-tf-idf.md) — the other count-based text model.
 - The successor that fixed the semantics gap: [Word Embeddings: Word2Vec, GloVe, FastText](../word-embeddings-word2vec-glove-fasttext/word-embeddings-word2vec-glove-fasttext.md) — dense vectors so "blue" and "green" relate.
 - Where perplexity is defined alongside the other metrics: [NLP Evaluation Metrics](../nlp-evaluation-metrics/nlp-evaluation-metrics.md).
-- The neural successors to n-gram LMs: [Sequence-to-Sequence and Encoder–Decoder](../sequence-to-sequence-and-encoder-decoder/sequence-to-sequence-and-encoder-decoder.md), and the LLMs in [09. LLMs](../../../09.%20LLMs/) (same chain-rule objective, learned estimator).
+- The neural successors to n-gram LMs: [Sequence-to-Sequence and Encoder–Decoder](../sequence-to-sequence-and-encoder-decoder/sequence-to-sequence-and-encoder-decoder.md), and the LLMs in [LLMs, Applications and Agents](../../../llms-applications-and-agents) (same chain-rule objective, learned estimator).
 - The *why* behind autoregressive generation: [AI-ML-intuition 5.05 Autoregressive Generation & Sampling](../../../../AI-ML-intuition/generation/autoregressive-generation/autoregressive-generation-and-sampling-controls-intuition.md).

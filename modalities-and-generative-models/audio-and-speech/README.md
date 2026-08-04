@@ -56,4 +56,4 @@ Every chapter is a self-contained folder (`NN-Concept/NN-Concept.md`) with its p
 - [Speech and Language Processing — Ch. 16 (ASR & TTS)](https://web.stanford.edu/~jurafsky/slp3/) — **Jurafsky & Martin** — free draft, the standard reference.
 
 ## 🔗 In this platform
-- Language side: [NLP](../natural-language-processing/README.md) · [LLMs](../../09.%20LLMs/README.md) · Fusion: [Multimodal](../multimodal-learning/README.md)
+- Language side: [NLP](../natural-language-processing/README.md) · [LLMs](../../llms-applications-and-agents/README.md) · Fusion: [Multimodal](../multimodal-learning/README.md)

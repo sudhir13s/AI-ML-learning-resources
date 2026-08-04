@@ -43,7 +43,7 @@ learning path plus the best **free, open** course, video, paper, article, or boo
 ### Related concepts (canonical home is another section)
 > These topics are foundations or applications of agents, but their canonical home is another section —
 > linked here to avoid repetition.
-- **Prompting & In-Context Learning · Chain-of-Thought · Fine-tuning / SFT · RLHF** → [LLMs](../../09.%20LLMs/README.md) ([Prompting](../../09.%20LLMs/16-Prompting-and-In-Context-Learning/16-Prompting-and-In-Context-Learning.md) · [Chain-of-Thought](../../09.%20LLMs/17-Chain-of-Thought-Reasoning/17-Chain-of-Thought-Reasoning.md) · [SFT](../../09.%20LLMs/13-Supervised-Fine-Tuning/13-Supervised-Fine-Tuning.md) · [RLHF & DPO](../../09.%20LLMs/15-RLHF-and-DPO/15-RLHF-and-DPO.md))
+- **Prompting & In-Context Learning · Chain-of-Thought · Fine-tuning / SFT · RLHF** → [LLMs](../README.md) ([Prompting](../reasoning-evaluation-and-alignment/prompting-and-in-context-learning/prompting-and-in-context-learning.md) · [Chain-of-Thought](../reasoning-evaluation-and-alignment/chain-of-thought-and-reasoning/chain-of-thought-and-reasoning.md) · [SFT](../training-and-adaptation/supervised-fine-tuning/supervised-fine-tuning.md) · [RLHF & DPO](../training-and-adaptation/preference-and-alignment-training/preference-and-alignment-training.md))
 - **Retrieval-Augmented Generation (RAG) & retrieval** → [RAG & LLM Applications](../rag-and-knowledge-systems/overview.md)
 - **RL foundations (MDPs · policies · reward)** → [Reinforcement Learning](../../core-machine-learning/reinforcement-learning/README.md)
 

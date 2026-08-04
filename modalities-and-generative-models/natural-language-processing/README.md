@@ -43,7 +43,7 @@ Every chapter is a self-contained folder (`NN-Concept/NN-Concept.md`) with its p
 ### Related concepts (canonical home is another section)
 > These topics are used across many areas, so they're kept in one place to avoid repetition.
 - **Architectures & mechanisms** — Attention · Transformers · Positional Encodings · RNN / LSTM / GRU → [Deep Learning](../../deep-learning/README.md)
-- **Large language models** — BERT · GPT · T5 / BART · Fine-tuning · Prompting · RLHF → [LLMs](../../09.%20LLMs/README.md)
+- **Large language models** — BERT · GPT · T5 / BART · Fine-tuning · Prompting · RLHF → [LLMs](../../llms-applications-and-agents/README.md)
 - **Retrieval-augmented generation** → [RAG & LLM Applications](../../llms-applications-and-agents/rag-and-knowledge-systems/overview.md)
 
 ## 🎓 Courses (free)
@@ -62,4 +62,4 @@ Every chapter is a self-contained folder (`NN-Concept/NN-Concept.md`) with its p
 - [Speech and Language Processing (3rd ed.)](https://web.stanford.edu/~jurafsky/slp3/) — **Jurafsky & Martin** — free draft; the field's standard reference.
 
 ## 🔗 In this platform
-- Math: [AI-ML-intuition 1.02 embeddings, 1.15 tokenization, Module 4 attention](../../../AI-ML-intuition/) · LLMs: [09. LLMs](../../09.%20LLMs/README.md)
+- Math: [AI-ML-intuition 1.02 embeddings, 1.15 tokenization, Module 4 attention](../../../AI-ML-intuition/) · LLMs: [LLMs, Applications and Agents](../../llms-applications-and-agents/README.md)

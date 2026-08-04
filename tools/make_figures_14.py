@@ -45,7 +45,7 @@ SINGLE_HELDOUT_ACC = 0.007  # single-task model, same held-out test
 MULTI_INDIST_ACC = 1.000  # both master the in-distribution fixed-key task
 SINGLE_INDIST_ACC = 1.000
 
-OUT_DIR = Path(__file__).resolve().parent.parent / "09. LLMs" / "images"
+OUT_DIR = Path(__file__).resolve().parent.parent / "llms-applications-and-agents/training-and-adaptation/instruction-tuning" / "images"
 DPI = 150
 
 

@@ -59,5 +59,5 @@ updated: 2026-07-03
 - The activations whose derivatives gate the flow: [03 Activation Functions](../../stabilization-and-architectural-blocks/activation-functions/activation-functions.md)
 - The consequence of the backward product: [06 Vanishing & Exploding Gradients](../../optimization-and-training/vanishing-exploding-gradients/vanishing-exploding-gradients.md)
 - What uses the gradient: [07 Optimizers](../../optimization-and-training/optimizers/optimizers.md) (turns the gradient into a weight update)
-- Where it's applied: [13 CNNs & Convolution](../../neural-architectures/cnns-and-convolution/cnns-and-convolution.md) · [14 RNN / LSTM / GRU](../../neural-architectures/rnn-lstm-gru/rnn-lstm-gru.md) (backprop through time) · forward to [09 LLMs](../../../09.%20LLMs/README.md) (the same backward pass trains every transformer)
+- Where it's applied: [13 CNNs & Convolution](../../neural-architectures/cnns-and-convolution/cnns-and-convolution.md) · [14 RNN / LSTM / GRU](../../neural-architectures/rnn-lstm-gru/rnn-lstm-gru.md) (backprop through time) · forward to [09 LLMs](../../../llms-applications-and-agents/README.md) (the same backward pass trains every transformer)
 - Field overview: [Deep Learning](../../README.md)

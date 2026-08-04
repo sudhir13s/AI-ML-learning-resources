@@ -61,7 +61,7 @@ blocks · neural architectures · attention and transformers · self-supervised 
 | :--- | :--- |
 | [RAG and Knowledge Systems](llms-applications-and-agents/rag-and-knowledge-systems/overview.md) | advanced |
 | [Agentic AI](llms-applications-and-agents/agentic-ai/overview.md) | advanced |
-| [Large Language Models](09.%20LLMs/README.md) — still on its legacy folder name; re-homed by the LLM wave | advanced |
+| [Large Language Models](llms-applications-and-agents/README.md) — still on its legacy folder name; re-homed by the LLM wave | advanced |
 
 ### [Deployment and MLOps](deployment-and-mlops/README.md)
 Lifecycle and reproducibility · data and training platforms · packaging and serving ·

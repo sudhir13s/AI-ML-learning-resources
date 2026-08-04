@@ -59,4 +59,4 @@ practitioners in interviews.
 ## 🔗 In this platform
 - Per-concept index: [Frontier & Staying Current — concepts](../README.md)
 - Pair with: [02 arXiv & Papers with Code](../arxiv-and-papers-with-code/arxiv-and-papers-with-code.md) · [07 Reproducing Papers (code)](../reproducing-papers-code/reproducing-papers-code.md) · [11 Evaluating Hype vs Substance](../evaluating-hype-vs-substance/evaluating-hype-vs-substance.md)
-- Build on these models: [09. LLMs](../../../09.%20LLMs/README.md) · [10. GenAI](../../../modalities-and-generative-models/generative-models/README.md) · [16. RAG & LLM Applications](../../../llms-applications-and-agents/rag-and-knowledge-systems/overview.md)
+- Build on these models: [LLMs, Applications and Agents](../../../llms-applications-and-agents/README.md) · [10. GenAI](../../../modalities-and-generative-models/generative-models/README.md) · [16. RAG & LLM Applications](../../../llms-applications-and-agents/rag-and-knowledge-systems/overview.md)

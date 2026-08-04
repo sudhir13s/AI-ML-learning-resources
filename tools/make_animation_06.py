@@ -45,7 +45,7 @@ INK = "#1C2530"
 GRID = "#D4D9DF"
 IDLE = "#E7EAEE"  # un-materialized cells of the matrix
 
-OUT_DIR = Path(__file__).resolve().parent.parent / "09. LLMs" / "images"
+OUT_DIR = Path(__file__).resolve().parent.parent / "deep-learning/attention-and-transformers/efficient-attention" / "images"
 DPI = 96
 FPS = 2  # slow -- the reader needs to read each block's bookkeeping
 HOLD_FRAMES = 3  # repeat the final frame so the GIF rests on the finished state

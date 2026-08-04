@@ -57,4 +57,4 @@ and tools like Ray Serve + Kubernetes HPA. The bridge between serving and cost.
 ## 🔗 In this platform
 - Builds on: [06 ML Pipelines & Orchestration](../../data-and-training-platforms/ml-pipelines-and-orchestration/ml-pipelines-and-orchestration.md) · [09 Model Serving](../model-serving/model-serving.md)
 - Next concepts: [16 Cost Optimization](../../governance-and-economics/cost-optimization/cost-optimization.md)
-- Related concept (covered elsewhere): LLM inference optimization (quantization, paged attention, batching) → [09. LLMs — Inference Optimization & Serving](../../../09.%20LLMs/09-Inference-Optimization-and-Serving/09-Inference-Optimization-and-Serving.md)
+- Related concept (covered elsewhere): LLM inference optimization (quantization, paged attention, batching) → [LLMs — Inference Optimization & Serving](../../../llms-applications-and-agents/inference-and-runtime/inference-optimization/inference-optimization.md)

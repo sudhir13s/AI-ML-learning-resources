@@ -59,4 +59,4 @@ for you. Knowing the difference between a *roundup* (breadth, low effort) and a 
 ## 🔗 In this platform
 - Per-concept index: [Frontier & Staying Current — concepts](../README.md)
 - Pair with: [05 Following Researchers & Communities](../following-researchers-and-communities/following-researchers-and-communities.md) · [09 Building a Stay-Current Routine](../building-a-stay-current-routine/building-a-stay-current-routine.md)
-- Apply to a frontier area: [09. LLMs](../../../09.%20LLMs/README.md) · [15. Agentic AI](../../../llms-applications-and-agents/agentic-ai/overview.md)
+- Apply to a frontier area: [LLMs, Applications and Agents](../../../llms-applications-and-agents/README.md) · [15. Agentic AI](../../../llms-applications-and-agents/agentic-ai/overview.md)

@@ -58,4 +58,4 @@ updated: 2026-07-02
 - Prev / next in this domain: [02 ReAct](../reason-and-act/reason-and-act.md) · [04 Planning & Task Decomposition](../planning/planning.md)
 - Safety context (the tool-input + tool-output trust boundary): [13 Safety, Guardrails & Human-in-the-Loop](../agent-safety/agent-safety.md)
 - Frameworks that implement this loop: [09 Agent Frameworks](../agent-frameworks/agent-frameworks.md)
-- Related (canonical home for prompting foundations): [Prompting & In-Context Learning](../../../09.%20LLMs/16-Prompting-and-In-Context-Learning/16-Prompting-and-In-Context-Learning.md)
+- Related (canonical home for prompting foundations): [Prompting & In-Context Learning](../../reasoning-evaluation-and-alignment/prompting-and-in-context-learning/prompting-and-in-context-learning.md)

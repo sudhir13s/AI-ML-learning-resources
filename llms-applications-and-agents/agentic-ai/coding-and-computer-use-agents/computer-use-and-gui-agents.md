@@ -57,4 +57,4 @@ horizons, no structured feedback), the screenshot→action loop, why benchmarks 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 8.03 Agents & Tool Use](../../../../AI-ML-intuition/reasoning-and-agency/agents-and-tools/agent-loop-and-tool-use-intuition.md)
 - Prev / next: [10 Code Agents](code-agents.md) · [12 Agent Evaluation & Benchmarks](../agent-evaluation/agent-evaluation.md) · [13 Safety, Guardrails & HITL](../agent-safety/agent-safety.md)
-- Related (canonical home): [Prompting & In-Context Learning](../../../09.%20LLMs/16-Prompting-and-In-Context-Learning/16-Prompting-and-In-Context-Learning.md)
+- Related (canonical home): [Prompting & In-Context Learning](../../reasoning-evaluation-and-alignment/prompting-and-in-context-learning/prompting-and-in-context-learning.md)

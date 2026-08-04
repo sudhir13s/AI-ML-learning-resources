@@ -59,4 +59,4 @@ the judgment interviewers probe with "is this result trustworthy?"
 ## 🔗 In this platform
 - Per-concept index: [Frontier & Staying Current — concepts](../README.md)
 - Pair with: [04 Newsletters & Blogs to Follow](../newsletters-and-blogs-to-follow/newsletters-and-blogs-to-follow.md) · [09 Building a Stay-Current Routine](../building-a-stay-current-routine/building-a-stay-current-routine.md) · [10 Open Model Hubs & Demos](../open-model-hubs-and-demos/open-model-hubs-and-demos.md)
-- Apply to a frontier area: [09. LLMs](../../../09.%20LLMs/README.md) · [15. Agentic AI](../../../llms-applications-and-agents/agentic-ai/overview.md)
+- Apply to a frontier area: [LLMs, Applications and Agents](../../../llms-applications-and-agents/README.md) · [15. Agentic AI](../../../llms-applications-and-agents/agentic-ai/overview.md)

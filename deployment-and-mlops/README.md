@@ -46,7 +46,7 @@ path plus the best **free, open** courses, videos, papers, articles, and books f
 ### Related concepts (canonical home is another section)
 > These topics have a canonical home elsewhere in the platform — linked here, not duplicated.
 - **Online experimentation & A/B statistics theory** (hypothesis tests, power, CUPED) → [01. Foundations](../foundations/mathematical-foundations/README.md)
-- **LLM inference internals** (KV-cache, quantization, paged attention, serving stacks) → [09. LLMs](../09.%20LLMs/README.md)
+- **LLM inference internals** (KV-cache, quantization, paged attention, serving stacks) → [LLMs, Applications and Agents](../llms-applications-and-agents/README.md)
 - **Data preprocessing & feature engineering** (cleaning, encoding, scaling, splits) → [02. Data_Preprocessing](../foundations/data-preparation/README.md)
 
 ## 🎓 Courses (free)

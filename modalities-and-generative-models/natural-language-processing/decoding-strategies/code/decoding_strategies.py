@@ -9,7 +9,7 @@ and cannot silently drift between the prose, the notebook, and the figures.
 It is the GENERAL sequence-generation view of decoding (beam search for closed-ended tasks
 like machine translation / summarization + sampling for open-ended generation). The
 LLM-systems angle (KV-cache interaction, speculative decoding throughput) lives in the
-sibling chapter "09. LLMs / 18-Decoding-and-Sampling"; this file deliberately does not repeat
+sibling chapter "Decoding and Sampling"; this file deliberately does not repeat
 it.
 
 What it demonstrates, all from tiny hand-built next-token distributions (no model download):

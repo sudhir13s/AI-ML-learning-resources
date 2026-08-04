@@ -28,7 +28,7 @@ from PIL import Image
 
 from make_figures_17 import GREEN, INK, RED, SLATE
 
-OUT_DIR = Path(__file__).resolve().parent.parent / "09. LLMs" / "images"
+OUT_DIR = Path(__file__).resolve().parent.parent / "llms-applications-and-agents/reasoning-evaluation-and-alignment/chain-of-thought-and-reasoning" / "images"
 DPI = 95
 
 # The right panel's chain of thought, revealed one line per frame.

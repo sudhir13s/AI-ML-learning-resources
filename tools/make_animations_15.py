@@ -37,7 +37,7 @@ from matplotlib.animation import FuncAnimation, PillowWriter
 from make_figures_15 import AMBER, GREEN, INK, NAVY, PURPLE, RED, SLATE, _style_axis
 from rlhf_dpo import BETA, REF_LOGPROB, run_toy_dpo
 
-OUT_DIR = Path(__file__).resolve().parent.parent / "09. LLMs" / "images"
+OUT_DIR = Path(__file__).resolve().parent.parent / "llms-applications-and-agents/training-and-adaptation/preference-and-alignment-training" / "images"
 DPI = 95            # keep the GIF a sensible size for a repo asset
 FPS = 16
 FRAME_STRIDE = 2    # animate every 2nd training step (61 frames) -- smooth but compact

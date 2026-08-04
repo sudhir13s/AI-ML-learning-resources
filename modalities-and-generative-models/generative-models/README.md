@@ -8,7 +8,7 @@ updated: 2026-06-27
 
 # Generative AI
 > Models that *create* — images, audio, video, 3D — via VAEs, GANs, and (today) diffusion.
-> (Text generation lives under [LLMs](../../09.%20LLMs/README.md).)
+> (Text generation lives under [LLMs](../../llms-applications-and-agents/README.md).)
 
 **⭐ Start here:** [What are Diffusion Models?](https://www.youtube.com/watch?v=fbLgFrlTnGU) — **Ari Seff** — the clearest intro to the method behind Stable Diffusion / DALL·E.
 
@@ -42,7 +42,7 @@ Every chapter is a self-contained folder (`NN-Concept/NN-Concept.md`) with its p
 ### Related concepts (covered in another section)
 > These topics are foundational or live in another domain, so they're kept in one place to avoid repetition.
 - **Autoencoders (plain / denoising / sparse)** — the deterministic precursor to the VAE → [Deep Learning · Autoencoders](../../deep-learning/neural-architectures/autoencoders/autoencoders.md)
-- **LLM text generation & autoregressive language models** — GPT-style next-token generation → [LLMs](../../09.%20LLMs/README.md)
+- **LLM text generation & autoregressive language models** — GPT-style next-token generation → [LLMs](../../llms-applications-and-agents/README.md)
 - **Decoding strategies for text** (greedy · beam · top-k · top-p) → [NLP · Decoding Strategies](../natural-language-processing/decoding-strategies/decoding-strategies.md)
 - **Gaussian Mixture Models & the EM algorithm** — the classic latent-variable model → [Unsupervised Learning · GMM & EM](../../core-machine-learning/unsupervised-learning/clustering/gaussian-mixture-models-and-em/gaussian-mixture-models-and-em.md)
 - **Information theory** (entropy · cross-entropy · KL divergence) — the objective under every likelihood model → [Foundations](../../foundations/mathematical-foundations/README.md)

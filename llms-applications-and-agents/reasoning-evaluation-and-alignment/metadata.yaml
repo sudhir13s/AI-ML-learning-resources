@@ -1,0 +1,9 @@
+# Reading order for this category. `page-order:` is the ONE ordering key
+# estate-wide (structure-authoring-contract Rule 4); entries are relative
+# and extension-less. README.md is repo-facing and deliberately absent.
+page-order:
+  - prompting-and-in-context-learning/prompting-and-in-context-learning
+  - chain-of-thought-and-reasoning/chain-of-thought-and-reasoning
+  - hallucination-and-grounding/hallucination-and-grounding
+  - llm-evaluation/llm-evaluation
+  - safety-and-alignment/safety-and-alignment

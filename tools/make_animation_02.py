@@ -38,7 +38,7 @@ from PIL import Image
 from make_figures_02 import AMBER, BLUE, GREEN, INK, RED, _style_axis
 from pretraining_at_scale import CONTEXT_LEN, LR_PEAK, training_loop_trace
 
-OUT_DIR = Path(__file__).resolve().parent.parent / "09. LLMs" / "images"
+OUT_DIR = Path(__file__).resolve().parent.parent / "llms-applications-and-agents/large-language-model-foundations/pretraining" / "images"
 DPI = 80
 GIF_COLORS = 48  # quantize to a small palette (<=64 colours) -> small GIF
 

@@ -58,9 +58,9 @@ RANK_SWEEP_LOSS = {
     32: 1.3950e-07,
 }
 
-# Figures live in the SHARED chapter images dir (09. LLMs/images/), matching the KV-Cache
+# Figures live in the SHARED chapter images dir (llms-applications-and-agents/training-and-adaptation/lora-and-parameter-efficient-fine-tuning/images/), matching the KV-Cache
 # exemplar -- so the page references them as ../images/<name>.png.
-OUT_DIR = Path(__file__).resolve().parent.parent / "09. LLMs" / "images"
+OUT_DIR = Path(__file__).resolve().parent.parent / "llms-applications-and-agents/training-and-adaptation/lora-and-parameter-efficient-fine-tuning" / "images"
 DPI = 150
 
 

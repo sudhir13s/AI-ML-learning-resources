@@ -41,7 +41,7 @@ path plus the best **free, open** courses, videos, references, articles, and gui
 ### Related concepts (canonical home is another section)
 > These tools *implement* ideas that are taught in depth elsewhere — follow the links for the *why*.
 - **Experiment tracking, model serving & deployment** (the production discipline) → [Deployment & MLOps](../../deployment-and-mlops/README.md)
-- **Transformers, attention & LLM internals** (what Hugging Face / PyTorch build) → [LLMs](../../09.%20LLMs/README.md) · [Deep Learning](../../deep-learning/README.md)
+- **Transformers, attention & LLM internals** (what Hugging Face / PyTorch build) → [LLMs](../../llms-applications-and-agents/README.md) · [Deep Learning](../../deep-learning/README.md)
 - **Vector databases, LangChain & RAG pipelines** (tools layered on top) → [RAG & LLM Applications](../../llms-applications-and-agents/rag-and-knowledge-systems/overview.md) · [Agentic AI](../../llms-applications-and-agents/agentic-ai/overview.md)
 
 ## 🎓 Courses / Tutorials (free)
