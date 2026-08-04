@@ -1,0 +1,9 @@
+# Reading order for this category. `page-order:` is the ONE ordering key
+# estate-wide (structure-authoring-contract Rule 4); entries are relative
+# and extension-less. README.md is repo-facing and deliberately absent.
+page-order:
+  - supervised-fine-tuning/supervised-fine-tuning
+  - instruction-tuning/instruction-tuning
+  - lora-and-parameter-efficient-fine-tuning/lora-and-parameter-efficient-fine-tuning
+  - knowledge-distillation/knowledge-distillation
+  - preference-and-alignment-training/preference-and-alignment-training

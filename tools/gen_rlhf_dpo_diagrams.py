@@ -1,6 +1,6 @@
 """RLHF & DPO concept-page diagrams (muted palette, parallel matplotlib scale).
 
-Figures for 09. LLMs/concepts/15-RLHF-and-DPO.md:
+Figures for llms-applications-and-agents/training-and-adaptation/preference-and-alignment-training/preference-and-alignment-training.md:
   1. rlhf_bradley_terry.png  -- the Bradley-Terry reward-model loss: P(chosen > rejected)
      = sigma(reward gap), and the per-pair loss -log sigma(gap). Shows the coin-flip at gap 0
      and the saturating confidence as the gap grows.
@@ -21,7 +21,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
-OUT = os.path.join(os.path.dirname(__file__), "..", "09. LLMs", "concepts", "images")
+OUT = os.path.join(os.path.dirname(__file__), "..", "llms-applications-and-agents/training-and-adaptation/preference-and-alignment-training", "images")
 OUT = os.path.abspath(OUT)
 os.makedirs(OUT, exist_ok=True)
 

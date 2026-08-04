@@ -43,7 +43,7 @@ Every chapter is a self-contained folder (`NN-Concept/NN-Concept.md`) with its p
 - **Text-to-image generation** → [Diffusion](../diffusion-models/README.md) · [GenAI](../generative-models/README.md)
 - **Speech understanding & audio tokens** → [Audio & Speech](../audio-and-speech/README.md)
 - **Video-language models** → [Video Understanding](../video-understanding/README.md)
-- **LLM decoder architecture, instruction tuning** → [LLMs](../../09.%20LLMs/README.md)
+- **LLM decoder architecture, instruction tuning** → [LLMs](../../llms-applications-and-agents/README.md)
 
 ## 🎓 Courses (free)
 - [Hugging Face Community Computer Vision Course — Multimodal unit](https://huggingface.co/learn/computer-vision-course) — **Hugging Face** — free, code-first VLM material.
@@ -61,4 +61,4 @@ Every chapter is a self-contained folder (`NN-Concept/NN-Concept.md`) with its p
 - [Vision Language Models Explained](https://huggingface.co/blog/vlms) — **Hugging Face** — practical tour of open VLMs.
 
 ## 🔗 In this platform
-- Backbones: [Computer Vision](../computer-vision/README.md) · Language side: [LLMs](../../09.%20LLMs/README.md)
+- Backbones: [Computer Vision](../computer-vision/README.md) · Language side: [LLMs](../../llms-applications-and-agents/README.md)

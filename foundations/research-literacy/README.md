@@ -41,7 +41,7 @@ best **free, open** courses, videos, papers, articles, and tools for staying cur
 ### Related concepts (canonical home is another section)
 > The actual frontier *topics* live in their domains — this section teaches the *skill* of keeping
 > up with them. Go to the source domain for the concepts themselves.
-- **Large language models** — GPT/Llama, scaling, fine-tuning, prompting, RLHF → [09. LLMs](../../09.%20LLMs/README.md)
+- **Large language models** — GPT/Llama, scaling, fine-tuning, prompting, RLHF → [LLMs, Applications and Agents](../../llms-applications-and-agents/README.md)
 - **Generative AI** — diffusion, image/video/audio generation → [10. GenAI](../../modalities-and-generative-models/generative-models/README.md)
 - **Agentic AI** — tool use, planning, multi-agent systems → [12. Agentic AI](../../llms-applications-and-agents/agentic-ai/overview.md)
 - **Retrieval-augmented generation & LLM apps** → [11. RAG & LLM Applications](../../llms-applications-and-agents/rag-and-knowledge-systems/overview.md)

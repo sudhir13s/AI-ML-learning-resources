@@ -58,4 +58,4 @@ trade-off (latency vs throughput vs cost), REST vs gRPC, request batching, why p
 ## 🔗 In this platform
 - Builds on: [08 Model Packaging & Containerization](../model-packaging-and-containerization/model-packaging-and-containerization.md)
 - Next concepts: [10 Scaling Inference](../scaling-inference/scaling-inference.md) · [11 Model Monitoring & Observability](../../monitoring-and-reliability/model-monitoring-and-observability/model-monitoring-and-observability.md) · [14 A/B Testing · Shadow & Canary](../../release-and-deployment/ab-testing-shadow-and-canary-deployment/ab-testing-shadow-and-canary-deployment.md)
-- Related concept (covered elsewhere): LLM inference internals (KV-cache, paged attention) → [09. LLMs — Inference Optimization & Serving](../../../09.%20LLMs/09-Inference-Optimization-and-Serving/09-Inference-Optimization-and-Serving.md)
+- Related concept (covered elsewhere): LLM inference internals (KV-cache, paged attention) → [LLMs — Inference Optimization & Serving](../../../llms-applications-and-agents/inference-and-runtime/inference-optimization/inference-optimization.md)

@@ -64,6 +64,6 @@ updated: 2026-07-03
 - The dense layer a conv replaces: [01 Perceptron & MLP](../../neural-network-foundations/perceptron-and-mlp/perceptron-and-mlp.md)
 - Normalization in conv blocks: [11 Normalization](../../stabilization-and-architectural-blocks/normalization/normalization.md) (BatchNorm normalizes per channel over batch+space — natural for weight-shared kernels)
 - What made CNNs go deep: [18 Residual / Skip Connections](../../stabilization-and-architectural-blocks/residual-skip-connections/residual-skip-connections.md) (ResNet) · the problem they solve: [06 Vanishing & Exploding Gradients](../../optimization-and-training/vanishing-exploding-gradients/vanishing-exploding-gradients.md)
-- The CNN-vs-Transformer trade: [15 Attention Mechanism](../../attention-and-transformers/attention-mechanism/attention-mechanism.md) · forward to [09 LLMs](../../../09.%20LLMs/README.md) (ViT and multimodal models)
+- The CNN-vs-Transformer trade: [15 Attention Mechanism](../../attention-and-transformers/attention-mechanism/attention-mechanism.md) · forward to [09 LLMs](../../../llms-applications-and-agents/README.md) (ViT and multimodal models)
 - Where CNNs go next: [Computer Vision](../../../modalities-and-generative-models/computer-vision/README.md) (detection, segmentation, modern backbones) · biological inspiration: [Neuroscience & Brain-Inspired AI](../../../specialized-studies/neuroscience-and-brain-inspired-ai/README.md) (Hubel & Wiesel's edge-selective cells → CNN first-layer filters)
 - Field overview: [Deep Learning](../../README.md)

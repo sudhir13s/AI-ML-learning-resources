@@ -1,6 +1,6 @@
 """KV-Cache concept-page diagrams (muted palette, parallel matplotlib scale).
 
-Four visuals for 09. LLMs/concepts/05-KV-Cache.md:
+Four visuals for llms-applications-and-agents/inference-and-runtime/kv-cache/kv-cache.md:
   1. kv_recompute_waste.png  -- the PROBLEM: per-step K/V projection work,
      without cache (grows with position) vs with cache (constant).
   2. kv_memory_growth.png    -- the MATH: cache size (GB) vs context length
@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 import numpy as np
 
-OUT = os.path.join(os.path.dirname(__file__), "..", "09. LLMs", "concepts", "images")
+OUT = os.path.join(os.path.dirname(__file__), "..", "llms-applications-and-agents/inference-and-runtime/kv-cache", "images")
 OUT = os.path.abspath(OUT)
 os.makedirs(OUT, exist_ok=True)
 

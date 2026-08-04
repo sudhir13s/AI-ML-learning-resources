@@ -57,4 +57,4 @@ fundamentals (layers, caching, slim/multi-stage builds, pinned base images), and
 ## 🔗 In this platform
 - Builds on: [02 Reproducibility](../../lifecycle-and-reproducibility/reproducibility/reproducibility.md)
 - Next concepts: [09 Model Serving](../model-serving/model-serving.md) · [10 Scaling Inference](../scaling-inference/scaling-inference.md)
-- Related concept (covered elsewhere): LLM-specific serving stacks → [09. LLMs](../../../09.%20LLMs/README.md)
+- Related concept (covered elsewhere): LLM-specific serving stacks → [LLMs, Applications and Agents](../../../llms-applications-and-agents/README.md)

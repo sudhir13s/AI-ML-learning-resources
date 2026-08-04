@@ -24,7 +24,7 @@ updated: 2026-06-27
 - Previous concept: [Bag-of-Words & TF-IDF](../bag-of-words-and-tf-idf/bag-of-words-and-tf-idf.md) — the sparse, count-based representations embeddings replace
 - Related: [Tokenization & Subword Algorithms](../tokenization-and-subword-algorithms/tokenization-and-subword-algorithms.md) — FastText's subword idea in modern LLMs
 - Next concept: [Contextual Embeddings (ELMo/BERT)](../contextual-embeddings-elmo-bert/contextual-embeddings-elmo-bert.md) — a vector per word *per sentence*
-- Onward: [Sentence & Document Embeddings](../sentence-and-document-embeddings/sentence-and-document-embeddings.md) · [09. LLMs](../../../09.%20LLMs/README.md)
+- Onward: [Sentence & Document Embeddings](../sentence-and-document-embeddings/sentence-and-document-embeddings.md) · [LLMs, Applications and Agents](../../../llms-applications-and-agents/README.md)
 
 **Videos** (best-first):
 - [Word Embedding and Word2Vec, Clearly Explained](https://www.youtube.com/watch?v=viZrOnJclY0) — **StatQuest (Josh Starmer)** — gentle, from-scratch intuition for skip-gram + training; the fastest route to a correct mental model.

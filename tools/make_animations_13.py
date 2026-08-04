@@ -30,7 +30,7 @@ from PIL import Image
 from make_figures_13 import AMBER, GREEN, INK, RED, SLATE
 from supervised_fine_tuning import DEMOS, build_example, build_tokenizer
 
-OUT_DIR = Path(__file__).resolve().parent.parent / "09. LLMs" / "images"
+OUT_DIR = Path(__file__).resolve().parent.parent / "llms-applications-and-agents/training-and-adaptation/supervised-fine-tuning" / "images"
 DPI = 95
 
 INSTRUCTION, RESPONSE = DEMOS[0]

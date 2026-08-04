@@ -45,7 +45,7 @@ NAVY = "#2A5B80"
 INK = "#1C2530"
 GRID = "#D4D9DF"
 
-OUT_DIR = Path(__file__).resolve().parent.parent / "09. LLMs" / "images"
+OUT_DIR = Path(__file__).resolve().parent.parent / "deep-learning/attention-and-transformers/efficient-attention" / "images"
 DPI = 110
 
 

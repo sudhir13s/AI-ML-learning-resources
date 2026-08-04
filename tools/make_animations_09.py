@@ -35,7 +35,7 @@ RED = "#8B3B4A"
 SLATE = "#4A5B6E"
 INK = "#1C2530"
 
-OUT_DIR = Path(__file__).resolve().parent.parent / "09. LLMs" / "images"
+OUT_DIR = Path(__file__).resolve().parent.parent / "llms-applications-and-agents/inference-and-runtime/inference-optimization" / "images"
 DPI = 95
 FPS = 18
 

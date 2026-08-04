@@ -5,3 +5,4 @@ page-order:
   - attention-mechanism/attention-mechanism
   - transformer-architecture/transformer-architecture
   - positional-encoding/positional-encoding
+  - efficient-attention/efficient-attention

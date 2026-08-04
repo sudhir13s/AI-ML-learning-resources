@@ -308,7 +308,7 @@ focused, retrieved context typically scores *higher* on the RAGAS metrics from
 [chapter 11](../rag-evaluation/rag-evaluation.md) than a giant stuffed one.
 
 **5) Latency and cache implications.** A long prompt has a long prefill (compute-bound) and a large KV
-cache ([ch. KV-Cache](../../../09.%20LLMs/05-KV-Cache/05-KV-Cache.md)), so latency and memory grow with
+cache ([ch. KV-Cache](../../inference-and-runtime/kv-cache/kv-cache.md)), so latency and memory grow with
 context. **Prompt caching** helps *if the long prefix is reused across queries* — you pay to process it
 once and cache it — but it does **not** fix lost-in-the-middle, and it only helps when the same big
 context is queried repeatedly. **Fix:** use caching for a shared, static long prefix; use retrieval

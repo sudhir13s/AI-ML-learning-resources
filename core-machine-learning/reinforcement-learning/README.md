@@ -50,7 +50,7 @@ learning path plus the best **free, open** courses, videos, papers, articles, an
 
 ### Related concepts (canonical home is another section)
 > These topics are used across many areas, so they're kept in one place to avoid repetition.
-- **RLHF / alignment for LLMs** — reward models, PPO-on-language, DPO → [09. LLMs](../../09.%20LLMs/README.md). *RL owns the policy-gradient / PPO **mechanics** ([12 PPO](policy-learning/proximal-policy-optimization-ppo/proximal-policy-optimization-ppo.md)); the LLM-alignment RLHF card lives in the LLMs section and links back here.*
+- **RLHF / alignment for LLMs** — reward models, PPO-on-language, DPO → [LLMs, Applications and Agents](../../llms-applications-and-agents/README.md). *RL owns the policy-gradient / PPO **mechanics** ([12 PPO](policy-learning/proximal-policy-optimization-ppo/proximal-policy-optimization-ppo.md)); the LLM-alignment RLHF card lives in the LLMs section and links back here.*
 - **Deep learning prerequisites** — backprop, optimizers, function approximation → [05. Deep Learning](../../deep-learning/README.md)
 
 ## 🎓 Courses (free)

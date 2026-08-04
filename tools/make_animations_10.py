@@ -29,8 +29,8 @@ from PIL import Image
 
 from make_figures_10 import AMBER, BLUE, GRID, RED, SLATE
 
-# 10-Quantization keeps its figures in a CHAPTER-LOCAL images/ dir (unlike the shared 09. LLMs/images/).
-OUT_DIR = Path(__file__).resolve().parent.parent / "09. LLMs" / "10-Quantization" / "images"
+# 10-Quantization keeps its figures in a CHAPTER-LOCAL images/ dir (unlike the shared llms-applications-and-agents/inference-and-runtime/quantization/images/).
+OUT_DIR = Path(__file__).resolve().parent.parent / "llms-applications-and-agents/inference-and-runtime/quantization" / "images"
 DPI = 95
 INT8_QMAX = 127
 

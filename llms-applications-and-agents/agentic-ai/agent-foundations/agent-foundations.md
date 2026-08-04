@@ -58,4 +58,4 @@ trap in this area.
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 8.03 Agents & Tool Use](../../../../AI-ML-intuition/reasoning-and-agency/agents-and-tools/agent-loop-and-tool-use-intuition.md)
 - Next concepts: [02 ReAct](../reason-and-act/reason-and-act.md) · [03 Tool Use & Function Calling](../tool-use/tool-use.md) · [04 Planning](../planning/planning.md)
-- Related (canonical home): [Prompting & In-Context Learning](../../../09.%20LLMs/16-Prompting-and-In-Context-Learning/16-Prompting-and-In-Context-Learning.md) · [Chain-of-Thought](../../../09.%20LLMs/17-Chain-of-Thought-Reasoning/17-Chain-of-Thought-Reasoning.md)
+- Related (canonical home): [Prompting & In-Context Learning](../../reasoning-evaluation-and-alignment/prompting-and-in-context-learning/prompting-and-in-context-learning.md) · [Chain-of-Thought](../../reasoning-evaluation-and-alignment/chain-of-thought-and-reasoning/chain-of-thought-and-reasoning.md)

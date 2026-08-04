@@ -60,4 +60,4 @@ benchmark fits which capability (coding → SWE-bench, web → WebArena, OS → 
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 8.03 Agents & Tool Use](../../../../AI-ML-intuition/reasoning-and-agency/agents-and-tools/agent-loop-and-tool-use-intuition.md)
 - Prev / next: [10 Code Agents](../coding-and-computer-use-agents/code-agents.md) · [11 Computer-Use & GUI Agents](../coding-and-computer-use-agents/computer-use-and-gui-agents.md) · [13 Safety, Guardrails & HITL](../agent-safety/agent-safety.md)
-- Related (canonical home): [LLM Evaluation & Benchmarks](../../../09.%20LLMs/19-LLM-Evaluation-and-Benchmarks/19-LLM-Evaluation-and-Benchmarks.md)
+- Related (canonical home): [LLM Evaluation & Benchmarks](../../reasoning-evaluation-and-alignment/llm-evaluation/llm-evaluation.md)

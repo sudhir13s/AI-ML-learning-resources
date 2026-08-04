@@ -58,4 +58,4 @@ value but also indirection.
 ## 🔗 In this platform
 - Concept depth (the *why*): [AI-ML-intuition 8.03 Agents & Tool Use](../../../../AI-ML-intuition/reasoning-and-agency/agents-and-tools/agent-loop-and-tool-use-intuition.md)
 - Prev / next: [08 Model Context Protocol (MCP)](../model-context-protocol/model-context-protocol.md) · [07 Multi-Agent Systems](../multi-agent-systems/multi-agent-systems.md) · [10 Code Agents](../coding-and-computer-use-agents/code-agents.md)
-- Related (canonical home): [Prompting & In-Context Learning](../../../09.%20LLMs/16-Prompting-and-In-Context-Learning/16-Prompting-and-In-Context-Learning.md)
+- Related (canonical home): [Prompting & In-Context Learning](../../reasoning-evaluation-and-alignment/prompting-and-in-context-learning/prompting-and-in-context-learning.md)

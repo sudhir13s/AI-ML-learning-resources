@@ -63,4 +63,4 @@ updated: 2026-07-02
 - Machinery reused here: [05 Hybrid Search (the DenseRetriever)](../../rag-and-knowledge-systems/hybrid-search/hybrid-search.md) · [11 RAG Evaluation (the faithfulness/grounding proxy)](../../rag-and-knowledge-systems/rag-evaluation/rag-evaluation.md) · [13 Citations & Attribution (the grounding cosine + cosine≠entailment caveat)](../../rag-and-knowledge-systems/citations-and-attribution/citations-and-attribution.md)
 - Foundations: [01 RAG Fundamentals](../../rag-and-knowledge-systems/rag-foundations/rag-foundations.md) · [08 Advanced RAG (Self-RAG support check)](../../rag-and-knowledge-systems/advanced-rag/advanced-rag.md)
 - Next / related: [15 LLM App Orchestration](../../agentic-ai/llm-app-orchestration/llm-app-orchestration.md)
-- Related domain: [09. LLMs — Hallucination & Alignment Basics](../../../09.%20LLMs/20-Hallucination-and-Alignment-Basics/20-Hallucination-and-Alignment-Basics.md)
+- Related domain: [LLMs — Hallucination & Alignment Basics](../safety-and-alignment/safety-and-alignment.md)

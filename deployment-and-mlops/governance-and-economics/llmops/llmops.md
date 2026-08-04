@@ -22,7 +22,7 @@ category: governance-and-economics
 **Why it matters:** the fastest-growing interview area. Expect "how is LLMOps different from MLOps?" —
 the answers: evaluation without ground truth (offline evals + LLM-as-judge + online feedback), prompt
 versioning and regression testing, guardrails as the production safety layer, and managing token cost +
-latency. Builds on LLM internals (covered in 09. LLMs) but focuses on *operating* LLM systems.
+latency. Builds on LLM internals (covered in LLMs, Applications and Agents) but focuses on *operating* LLM systems.
 
 **⭐ Start here — suggested path:**
 
@@ -58,4 +58,4 @@ latency. Builds on LLM internals (covered in 09. LLMs) but focuses on *operating
 ## 🔗 In this platform
 - Builds on: [09 Model Serving](../../packaging-and-serving/model-serving/model-serving.md) · [11 Model Monitoring & Observability](../../monitoring-and-reliability/model-monitoring-and-observability/model-monitoring-and-observability.md)
 - Next concepts: [16 Cost Optimization](../cost-optimization/cost-optimization.md)
-- Related concepts (covered elsewhere): LLM evaluation & benchmarks → [09. LLMs — LLM Evaluation](../../../09.%20LLMs/19-LLM-Evaluation-and-Benchmarks/19-LLM-Evaluation-and-Benchmarks.md) · prompting & in-context learning → [09. LLMs — Prompting](../../../09.%20LLMs/16-Prompting-and-In-Context-Learning/16-Prompting-and-In-Context-Learning.md) · LLM inference cost/latency internals → [09. LLMs — Inference Optimization & Serving](../../../09.%20LLMs/09-Inference-Optimization-and-Serving/09-Inference-Optimization-and-Serving.md)
+- Related concepts (covered elsewhere): LLM evaluation & benchmarks → [LLMs — LLM Evaluation](../../../llms-applications-and-agents/reasoning-evaluation-and-alignment/llm-evaluation/llm-evaluation.md) · prompting & in-context learning → [LLMs — Prompting](../../../llms-applications-and-agents/reasoning-evaluation-and-alignment/prompting-and-in-context-learning/prompting-and-in-context-learning.md) · LLM inference cost/latency internals → [LLMs — Inference Optimization & Serving](../../../llms-applications-and-agents/inference-and-runtime/inference-optimization/inference-optimization.md)

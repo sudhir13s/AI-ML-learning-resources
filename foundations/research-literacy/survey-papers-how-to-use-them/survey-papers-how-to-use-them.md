@@ -60,4 +60,4 @@ to *use* surveys (and their limits — they age fast and reflect the authors' fr
 ## 🔗 In this platform
 - Per-concept index: [Frontier & Staying Current — concepts](../README.md)
 - Pair with: [01 How to Read ML Papers](../how-to-read-ml-papers/how-to-read-ml-papers.md) · [02 arXiv & Papers with Code](../arxiv-and-papers-with-code/arxiv-and-papers-with-code.md) · [09 Building a Stay-Current Routine](../building-a-stay-current-routine/building-a-stay-current-routine.md)
-- Surveys map onto frontier domains: [09. LLMs](../../../09.%20LLMs/README.md) · [16. RAG & LLM Applications](../../../llms-applications-and-agents/rag-and-knowledge-systems/overview.md)
+- Surveys map onto frontier domains: [LLMs, Applications and Agents](../../../llms-applications-and-agents/README.md) · [16. RAG & LLM Applications](../../../llms-applications-and-agents/rag-and-knowledge-systems/overview.md)

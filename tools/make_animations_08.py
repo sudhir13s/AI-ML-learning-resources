@@ -41,7 +41,7 @@ from make_figures_08 import (
     rope_angles,
 )
 
-OUT_DIR = Path(__file__).resolve().parent.parent / "09. LLMs" / "08-Long-Context-Methods" / "images"
+OUT_DIR = Path(__file__).resolve().parent.parent / "llms-applications-and-agents/llm-model-architectures/long-context-architectures" / "images"
 DPI = 95
 FPS = 18
 

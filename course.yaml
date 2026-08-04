@@ -22,11 +22,10 @@
 #   - modalities-and-generative-models/{multimodal-learning,video-understanding,
 #     audio-and-speech} - these hold a curated README only. The folder is real, the
 #     category has no lesson, so nothing is declared and nothing is stubbed.
-#   - "09. LLMs/" - its twenty topics belong to llms-applications-and-agents, whose
-#     declaration this wave was told to leave untouched. The folder therefore keeps its
-#     legacy ordinal name until the LLM wave re-homes it; that wave also owns the
-#     charter's deep-learning/attention-and-transformers/efficient-attention page, which
-#     currently sits at "09. LLMs/06-Efficient-Attention-FlashAttention".
+#   - nothing from the retired ordinal tree. The LLM wave (2026-08-04) re-homed the last
+#     legacy folder: nineteen of its twenty topics now sit under the five chartered
+#     llms-applications-and-agents sub-areas, and the FlashAttention topic moved to its
+#     canonical home at deep-learning/attention-and-transformers/efficient-attention.
 #   - every README.md, metadata.yaml, images/, code/, notebooks/ and tools/ folder, and
 #     every *.references.md companion - teaching assets and repo-facing catalogues, not
 #     lessons with a nav entry.
@@ -65,6 +64,9 @@ enums:
     - agentic-ai
     - inference-and-runtime
     - reasoning-evaluation-and-alignment
+    - large-language-model-foundations
+    - llm-model-architectures
+    - training-and-adaptation
     - ai-ml-orientation
     - programming-and-data-foundations
     - mathematical-foundations
@@ -302,6 +304,7 @@ sections:
       - path: deep-learning/attention-and-transformers/attention-mechanism/attention-mechanism.md
       - path: deep-learning/attention-and-transformers/transformer-architecture/transformer-architecture.md
       - path: deep-learning/attention-and-transformers/positional-encoding/positional-encoding.md
+      - path: deep-learning/attention-and-transformers/efficient-attention/efficient-attention.md
       # self-supervised-learning
       - path: deep-learning/self-supervised-learning/contrastive-self-supervised-learning/contrastive-self-supervised-learning.md
   - id: modalities-and-generative-models
@@ -394,10 +397,36 @@ sections:
       - path: llms-applications-and-agents/agentic-ai/reason-and-act/reason-and-act.md
       - path: llms-applications-and-agents/agentic-ai/reflection/reflection.md
       - path: llms-applications-and-agents/agentic-ai/tool-use/tool-use.md
+      # large-language-model-foundations
+      - path: llms-applications-and-agents/large-language-model-foundations/language-modeling-objectives/language-modeling-objectives.md
+      - path: llms-applications-and-agents/large-language-model-foundations/decoder-only-models/decoder-only-models.md
+      - path: llms-applications-and-agents/large-language-model-foundations/pretraining/pretraining.md
+      - path: llms-applications-and-agents/large-language-model-foundations/scaling-laws/scaling-laws.md
+      # llm-model-architectures
+      - path: llms-applications-and-agents/llm-model-architectures/long-context-architectures/long-context-architectures.md
+      - path: llms-applications-and-agents/llm-model-architectures/mixture-of-experts/mixture-of-experts.md
+      # training-and-adaptation
+      - path: llms-applications-and-agents/training-and-adaptation/supervised-fine-tuning/supervised-fine-tuning.md
+      - path: llms-applications-and-agents/training-and-adaptation/instruction-tuning/instruction-tuning.md
+      - path: llms-applications-and-agents/training-and-adaptation/lora-and-parameter-efficient-fine-tuning/lora-and-parameter-efficient-fine-tuning.md
+      - path: llms-applications-and-agents/training-and-adaptation/knowledge-distillation/knowledge-distillation.md
+      - path: llms-applications-and-agents/training-and-adaptation/preference-and-alignment-training/preference-and-alignment-training.md
       # inference-and-runtime
+      - path: llms-applications-and-agents/inference-and-runtime/kv-cache/kv-cache.md
+      - path: llms-applications-and-agents/inference-and-runtime/kv-cache/kv-cache-variants.md
+      - path: llms-applications-and-agents/inference-and-runtime/kv-cache/kv-cache-optimization-stack.md
+      - path: llms-applications-and-agents/inference-and-runtime/kv-cache/kv-cache-flashattention-and-flashdecoding.md
+      - path: llms-applications-and-agents/inference-and-runtime/kv-cache/kv-cache-in-production.md
+      - path: llms-applications-and-agents/inference-and-runtime/decoding-and-sampling/decoding-and-sampling.md
+      - path: llms-applications-and-agents/inference-and-runtime/quantization/quantization.md
+      - path: llms-applications-and-agents/inference-and-runtime/inference-optimization/inference-optimization.md
       - path: llms-applications-and-agents/inference-and-runtime/caching-and-cost-optimization/caching-and-cost-optimization.md
       # reasoning-evaluation-and-alignment
+      - path: llms-applications-and-agents/reasoning-evaluation-and-alignment/prompting-and-in-context-learning/prompting-and-in-context-learning.md
+      - path: llms-applications-and-agents/reasoning-evaluation-and-alignment/chain-of-thought-and-reasoning/chain-of-thought-and-reasoning.md
       - path: llms-applications-and-agents/reasoning-evaluation-and-alignment/hallucination-and-grounding/hallucination-and-grounding.md
+      - path: llms-applications-and-agents/reasoning-evaluation-and-alignment/llm-evaluation/llm-evaluation.md
+      - path: llms-applications-and-agents/reasoning-evaluation-and-alignment/safety-and-alignment/safety-and-alignment.md
   - id: deployment-and-mlops
     title: Deployment and MLOps
     kind: lesson

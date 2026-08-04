@@ -1,6 +1,6 @@
 """Inference-Optimization-and-Serving concept-page diagrams (muted palette).
 
-Five matplotlib visuals for 09. LLMs/09-Inference-Optimization-and-Serving. Every number
+Five matplotlib visuals for llms-applications-and-agents/inference-and-runtime/inference-optimization. Every number
 matches the companion demo (inference_serving.py / the notebook): an A100-80GB (2 TB/s,
 312 TFLOP/s) serving Llama-3-8B (GQA-8, 16 GB weights, 0.125 MiB/token KV). All values are
 MODELED, exactly as labelled on the page.
@@ -16,7 +16,7 @@ MODELED, exactly as labelled on the page.
   5. serving_latency_throughput.png  -- the latency<->throughput frontier: TPOT vs throughput
      as batch grows, the curve every serving benchmark plots.
 
-Output goes to 09. LLMs/images/ (the shared per-chapter image dir the pages reference as
+Output goes to llms-applications-and-agents/inference-and-runtime/inference-optimization/images/ (the shared per-chapter image dir the pages reference as
 ../images/...). Run:  python gen_inference_serving_diagrams.py
 """
 import os
@@ -28,7 +28,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.patches import Rectangle
 
-OUT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "09. LLMs", "images"))
+OUT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "llms-applications-and-agents/inference-and-runtime/inference-optimization", "images"))
 os.makedirs(OUT, exist_ok=True)
 
 BLUE, PURPLE, GREEN, RED, SLATE, AMBER, NAVY = (

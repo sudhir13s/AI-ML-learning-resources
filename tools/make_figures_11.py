@@ -44,7 +44,7 @@ GRID = "#D4D9DF"
 CLASSES = ["cat", "dog", "lynx", "car", "plane"]
 TEACHER_LOGITS = np.array([8.0, 5.0, 4.0, 1.0, 0.0])  # cat is the argmax; dog/lynx carry "dark knowledge"
 
-OUT_DIR = Path(__file__).resolve().parent.parent / "09. LLMs" / "images"
+OUT_DIR = Path(__file__).resolve().parent.parent / "llms-applications-and-agents/training-and-adaptation/knowledge-distillation" / "images"
 DPI = 150
 
 

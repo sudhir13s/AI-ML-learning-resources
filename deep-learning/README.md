@@ -47,7 +47,7 @@ Every chapter is a self-contained folder (`NN-Concept/NN-Concept.md`) with its p
 > These topics are used across many areas, so they're kept in one place to avoid repetition.
 - **Word / sentence embeddings** — Word2Vec · GloVe · contextual embeddings → [NLP](../modalities-and-generative-models/natural-language-processing/README.md)
 - **Vision architectures in depth** — ResNet/Inception, detection, segmentation → [Computer Vision](../modalities-and-generative-models/computer-vision/README.md)
-- **Pretraining & LLM-scale models** — BERT · GPT · scaling laws · RLHF → [LLMs](../09.%20LLMs/README.md)
+- **Pretraining & LLM-scale models** — BERT · GPT · scaling laws · RLHF → [LLMs](../llms-applications-and-agents/README.md)
 - **Pure math** — PCA/SVD · probability · optimization theory → [Foundations · Maths for AI-ML](../foundations/mathematical-foundations/README.md)
 
 ## 🎓 Courses (free)

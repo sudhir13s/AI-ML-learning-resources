@@ -35,7 +35,7 @@ Doubles as a **dataset** for the interview-prep app, so formats must stay consis
 > **GOLD STANDARD — MUST (no exceptions).** The KV-Cache pages are the ratified gold standard for
 > every concept page. **Before creating or modifying ANY `concepts/` file** — yourself or via any
 > specialist skill / subagent you invoke — **first read both gold-standard files**
-> ([05-KV-Cache.md](09.%20LLMs/05-KV-Cache/05-KV-Cache.md) + [05-KV-Cache.references.md](09.%20LLMs/05-KV-Cache/05-KV-Cache.references.md))
+> ([05-KV-Cache.md](llms-applications-and-agents/inference-and-runtime/kv-cache/kv-cache.md) + [05-KV-Cache.references.md](llms-applications-and-agents/inference-and-runtime/kv-cache/kv-cache.references.md))
 > and match them. **Before marking the work done, verify the result against them**: section flow
 > present & in order, visuals generated and rendering (PNGs viewed, mermaid validates), code runs in
 > `~/.uv/envs/ml-py312`, every reference link verified, bold-not-highlight, no emoji in headings,
@@ -56,8 +56,8 @@ Doubles as a **dataset** for the interview-prep app, so formats must stay consis
 > *expand* (add an example, a derivation, a diagram) and re-judge. (Inline by default; subagent only if asked.)
 
 Each topic's `concepts/` folder holds the **deep, blog-quality teaching pages**. As of 2026-06-21
-each concept is **two files** (canonical example: [09. LLMs/05-KV-Cache/05-KV-Cache.md](09.%20LLMs/05-KV-Cache/05-KV-Cache.md)
-+ [05-KV-Cache.references.md](09.%20LLMs/05-KV-Cache/05-KV-Cache.references.md)):
+each concept is **two files** (canonical example: [kv-cache.md](llms-applications-and-agents/inference-and-runtime/kv-cache/kv-cache.md)
++ [05-KV-Cache.references.md](llms-applications-and-agents/inference-and-runtime/kv-cache/kv-cache.references.md)):
 
 - **`NN-Concept.md` — the content.** A progressive, intuition-first page written in the voice of a
   researcher-teacher writing a tech blog (style bar = Practitioner-Workflows `RLHF-and-Alignment.md`).
@@ -97,8 +97,9 @@ each concept is **two files** (canonical example: [09. LLMs/05-KV-Cache/05-KV-Ca
   headings, lead-then-bullets, recap + next-chapter link, references pointer last). The main page
   lists chapters in a `chapters:` frontmatter array AND a `## Going deeper: the chapters` section
   (1-line-per-chapter index). The reader surfaces every chapter `.md` as an ordered lesson under
-  the topic card (main page first). Canonical example: `09. LLMs/05-KV-Cache/` (main + ch1
-  variants · ch2 optimization-ladder · ch3 flashattention-flashdecoding · ch4 production).
+  the topic card (main page first). Canonical example: `llms-applications-and-agents/inference-and-runtime/kv-cache/`
+  (main page + `kv-cache-variants` · `kv-cache-optimization-stack` ·
+  `kv-cache-flashattention-and-flashdecoding` · `kv-cache-in-production`).
 - **`NN-Concept.references.md` — the links.** The curated link library for that concept, kept
   **separate on purpose**: later it doubles as a standalone references list, and it holds **internal**
   links (to our own pages, incl. the content page itself) alongside **external** ones. Flat (one
@@ -147,10 +148,11 @@ Ordered by learning progression, each declared as a section in `course.yaml`:
 - **`specialized-studies/`** — advanced-mathematics-for-ai-research ·
   neuroscience-and-brain-inspired-ai.
 
-`09. LLMs/` is the **one folder still on its legacy name**: its twenty topics belong to
-`llms-applications-and-agents/`, and the LLM wave re-homes them together with its
-`course.yaml` section. `world-models-and-embodied-intelligence/` is chartered but has no
-content yet, so it is deliberately absent rather than stubbed.
+Every section is now on its chartered kebab-case name; the last legacy ordinal folder was
+re-homed into `llms-applications-and-agents/` (and, for FlashAttention, into
+`deep-learning/attention-and-transformers/efficient-attention/`) by the LLM wave.
+`world-models-and-embodied-intelligence/` is chartered but has no content yet, so it is
+deliberately absent rather than stubbed.
 
 `llm_systems_curriculum.md` is the 14-chapter LLM-systems syllabus. The root `README.md` is
 the master index.

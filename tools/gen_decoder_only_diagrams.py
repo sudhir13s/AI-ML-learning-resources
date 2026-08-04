@@ -1,6 +1,6 @@
 """Decoder-only Architecture concept-page diagrams (muted palette, parallel matplotlib scale).
 
-Visuals for "09. LLMs/concepts/04-Decoder-only-Architecture.md":
+Visuals for "llms-applications-and-agents/large-language-model-foundations/decoder-only-models/decoder-only-models.md":
   1. decoder_causal_mask.png    -- the causal (lower-triangular) attention mask for a
      4-token sequence: token t attends only to <= t; future positions are -inf -> 0.
   2. decoder_arch_compare.png   -- encoder-only (BERT) vs encoder-decoder (T5) vs
@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 import numpy as np
 
-OUT = os.path.join(os.path.dirname(__file__), "..", "09. LLMs", "concepts", "images")
+OUT = os.path.join(os.path.dirname(__file__), "..", "llms-applications-and-agents/large-language-model-foundations/decoder-only-models", "images")
 OUT = os.path.abspath(OUT)
 os.makedirs(OUT, exist_ok=True)
 

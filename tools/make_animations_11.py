@@ -38,7 +38,7 @@ from make_figures_11 import (
     softmax_with_temperature,
 )
 
-OUT_DIR = Path(__file__).resolve().parent.parent / "09. LLMs" / "images"
+OUT_DIR = Path(__file__).resolve().parent.parent / "llms-applications-and-agents/training-and-adaptation/knowledge-distillation" / "images"
 DPI = 95
 FPS = 18
 ARGMAX = int(np.argmax(TEACHER_LOGITS))

@@ -35,7 +35,7 @@ from hallucination_alignment import (
 )
 from make_figures_20 import GREEN, GRID, INK, RED, SLATE
 
-OUT_DIR = Path(__file__).resolve().parent.parent / "09. LLMs" / "images"
+OUT_DIR = Path(__file__).resolve().parent.parent / "llms-applications-and-agents/reasoning-evaluation-and-alignment/safety-and-alignment" / "images"
 DPI = 95
 FPS = 18
 LOGITS = base_logits_tensor(device="cpu")

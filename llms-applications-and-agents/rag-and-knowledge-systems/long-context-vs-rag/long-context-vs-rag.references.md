@@ -58,5 +58,5 @@ updated: 2026-07-02
 - Concept depth (the *why*): [AI-ML-intuition 8.02 Retrieval-Augmented Generation](../../../../AI-ML-intuition/memory-retrieval-and-context/retrieval-augmented-generation/rag-intuition.md)
 - Foundations: [01 RAG Fundamentals (retrieve-then-generate)](../rag-foundations/rag-foundations.md) · [02 Document Chunking](../chunking/chunking.md) · [05 Hybrid Search (the DenseRetriever the dilution proxy reuses)](../hybrid-search/hybrid-search.md)
 - Measure it: [11 RAG Evaluation (why a smaller focused context scores higher)](../rag-evaluation/rag-evaluation.md)
-- Long-context mechanics: [09. LLMs — Long-Context Methods (RoPE scaling, ALiBi)](../../../09.%20LLMs/08-Long-Context-Methods/08-Long-Context-Methods.md) · [09. LLMs — KV Cache (the memory/latency cost of a long prompt)](../../../09.%20LLMs/05-KV-Cache/05-KV-Cache.md)
+- Long-context mechanics: [LLMs — Long-Context Methods (RoPE scaling, ALiBi)](../../llm-model-architectures/long-context-architectures/long-context-architectures.md) · [LLMs — KV Cache (the memory/latency cost of a long prompt)](../../inference-and-runtime/kv-cache/kv-cache.md)
 - Next: [13 Citations & Attribution](../citations-and-attribution/citations-and-attribution.md)

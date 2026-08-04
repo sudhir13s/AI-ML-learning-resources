@@ -60,5 +60,5 @@ updated: 2026-06-21
 - Prerequisite: [14 RNN / LSTM / GRU](../../neural-architectures/rnn-lstm-gru/rnn-lstm-gru.md) (the bottleneck attention fixed)
 - Needed because attention is order-blind: [17 Positional Encoding](../positional-encoding/positional-encoding.md) (sinusoidal, learned, RoPE, ALiBi)
 - Builds into: [16 Transformer Architecture](../transformer-architecture/transformer-architecture.md) — attention wrapped in residual + norm + FFN into a full model
-- At inference / efficiency: [KV Cache](../../../09.%20LLMs/05-KV-Cache/05-KV-Cache.md) · [Efficient Attention (FlashAttention)](../../../09.%20LLMs/06-Efficient-Attention-FlashAttention/06-Efficient-Attention-FlashAttention.md)
+- At inference / efficiency: [KV Cache](../../../llms-applications-and-agents/inference-and-runtime/kv-cache/kv-cache.md) · [Efficient Attention (FlashAttention)](../efficient-attention/efficient-attention.md)
 - Field overview: [Deep Learning](../../README.md)

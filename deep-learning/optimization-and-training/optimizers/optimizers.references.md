@@ -61,5 +61,5 @@ updated: 2026-06-22
 - Concept depth (the *why*): [AI-ML-intuition 2.05 Gradient Descent & SGD](../../../../AI-ML-intuition/learning-and-optimization/first-order-optimization/gradient-descent-and-stochastic-gradient-descent-intuition.md) · [2.06 SGD with Momentum](../../../../AI-ML-intuition/learning-and-optimization/first-order-optimization/momentum-intuition.md) · [2.07 Adam](../../../../AI-ML-intuition/learning-and-optimization/adaptive-optimization/adam-intuition.md) · [2.08 AdamW](../../../../AI-ML-intuition/learning-and-optimization/adaptive-optimization/adamw-intuition.md)
 - Prerequisite: [02 Backpropagation & Computational Graphs](../../neural-network-foundations/backpropagation-and-computational-graphs/backpropagation-and-computational-graphs.md)
 - Next concept: [08 Learning-Rate Schedules & Warmup](../learning-rate-schedules-and-warmup/learning-rate-schedules-and-warmup.md)
-- Why it matters for LLMs: [LoRA & PEFT](../../../09.%20LLMs/12-LoRA-and-PEFT/12-LoRA-and-PEFT.md) (optimizer-state memory)
+- Why it matters for LLMs: [LoRA & PEFT](../../../llms-applications-and-agents/training-and-adaptation/lora-and-parameter-efficient-fine-tuning/lora-and-parameter-efficient-fine-tuning.md) (optimizer-state memory)
 - Field overview: [Deep Learning](../../README.md)

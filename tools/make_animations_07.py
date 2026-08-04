@@ -37,7 +37,7 @@ INK = "#1C2530"
 MUTE = "#C7CDD4"
 BG = "#FBFCFD"
 
-OUT_DIR = Path(__file__).resolve().parent.parent / "09. LLMs" / "images"
+OUT_DIR = Path(__file__).resolve().parent.parent / "llms-applications-and-agents/llm-model-architectures/mixture-of-experts" / "images"
 DPI = 95
 N_EXPERTS = 8
 

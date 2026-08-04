@@ -58,7 +58,7 @@ NAVY = "#2A5B80"
 INK = "#1C2530"  # near-black for axis text
 GRID = "#D4D9DF"
 
-OUT_DIR = Path(__file__).resolve().parent.parent / "09. LLMs" / "images"
+OUT_DIR = Path(__file__).resolve().parent.parent / "llms-applications-and-agents/inference-and-runtime/decoding-and-sampling" / "images"
 DPI = 150
 
 PEAKED = torch.tensor(PEAKED_LOGITS)

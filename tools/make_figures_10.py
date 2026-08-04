@@ -39,7 +39,7 @@ AMBER = "#7A6528"
 NAVY = "#2A5B80"
 GRID = "#D8DCE0"
 
-IMAGES_DIR = Path(__file__).resolve().parent.parent / "09. LLMs" / "10-Quantization" / "images"
+IMAGES_DIR = Path(__file__).resolve().parent.parent / "llms-applications-and-agents/inference-and-runtime/quantization" / "images"
 DPI = 130
 SEED = 0
 
