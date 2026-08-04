@@ -59,7 +59,7 @@ updated: 2026-06-27
 - Step-by-step teaching notebook: [01-Text-Preprocessing-and-Normalization.ipynb](code/text-preprocessing-and-normalization.ipynb) — one idea per cell, each asserting its point before printing.
 - Figure generator: [make_figures_01.py](code/make_figures_01.py) — regenerates every embedded figure from the same functions, so the prose and images can't drift.
 - Next concept: [Tokenization & Subword Algorithms](../tokenization-and-subword-algorithms/tokenization-and-subword-algorithms.md) — where preprocessing meets modern subword vocabularies (BPE, WordPiece, SentencePiece, Unigram).
-- Concept depth (the *why* of subwords): [AI-ML-intuition 1.15 Tokenization & BPE](../../../../AI-ML-intuition/Module_1_Representation/1.15_Tokenization_and_BPE.md)
+- Concept depth (the *why* of subwords): [AI-ML-intuition 1.15 Tokenization & BPE](../../../../AI-ML-intuition/representation/discrete-representations/tokenization-and-bpe-intuition.md)
 - The first models that consume preprocessed text: [Bag-of-Words & TF-IDF](../bag-of-words-and-tf-idf/bag-of-words-and-tf-idf.md)
 - Why transformers want *minimal* preprocessing: [Contextual Embeddings (ELMo / BERT)](../contextual-embeddings-elmo-bert/contextual-embeddings-elmo-bert.md)
 - Tasks where you must *keep* case and stopwords: [Sequence Labeling — POS & NER](../sequence-labeling-pos-and-ner/sequence-labeling-pos-and-ner.md)

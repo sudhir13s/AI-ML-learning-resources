@@ -56,4 +56,4 @@ updated: 2026-06-26
 - The other compression levers: [Quantization](../10-Quantization/10-Quantization.md) · [Inference Optimization & Serving](../09-Inference-Optimization-and-Serving/09-Inference-Optimization-and-Serving.md)
 - Builds on these: [Language Modeling Objectives](../01-Language-Modeling-Objectives/01-Language-Modeling-Objectives.md) · [Pretraining at Scale](../02-Pretraining-at-Scale/02-Pretraining-at-Scale.md)
 - Distillation targets these: [Chain-of-Thought Reasoning](../17-Chain-of-Thought-Reasoning/17-Chain-of-Thought-Reasoning.md) (reasoning distillation) · [Supervised Fine-Tuning](../13-Supervised-Fine-Tuning/13-Supervised-Fine-Tuning.md) (synthetic-data fine-tuning is distillation) · [LoRA and PEFT](../12-LoRA-and-PEFT/12-LoRA-and-PEFT.md)
-- Concept depth (the *why*): [Module 7.04 Knowledge Distillation](../../../AI-ML-intuition/Module_7_Scaling_and_Adaptation/7.04_Knowledge_Distillation.md)
+- Concept depth (the *why*): [Module 7.04 Knowledge Distillation](../../../AI-ML-intuition/scaling-adaptation-and-efficiency/compression/knowledge-distillation-intuition.md)

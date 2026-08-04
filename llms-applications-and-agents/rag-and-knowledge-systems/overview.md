@@ -68,4 +68,4 @@ Every chapter is a self-contained folder (`NN-Concept/NN-Concept.md`) with its p
 - [AI Engineering](https://www.oreilly.com/library/view/ai-engineering/9781098166298/) — **Chip Huyen (2025)** — the definitive text on building LLM products (RAG, agents, eval).
 
 ## 🔗 In this platform
-- Math/mechanism: [AI-ML-intuition 8.02 RAG](../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.02_Retrieval_Augmented_Generation.md), [8.01 Prompting](../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.01_In-Context_Learning_and_Prompting.md)
+- Math/mechanism: [AI-ML-intuition 8.02 RAG](../../../AI-ML-intuition/memory-retrieval-and-context/retrieval-augmented-generation/rag-intuition.md), [8.01 Prompting](../../../AI-ML-intuition/reasoning-and-agency/in-context-behavior/in-context-learning-and-prompting-intuition.md)

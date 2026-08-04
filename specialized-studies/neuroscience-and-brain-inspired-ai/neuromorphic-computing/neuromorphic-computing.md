@@ -30,7 +30,7 @@ pushed all the way down to the silicon: co-design the algorithm (SNNs) and the s
 2. **See real silicon** — watch [Neuromorphic Computing on Intel's Loihi 2](https://www.youtube.com/watch?v=CxXTiHExBNc). *How SNNs map onto an actual neuromorphic chip.*
 3. **Read the landscape** — [Opportunities for neuromorphic computing algorithms and applications](https://www.nature.com/articles/s41928-020-00475-8). *The definitive open survey of where the field is and is going.*
 4. **Connect to SNNs** — review [03 Spiking Neural Networks](../spiking-neural-networks/spiking-neural-networks.md). *Neuromorphic hardware exists to run SNNs efficiently.*
-5. **Tie it to ML efficiency** — relate to [quantization](../../../../AI-ML-intuition/Module_7_Scaling_and_Adaptation/7.05_Quantization.md). *Both chase energy-per-inference; neuromorphic does it via events, quantization via bits.*
+5. **Tie it to ML efficiency** — relate to [quantization](../../../../AI-ML-intuition/scaling-adaptation-and-efficiency/compression/quantization-intuition.md). *Both chase energy-per-inference; neuromorphic does it via events, quantization via bits.*
 
 ## 🎓 Courses (free)
 - [Neuromatch Academy — Computational Neuroscience](https://compneuro.neuromatch.io/) — **Neuromatch** — the spiking-network foundations neuromorphic hardware accelerates.
@@ -56,7 +56,7 @@ pushed all the way down to the silicon: co-design the algorithm (SNNs) and the s
 - [Theoretical Neuroscience — **Ch. 5–6 (model neurons)**](https://www.gatsby.ucl.ac.uk/~dayan/book/) — **Dayan & Abbott** — the biophysical models neuromorphic hardware abstracts.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 7.05 Quantization](../../../../AI-ML-intuition/Module_7_Scaling_and_Adaptation/7.05_Quantization.md) — the ML-side energy-efficiency lever, parallel to event-driven computation.
+- Concept depth (the *why*): [AI-ML-intuition 7.05 Quantization](../../../../AI-ML-intuition/scaling-adaptation-and-efficiency/compression/quantization-intuition.md) — the ML-side energy-efficiency lever, parallel to event-driven computation.
 - Prereqs in this section: [03 Spiking Neural Networks](../spiking-neural-networks/spiking-neural-networks.md)
 - Next concepts: [14 Biologically-Plausible Backprop Alternatives](../biologically-plausible-backprop-alternatives/biologically-plausible-backprop-alternatives.md)
 - Related domain: [05. Deep Learning](../../../deep-learning/README.md)

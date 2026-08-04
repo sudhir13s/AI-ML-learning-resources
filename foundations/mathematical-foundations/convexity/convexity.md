@@ -55,7 +55,7 @@ convexity guarantees a unique global optimum.
 - [Mathematics for Machine Learning — **Ch. 7 (Continuous Optimization)**](https://mml-book.github.io/book/mml-book.pdf) — **Deisenroth et al.** — convexity in the ML optimization chapter.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 2.05 Gradient Descent & SGD](../../../../AI-ML-intuition/Module_2_Optimization/2.05_Gradient_Descent_and_SGD.md)
+- Concept depth (the *why*): [AI-ML-intuition 2.05 Gradient Descent & SGD](../../../../AI-ML-intuition/learning-and-optimization/first-order-optimization/gradient-descent-and-stochastic-gradient-descent-intuition.md)
 - Curriculum context: [Maths for AI-ML — Phase 5 (Optimization for ML/DL)](../maths-for-ai-ml/README.md)
 - Prereqs: [10 Jacobian & Hessian](../jacobian-and-hessian/jacobian-and-hessian.md) (PSD Hessian ⇒ convex) · Next: [13 Gradient Descent — theory](../gradient-descent-theory/gradient-descent-theory.md) · [14 Lagrange Multipliers](../lagrange-multipliers-constrained-optimization/lagrange-multipliers-constrained-optimization.md)
 </content>

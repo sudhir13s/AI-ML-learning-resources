@@ -31,7 +31,7 @@ theory (card 11).
 2. **Understand series** — watch [But what is a Fourier series?](https://www.youtube.com/watch?v=r6sGWTCMz2k) (3Blue1Brown). *From heat flow to "any signal is a sum of rotations".*
 3. **Get the engineering view** — watch [The Fast Fourier Transform (FFT)](https://www.youtube.com/watch?v=E8HeD-MUrjY) (Brunton) and read [databookuw Ch. 2](https://databookuw.com/). *DFT/FFT and the convolution theorem you'll actually compute with.*
 4. **Read the rigorous course** — work [Stanford EE261 (The Fourier Transform and its Applications)](https://see.stanford.edu/Course/EE261). *The definitive engineering-math treatment: transform, sampling, DFT.*
-5. **Reach ML applications** — connect to [positional encodings](../../../../AI-ML-intuition/Module_1_Representation/1.03_Positional_Encoding.md) and Fourier features. *Where Fourier analysis shows up directly in modern architectures.*
+5. **Reach ML applications** — connect to [positional encodings](../../../../AI-ML-intuition/representation/embedding-spaces/positional-representations-intuition.md) and Fourier features. *Where Fourier analysis shows up directly in modern architectures.*
 
 ## 🎓 Courses (free)
 - [Stanford EE261 — The Fourier Transform and its Applications](https://see.stanford.edu/Course/EE261) — **Brad Osgood (Stanford)** — the classic full course (series → transform → sampling → DFT), free video + [free book PDF](https://see.stanford.edu/materials/lsoftaee261/book-fall-07.pdf).
@@ -58,7 +58,7 @@ theory (card 11).
 - [Mathematics of the DFT — **Ch. on the DFT & convolution theorem**](https://www.dsprelated.com/freebooks/mdft/) — **Julius O. Smith** — rigorous, complete, and free online.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 1.03 Positional Encoding](../../../../AI-ML-intuition/Module_1_Representation/1.03_Positional_Encoding.md)
+- Concept depth (the *why*): [AI-ML-intuition 1.03 Positional Encoding](../../../../AI-ML-intuition/representation/embedding-spaces/positional-representations-intuition.md)
 - Foundations (the basics this builds on): [Norms, Inner Products & Orthogonality](../../../foundations/mathematical-foundations/norms-inner-products-and-orthogonality/norms-inner-products-and-orthogonality.md) · [Eigenvalues & Eigenvectors](../../../foundations/mathematical-foundations/eigenvalues-and-eigenvectors/eigenvalues-and-eigenvectors.md)
 - Prerequisite & related: [02 Functional Analysis](../functional-analysis/functional-analysis.md) · [11 Spectral Graph Theory (graph Fourier)](../spectral-graph-theory/spectral-graph-theory.md) · [13 Random Matrix Theory](../random-matrix-theory/random-matrix-theory.md)
 - Related domain: [05. Deep Learning](../../../deep-learning/README.md)

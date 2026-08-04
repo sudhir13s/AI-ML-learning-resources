@@ -51,7 +51,7 @@ updated: 2026-06-22
 
 **In this platform**:
 - Concept page (full explanation): [Regularization for Linear Models](regularization-linear-models.md)
-- Concept depth (the *why*): [AI-ML-intuition 2.10 Regularization L1/L2](../../../../../AI-ML-intuition/Module_2_Optimization/2.10_Regularization_L1_L2.md) · [3.07 Bias–Variance & Generalization](../../../../../AI-ML-intuition/Module_3_Evaluation/3.07_Bias_Variance_and_Generalization.md)
+- Concept depth (the *why*): [AI-ML-intuition 2.10 Regularization L1/L2](../../../../../AI-ML-intuition/learning-and-optimization/objective-shaping/l1-and-l2-regularization-intuition.md) · [3.07 Bias–Variance & Generalization](../../../../../AI-ML-intuition/objectives-and-evaluation/generalization/bias-variance-tradeoff-intuition.md)
 - Prior / related concepts: [Linear Regression](../linear-regression/linear-regression.md) (the OLS baseline this modifies) · [Logistic Regression](../../classification/logistic-regression/logistic-regression.md) (same penalties, classification) · [Bias–Variance Tradeoff](../../../model-selection-and-evaluation/bias-variance-tradeoff/bias-variance-tradeoff.md) (what the penalty trades) · [Cross-Validation](../../../model-selection-and-evaluation/cross-validation/cross-validation.md) (how $\lambda$ is chosen)
 - Math prerequisites: [01. Foundations](../../../../foundations/mathematical-foundations/README.md) — norms, convex optimization, the SVD, and MAP estimation
 - Related domain: [Regularization (deep nets)](../../../../deep-learning/optimization-and-training/regularization/regularization.md) — L2 reappears as weight decay; dropout is its neural-net cousin

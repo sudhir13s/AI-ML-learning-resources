@@ -55,6 +55,6 @@ justify capping vs removal vs a log transform — and to do detection **using tr
 - [Python Data Science Handbook — **Ch. 3 (Pandas: detecting/filtering)**](https://jakevdp.github.io/PythonDataScienceHandbook/) — **Jake VanderPlas** — boolean masking and aggregation to find/remove outliers.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 0.02 Distributions & the Gaussian](../../../../AI-ML-intuition/Module_0_Foundations/0.02_Distributions_and_the_Gaussian.md) · [1.10 Mahalanobis Distance](../../../../AI-ML-intuition/Module_1_Representation/1.10_Mahalanobis_Distance.md)
+- Concept depth (the *why*): [AI-ML-intuition 0.02 Distributions & the Gaussian](../../../../AI-ML-intuition/foundational-mental-models/probability-and-belief/distributions-and-gaussians-intuition.md) · [1.10 Mahalanobis Distance](../../../../AI-ML-intuition/representation/similarity-and-distance/mahalanobis-distance-intuition.md)
 - Next concepts: [02 Feature Scaling & Normalization](../feature-scaling-and-normalization/feature-scaling-and-normalization.md) · [06 Feature Engineering](../feature-engineering/feature-engineering.md)
 - Related domain: [04. Unsupervised Learning](../../../core-machine-learning/unsupervised-learning/README.md)

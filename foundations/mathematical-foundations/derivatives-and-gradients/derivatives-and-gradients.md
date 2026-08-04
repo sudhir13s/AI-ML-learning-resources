@@ -30,7 +30,7 @@ optimization.
 2. **Go multivariable** — watch [Khan: Gradient and graphs](https://www.youtube.com/watch?v=_-02ze7tf08). *Partial derivatives → the gradient vector and why it points uphill.*
 3. **Formalize** — read [MML Ch. 5 (Vector Calculus)](https://mml-book.github.io/book/mml-book.pdf), §5.1–5.3. *Partial derivatives, gradients, and gradient rules.*
 4. **Reference & practice** — use [Paul's Online Notes: The Gradient Vector](https://tutorial.math.lamar.edu/Classes/CalcIII/GradientVector.aspx) and Khan exercises. *Solidify computation and the steepest-ascent property.*
-5. **Connect to ML** — read [AI-ML-intuition 2.01 Partial Derivatives & the Gradient](../../../../AI-ML-intuition/Module_2_Optimization/2.01_Partial_Derivatives_and_the_Gradient.md). *Where the gradient becomes the training signal.*
+5. **Connect to ML** — read [AI-ML-intuition 2.01 Partial Derivatives & the Gradient](../../../../AI-ML-intuition/learning-and-optimization/gradients-and-credit-assignment/partial-derivatives-and-gradients-intuition.md). *Where the gradient becomes the training signal.*
 
 ## 🎓 Courses (free)
 - [MIT 18.01 Single Variable Calculus](https://ocw.mit.edu/courses/18-01-single-variable-calculus-fall-2006/) — **MIT OCW** — derivatives from first principles.
@@ -55,7 +55,7 @@ optimization.
 - [Calculus (OpenStax) — **Vol. 3, Ch. 4 (Differentiation of Functions of Several Variables)**](https://openstax.org/details/books/calculus-volume-3) — **OpenStax** — free, thorough multivariable derivatives and the gradient.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 2.01 Partial Derivatives & the Gradient](../../../../AI-ML-intuition/Module_2_Optimization/2.01_Partial_Derivatives_and_the_Gradient.md)
+- Concept depth (the *why*): [AI-ML-intuition 2.01 Partial Derivatives & the Gradient](../../../../AI-ML-intuition/learning-and-optimization/gradients-and-credit-assignment/partial-derivatives-and-gradients-intuition.md)
 - Curriculum context: [Maths for AI-ML — Phase 2 (Calculus, row 2.1)](../maths-for-ai-ml/README.md)
 - Prereq: [01 Vectors & Vector Spaces](../vectors-and-vector-spaces/vectors-and-vector-spaces.md) · Next: [09 The Chain Rule](../the-chain-rule/the-chain-rule.md) · [10 Jacobian & Hessian](../jacobian-and-hessian/jacobian-and-hessian.md) · [13 Gradient Descent — theory](../gradient-descent-theory/gradient-descent-theory.md)
 </content>

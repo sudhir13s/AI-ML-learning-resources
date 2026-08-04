@@ -54,5 +54,5 @@ a value function, and the model. Get this wrong and nothing downstream (Bellman,
 - [Algorithms for Reinforcement Learning — **§2 "Markov Decision Processes"**](https://sites.ualberta.ca/~szepesva/papers/RLAlgsInMDPs.pdf) — **Csaba Szepesvári** — compact, mathematically precise free monograph.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 6.04 MDPs & Exploration](../../../../../AI-ML-intuition/Module_6_Reinforcement_Learning/6.04_MDPs_and_Exploration.md)
+- Concept depth (the *why*): [AI-ML-intuition 6.04 MDPs & Exploration](../../../../../AI-ML-intuition/decision-making-and-control/mdps-and-environments/mdps-and-exploration-intuition.md)
 - Next concepts: [02 Bellman Equations](../bellman-equations/bellman-equations.md) · [03 Dynamic Programming](../dynamic-programming-value-and-policy-iteration/dynamic-programming-value-and-policy-iteration.md)

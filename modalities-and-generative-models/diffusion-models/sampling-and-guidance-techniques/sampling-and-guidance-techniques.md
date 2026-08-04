@@ -62,7 +62,7 @@ and can over-saturate.
 - [Probabilistic Machine Learning: Advanced Topics — **Ch. 25 "Diffusion models"**](https://probml.github.io/pml-book/book2.html) — **Kevin Murphy** — free PDF; samplers, the probability-flow ODE, and guidance.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 5.05 Autoregressive Generation & Sampling](../../../../AI-ML-intuition/Module_5_Generation/5.05_Autoregressive_Generation_Sampling.md) · [5.03 Diffusion Models](../../../../AI-ML-intuition/Module_5_Generation/5.03_Diffusion_Models.md)
+- Concept depth (the *why*): [AI-ML-intuition 5.05 Autoregressive Generation & Sampling](../../../../AI-ML-intuition/generation/autoregressive-generation/autoregressive-generation-and-sampling-controls-intuition.md) · [5.03 Diffusion Models](../../../../AI-ML-intuition/generation/diffusion-and-score-models/diffusion-forward-and-reverse-process-intuition.md)
 - Prereq: [05 Diffusion Models (DDPM)](../diffusion-models-ddpm/diffusion-models-ddpm.md) · [06 Score-Based & SDE Diffusion](../score-based-and-sde-diffusion/score-based-and-sde-diffusion.md) (the probability-flow ODE) · [04 Conditional Generation & CFG](../conditional-generation-and-classifier-free-guidance/conditional-generation-and-classifier-free-guidance.md)
 - Related: [07 Latent Diffusion & Stable Diffusion](../latent-diffusion-stable-diffusion/latent-diffusion-stable-diffusion.md) · [11 Text-to-Image Systems](../text-to-image-systems/text-to-image-systems.md) (where guidance scale is the key knob)
 - Field overview: [9. Generative AI](../../generative-models/README.md)

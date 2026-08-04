@@ -58,5 +58,5 @@ entirely in goal-conditioned tasks.
 - [Algorithms for Reinforcement Learning — **§2 (the MDP reward model)**](https://sites.ualberta.ca/~szepesva/papers/RLAlgsInMDPs.pdf) — **Csaba Szepesvári** — the formal role of the reward function.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 6.04 MDPs & Exploration](../../../../../AI-ML-intuition/Module_6_Reinforcement_Learning/6.04_MDPs_and_Exploration.md)
+- Concept depth (the *why*): [AI-ML-intuition 6.04 MDPs & Exploration](../../../../../AI-ML-intuition/decision-making-and-control/mdps-and-environments/mdps-and-exploration-intuition.md)
 - Related: [14 Exploration vs Exploitation](../exploration-vs-exploitation/exploration-vs-exploitation.md) · [01 Markov Decision Processes](../markov-decision-processes/markov-decision-processes.md)

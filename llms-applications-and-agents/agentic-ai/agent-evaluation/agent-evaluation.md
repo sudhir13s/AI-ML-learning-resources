@@ -58,6 +58,6 @@ benchmark fits which capability (coding → SWE-bench, web → WebArena, OS → 
 - [Artificial Intelligence: A Modern Approach — **Ch. 2 "Intelligent Agents"** (performance measures & rationality)](https://aima.cs.berkeley.edu/) — **Russell & Norvig** — defining a performance measure is the classical root of agent evaluation.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 8.03 Agents & Tool Use](../../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.03_Agents_and_Tool_Use.md)
+- Concept depth (the *why*): [AI-ML-intuition 8.03 Agents & Tool Use](../../../../AI-ML-intuition/reasoning-and-agency/agents-and-tools/agent-loop-and-tool-use-intuition.md)
 - Prev / next: [10 Code Agents](../coding-and-computer-use-agents/code-agents.md) · [11 Computer-Use & GUI Agents](../coding-and-computer-use-agents/computer-use-and-gui-agents.md) · [13 Safety, Guardrails & HITL](../agent-safety/agent-safety.md)
 - Related (canonical home): [LLM Evaluation & Benchmarks](../../../09.%20LLMs/19-LLM-Evaluation-and-Benchmarks/19-LLM-Evaluation-and-Benchmarks.md)

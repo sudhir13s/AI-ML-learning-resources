@@ -324,7 +324,7 @@ The reason RAG dominates modern QA is that it gets the best of both worlds — a
 
 > **Note:** RAG and **extractive** open-domain QA share the same front half (a retriever feeding a reader); they differ only in the reader — **extract a span** (verbatim, faithful, can't paraphrase) vs **generate** (fluent, can synthesize across passages, can drift). Extractive is safer when faithfulness is paramount; generative is better when the answer must combine or rephrase evidence. Many production systems run both and pick per query.
 
-> **Tip:** the modern "chat with your documents" / enterprise-search product is, under the hood, almost always RAG: embed the docs into a vector index ([dense retrieval](../information-retrieval-and-semantic-search/information-retrieval-and-semantic-search.md)), retrieve per question, stuff the passages into an LLM's context with the question, and let it answer **with citations**. The deeper conceptual treatment is on the [Retrieval-Augmented Generation intuition page](../../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.02_Retrieval_Augmented_Generation.md).
+> **Tip:** the modern "chat with your documents" / enterprise-search product is, under the hood, almost always RAG: embed the docs into a vector index ([dense retrieval](../information-retrieval-and-semantic-search/information-retrieval-and-semantic-search.md)), retrieve per question, stuff the passages into an LLM's context with the question, and let it answer **with citations**. The deeper conceptual treatment is on the [Retrieval-Augmented Generation intuition page](../../../../AI-ML-intuition/memory-retrieval-and-context/retrieval-augmented-generation/rag-intuition.md).
 
 ---
 

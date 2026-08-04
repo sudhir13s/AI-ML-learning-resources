@@ -27,7 +27,7 @@ is inner-products and norms.
 **⭐ Start here — suggested path:**
 
 1. **Dot product, geometrically** — watch [3B1B: Dot products and duality](https://www.youtube.com/watch?v=LyGKycYT2v0). *Why `a·b` relates to projection and angle, not just a sum of products.*
-2. **Norms & distances in ML** — read [AI-ML-intuition 1.07–1.08 Euclidean vs Cosine](../../../../AI-ML-intuition/Module_1_Representation/1.07-1.08_Similarities_Distances_Euclidean_vs_Cosine.md) and [1.09 Manhattan/L1](../../../../AI-ML-intuition/Module_1_Representation/1.09_Manhattan_L1_Distance.md). *The exact place these definitions get used.*
+2. **Norms & distances in ML** — read [AI-ML-intuition 1.07–1.08 Euclidean vs Cosine](../../../../AI-ML-intuition/representation/similarity-and-distance/cosine-vs-euclidean-distance-intuition.md) and [1.09 Manhattan/L1](../../../../AI-ML-intuition/representation/similarity-and-distance/manhattan-distance-intuition.md). *The exact place these definitions get used.*
 3. **Formalize it** — read [MML Ch. 3 (Analytic Geometry)](https://mml-book.github.io/book/mml-book.pdf): inner products, norms, orthogonality, projections. *Definitions and the Cauchy–Schwarz inequality you'll quote.*
 4. **Orthogonality & projection** — watch [MIT 18.06: Orthogonal Vectors & Subspaces](https://www.youtube.com/watch?v=YzZUIYRCE38). *Sets up least squares = projection onto a subspace.*
 5. **Practice** — do [Khan: Projections](https://www.youtube.com/watch?v=27vT-NWuw0M) and norm exercises. *Cement projection formulas and L1/L2 mechanics.*
@@ -55,7 +55,7 @@ is inner-products and norms.
 - [Introduction to Applied Linear Algebra (VMLS) — **Ch. 3 (Norm & Distance), Ch. 5 (Orthogonality)**](https://web.stanford.edu/~boyd/vmls/vmls.pdf) — **Boyd & Vandenberghe** — norms, distance, angle, Gram–Schmidt.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 1.06 Scaled Dot-Product](../../../../AI-ML-intuition/Module_1_Representation/1.06_Vector_Similarities_The_Scaled_Dot-Product.md) · [1.07–1.08 Euclidean vs Cosine](../../../../AI-ML-intuition/Module_1_Representation/1.07-1.08_Similarities_Distances_Euclidean_vs_Cosine.md) · [1.09 Manhattan/L1](../../../../AI-ML-intuition/Module_1_Representation/1.09_Manhattan_L1_Distance.md)
+- Concept depth (the *why*): [AI-ML-intuition 1.06 Scaled Dot-Product](../../../../AI-ML-intuition/representation/similarity-and-distance/scaled-dot-product-intuition.md) · [1.07–1.08 Euclidean vs Cosine](../../../../AI-ML-intuition/representation/similarity-and-distance/cosine-vs-euclidean-distance-intuition.md) · [1.09 Manhattan/L1](../../../../AI-ML-intuition/representation/similarity-and-distance/manhattan-distance-intuition.md)
 - Curriculum context: [Maths for AI-ML — Phase 1 (Linear Algebra)](../maths-for-ai-ml/README.md)
 - Prereq: [01 Vectors & Vector Spaces](../vectors-and-vector-spaces/vectors-and-vector-spaces.md) · Related: [12 Convexity](../convexity/convexity.md) (norm balls)
 </content>

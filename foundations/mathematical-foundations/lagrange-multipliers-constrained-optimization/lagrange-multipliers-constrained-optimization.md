@@ -55,7 +55,7 @@ state the KKT conditions.
 - [Mathematics for Machine Learning — **Ch. 7.2 (Constrained Optimization)**](https://mml-book.github.io/book/mml-book.pdf) — **Deisenroth et al.** — Lagrange multipliers in the ML optimization chapter.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 1.05 Spectral Methods (PCA as constrained variance max)](../../../../AI-ML-intuition/Module_1_Representation/1.05_Spectral_Methods_PCA_SVD.md) · [1.16 The Kernel Trick (SVM context)](../../../../AI-ML-intuition/Module_1_Representation/1.16_The_Kernel_Trick.md)
+- Concept depth (the *why*): [AI-ML-intuition 1.05 Spectral Methods (PCA as constrained variance max)](../../../../AI-ML-intuition/representation/dimensionality-and-latent-structure/pca-and-svd-intuition.md) · [1.16 The Kernel Trick (SVM context)](../../../../AI-ML-intuition/representation/similarity-and-distance/kernel-trick-intuition.md)
 - Curriculum context: [Maths for AI-ML — Phase 5 (Optimization for ML/DL)](../maths-for-ai-ml/README.md)
 - Prereqs: [12 Convexity](../convexity/convexity.md) · Related: [07 PCA — the math](../principal-component-analysis-math/principal-component-analysis-math.md) (a constrained optimization)
 </content>

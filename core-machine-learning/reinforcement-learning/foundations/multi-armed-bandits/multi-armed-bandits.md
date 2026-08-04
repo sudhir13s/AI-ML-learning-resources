@@ -57,5 +57,5 @@ context-free and contextual bandits — and why a bandit is "an MDP with one sta
 - [Bandit Algorithms](https://tor-lattimore.com/downloads/book/book.pdf) — **Lattimore & Szepesvári** — the definitive free reference: stochastic, adversarial, contextual bandits, with regret proofs.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 6.04 MDPs & Exploration](../../../../../AI-ML-intuition/Module_6_Reinforcement_Learning/6.04_MDPs_and_Exploration.md)
+- Concept depth (the *why*): [AI-ML-intuition 6.04 MDPs & Exploration](../../../../../AI-ML-intuition/decision-making-and-control/mdps-and-environments/mdps-and-exploration-intuition.md)
 - Closely related: [14 Exploration vs Exploitation](../exploration-vs-exploitation/exploration-vs-exploitation.md) · Generalizes to: [01 Markov Decision Processes](../markov-decision-processes/markov-decision-processes.md)

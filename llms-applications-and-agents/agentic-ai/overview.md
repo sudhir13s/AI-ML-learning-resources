@@ -64,4 +64,4 @@ learning path plus the best **free, open** course, video, paper, article, or boo
 - [LLM Powered Autonomous Agents](https://lilianweng.github.io/posts/2023-06-23-agent/) — **Lilian Weng** — the canonical survey (planning, memory, tools).
 
 ## 🔗 In this platform
-- Math/mechanism: [AI-ML-intuition 8.03 Agents & Tool Use](../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.03_Agents_and_Tool_Use.md)
+- Math/mechanism: [AI-ML-intuition 8.03 Agents & Tool Use](../../../AI-ML-intuition/reasoning-and-agency/agents-and-tools/agent-loop-and-tool-use-intuition.md)

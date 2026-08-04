@@ -55,5 +55,5 @@ updated: 2026-06-22
 - Prerequisite — where the gradient comes from: [Backpropagation & Computational Graphs](../../neural-network-foundations/backpropagation-and-computational-graphs/backpropagation-and-computational-graphs.md)
 - Why warmup matters for transformers: [Transformer Architecture](../../attention-and-transformers/transformer-architecture/transformer-architecture.md)
 - Builds on this: [Hyperparameter Tuning](../hyperparameter-tuning/hyperparameter-tuning.md) (the LR is the top hyperparameter to tune) · [Normalization](../../stabilization-and-architectural-blocks/normalization/normalization.md) (interacts with early-training stability)
-- The *why* (concept depth): [AI-ML-intuition 2.09 Learning Rate Schedules](../../../../AI-ML-intuition/Module_2_Optimization/2.09_Learning_Rate_Schedules.md)
+- The *why* (concept depth): [AI-ML-intuition 2.09 Learning Rate Schedules](../../../../AI-ML-intuition/learning-and-optimization/adaptive-optimization/learning-rate-schedules-intuition.md)
 - Field overview: [Deep Learning](../../README.md)

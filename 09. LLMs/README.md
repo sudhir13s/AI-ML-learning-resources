@@ -84,5 +84,5 @@ and — for the gold demo chapter — a runnable notebook and `code/`.
 - [Speech and Language Processing, 3rd ed. — **Ch. 10 "Large Language Models"**](https://web.stanford.edu/~jurafsky/slp3/10.pdf) — **Jurafsky & Martin** — the standard reference chapter, free PDF.
 
 ## 🔗 In this platform
-- Build one: [project_06 ChatGPT-from-scratch](../../AI-ML-problemsets/projects/project_06_chatgpt_from_scratch/) · Intuition: [Module 8 — LLMs & Agentic Systems](../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/) · Systems: [LLM Systems curriculum](../llm_systems_curriculum.md)
+- Build one: [project_06 ChatGPT-from-scratch](../../AI-ML-problemsets/projects/project_06_chatgpt_from_scratch/) · Intuition: [Module 8 — LLMs & Agentic Systems](../../AI-ML-intuition/reasoning-and-agency/) · Systems: [LLM Systems curriculum](../llm_systems_curriculum.md)
 - Foundations: [Transformer Architecture](../deep-learning/attention-and-transformers/transformer-architecture/transformer-architecture.md) · [Attention](../deep-learning/attention-and-transformers/attention-mechanism/attention-mechanism.md) · [Contextual Embeddings (BERT)](../modalities-and-generative-models/natural-language-processing/contextual-embeddings-elmo-bert/contextual-embeddings-elmo-bert.md)

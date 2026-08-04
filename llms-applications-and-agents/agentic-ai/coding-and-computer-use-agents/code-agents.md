@@ -56,6 +56,6 @@ SWE-bench scores are the field's headline metric.
 - [Artificial Intelligence: A Modern Approach — **Ch. 2 "Intelligent Agents"**](https://aima.cs.berkeley.edu/) — **Russell & Norvig** — the percept→action loop; a code agent's environment is the repo + shell.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 8.03 Agents & Tool Use](../../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.03_Agents_and_Tool_Use.md)
+- Concept depth (the *why*): [AI-ML-intuition 8.03 Agents & Tool Use](../../../../AI-ML-intuition/reasoning-and-agency/agents-and-tools/agent-loop-and-tool-use-intuition.md)
 - Prev / next: [09 Agent Frameworks](../agent-frameworks/agent-frameworks.md) · [11 Computer-Use & GUI Agents](computer-use-and-gui-agents.md) · [12 Agent Evaluation & Benchmarks](../agent-evaluation/agent-evaluation.md)
 - Related (canonical home): [Prompting & In-Context Learning](../../../09.%20LLMs/16-Prompting-and-In-Context-Learning/16-Prompting-and-In-Context-Learning.md)

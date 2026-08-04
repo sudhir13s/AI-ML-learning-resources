@@ -56,7 +56,7 @@ updated: 2026-06-22
 
 **In this platform**:
 - Concept page (full explanation): [Activation Functions](activation-functions.md)
-- Concept depth (the *why*): [AI-ML-intuition 4.14 Activation Functions & Softmax](../../../../AI-ML-intuition/Module_4_Stabilization/4D_Nonlinearities/4.14_Activation_Functions_and_Softmax.md)
+- Concept depth (the *why*): [AI-ML-intuition 4.14 Activation Functions & Softmax](../../../../AI-ML-intuition/architectural-mechanisms/nonlinear-transformation/activation-functions-and-softmax-intuition.md)
 - Prerequisite: [Perceptron & MLP](../../neural-network-foundations/perceptron-and-mlp/perceptron-and-mlp.md)
 - Related: [Vanishing / Exploding Gradients](../../optimization-and-training/vanishing-exploding-gradients/vanishing-exploding-gradients.md) (why saturating activations hurt) · [Backpropagation & Computational Graphs](../../neural-network-foundations/backpropagation-and-computational-graphs/backpropagation-and-computational-graphs.md) (where the chained derivatives multiply) · [Loss Functions](../../optimization-and-training/loss-functions/loss-functions.md) (softmax + cross-entropy) · [Transformer Architecture](../../attention-and-transformers/transformer-architecture/transformer-architecture.md) (where GELU/SwiGLU and softmax sit)
 - Field overview: [Deep Learning](../../README.md)

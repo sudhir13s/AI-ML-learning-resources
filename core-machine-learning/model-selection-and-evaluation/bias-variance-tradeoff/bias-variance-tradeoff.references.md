@@ -49,6 +49,6 @@ updated: 2026-06-22
 
 **In this platform**:
 - Concept page (full explanation): [Bias–Variance Tradeoff](bias-variance-tradeoff.md)
-- Concept depth (the *why*): [AI-ML-intuition 3.07 Bias–Variance & Generalization](../../../../AI-ML-intuition/Module_3_Evaluation/3.07_Bias_Variance_and_Generalization.md) · [3.08 Ensembles (Bagging/Boosting)](../../../../AI-ML-intuition/Module_3_Evaluation/3.08_Ensembles_Bagging_Boosting.md)
+- Concept depth (the *why*): [AI-ML-intuition 3.07 Bias–Variance & Generalization](../../../../AI-ML-intuition/objectives-and-evaluation/generalization/bias-variance-tradeoff-intuition.md) · [3.08 Ensembles (Bagging/Boosting)](../../../../AI-ML-intuition/architectural-mechanisms/composition/bagging-and-boosting-intuition.md)
 - Related: [Regularization (Linear Models)](../../supervised-learning/regression/regularization-linear-models/regularization-linear-models.md) (trades bias for variance) · [Bagging](../../supervised-learning/trees-and-ensembles/bagging/bagging.md) / [Random Forests](../../supervised-learning/trees-and-ensembles/random-forests/random-forests.md) (cut variance) · [Gradient Boosting](../../supervised-learning/trees-and-ensembles/gradient-boosting-xgboost/gradient-boosting-xgboost.md) (cuts bias)
 - Math prerequisites: [01. Foundations](../../../foundations/mathematical-foundations/README.md) — expectation, variance, generalization error

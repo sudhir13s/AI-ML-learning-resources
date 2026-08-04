@@ -59,6 +59,6 @@ object-segmentation attention for free. Central to foundation-model and multimod
 - [Computer Vision: Algorithms and Applications, 2nd ed. — **Ch. 5.4 (Self-supervised & contrastive pretraining)**](https://szeliski.org/Book/) — **Richard Szeliski** — self-supervision in context, free.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 1.13 Contrastive Learning (SimCLR · InfoNCE)](../../../../AI-ML-intuition/Module_1_Representation/1.13_Representation_Contrastive_Learning_SimCLR_InfoNCE.md) · [1.14 Triplet Loss](../../../../AI-ML-intuition/Module_1_Representation/1.14_Triplet_Loss.md)
+- Concept depth (the *why*): [AI-ML-intuition 1.13 Contrastive Learning (SimCLR · InfoNCE)](../../../../AI-ML-intuition/representation/representation-learning/contrastive-learning-intuition.md) · [1.14 Triplet Loss](../../../../AI-ML-intuition/representation/representation-learning/triplet-learning-intuition.md)
 - Foundation: [Vision Transformers](../vision-transformers/vision-transformers.md) (MAE/DINO backbone) · [Data Augmentation](../data-augmentation/data-augmentation.md) (defines contrastive views)
 - Related domain: [Deep Learning › Autoencoders](../../../deep-learning/neural-architectures/autoencoders/autoencoders.md) (MAE is a masked autoencoder)

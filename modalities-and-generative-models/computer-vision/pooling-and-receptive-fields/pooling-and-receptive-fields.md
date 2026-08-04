@@ -56,6 +56,6 @@ and "how much context does this neuron have?"
 - [Dive into Deep Learning — **Ch. 7.5 (Pooling)** + **Ch. 7.3 (Padding & Stride)**](https://d2l.ai/chapter_convolutional-neural-networks/index.html) — **Zhang et al.** — pooling and the stride/padding math behind receptive fields, with runnable code.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 4.13 Convolution](../../../../AI-ML-intuition/Module_4_Stabilization/4B_Architectural_Motifs/4.13_Convolution.md) — receptive fields are a direct consequence of stacking convolutions.
+- Concept depth (the *why*): [AI-ML-intuition 4.13 Convolution](../../../../AI-ML-intuition/architectural-mechanisms/locality-and-weight-sharing/convolution-intuition.md) — receptive fields are a direct consequence of stacking convolutions.
 - Foundation: [Deep Learning › CNNs & Convolution](../../../deep-learning/neural-architectures/cnns-and-convolution/cnns-and-convolution.md)
 - Next concepts: [03 Classic CNN Architectures](../classic-cnn-architectures/classic-cnn-architectures.md) · [08 Semantic Segmentation](../semantic-segmentation/semantic-segmentation.md)

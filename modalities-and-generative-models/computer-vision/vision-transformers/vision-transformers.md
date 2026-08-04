@@ -56,6 +56,6 @@ add back. Expected for any role touching modern vision or multimodal models.
 - [Computer Vision: Algorithms and Applications, 2nd ed. — **Ch. 5.5 (Transformers in vision)**](https://szeliski.org/Book/) — **Richard Szeliski** — ViT in the architecture landscape, free.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 4.15 The Transformer Block](../../../../AI-ML-intuition/Module_4_Stabilization/4D_Nonlinearities/4.15_The_Transformer_Block.md) · [4.08 Multi-Head Attention](../../../../AI-ML-intuition/Module_4_Stabilization/4B_Architectural_Motifs/4.08_Multi-Head_Attention_Routing.md)
+- Concept depth (the *why*): [AI-ML-intuition 4.15 The Transformer Block](../../../../AI-ML-intuition/architectural-mechanisms/composition/transformer-block-intuition.md) · [4.08 Multi-Head Attention](../../../../AI-ML-intuition/architectural-mechanisms/attention-and-routing/multi-head-attention-intuition.md)
 - Foundation: [Deep Learning › Transformer Architecture](../../../deep-learning/attention-and-transformers/transformer-architecture/transformer-architecture.md) · [Deep Learning › Attention Mechanism](../../../deep-learning/attention-and-transformers/attention-mechanism/attention-mechanism.md)
 - Next concepts: [12 Self-Supervised Vision](../self-supervised-vision/self-supervised-vision.md) (MAE/DINO build on ViT)

@@ -58,4 +58,4 @@ Every chapter is a self-contained folder (`NN-Concept/NN-Concept.md`) with its p
 - [An Introduction to Statistical Learning (ISLP), Ch. 12](https://www.statlearning.com/) — **James et al.** — free; clustering & PCA, applied.
 
 ## 🔗 In this platform
-- The geometry behind it: [AI-ML-intuition 1.05 PCA/SVD, 1.11–1.12 t-SNE/UMAP, 1.18 k-Means](../../../AI-ML-intuition/Module_1_Representation/)
+- The geometry behind it: [AI-ML-intuition 1.05 PCA/SVD, 1.11–1.12 t-SNE/UMAP, 1.18 k-Means](../../../AI-ML-intuition/representation/)

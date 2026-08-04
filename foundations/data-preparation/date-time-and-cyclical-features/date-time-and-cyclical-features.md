@@ -55,6 +55,6 @@ features for time series, and the time-aware leakage trap (never use future rows
 - [Feature Engineering and Selection — **Ch. 6 (transformations) & Ch. 9 (profile/temporal data)**](http://www.feat.engineering/) — **Kuhn & Johnson** — engineering features from structured/temporal data; free online.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 1.03 Positional Encoding](../../../../AI-ML-intuition/Module_1_Representation/1.03_Positional_Encoding.md) — the same sine/cosine idea that encodes sequence position.
+- Concept depth (the *why*): [AI-ML-intuition 1.03 Positional Encoding](../../../../AI-ML-intuition/representation/embedding-spaces/positional-representations-intuition.md) — the same sine/cosine idea that encodes sequence position.
 - Next concepts: [06 Feature Engineering](../feature-engineering/feature-engineering.md) · [11 Data Leakage](../data-leakage/data-leakage.md)
 - Related domain: [03. Supervised Learning](../../../core-machine-learning/supervised-learning/README.md)

@@ -61,7 +61,7 @@ updated: 2026-07-02
 
 **In this platform**:
 - Concept page (full explanation): [Citations & Attribution](citations-and-attribution.md)
-- Concept depth (the *why*): [AI-ML-intuition 8.02 Retrieval-Augmented Generation](../../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.02_Retrieval_Augmented_Generation.md)
+- Concept depth (the *why*): [AI-ML-intuition 8.02 Retrieval-Augmented Generation](../../../../AI-ML-intuition/memory-retrieval-and-context/retrieval-augmented-generation/rag-intuition.md)
 - Machinery reused here: [05 Hybrid Search (the DenseRetriever this reuses)](../hybrid-search/hybrid-search.md) · [08 Advanced RAG (the encoder-cosine support check reused as the attribution proxy)](../advanced-rag/advanced-rag.md) · [11 RAG Evaluation (faithfulness & the cosine≠entailment caveat)](../rag-evaluation/rag-evaluation.md)
 - Foundations: [01 RAG Fundamentals](../rag-foundations/rag-foundations.md) · [03 Embedding Models](../embedding-models/embedding-models.md)
 - Next / related: [14 Guardrails & Hallucination Mitigation](../../reasoning-evaluation-and-alignment/hallucination-and-grounding/hallucination-and-grounding.md)

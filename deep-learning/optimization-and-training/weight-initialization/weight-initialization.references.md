@@ -52,7 +52,7 @@ updated: 2026-06-22
 
 **In this platform**:
 - Concept page (full explanation): [Weight Initialization](weight-initialization.md)
-- Concept depth (the *why*): [AI-ML-intuition 4.12 Weight Initialization (Xavier/He)](../../../../AI-ML-intuition/Module_4_Stabilization/4C_Training_Stability/4.12_Weight_Initialization_Xavier_He.md)
+- Concept depth (the *why*): [AI-ML-intuition 4.12 Weight Initialization (Xavier/He)](../../../../AI-ML-intuition/training-stability/gradient-health/weight-initialization-intuition.md)
 - Prerequisite: [Backpropagation & Computational Graphs](../../neural-network-foundations/backpropagation-and-computational-graphs/backpropagation-and-computational-graphs.md)
 - The failure mode init prevents: [Vanishing / Exploding Gradients](../vanishing-exploding-gradients/vanishing-exploding-gradients.md)
 - Closely related: [Activation Functions](../../stabilization-and-architectural-blocks/activation-functions/activation-functions.md) (which scheme to use depends on the activation) · [Normalization](../../stabilization-and-architectural-blocks/normalization/normalization.md) (reduces but doesn't eliminate init sensitivity) · [Residual / Skip Connections](../../stabilization-and-architectural-blocks/residual-skip-connections/residual-skip-connections.md) (the identity path the residual-init tricks protect)

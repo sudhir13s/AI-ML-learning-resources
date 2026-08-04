@@ -54,5 +54,5 @@ trades bias for lower variance, and how the λ in TD(λ) and eligibility traces 
 - [Algorithms for Reinforcement Learning — **§3 (TD prediction)**](https://sites.ualberta.ca/~szepesva/papers/RLAlgsInMDPs.pdf) — **Csaba Szepesvári** — the stochastic-approximation view of TD convergence.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 6.01 Bellman Optimality & Q-Learning](../../../../../AI-ML-intuition/Module_6_Reinforcement_Learning/6.01_Bellman_Optimality_Q-Learning.md)
+- Concept depth (the *why*): [AI-ML-intuition 6.01 Bellman Optimality & Q-Learning](../../../../../AI-ML-intuition/decision-making-and-control/value-learning/bellman-equation-and-q-learning-intuition.md)
 - Prereq: [04 Monte Carlo Methods](../monte-carlo-methods/monte-carlo-methods.md) · Next: [06 Q-Learning](../q-learning/q-learning.md) · [07 SARSA](../sarsa/sarsa.md)

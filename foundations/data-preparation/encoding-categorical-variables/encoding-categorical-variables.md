@@ -54,6 +54,6 @@ encoding (must be fit inside cross-validation / with smoothing).
 - [Python Data Science Handbook — **§5.4 "Feature Engineering" (Categorical Features)**](https://jakevdp.github.io/PythonDataScienceHandbook/05.04-feature-engineering.html) — **Jake VanderPlas** — practical one-hot with DictVectorizer.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 1.01 One-Hot Encoding](../../../../AI-ML-intuition/Module_1_Representation/1.01_One-Hot_Encoding.md) · [1.02 Dense Embeddings](../../../../AI-ML-intuition/Module_1_Representation/1.02_Dense_Embeddings.md)
+- Concept depth (the *why*): [AI-ML-intuition 1.01 One-Hot Encoding](../../../../AI-ML-intuition/representation/discrete-representations/one-hot-encoding-intuition.md) · [1.02 Dense Embeddings](../../../../AI-ML-intuition/representation/embedding-spaces/dense-embeddings-intuition.md)
 - Next concepts: [06 Feature Engineering](../feature-engineering/feature-engineering.md) · [11 Data Leakage](../data-leakage/data-leakage.md)
 - Related domain: [01. Foundations](../../mathematical-foundations/README.md)

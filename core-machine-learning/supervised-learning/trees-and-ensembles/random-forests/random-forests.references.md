@@ -47,6 +47,6 @@ updated: 2026-06-22
 
 **In this platform**:
 - Concept page (full explanation): [Random Forests](random-forests.md)
-- Concept depth (the *why*): [AI-ML-intuition 3.08 Ensembles (Bagging/Boosting)](../../../../../AI-ML-intuition/Module_3_Evaluation/3.08_Ensembles_Bagging_Boosting.md) · [3.07 Bias–Variance & Generalization](../../../../../AI-ML-intuition/Module_3_Evaluation/3.07_Bias_Variance_and_Generalization.md)
+- Concept depth (the *why*): [AI-ML-intuition 3.08 Ensembles (Bagging/Boosting)](../../../../../AI-ML-intuition/architectural-mechanisms/composition/bagging-and-boosting-intuition.md) · [3.07 Bias–Variance & Generalization](../../../../../AI-ML-intuition/objectives-and-evaluation/generalization/bias-variance-tradeoff-intuition.md)
 - Related: [Bagging](../bagging/bagging.md) (forests are bagging + feature randomness) · [Decision Trees](../decision-trees/decision-trees.md) (the base learner) · [Bias–Variance Tradeoff](../../../model-selection-and-evaluation/bias-variance-tradeoff/bias-variance-tradeoff.md) · [Gradient Boosting (XGBoost)](../gradient-boosting-xgboost/gradient-boosting-xgboost.md) (boosting cuts bias; forests cut variance)
 - Math prerequisites: [01. Foundations](../../../../foundations/mathematical-foundations/README.md) — variance of an average, correlation, the bootstrap

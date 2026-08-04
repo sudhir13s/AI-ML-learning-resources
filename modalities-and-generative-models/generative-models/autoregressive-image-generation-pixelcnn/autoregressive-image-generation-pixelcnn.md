@@ -61,7 +61,7 @@ over *discrete latent codes* instead of raw pixels.
 - [Probabilistic Machine Learning: Advanced Topics — **Ch. 22 "Autoregressive models"**](https://probml.github.io/pml-book/book2.html) — **Kevin Murphy** — free PDF; the modern treatment of AR generative models.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 5.05 Autoregressive Generation & Sampling](../../../../AI-ML-intuition/Module_5_Generation/5.05_Autoregressive_Generation_Sampling.md)
+- Concept depth (the *why*): [AI-ML-intuition 5.05 Autoregressive Generation & Sampling](../../../../AI-ML-intuition/generation/autoregressive-generation/autoregressive-generation-and-sampling-controls-intuition.md)
 - Prereq: [Deep Learning — CNNs & Convolution](../../../deep-learning/neural-architectures/cnns-and-convolution/cnns-and-convolution.md) (masked convolutions are the core trick)
 - Related (text analogue): [LLMs](../../../09.%20LLMs/README.md) · [NLP — Decoding Strategies](../../natural-language-processing/decoding-strategies/decoding-strategies.md) (sampling from autoregressive conditionals)
 - Compare with: [08 Normalizing Flows](../normalizing-flows/normalizing-flows.md) (another exact-likelihood model) · [05 Diffusion Models (DDPM)](../../diffusion-models/diffusion-models-ddpm/diffusion-models-ddpm.md)

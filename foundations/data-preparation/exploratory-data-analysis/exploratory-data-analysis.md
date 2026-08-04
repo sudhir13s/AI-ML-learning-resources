@@ -55,6 +55,6 @@ real applied experience.
 - [R for Data Science — **Ch. 7 "Exploratory Data Analysis"**](https://r4ds.had.co.nz/exploratory-data-analysis.html) — **Wickham & Grolemund** — concepts transfer directly to Python.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 0.02 Distributions & the Gaussian](../../../../AI-ML-intuition/Module_0_Foundations/0.02_Distributions_and_the_Gaussian.md) · [0.03 Expectation, Variance, Covariance](../../../../AI-ML-intuition/Module_0_Foundations/0.03_Expectation_Variance_Covariance.md)
+- Concept depth (the *why*): [AI-ML-intuition 0.02 Distributions & the Gaussian](../../../../AI-ML-intuition/foundational-mental-models/probability-and-belief/distributions-and-gaussians-intuition.md) · [0.03 Expectation, Variance, Covariance](../../../../AI-ML-intuition/foundational-mental-models/probability-and-belief/expectation-variance-and-covariance-intuition.md)
 - Next concepts: [02 Feature Scaling & Normalization](../feature-scaling-and-normalization/feature-scaling-and-normalization.md) · [05 Outlier Detection & Treatment](../outlier-detection-and-treatment/outlier-detection-and-treatment.md)
 - Related domain: [04. Unsupervised Learning](../../../core-machine-learning/unsupervised-learning/README.md)

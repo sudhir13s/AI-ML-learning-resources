@@ -30,7 +30,7 @@ when to reach for which distribution.
 2. **Key discrete & continuous** — watch [3B1B: Binomial distributions](https://www.youtube.com/watch?v=8idr1WZ1A7Q) and [StatQuest: The Normal Distribution](https://www.youtube.com/watch?v=rzFX5NWojp0). *The two most-used families.*
 3. **Formalize** — read [MML Ch. 6 (Probability & Distributions)](https://mml-book.github.io/book/mml-book.pdf), incl. the Gaussian and multivariate Gaussian. *Definitions, moments, and the Gaussian's role in ML.*
 4. **Reference** — keep [CS229 Probability Review](https://cs229.stanford.edu/section/cs229-prob.pdf) and [Stat 110](https://projects.iq.harvard.edu/stat110/home) handy. *Distribution tables and properties.*
-5. **Connect to ML** — read [AI-ML-intuition 0.02 Distributions & the Gaussian](../../../../AI-ML-intuition/Module_0_Foundations/0.02_Distributions_and_the_Gaussian.md). *Why Gaussians are everywhere in ML.*
+5. **Connect to ML** — read [AI-ML-intuition 0.02 Distributions & the Gaussian](../../../../AI-ML-intuition/foundational-mental-models/probability-and-belief/distributions-and-gaussians-intuition.md). *Why Gaussians are everywhere in ML.*
 
 ## 🎓 Courses (free)
 - [Harvard Stat 110: Probability](https://projects.iq.harvard.edu/stat110/home) — **Joe Blitzstein (Harvard)** — random variables and the full distribution zoo, with free lectures.
@@ -55,7 +55,7 @@ when to reach for which distribution.
 - [Think Stats — **Ch. 2–6 (Distributions)**](https://greenteapress.com/wp/think-stats-2e/) — **Allen B. Downey** — distributions computationally, in Python; free.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 0.02 Distributions & the Gaussian](../../../../AI-ML-intuition/Module_0_Foundations/0.02_Distributions_and_the_Gaussian.md) · [1.10 Mahalanobis Distance (multivariate Gaussian)](../../../../AI-ML-intuition/Module_1_Representation/1.10_Mahalanobis_Distance.md)
+- Concept depth (the *why*): [AI-ML-intuition 0.02 Distributions & the Gaussian](../../../../AI-ML-intuition/foundational-mental-models/probability-and-belief/distributions-and-gaussians-intuition.md) · [1.10 Mahalanobis Distance (multivariate Gaussian)](../../../../AI-ML-intuition/representation/similarity-and-distance/mahalanobis-distance-intuition.md)
 - Curriculum context: [Maths for AI-ML — Phase 3 (Probability, row 3.2)](../maths-for-ai-ml/README.md)
 - Prereq: [15 Probability & Bayes' Theorem](../probability-and-bayes-theorem/probability-and-bayes-theorem.md) · Next: [17 Expectation, Variance & Covariance](../expectation-variance-covariance/expectation-variance-covariance.md) · [18 LLN & CLT](../lln-and-clt/lln-and-clt.md)
 </content>

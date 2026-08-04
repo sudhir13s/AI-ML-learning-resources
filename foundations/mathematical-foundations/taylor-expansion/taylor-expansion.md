@@ -54,7 +54,7 @@ optimal step — pure Taylor.
 - [Calculus (OpenStax) — **Vol. 2, Ch. 6 (Power & Taylor Series)**](https://openstax.org/details/books/calculus-volume-2) — **OpenStax** — free, thorough single-variable treatment.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 2.03 Jacobian & Hessian](../../../../AI-ML-intuition/Module_2_Optimization/2.03_Jacobian_and_Hessian.md) · [2.05 Gradient Descent & SGD](../../../../AI-ML-intuition/Module_2_Optimization/2.05_Gradient_Descent_and_SGD.md)
+- Concept depth (the *why*): [AI-ML-intuition 2.03 Jacobian & Hessian](../../../../AI-ML-intuition/learning-and-optimization/gradients-and-credit-assignment/jacobians-and-hessians-intuition.md) · [2.05 Gradient Descent & SGD](../../../../AI-ML-intuition/learning-and-optimization/first-order-optimization/gradient-descent-and-stochastic-gradient-descent-intuition.md)
 - Curriculum context: [Maths for AI-ML — Phase 2 (Calculus)](../maths-for-ai-ml/README.md)
 - Prereqs: [08 Derivatives & Gradients](../derivatives-and-gradients/derivatives-and-gradients.md) · [10 Jacobian & Hessian](../jacobian-and-hessian/jacobian-and-hessian.md) · Next: [12 Convexity](../convexity/convexity.md) · [13 Gradient Descent — theory](../gradient-descent-theory/gradient-descent-theory.md)
 </content>

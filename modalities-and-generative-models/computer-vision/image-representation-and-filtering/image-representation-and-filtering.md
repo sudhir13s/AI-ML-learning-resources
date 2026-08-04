@@ -57,6 +57,6 @@ classical baselines (HOG + SVM for detection, SIFT for matching) that deep learn
 - [Computer Vision: Algorithms and Applications, 2nd ed. — **Ch. 3 (Image processing)** + **Ch. 7 (Feature detection)**](https://szeliski.org/Book/) — **Richard Szeliski** — the field's free standard reference; filtering, edges, and SIFT in depth.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 4.13 Convolution](../../../../AI-ML-intuition/Module_4_Stabilization/4B_Architectural_Motifs/4.13_Convolution.md) — filtering *is* convolution; CNNs learn these kernels.
+- Concept depth (the *why*): [AI-ML-intuition 4.13 Convolution](../../../../AI-ML-intuition/architectural-mechanisms/locality-and-weight-sharing/convolution-intuition.md) — filtering *is* convolution; CNNs learn these kernels.
 - Foundation: [Deep Learning › CNNs & Convolution](../../../deep-learning/neural-architectures/cnns-and-convolution/cnns-and-convolution.md)
 - Next concepts: [02 Pooling & Receptive Fields](../pooling-and-receptive-fields/pooling-and-receptive-fields.md) · [03 Classic CNN Architectures](../classic-cnn-architectures/classic-cnn-architectures.md)

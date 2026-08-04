@@ -58,7 +58,7 @@ is used in practice instead of `log(1−D(G(z)))`). DCGAN gives the concrete arc
 - [Dive into Deep Learning — **Ch. 20 "Generative Adversarial Networks"**](https://d2l.ai/chapter_generative-adversarial-networks/index.html) — **Zhang et al.** — free, with runnable GAN and DCGAN code.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 5.04 GANs & WGAN](../../../../AI-ML-intuition/Module_5_Generation/5.04_GANs_and_WGAN.md) · [5.01 Entropy & KL Divergence](../../../../AI-ML-intuition/Module_5_Generation/5.01_Information_Theory_Entropy_KL_Divergence.md)
+- Concept depth (the *why*): [AI-ML-intuition 5.04 GANs & WGAN](../../../../AI-ML-intuition/generation/adversarial-generation/gans-and-wasserstein-gans-intuition.md) · [5.01 Entropy & KL Divergence](../../../../AI-ML-intuition/foundational-mental-models/information-and-dependence/entropy-and-kl-divergence-intuition.md)
 - Prereq: [Deep Learning — CNNs & Convolution](../../../deep-learning/neural-architectures/cnns-and-convolution/cnns-and-convolution.md) (DCGAN is all convolutions)
 - Next concepts: [03 GAN Training & WGAN](../gan-training-and-wgan/gan-training-and-wgan.md) · [04 Conditional Generation & Classifier-Free Guidance](../../diffusion-models/conditional-generation-and-classifier-free-guidance/conditional-generation-and-classifier-free-guidance.md)
 - Compare with: [01 Variational Autoencoders](../variational-autoencoders-vae-elbo/variational-autoencoders-vae-elbo.md) (likelihood-based, not adversarial)

@@ -20,7 +20,7 @@ updated: 2026-06-27
 **In this platform**:
 - Concept page (full explanation): [Word Embeddings](word-embeddings-word2vec-glove-fasttext.md)
 - Runnable code: [teaching notebook](code/word-embeddings-word2vec-glove-fasttext.ipynb) · [source-of-truth script](code/word_embeddings.py) · [figure generator](code/make_figures_05.py)
-- Concept depth (the *why*): [AI-ML-intuition 1.02 Dense Embeddings](../../../../AI-ML-intuition/Module_1_Representation/1.02_Dense_Embeddings.md) · [1.02a Word2Vec / Skip-Gram](../../../../AI-ML-intuition/Module_1_Representation/1.02a_Word_Embeddings_Word2Vec_Skip-Gram.md)
+- Concept depth (the *why*): [AI-ML-intuition 1.02 Dense Embeddings](../../../../AI-ML-intuition/representation/embedding-spaces/dense-embeddings-intuition.md) · [1.02a Word2Vec / Skip-Gram](../../../../AI-ML-intuition/representation/embedding-spaces/word2vec-and-skip-gram-intuition.md)
 - Previous concept: [Bag-of-Words & TF-IDF](../bag-of-words-and-tf-idf/bag-of-words-and-tf-idf.md) — the sparse, count-based representations embeddings replace
 - Related: [Tokenization & Subword Algorithms](../tokenization-and-subword-algorithms/tokenization-and-subword-algorithms.md) — FastText's subword idea in modern LLMs
 - Next concept: [Contextual Embeddings (ELMo/BERT)](../contextual-embeddings-elmo-bert/contextual-embeddings-elmo-bert.md) — a vector per word *per sentence*

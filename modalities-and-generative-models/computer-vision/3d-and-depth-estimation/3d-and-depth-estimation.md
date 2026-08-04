@@ -57,6 +57,6 @@ It tests whether you can reason geometrically, not just run a CNN.
 - [Dive into Deep Learning — **Ch. 14 (Computer Vision)**](https://d2l.ai/chapter_computer-vision/index.html) — **Zhang et al.** — the CNN backbone deep depth models build on, with code.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 1.05 Spectral Methods (PCA / SVD)](../../../../AI-ML-intuition/Module_1_Representation/1.05_Spectral_Methods_PCA_SVD.md) (the linear-algebra under projective geometry)
+- Concept depth (the *why*): [AI-ML-intuition 1.05 Spectral Methods (PCA / SVD)](../../../../AI-ML-intuition/representation/dimensionality-and-latent-structure/pca-and-svd-intuition.md) (the linear-algebra under projective geometry)
 - Foundation: [Image Representation & Filtering](../image-representation-and-filtering/image-representation-and-filtering.md) · [Deep Learning › CNNs & Convolution](../../../deep-learning/neural-architectures/cnns-and-convolution/cnns-and-convolution.md)
 - Related: [Optical Flow & Video Understanding](../optical-flow-and-video/optical-flow-and-video.md) (motion-based geometry) · image generation → [GenAI](../../generative-models/README.md)

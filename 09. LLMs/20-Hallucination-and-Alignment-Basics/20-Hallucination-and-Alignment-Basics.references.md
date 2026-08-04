@@ -72,4 +72,4 @@ updated: 2026-06-27
 - How it's measured: [LLM Evaluation & Benchmarks](../19-LLM-Evaluation-and-Benchmarks/19-LLM-Evaluation-and-Benchmarks.md)
 - Where the disease starts: [Language Modeling Objectives](../01-Language-Modeling-Objectives/01-Language-Modeling-Objectives.md) · [Supervised Fine-Tuning](../13-Supervised-Fine-Tuning/13-Supervised-Fine-Tuning.md) · [Instruction Tuning](../14-Instruction-Tuning/14-Instruction-Tuning.md)
 - Capstone context (the full arc): [KV Cache](../05-KV-Cache/05-KV-Cache.md) · [Quantization](../10-Quantization/10-Quantization.md) · [LoRA & PEFT](../12-LoRA-and-PEFT/12-LoRA-and-PEFT.md) · [Long-Context Methods](../08-Long-Context-Methods/08-Long-Context-Methods.md)
-- Deeper RL grounding: [Module 6.03 PPO and RLHF](../../../AI-ML-intuition/Module_6_Reinforcement_Learning/6.03_PPO_and_RLHF.md)
+- Deeper RL grounding: [Module 6.03 PPO and RLHF](../../../AI-ML-intuition/decision-making-and-control/stable-policy-optimization/ppo-and-rl-from-human-feedback-intuition.md)

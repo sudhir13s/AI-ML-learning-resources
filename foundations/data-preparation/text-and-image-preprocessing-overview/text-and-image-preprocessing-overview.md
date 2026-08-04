@@ -59,5 +59,5 @@ and how tokenization choices (word vs subword/BPE) affect everything downstream.
 - Full depth lives in the dedicated domains:
   - **Text** — tokenization, normalization, subword algorithms → [06. NLP](../../../modalities-and-generative-models/natural-language-processing/README.md)
   - **Images** — augmentation and vision-specific preprocessing → [07. Computer Vision](../../../modalities-and-generative-models/computer-vision/README.md)
-- Concept depth (the *why*): [AI-ML-intuition 1.15 Tokenization & BPE](../../../../AI-ML-intuition/Module_1_Representation/1.15_Tokenization_and_BPE.md) · [1.17 BoW & TF-IDF](../../../../AI-ML-intuition/Module_1_Representation/1.17_BoW_and_TF-IDF.md)
+- Concept depth (the *why*): [AI-ML-intuition 1.15 Tokenization & BPE](../../../../AI-ML-intuition/representation/discrete-representations/tokenization-and-bpe-intuition.md) · [1.17 BoW & TF-IDF](../../../../AI-ML-intuition/representation/discrete-representations/bag-of-words-and-tf-idf-intuition.md)
 - Next concepts: [06 Feature Engineering](../feature-engineering/feature-engineering.md) · [13 Data Pipelines](../data-pipelines/data-pipelines.md)

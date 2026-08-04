@@ -30,7 +30,7 @@ posterior) matters versus a point estimate.
 2. **MLE vs MAP vs Bayes** — read [MML Ch. 8.3–8.4 (MLE, MAP, Bayesian inference)](https://mml-book.github.io/book/mml-book.pdf). *The three estimators and where the prior enters.*
 3. **A worked posterior** — read [Think Bayes Ch. 1–3](https://allendowney.github.io/ThinkBayes2/) (Beta–Binomial, conjugacy). *Compute a posterior in Python end to end.*
 4. **Regularization as a prior** — connect L2/L1 penalties to Gaussian/Laplace priors (covered in CS229 / MML). *The cleanest "why does regularization work" answer.*
-5. **Connect to ML** — read [AI-ML-intuition 5.02 Latent-Variable Models (ELBO/VAEs)](../../../../AI-ML-intuition/Module_5_Generation/5.02_Latent_Variable_Models_ELBO_VAEs.md). *Where Bayesian inference scales to deep generative models.*
+5. **Connect to ML** — read [AI-ML-intuition 5.02 Latent-Variable Models (ELBO/VAEs)](../../../../AI-ML-intuition/generation/latent-variable-generation/latent-variable-models-and-elbo-intuition.md). *Where Bayesian inference scales to deep generative models.*
 
 ## 🎓 Courses (free)
 - [Harvard Stat 110: Probability (Bayes & conditioning)](https://projects.iq.harvard.edu/stat110/home) — **Joe Blitzstein (Harvard)** — the probabilistic foundations of Bayesian reasoning, free.
@@ -55,7 +55,7 @@ posterior) matters versus a point estimate.
 - [Mathematics for Machine Learning — **Ch. 8.3–8.4 (Estimation & Bayesian Inference)**](https://mml-book.github.io/book/mml-book.pdf) — **Deisenroth et al.** — the canonical free chapter.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 0.01 Probability & Bayes' Theorem](../../../../AI-ML-intuition/Module_0_Foundations/0.01_Probability_and_Bayes_Theorem.md) · [5.02 Latent-Variable Models (ELBO/VAEs)](../../../../AI-ML-intuition/Module_5_Generation/5.02_Latent_Variable_Models_ELBO_VAEs.md)
+- Concept depth (the *why*): [AI-ML-intuition 0.01 Probability & Bayes' Theorem](../../../../AI-ML-intuition/foundational-mental-models/probability-and-belief/probability-and-bayes-intuition.md) · [5.02 Latent-Variable Models (ELBO/VAEs)](../../../../AI-ML-intuition/generation/latent-variable-generation/latent-variable-models-and-elbo-intuition.md)
 - Curriculum context: [Maths for AI-ML — Phase 3 (Probability, row 3.6)](../maths-for-ai-ml/README.md)
 - Prereqs: [15 Probability & Bayes' Theorem](../probability-and-bayes-theorem/probability-and-bayes-theorem.md) · [19 Maximum Likelihood Estimation](../maximum-likelihood-estimation/maximum-likelihood-estimation.md)
 </content>

@@ -55,6 +55,6 @@ leak and over-report performance.
 - [An Introduction to Statistical Learning (Python) — **Ch. 6 "Linear Model Selection & Regularization"**](https://www.statlearning.com/) — **James, Witten, Hastie & Tibshirani** — subset selection + Lasso; free PDF.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 1.05 PCA / SVD](../../../../AI-ML-intuition/Module_1_Representation/1.05_Spectral_Methods_PCA_SVD.md) · [3.07 Bias–Variance & Generalization](../../../../AI-ML-intuition/Module_3_Evaluation/3.07_Bias_Variance_and_Generalization.md)
+- Concept depth (the *why*): [AI-ML-intuition 1.05 PCA / SVD](../../../../AI-ML-intuition/representation/dimensionality-and-latent-structure/pca-and-svd-intuition.md) · [3.07 Bias–Variance & Generalization](../../../../AI-ML-intuition/objectives-and-evaluation/generalization/bias-variance-tradeoff-intuition.md)
 - Next concepts: [06 Feature Engineering](../feature-engineering/feature-engineering.md) · [11 Data Leakage](../data-leakage/data-leakage.md)
 - Related domain: [03. Supervised Learning](../../../core-machine-learning/supervised-learning/README.md)

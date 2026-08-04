@@ -59,7 +59,7 @@ diffusion (speed and memory vs a slight quality ceiling from the autoencoder).
 - [Probabilistic Machine Learning: Advanced Topics — **Ch. 25 "Diffusion models"**](https://probml.github.io/pml-book/book2.html) — **Kevin Murphy** — free PDF; latent and conditional diffusion in the modern treatment.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 5.03 Diffusion Models](../../../../AI-ML-intuition/Module_5_Generation/5.03_Diffusion_Models.md) · [5.02 ELBO & VAEs](../../../../AI-ML-intuition/Module_5_Generation/5.02_Latent_Variable_Models_ELBO_VAEs.md)
+- Concept depth (the *why*): [AI-ML-intuition 5.03 Diffusion Models](../../../../AI-ML-intuition/generation/diffusion-and-score-models/diffusion-forward-and-reverse-process-intuition.md) · [5.02 ELBO & VAEs](../../../../AI-ML-intuition/generation/latent-variable-generation/latent-variable-models-and-elbo-intuition.md)
 - Prereq: [05 Diffusion Models (DDPM)](../diffusion-models-ddpm/diffusion-models-ddpm.md) · [01 Variational Autoencoders](../../generative-models/variational-autoencoders-vae-elbo/variational-autoencoders-vae-elbo.md) (the latent compressor) · [04 Conditional Generation & CFG](../conditional-generation-and-classifier-free-guidance/conditional-generation-and-classifier-free-guidance.md)
 - Related: [Deep Learning — Attention Mechanism](../../../deep-learning/attention-and-transformers/attention-mechanism/attention-mechanism.md) (cross-attention conditions the U-Net)
 - Next concepts: [11 Text-to-Image Systems](../text-to-image-systems/text-to-image-systems.md) · [13 Sampling & Guidance Techniques](../sampling-and-guidance-techniques/sampling-and-guidance-techniques.md)

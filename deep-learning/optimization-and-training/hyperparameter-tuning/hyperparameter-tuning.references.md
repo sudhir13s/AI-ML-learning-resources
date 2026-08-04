@@ -58,5 +58,5 @@ updated: 2026-06-22
 - Concept page (full explanation): [Hyperparameter Tuning](hyperparameter-tuning.md)
 - Prerequisites — the knobs you're tuning: [Optimizers](../optimizers/optimizers.md) · [Learning-Rate Schedules & Warmup](../learning-rate-schedules-and-warmup/learning-rate-schedules-and-warmup.md) · [Regularization](../regularization/regularization.md)
 - The validation protocol (leak-free model selection): [Cross-Validation](../../../core-machine-learning/model-selection-and-evaluation/cross-validation/cross-validation.md)
-- Concept depth (the *why*): [AI-ML-intuition 2.09 Learning Rate Schedules](../../../../AI-ML-intuition/Module_2_Optimization/2.09_Learning_Rate_Schedules.md) · [3.07 Bias–Variance & Generalization](../../../../AI-ML-intuition/Module_3_Evaluation/3.07_Bias_Variance_and_Generalization.md)
+- Concept depth (the *why*): [AI-ML-intuition 2.09 Learning Rate Schedules](../../../../AI-ML-intuition/learning-and-optimization/adaptive-optimization/learning-rate-schedules-intuition.md) · [3.07 Bias–Variance & Generalization](../../../../AI-ML-intuition/objectives-and-evaluation/generalization/bias-variance-tradeoff-intuition.md)
 - Field overview: [Deep Learning](../../README.md) · Related: [13. Tools & Frameworks](../../../foundations/tools-and-frameworks/README.md) (Optuna / Ray Tune in practice)

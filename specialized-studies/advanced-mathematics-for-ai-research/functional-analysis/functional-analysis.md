@@ -57,6 +57,6 @@ diagonalize operators. This is the connective tissue under cards 3, 11, and 12.
 
 ## 🔗 In this platform
 - Foundations (the basics this builds on): [Norms, Inner Products & Orthogonality](../../../foundations/mathematical-foundations/norms-inner-products-and-orthogonality/norms-inner-products-and-orthogonality.md) · [Eigenvalues & Eigenvectors](../../../foundations/mathematical-foundations/eigenvalues-and-eigenvectors/eigenvalues-and-eigenvectors.md) · [SVD](../../../foundations/mathematical-foundations/singular-value-decomposition/singular-value-decomposition.md)
-- Concept depth (the *why*): [AI-ML-intuition 1.05 Spectral Methods (PCA/SVD)](../../../../AI-ML-intuition/Module_1_Representation/1.05_Spectral_Methods_PCA_SVD.md)
+- Concept depth (the *why*): [AI-ML-intuition 1.05 Spectral Methods (PCA/SVD)](../../../../AI-ML-intuition/representation/dimensionality-and-latent-structure/pca-and-svd-intuition.md)
 - Next concepts: [03 Hilbert Spaces & RKHS](../hilbert-spaces-and-rkhs/hilbert-spaces-and-rkhs.md) · [12 Fourier Analysis & Signal Processing](../fourier-analysis-and-signal-processing/fourier-analysis-and-signal-processing.md)
 </content>

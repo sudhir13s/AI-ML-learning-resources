@@ -62,4 +62,4 @@ updated: 2026-06-27
 - Builds on this: [Sentence & Document Embeddings (Sentence-BERT · USE)](../sentence-and-document-embeddings/sentence-and-document-embeddings.md) — the naive-`[CLS]` trap and its fix.
 - Foundations: [Tokenization & Subword Algorithms](../tokenization-and-subword-algorithms/tokenization-and-subword-algorithms.md) · [Transformer Architecture](../../../deep-learning/attention-and-transformers/transformer-architecture/transformer-architecture.md) · [Attention Mechanism](../../../deep-learning/attention-and-transformers/attention-mechanism/attention-mechanism.md)
 - The decoder lineage: [KV Cache](../../../09.%20LLMs/05-KV-Cache/05-KV-Cache.md) (why encoders don't need one) · the [LLMs concept index](../../../09.%20LLMs/README.md)
-- Concept depth (the *why* behind dense vectors): [AI-ML-intuition 1.02 Dense Embeddings](../../../../AI-ML-intuition/Module_1_Representation/1.02_Dense_Embeddings.md)
+- Concept depth (the *why* behind dense vectors): [AI-ML-intuition 1.02 Dense Embeddings](../../../../AI-ML-intuition/representation/embedding-spaces/dense-embeddings-intuition.md)

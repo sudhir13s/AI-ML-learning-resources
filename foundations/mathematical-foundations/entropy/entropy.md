@@ -30,7 +30,7 @@ functions you train with.
 2. **For data science** — watch [StatQuest: Entropy (for data science), Clearly Explained](https://www.youtube.com/watch?v=YtebGVx-Fxw). *Entropy as used in trees and ML losses.*
 3. **Entropy → cross-entropy → KL** — watch [Aurélien Géron: A Short Introduction to Entropy, Cross-Entropy and KL](https://www.youtube.com/watch?v=ErfnhcEV1O8). *The cleanest single bridge to the loss functions.*
 4. **Formalize** — read [MacKay, Information Theory, Inference & Learning Algorithms — Ch. 2 & 4](https://www.inference.org.uk/itprnn/book.pdf). *Entropy, the source-coding theorem, and the units.*
-5. **Connect to ML** — read [AI-ML-intuition 5.01 Information Theory: Entropy & KL](../../../../AI-ML-intuition/Module_5_Generation/5.01_Information_Theory_Entropy_KL_Divergence.md). *Where entropy powers ML objectives.*
+5. **Connect to ML** — read [AI-ML-intuition 5.01 Information Theory: Entropy & KL](../../../../AI-ML-intuition/foundational-mental-models/information-and-dependence/entropy-and-kl-divergence-intuition.md). *Where entropy powers ML objectives.*
 
 ## 🎓 Courses (free)
 - [Khan Academy — Journey into Information Theory](https://www.khanacademy.org/computing/computer-science/informationtheory) — **Khan Academy** — entropy and information from first principles, free.
@@ -55,7 +55,7 @@ functions you train with.
 - [Elements of Information Theory — **Ch. 2 (Entropy, Relative Entropy & Mutual Information)**](http://www.cs.columbia.edu/~vh/courses/LexicalSemantics/Association/Cover&Thomas-Ch2.pdf) — **Cover & Thomas** — the standard reference's entropy chapter (free PDF).
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 5.01 Information Theory: Entropy & KL](../../../../AI-ML-intuition/Module_5_Generation/5.01_Information_Theory_Entropy_KL_Divergence.md)
+- Concept depth (the *why*): [AI-ML-intuition 5.01 Information Theory: Entropy & KL](../../../../AI-ML-intuition/foundational-mental-models/information-and-dependence/entropy-and-kl-divergence-intuition.md)
 - Curriculum context: [Maths for AI-ML — Phase 3 (Information Theory, row 3.5)](../maths-for-ai-ml/README.md)
 - Prereq: [16 Random Variables & Distributions](../random-variables-and-distributions/random-variables-and-distributions.md) · Next: [23 Cross-Entropy & KL Divergence](../cross-entropy-and-kl-divergence/cross-entropy-and-kl-divergence.md) · [24 Mutual Information](../mutual-information/mutual-information.md)
 </content>

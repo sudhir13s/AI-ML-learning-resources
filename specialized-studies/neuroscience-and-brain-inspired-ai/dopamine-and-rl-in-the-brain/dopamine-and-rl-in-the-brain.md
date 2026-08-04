@@ -26,7 +26,7 @@ shows the brain may even encode a *distribution* of returns, mirroring distribut
 
 **⭐ Start here — suggested path:**
 
-1. **Anchor the algorithm** — review [6.01 Bellman Optimality & Q-Learning](../../../../AI-ML-intuition/Module_6_Reinforcement_Learning/6.01_Bellman_Optimality_Q-Learning.md). *You must know the TD error before seeing it in the brain.*
+1. **Anchor the algorithm** — review [6.01 Bellman Optimality & Q-Learning](../../../../AI-ML-intuition/decision-making-and-control/value-learning/bellman-equation-and-q-learning-intuition.md). *You must know the TD error before seeing it in the brain.*
 2. **Read the bridge** — [Dopamine and temporal difference learning (DeepMind blog)](https://deepmind.google/discover/blog/dopamine-and-temporal-difference-learning-a-fruitful-relationship-between-neuroscience-and-ai/). *The clearest telling of the dopamine = TD-error story.*
 3. **Read the synthesis** — [Understanding dopamine and reinforcement learning](https://pmc.ncbi.nlm.nih.gov/articles/PMC3176615/) (Niv & Montague). *The reward-prediction-error hypothesis, open access.*
 4. **Go to the source review** — [Dopamine reward prediction error coding](https://pmc.ncbi.nlm.nih.gov/articles/PMC4826767/) (Schultz). *The experimental evidence from the discoverer.*
@@ -56,7 +56,7 @@ shows the brain may even encode a *distribution* of returns, mirroring distribut
 - [Theoretical Neuroscience — **Ch. 9 (Classical Conditioning & RL)**](https://www.gatsby.ucl.ac.uk/~dayan/book/) — **Dayan & Abbott** — the reward-learning theory behind dopamine, free online.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 6.01 Bellman Optimality & Q-Learning](../../../../AI-ML-intuition/Module_6_Reinforcement_Learning/6.01_Bellman_Optimality_Q-Learning.md) — the TD error dopamine is hypothesized to compute.
+- Concept depth (the *why*): [AI-ML-intuition 6.01 Bellman Optimality & Q-Learning](../../../../AI-ML-intuition/decision-making-and-control/value-learning/bellman-equation-and-q-learning-intuition.md) — the TD error dopamine is hypothesized to compute.
 - Prereqs in this section: [04 Hebbian Learning & STDP](../hebbian-learning-and-stdp/hebbian-learning-and-stdp.md) · [02 Neural Coding](../neural-coding/neural-coding.md)
 - Next concepts: [10 Memory Systems (hippocampus · replay)](../memory-systems-hippocampus-replay/memory-systems-hippocampus-replay.md)
 - Related domain: [10. Reinforcement Learning](../../../core-machine-learning/reinforcement-learning/README.md)

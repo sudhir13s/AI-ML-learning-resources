@@ -29,7 +29,7 @@ deficiency means for least squares, and why a layer `Wx + b` is just an affine m
 2. **Get the mechanics** — read [MML Ch. 2.2–2.3](https://mml-book.github.io/book/mml-book.pdf) (matrix multiplication, inverse, transpose). *Locks in the algebra rules and when they apply.*
 3. **Practice & extend** — do [Khan: Matrix transformations](https://www.khanacademy.org/math/linear-algebra/matrix-transformations) (multiplication, inverse, determinant). *Build fluency with the operations you'll do by hand in interviews.*
 4. **Determinant intuition** — watch [3B1B: The determinant](https://www.youtube.com/watch?v=Ip3X9LOh2dk). *Why determinant = signed volume scaling, and why det = 0 means non-invertible.*
-5. **Connect to ML** — see matrices-as-maps in [AI-ML-intuition 1.02 Dense Embeddings](../../../../AI-ML-intuition/Module_1_Representation/1.02_Dense_Embeddings.md). *A weight matrix is exactly this transformation.*
+5. **Connect to ML** — see matrices-as-maps in [AI-ML-intuition 1.02 Dense Embeddings](../../../../AI-ML-intuition/representation/embedding-spaces/dense-embeddings-intuition.md). *A weight matrix is exactly this transformation.*
 
 ## 🎓 Courses (free)
 - [MIT 18.06 Linear Algebra](https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/) — **Gilbert Strang (MIT OCW)** — elimination, multiplication, inverses, the four subspaces.
@@ -54,7 +54,7 @@ deficiency means for least squares, and why a layer `Wx + b` is just an affine m
 - [Introduction to Applied Linear Algebra (VMLS) — **Ch. 6–11 (Matrices)**](https://web.stanford.edu/~boyd/vmls/vmls.pdf) — **Boyd & Vandenberghe** — matrices, matrix-vector products, and least squares, applied and free.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 1.02 Dense Embeddings](../../../../AI-ML-intuition/Module_1_Representation/1.02_Dense_Embeddings.md) · [1.04 Graph Representations](../../../../AI-ML-intuition/Module_1_Representation/1.04_Graph_Representations.md)
+- Concept depth (the *why*): [AI-ML-intuition 1.02 Dense Embeddings](../../../../AI-ML-intuition/representation/embedding-spaces/dense-embeddings-intuition.md) · [1.04 Graph Representations](../../../../AI-ML-intuition/representation/embedding-spaces/graph-representations-intuition.md)
 - Curriculum context: [Maths for AI-ML — Phase 1 (Linear Algebra)](../maths-for-ai-ml/README.md)
 - Prereq: [01 Vectors & Vector Spaces](../vectors-and-vector-spaces/vectors-and-vector-spaces.md) · Next: [03 Norms, Inner Products & Orthogonality](../norms-inner-products-and-orthogonality/norms-inner-products-and-orthogonality.md) · [04 Eigenvalues & Eigenvectors](../eigenvalues-and-eigenvectors/eigenvalues-and-eigenvectors.md)
 </content>

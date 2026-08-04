@@ -438,7 +438,7 @@ graph TD
 
 > **Note:** the term **Parzen window** is a synonym for KDE you'll meet in the pattern-recognition literature (after Parzen's 1962 paper). When people say "Parzen-window density estimate" they mean exactly $\hat f_h$ above. The "window" is the kernel; the "window width" is the bandwidth.
 
-> **Tip:** there's a clean conceptual bridge to the [kernel trick](../../../../../AI-ML-intuition/Module_1_Representation/1.16_The_Kernel_Trick.md) in SVMs/Gaussian processes — both place a similarity kernel between a query point and the data. But they answer different questions: KDE's kernel sums to an *unnormalized density* (how much data is near $x$?), while the SVM kernel computes an *inner product in feature space* (how similar are two points?). Same Gaussian bump, different jobs — don't conflate them.
+> **Tip:** there's a clean conceptual bridge to the [kernel trick](../../../../../AI-ML-intuition/representation/similarity-and-distance/kernel-trick-intuition.md) in SVMs/Gaussian processes — both place a similarity kernel between a query point and the data. But they answer different questions: KDE's kernel sums to an *unnormalized density* (how much data is near $x$?), while the SVM kernel computes an *inner product in feature space* (how similar are two points?). Same Gaussian bump, different jobs — don't conflate them.
 
 ---
 

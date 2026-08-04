@@ -56,5 +56,5 @@ machinery is expensive — which is exactly the pain PPO removes with a clipped 
 - [Algorithms for Reinforcement Learning — **§4 (policy search)**](https://sites.ualberta.ca/~szepesva/papers/RLAlgsInMDPs.pdf) — **Csaba Szepesvári** — the policy-search framing.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 6.03 PPO & RLHF](../../../../../AI-ML-intuition/Module_6_Reinforcement_Learning/6.03_PPO_and_RLHF.md)
+- Concept depth (the *why*): [AI-ML-intuition 6.03 PPO & RLHF](../../../../../AI-ML-intuition/decision-making-and-control/stable-policy-optimization/ppo-and-rl-from-human-feedback-intuition.md)
 - Prereq: [10 Actor-Critic](../actor-critic-a2c-a3c/actor-critic-a2c-a3c.md) · Successor: [12 PPO](../proximal-policy-optimization-ppo/proximal-policy-optimization-ppo.md)

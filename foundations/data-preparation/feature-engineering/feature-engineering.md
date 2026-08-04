@@ -54,6 +54,6 @@ when binning helps tree-free models, and how to engineer **without leaking** fut
 - [Python Data Science Handbook — **§5.4 "Feature Engineering"**](https://jakevdp.github.io/PythonDataScienceHandbook/05.04-feature-engineering.html) — **Jake VanderPlas** — derived features, polynomial features, and pipelines.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 1.01 One-Hot Encoding](../../../../AI-ML-intuition/Module_1_Representation/1.01_One-Hot_Encoding.md) · [1.17 BoW & TF-IDF](../../../../AI-ML-intuition/Module_1_Representation/1.17_BoW_and_TF-IDF.md)
+- Concept depth (the *why*): [AI-ML-intuition 1.01 One-Hot Encoding](../../../../AI-ML-intuition/representation/discrete-representations/one-hot-encoding-intuition.md) · [1.17 BoW & TF-IDF](../../../../AI-ML-intuition/representation/discrete-representations/bag-of-words-and-tf-idf-intuition.md)
 - Next concepts: [07 Feature Selection](../feature-selection/feature-selection.md) · [08 Date/Time & Cyclical Features](../date-time-and-cyclical-features/date-time-and-cyclical-features.md)
 - Related domain: [03. Supervised Learning](../../../core-machine-learning/supervised-learning/README.md)

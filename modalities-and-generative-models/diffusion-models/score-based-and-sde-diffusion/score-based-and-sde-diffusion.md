@@ -60,7 +60,7 @@ deterministic, invertible map.
 - [Understanding Deep Learning — **Ch. 18 "Diffusion models"**](https://udlbook.github.io/udlbook/) — **Simon Prince** — free PDF; the score/SDE connection with clean figures.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 5.03 Diffusion Models](../../../../AI-ML-intuition/Module_5_Generation/5.03_Diffusion_Models.md)
+- Concept depth (the *why*): [AI-ML-intuition 5.03 Diffusion Models](../../../../AI-ML-intuition/generation/diffusion-and-score-models/diffusion-forward-and-reverse-process-intuition.md)
 - Prereq: [05 Diffusion Models (DDPM)](../diffusion-models-ddpm/diffusion-models-ddpm.md) (the equivalent noise-prediction view)
 - Next concepts: [07 Latent Diffusion & Stable Diffusion](../latent-diffusion-stable-diffusion/latent-diffusion-stable-diffusion.md) · [13 Sampling & Guidance Techniques](../sampling-and-guidance-techniques/sampling-and-guidance-techniques.md) (DDIM / ODE samplers)
 - Compare with: [09 Energy-Based Models](../../generative-models/energy-based-models/energy-based-models.md) (also score/energy-based, sampled by Langevin)

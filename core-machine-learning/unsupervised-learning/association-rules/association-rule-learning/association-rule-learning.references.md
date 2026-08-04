@@ -46,7 +46,7 @@ updated: 2026-06-22
 
 **In this platform**:
 - Concept page (full explanation): [Association Rule Learning](association-rule-learning.md)
-- Concept depth (probability foundations): [AI-ML-intuition 0.01 Probability & Bayes' Theorem](../../../../../AI-ML-intuition/Module_0_Foundations/0.01_Probability_and_Bayes_Theorem.md) — confidence and lift are conditional-probability quantities.
+- Concept depth (probability foundations): [AI-ML-intuition 0.01 Probability & Bayes' Theorem](../../../../../AI-ML-intuition/foundational-mental-models/probability-and-belief/probability-and-bayes-intuition.md) — confidence and lift are conditional-probability quantities.
 - Compare with: [01 K-Means Clustering](../../clustering/k-means-clustering/k-means-clustering.md) · [02 Hierarchical Clustering](../../clustering/hierarchical-clustering/hierarchical-clustering.md) — the other classic "unsupervised structure discovery" techniques.
 - Prereq math: [Foundations — Linear Algebra (vectors & matrices)](../../../../foundations/mathematical-foundations/maths-for-ai-ml/linear-algebra/vectorsandmatrices.md)
 - Field overview: [4. Unsupervised Learning](../../README.md)

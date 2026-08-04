@@ -56,6 +56,6 @@ where the analogy holds and breaks is the whole point of this domain.
 - [Neuroscience Online / NBK reference — **action potential & membrane chapters**](https://www.ncbi.nlm.nih.gov/books/NBK11164/) — **NCBI Bookshelf** — open biology reference for the underlying physiology.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 4.14 Activation Functions & Softmax](../../../../AI-ML-intuition/Module_4_Stabilization/4D_Nonlinearities/4.14_Activation_Functions_and_Softmax.md) — the artificial neuron a LIF neuron is a caricature of.
+- Concept depth (the *why*): [AI-ML-intuition 4.14 Activation Functions & Softmax](../../../../AI-ML-intuition/architectural-mechanisms/nonlinear-transformation/activation-functions-and-softmax-intuition.md) — the artificial neuron a LIF neuron is a caricature of.
 - Next concepts: [02 Neural Coding](../neural-coding/neural-coding.md) · [03 Spiking Neural Networks](../spiking-neural-networks/spiking-neural-networks.md)
 - Related domain: [05. Deep Learning](../../../deep-learning/README.md)

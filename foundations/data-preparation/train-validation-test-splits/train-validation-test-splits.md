@@ -54,6 +54,6 @@ test set during development. Get this wrong and every metric you report is optim
 - [Tidy Modeling with R — **Ch. 5 (spending data) & Ch. 10 (resampling)**](https://www.tmwr.org/) — **Kuhn & Silge** — principled data splitting + resampling (concepts transfer to Python); free.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 3.07 Bias–Variance & Generalization](../../../../AI-ML-intuition/Module_3_Evaluation/3.07_Bias_Variance_and_Generalization.md)
+- Concept depth (the *why*): [AI-ML-intuition 3.07 Bias–Variance & Generalization](../../../../AI-ML-intuition/objectives-and-evaluation/generalization/bias-variance-tradeoff-intuition.md)
 - Next concepts: [11 Data Leakage](../data-leakage/data-leakage.md) · [12 Imbalanced Data](../imbalanced-data/imbalanced-data.md)
 - Related domain: [03. Supervised Learning](../../../core-machine-learning/supervised-learning/README.md)

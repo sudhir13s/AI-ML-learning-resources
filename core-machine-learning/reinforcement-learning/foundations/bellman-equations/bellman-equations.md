@@ -55,5 +55,5 @@ becomes the TD target.
 - [Algorithms for Reinforcement Learning — **§2 (the Bellman operators)**](https://sites.ualberta.ca/~szepesva/papers/RLAlgsInMDPs.pdf) — **Csaba Szepesvári** — the operator-theoretic view that proves convergence.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 6.01 Bellman Optimality & Q-Learning](../../../../../AI-ML-intuition/Module_6_Reinforcement_Learning/6.01_Bellman_Optimality_Q-Learning.md)
+- Concept depth (the *why*): [AI-ML-intuition 6.01 Bellman Optimality & Q-Learning](../../../../../AI-ML-intuition/decision-making-and-control/value-learning/bellman-equation-and-q-learning-intuition.md)
 - Prereq: [01 Markov Decision Processes](../markov-decision-processes/markov-decision-processes.md) · Next: [03 Dynamic Programming](../dynamic-programming-value-and-policy-iteration/dynamic-programming-value-and-policy-iteration.md)

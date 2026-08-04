@@ -54,7 +54,7 @@ updated: 2026-06-22
 
 **In this platform**:
 - Concept page (full explanation): [Residual / Skip Connections](residual-skip-connections.md)
-- Concept depth (the *why*): [AI-ML-intuition 4.06 Residual / Skip Connections](../../../../AI-ML-intuition/Module_4_Stabilization/4B_Architectural_Motifs/4.06_Residual_Skip_Connections.md)
+- Concept depth (the *why*): [AI-ML-intuition 4.06 Residual / Skip Connections](../../../../AI-ML-intuition/training-stability/gradient-health/residual-connections-intuition.md)
 - Prerequisites: [Vanishing / Exploding Gradients](../../optimization-and-training/vanishing-exploding-gradients/vanishing-exploding-gradients.md) · [CNNs & Convolution](../../neural-architectures/cnns-and-convolution/cnns-and-convolution.md)
 - Related: [Transformer Architecture](../../attention-and-transformers/transformer-architecture/transformer-architecture.md) (residuals around attention + FFN) · [Attention Mechanism](../../attention-and-transformers/attention-mechanism/attention-mechanism.md) (the residual stream) · [Normalization](../normalization/normalization.md) (pre-norm pairs with residuals)
 - Field overview: [Deep Learning](../../README.md)

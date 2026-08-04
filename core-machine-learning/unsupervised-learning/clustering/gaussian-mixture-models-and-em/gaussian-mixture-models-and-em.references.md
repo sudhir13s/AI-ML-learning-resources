@@ -61,6 +61,6 @@ updated: 2026-07-03
 - Same Gaussian family, supervised: [Gaussian Naive Bayes](../../../supervised-learning/classification/naive-bayes/naive-bayes.md) (the diagonal-covariance, labeled case)
 - Cluster learned embeddings: [07 t-SNE](../../dimensionality-reduction/t-sne/t-sne.md) · [08 UMAP](../../dimensionality-reduction/umap/umap.md)
 - Forward — latent-variable generative models: the "draw a latent, then decode" recipe and the ELBO scale up to VAEs and beyond in [10 GenAI](../../../../modalities-and-generative-models/generative-models/README.md) (a VAE is loosely a GMM whose Gaussian components become a neural decoder and whose E-step becomes an amortized encoder)
-- Concept depth (the *why*): [AI-ML-intuition 5.06 GMMs & EM](../../../../../AI-ML-intuition/Module_5_Generation/5.06_GMMs_and_EM.md) · [0.02 Distributions & the Gaussian](../../../../../AI-ML-intuition/Module_0_Foundations/0.02_Distributions_and_the_Gaussian.md)
+- Concept depth (the *why*): [AI-ML-intuition 5.06 GMMs & EM](../../../../../AI-ML-intuition/generation/density-transformations/gaussian-mixtures-and-em-intuition.md) · [0.02 Distributions & the Gaussian](../../../../../AI-ML-intuition/foundational-mental-models/probability-and-belief/distributions-and-gaussians-intuition.md)
 - Prereq math: [Foundations — Linear Algebra (vectors & matrices)](../../../../foundations/mathematical-foundations/maths-for-ai-ml/linear-algebra/vectorsandmatrices.md)
 - Field overview: [4. Unsupervised Learning](../../README.md)

@@ -70,4 +70,4 @@ Every chapter is a self-contained folder (`NN-Concept/NN-Concept.md`) with its p
 - [Understanding Deep Learning — Ch. 18 (Diffusion)](https://udlbook.github.io/udlbook/) — **Simon Prince** — free, rigorous, visual.
 
 ## 🔗 In this platform
-- Foundations: [GenAI](../generative-models/README.md) · Math: [AI-ML-intuition Module 5 (Generation)](../../../AI-ML-intuition/Module_5_Generation/)
+- Foundations: [GenAI](../generative-models/README.md) · Math: [AI-ML-intuition Module 5 (Generation)](../../../AI-ML-intuition/generation/)

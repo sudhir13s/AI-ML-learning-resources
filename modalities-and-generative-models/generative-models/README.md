@@ -65,4 +65,4 @@ Every chapter is a self-contained folder (`NN-Concept/NN-Concept.md`) with its p
 - [The Annotated Diffusion Model](https://huggingface.co/blog/annotated-diffusion) — **Hugging Face** — runnable code + math.
 
 ## 🔗 In this platform
-- Math: [AI-ML-intuition Module 5 (Generation)](../../../AI-ML-intuition/Module_5_Generation/)
+- Math: [AI-ML-intuition Module 5 (Generation)](../../../AI-ML-intuition/generation/)

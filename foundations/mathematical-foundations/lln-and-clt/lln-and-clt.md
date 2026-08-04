@@ -30,7 +30,7 @@ many quantities end up Gaussian, and the difference between the LLN (the mean) a
 2. **CLT, visually** — watch [3B1B: But what is the Central Limit Theorem?](https://www.youtube.com/watch?v=zeJD6dqJ5lo). *Why sums/averages become Gaussian, beautifully animated.*
 3. **CLT, worked** — watch [StatQuest: The Central Limit Theorem, Clearly Explained](https://www.youtube.com/watch?v=YAlJCEDH2uY). *A concrete numeric demonstration.*
 4. **Formalize** — read the limit-theorems chapter of [Stat 110 / Blitzstein & Hwang](http://probabilitybook.net/). *Statements, conditions, and the `1/√n` scaling.*
-5. **Connect to ML** — read [AI-ML-intuition 0.04 Law of Large Numbers & CLT](../../../../AI-ML-intuition/Module_0_Foundations/0.04_Law_of_Large_Numbers_and_CLT.md). *Why mini-batch estimates work.*
+5. **Connect to ML** — read [AI-ML-intuition 0.04 Law of Large Numbers & CLT](../../../../AI-ML-intuition/foundational-mental-models/probability-and-belief/law-of-large-numbers-and-central-limit-theorem-intuition.md). *Why mini-batch estimates work.*
 
 ## 🎓 Courses (free)
 - [Harvard Stat 110 — Law of Large Numbers & CLT](https://projects.iq.harvard.edu/stat110/home) — **Joe Blitzstein (Harvard)** — the rigorous treatment with free lectures.
@@ -55,7 +55,7 @@ many quantities end up Gaussian, and the difference between the LLN (the mean) a
 - [Think Stats — **Ch. 8 (Estimation), Ch. 14 (Analytic Methods)**](https://greenteapress.com/wp/think-stats-2e/) — **Allen B. Downey** — sampling and the CLT computationally; free.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 0.04 Law of Large Numbers & CLT](../../../../AI-ML-intuition/Module_0_Foundations/0.04_Law_of_Large_Numbers_and_CLT.md) · [2.05 Gradient Descent & SGD (why mini-batches work)](../../../../AI-ML-intuition/Module_2_Optimization/2.05_Gradient_Descent_and_SGD.md)
+- Concept depth (the *why*): [AI-ML-intuition 0.04 Law of Large Numbers & CLT](../../../../AI-ML-intuition/foundational-mental-models/probability-and-belief/law-of-large-numbers-and-central-limit-theorem-intuition.md) · [2.05 Gradient Descent & SGD (why mini-batches work)](../../../../AI-ML-intuition/learning-and-optimization/first-order-optimization/gradient-descent-and-stochastic-gradient-descent-intuition.md)
 - Curriculum context: [Maths for AI-ML — Phase 3 (Probability, row 3.4)](../maths-for-ai-ml/README.md)
 - Prereq: [17 Expectation, Variance & Covariance](../expectation-variance-covariance/expectation-variance-covariance.md) · Next: [21 Hypothesis Testing & Confidence Intervals](../hypothesis-testing-and-confidence-intervals/hypothesis-testing-and-confidence-intervals.md)
 </content>

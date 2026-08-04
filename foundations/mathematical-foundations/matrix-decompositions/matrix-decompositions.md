@@ -54,7 +54,7 @@ factor of the covariance.
 - [Introduction to Applied Linear Algebra (VMLS) — **Ch. 5 (Linear Independence/QR), Ch. 11 (Least Squares)**](https://web.stanford.edu/~boyd/vmls/vmls.pdf) — **Boyd & Vandenberghe** — QR factorization and least-squares solves.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 1.05 Spectral Methods (PCA/SVD)](../../../../AI-ML-intuition/Module_1_Representation/1.05_Spectral_Methods_PCA_SVD.md) · [1.10 Mahalanobis Distance (covariance/Cholesky)](../../../../AI-ML-intuition/Module_1_Representation/1.10_Mahalanobis_Distance.md)
+- Concept depth (the *why*): [AI-ML-intuition 1.05 Spectral Methods (PCA/SVD)](../../../../AI-ML-intuition/representation/dimensionality-and-latent-structure/pca-and-svd-intuition.md) · [1.10 Mahalanobis Distance (covariance/Cholesky)](../../../../AI-ML-intuition/representation/similarity-and-distance/mahalanobis-distance-intuition.md)
 - Curriculum context: [Maths for AI-ML — Phase 1 (Linear Algebra, row 1.5)](../maths-for-ai-ml/README.md)
 - Prereq: [04 Eigenvalues & Eigenvectors](../eigenvalues-and-eigenvectors/eigenvalues-and-eigenvectors.md) · Next: [06 Singular Value Decomposition](../singular-value-decomposition/singular-value-decomposition.md)
 </content>

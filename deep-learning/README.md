@@ -73,6 +73,6 @@ Every chapter is a self-contained folder (`NN-Concept/NN-Concept.md`) with its p
 - [Deep Learning](https://www.deeplearningbook.org/) — **Goodfellow, Bengio & Courville** — free online; the rigorous reference text.
 
 ## 🔗 In this platform
-- **Understand the math:** [AI-ML-intuition — Module 2 (Optimization)](../../AI-ML-intuition/Module_2_Optimization/) · [Module 4 (Stabilization)](../../AI-ML-intuition/Module_4_Stabilization/)
+- **Understand the math:** [AI-ML-intuition — Module 2 (Optimization)](../../AI-ML-intuition/learning-and-optimization/) · [Module 4 (Stabilization)](../../AI-ML-intuition/training-stability/)
 - **Build it:** [AI-ML-problemsets](../../AI-ML-problemsets/)
 - **Prereq math:** [Maths for AI-ML curriculum](../foundations/mathematical-foundations/maths-for-ai-ml/README.md)

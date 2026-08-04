@@ -26,7 +26,7 @@ behaves like squared distance locally" — a subtle point interviewers love.
 
 **⭐ Start here — suggested path:**
 
-1. **Recall KL & entropy** — skim the platform's [Entropy/KL intuition](../../../../AI-ML-intuition/Module_5_Generation/5.01_Information_Theory_Entropy_KL_Divergence.md). *The Fisher metric is the second-order Taylor term of KL — know KL first.*
+1. **Recall KL & entropy** — skim the platform's [Entropy/KL intuition](../../../../AI-ML-intuition/foundational-mental-models/information-and-dependence/entropy-and-kl-divergence-intuition.md). *The Fisher metric is the second-order Taylor term of KL — know KL first.*
 2. **Get the big picture** — watch [Introduction to Information Geometry](https://www.youtube.com/watch?v=w6r_jsEBlgU) (Nielsen). *Manifolds of distributions, the Fisher metric, dual connections, in one talk.*
 3. **Read the elementary intro** — work [An elementary introduction to information geometry](https://arxiv.org/abs/1808.08271) (Nielsen). *The single best free entry point: Fisher–Rao, divergences, exponential families.*
 4. **Connect to optimization** — read [New insights on the natural gradient](https://arxiv.org/abs/1412.1193) (Martens). *Why `F⁻¹∇L` is the right step and how it relates to Gauss–Newton.*
@@ -57,7 +57,7 @@ behaves like squared distance locally" — a subtle point interviewers love.
 - [An Elementary Introduction to Information Geometry — **full monograph (open access)**](https://franknielsen.github.io/entropy-22-01100-v2.pdf) — **Frank Nielsen** — a complete, self-contained free reference on the Fisher–Rao geometry.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 5.01 Information Theory: Entropy & KL](../../../../AI-ML-intuition/Module_5_Generation/5.01_Information_Theory_Entropy_KL_Divergence.md) · [2.07 Adam Optimizer](../../../../AI-ML-intuition/Module_2_Optimization/2.07_Adam_Optimizer.md)
+- Concept depth (the *why*): [AI-ML-intuition 5.01 Information Theory: Entropy & KL](../../../../AI-ML-intuition/foundational-mental-models/information-and-dependence/entropy-and-kl-divergence-intuition.md) · [2.07 Adam Optimizer](../../../../AI-ML-intuition/learning-and-optimization/adaptive-optimization/adam-intuition.md)
 - Foundations (the basics this builds on): [Cross-Entropy & KL Divergence](../../../foundations/mathematical-foundations/cross-entropy-and-kl-divergence/cross-entropy-and-kl-divergence.md) · [Maximum Likelihood Estimation](../../../foundations/mathematical-foundations/maximum-likelihood-estimation/maximum-likelihood-estimation.md)
 - Prerequisite & next: [10 Differential Geometry & Manifolds](../differential-geometry-and-manifolds/differential-geometry-and-manifolds.md) · [03 Hilbert Spaces & RKHS](../hilbert-spaces-and-rkhs/hilbert-spaces-and-rkhs.md)
 - Related domain (applied optimizers): [05. Deep Learning](../../../deep-learning/README.md)

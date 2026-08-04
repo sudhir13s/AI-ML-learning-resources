@@ -56,4 +56,4 @@ updated: 2026-06-22
 - Why capacity matters: [Scaling Laws](../03-Scaling-Laws/03-Scaling-Laws.md) · [Pretraining at Scale](../02-Pretraining-at-Scale/02-Pretraining-at-Scale.md)
 - Builds on this: [Decoder-only Architecture](../04-Decoder-only-Architecture/04-Decoder-only-Architecture.md) · [KV Cache](../05-KV-Cache/05-KV-Cache.md) · [Quantization](../10-Quantization/10-Quantization.md)
 - Puts it to work: [Inference Optimization & Serving](../09-Inference-Optimization-and-Serving/09-Inference-Optimization-and-Serving.md)
-- Concept depth (the *why*): [Neural Scaling Laws / Chinchilla](../../../AI-ML-intuition/Module_7_Scaling_and_Adaptation/7.01_Neural_Scaling_Laws_Chinchilla.md)
+- Concept depth (the *why*): [Neural Scaling Laws / Chinchilla](../../../AI-ML-intuition/scaling-adaptation-and-efficiency/scaling-behavior/neural-scaling-laws-and-chinchilla-intuition.md)

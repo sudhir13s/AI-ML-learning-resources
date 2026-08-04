@@ -58,7 +58,7 @@ topic for applied/research roles.
 - [Bandit Algorithms — **Ch. on stochastic bandits (interventional decisions)**](https://tor-lattimore.com/downloads/book/book.pdf) — **Lattimore & Szepesvári** — the sequential-decision complement, free PDF.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 0.01 Probability & Bayes](../../../../AI-ML-intuition/Module_0_Foundations/0.01_Probability_and_Bayes_Theorem.md) · [6.04 MDPs & Exploration](../../../../AI-ML-intuition/Module_6_Reinforcement_Learning/6.04_MDPs_and_Exploration.md)
+- Concept depth (the *why*): [AI-ML-intuition 0.01 Probability & Bayes](../../../../AI-ML-intuition/foundational-mental-models/probability-and-belief/probability-and-bayes-intuition.md) · [6.04 MDPs & Exploration](../../../../AI-ML-intuition/decision-making-and-control/mdps-and-environments/mdps-and-exploration-intuition.md)
 - Foundations (the basics this builds on): [Probability & Bayes' Theorem](../../../foundations/mathematical-foundations/probability-and-bayes-theorem/probability-and-bayes-theorem.md) · [Bayesian Inference](../../../foundations/mathematical-foundations/bayesian-inference/bayesian-inference.md) · [Hypothesis Testing & Confidence Intervals](../../../foundations/mathematical-foundations/hypothesis-testing-and-confidence-intervals/hypothesis-testing-and-confidence-intervals.md)
 - Prerequisite & next: [01 Measure Theory & Probability](../measure-theory-and-probability-foundations/measure-theory-and-probability-foundations.md) · [15 Game Theory & Multi-Agent Math](../game-theory-and-multi-agent-math/game-theory-and-multi-agent-math.md)
 - Related domain (sequential decisions): [10. Reinforcement Learning](../../../core-machine-learning/reinforcement-learning/README.md)

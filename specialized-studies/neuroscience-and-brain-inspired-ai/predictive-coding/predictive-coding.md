@@ -57,7 +57,7 @@ neuroscience meaningfully informs ML.
 - [Neuronal Dynamics — **Ch. 19 (Synaptic Plasticity & Learning)**](https://neuronaldynamics.epfl.ch/online/Ch19.html) — **Gerstner et al.** — the local learning rules predictive-coding circuits use.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 2.02 Backpropagation — The Chain Rule](../../../../AI-ML-intuition/Module_2_Optimization/2.02_Backpropagation_The_Chain_Rule.md) — the global algorithm predictive coding approximates locally.
+- Concept depth (the *why*): [AI-ML-intuition 2.02 Backpropagation — The Chain Rule](../../../../AI-ML-intuition/learning-and-optimization/gradients-and-credit-assignment/chain-rule-and-backpropagation-intuition.md) — the global algorithm predictive coding approximates locally.
 - Prereqs in this section: [08 Visual Cortex & CNN Inspiration](../visual-cortex-and-cnn-inspiration/visual-cortex-and-cnn-inspiration.md)
 - Next concepts: [07 Free Energy Principle / Active Inference](../free-energy-principle-active-inference/free-energy-principle-active-inference.md) · [14 Biologically-Plausible Backprop Alternatives](../biologically-plausible-backprop-alternatives/biologically-plausible-backprop-alternatives.md)
 - Related domain: [05. Deep Learning](../../../deep-learning/README.md)

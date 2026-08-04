@@ -55,6 +55,6 @@ reflection far more reliable than pure self-grading, and the cost/latency trade-
 - [Artificial Intelligence: A Modern Approach — **Ch. 2 "Intelligent Agents"** (learning agents)](https://aima.cs.berkeley.edu/) — **Russell & Norvig** — the "learning element + critic" agent design that reflection instantiates.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 8.03 Agents & Tool Use](../../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.03_Agents_and_Tool_Use.md)
+- Concept depth (the *why*): [AI-ML-intuition 8.03 Agents & Tool Use](../../../../AI-ML-intuition/reasoning-and-agency/agents-and-tools/agent-loop-and-tool-use-intuition.md)
 - Prev / next: [02 ReAct](../reason-and-act/reason-and-act.md) · [06 Memory for Agents](../memory/memory.md) · [12 Agent Evaluation & Benchmarks](../agent-evaluation/agent-evaluation.md)
 - Related (canonical home): [Chain-of-Thought Reasoning](../../../09.%20LLMs/17-Chain-of-Thought-Reasoning/17-Chain-of-Thought-Reasoning.md)
