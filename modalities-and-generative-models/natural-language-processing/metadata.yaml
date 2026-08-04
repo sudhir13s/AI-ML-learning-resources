@@ -1,0 +1,22 @@
+# Reading order for this category. `page-order:` is the ONE ordering key
+# estate-wide (structure-authoring-contract Rule 4); entries are relative
+# and extension-less. README.md is repo-facing and deliberately absent.
+page-order:
+  - text-preprocessing-and-normalization/text-preprocessing-and-normalization
+  - tokenization-and-subword-algorithms/tokenization-and-subword-algorithms
+  - bag-of-words-and-tf-idf/bag-of-words-and-tf-idf
+  - n-gram-language-models-and-smoothing/n-gram-language-models-and-smoothing
+  - word-embeddings-word2vec-glove-fasttext/word-embeddings-word2vec-glove-fasttext
+  - contextual-embeddings-elmo-bert/contextual-embeddings-elmo-bert
+  - sentence-and-document-embeddings/sentence-and-document-embeddings
+  - sequence-to-sequence-and-encoder-decoder/sequence-to-sequence-and-encoder-decoder
+  - sequence-labeling-pos-and-ner/sequence-labeling-pos-and-ner
+  - text-classification-and-sentiment-analysis/text-classification-and-sentiment-analysis
+  - question-answering/question-answering
+  - machine-translation/machine-translation
+  - text-summarization/text-summarization
+  - coreference-resolution/coreference-resolution
+  - topic-modeling-lda-nmf/topic-modeling-lda-nmf
+  - information-retrieval-and-semantic-search/information-retrieval-and-semantic-search
+  - decoding-strategies/decoding-strategies
+  - nlp-evaluation-metrics/nlp-evaluation-metrics

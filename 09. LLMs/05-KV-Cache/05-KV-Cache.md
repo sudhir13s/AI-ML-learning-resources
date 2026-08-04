@@ -37,7 +37,7 @@ This is the **main page** of a multi-chapter topic — the complete core; four d
 
 LLMs generate **autoregressively** — one token at a time, each conditioned on all before it — and the naive loop recomputes the past on every single step. Feel the waste first; the cache is just its removal.
 
-- To produce token $t$, self-[attention](../../05.%20Deep_Learning/15-Attention-Mechanism/15-Attention-Mechanism.md) forms a **query** for the current position, compares it against a **key** per previous position, and mixes the corresponding **values**.
+- To produce token $t$, self-[attention](../../deep-learning/attention-and-transformers/attention-mechanism/attention-mechanism.md) forms a **query** for the current position, compares it against a **key** per previous position, and mixes the corresponding **values**.
 - To produce token $t{+}1$ naively, the whole sequence runs through the model again — recomputing K and V for tokens $1 \dots t$, *the very same K and V computed one step ago*.
 - Summed over a sequence of length $n$, that is $1 + 2 + \dots + n = \tfrac{n(n+1)}{2}$ projections — **quadratic**. With a cache each step projects one new token — **linear** overall.
 

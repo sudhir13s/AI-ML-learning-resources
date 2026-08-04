@@ -1,0 +1,17 @@
+# Reading order for this category. `page-order:` is the ONE ordering key
+# estate-wide (structure-authoring-contract Rule 4); entries are relative
+# and extension-less. README.md is repo-facing and deliberately absent.
+page-order:
+  - numpy/numpy
+  - pandas/pandas
+  - data-visualization/data-visualization
+  - scikit-learn/scikit-learn
+  - pytorch/pytorch
+  - tensorflow-and-keras/tensorflow-and-keras
+  - jax-and-flax/jax-and-flax
+  - hugging-face/hugging-face
+  - onnx-and-model-interchange/onnx-and-model-interchange
+  - ray/ray
+  - jupyter-and-colab/jupyter-and-colab
+  - weights-and-biases/weights-and-biases
+  - gradio-and-streamlit/gradio-and-streamlit

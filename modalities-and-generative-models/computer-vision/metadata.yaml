@@ -1,0 +1,20 @@
+# Reading order for this category. `page-order:` is the ONE ordering key
+# estate-wide (structure-authoring-contract Rule 4); entries are relative
+# and extension-less. README.md is repo-facing and deliberately absent.
+page-order:
+  - image-representation-and-filtering/image-representation-and-filtering
+  - pooling-and-receptive-fields/pooling-and-receptive-fields
+  - classic-cnn-architectures/classic-cnn-architectures
+  - image-classification/image-classification
+  - transfer-learning-for-vision/transfer-learning-for-vision
+  - data-augmentation/data-augmentation
+  - object-detection/object-detection
+  - semantic-segmentation/semantic-segmentation
+  - instance-segmentation/instance-segmentation
+  - detection-and-segmentation-metrics/detection-and-segmentation-metrics
+  - vision-transformers/vision-transformers
+  - self-supervised-vision/self-supervised-vision
+  - pose-estimation/pose-estimation
+  - optical-flow-and-video/optical-flow-and-video
+  - ocr/ocr
+  - 3d-and-depth-estimation/3d-and-depth-estimation

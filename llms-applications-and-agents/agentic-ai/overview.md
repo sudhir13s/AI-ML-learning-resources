@@ -45,7 +45,7 @@ learning path plus the best **free, open** course, video, paper, article, or boo
 > linked here to avoid repetition.
 - **Prompting & In-Context Learning · Chain-of-Thought · Fine-tuning / SFT · RLHF** → [LLMs](../../09.%20LLMs/README.md) ([Prompting](../../09.%20LLMs/16-Prompting-and-In-Context-Learning/16-Prompting-and-In-Context-Learning.md) · [Chain-of-Thought](../../09.%20LLMs/17-Chain-of-Thought-Reasoning/17-Chain-of-Thought-Reasoning.md) · [SFT](../../09.%20LLMs/13-Supervised-Fine-Tuning/13-Supervised-Fine-Tuning.md) · [RLHF & DPO](../../09.%20LLMs/15-RLHF-and-DPO/15-RLHF-and-DPO.md))
 - **Retrieval-Augmented Generation (RAG) & retrieval** → [RAG & LLM Applications](../rag-and-knowledge-systems/overview.md)
-- **RL foundations (MDPs · policies · reward)** → [Reinforcement Learning](../../08.%20Reinforcement_Learning/README.md)
+- **RL foundations (MDPs · policies · reward)** → [Reinforcement Learning](../../core-machine-learning/reinforcement-learning/README.md)
 
 ## 🎓 Courses (free)
 - [AI Agents in LangGraph](https://www.deeplearning.ai/short-courses/ai-agents-in-langgraph/) — **DeepLearning.AI × LangChain** — free short course on agent loops.

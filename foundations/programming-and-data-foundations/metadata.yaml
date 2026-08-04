@@ -1,0 +1,11 @@
+# Reading order for this category. `page-order:` is the ONE ordering key
+# estate-wide (structure-authoring-contract Rule 4); entries are relative
+# and extension-less. README.md is repo-facing and deliberately absent.
+page-order:
+  - python-for-ml/python-for-ml
+  - numpy-essentials/numpy-essentials
+  - pandas-essentials/pandas-essentials
+  - data-visualization-basics/data-visualization-basics
+  - jupyter-and-google-colab/jupyter-and-google-colab
+  - environments-and-package-management/environments-and-package-management
+  - your-first-ml-project/your-first-ml-project

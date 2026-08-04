@@ -1,0 +1,15 @@
+# Reading order for this category. `page-order:` is the ONE ordering key
+# estate-wide (structure-authoring-contract Rule 4); entries are relative
+# and extension-less. README.md is repo-facing and deliberately absent.
+page-order:
+  - how-to-read-ml-papers/how-to-read-ml-papers
+  - arxiv-and-papers-with-code/arxiv-and-papers-with-code
+  - key-conferences-and-venues/key-conferences-and-venues
+  - newsletters-and-blogs-to-follow/newsletters-and-blogs-to-follow
+  - following-researchers-and-communities/following-researchers-and-communities
+  - benchmarks-and-leaderboards-to-watch/benchmarks-and-leaderboards-to-watch
+  - reproducing-papers-code/reproducing-papers-code
+  - survey-papers-how-to-use-them/survey-papers-how-to-use-them
+  - building-a-stay-current-routine/building-a-stay-current-routine
+  - open-model-hubs-and-demos/open-model-hubs-and-demos
+  - evaluating-hype-vs-substance/evaluating-hype-vs-substance

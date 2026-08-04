@@ -1,41 +1,56 @@
-# course.yaml v1 — AI/ML Learning Resources.
+# course.yaml v1 - AI/ML Learning Resources.
 # Charter: docs/plans/structure-rework/ai-ml-blueprints/ai-ml-blueprint-index.md
-# § "Course declaration — AI-ML/AI-ML-study-notes/learning-resources/course.yaml".
+# section "Course declaration - AI-ML/AI-ML-study-notes/learning-resources/course.yaml"
+# plus docs/plans/structure-rework/ai-ml-blueprints/ai-ml-learning-resources-structure.md.
 #
-# SCOPE OF THIS FILE (2026-08-04): the charter's full target is eight sections
-# (foundations, core-machine-learning, deep-learning, modalities-and-generative-models,
-# llms-applications-and-agents, deployment-and-mlops,
-# world-models-and-embodied-intelligence, specialized-studies). Only
-# `llms-applications-and-agents` exists on disk in charter shape today — it landed in
-# the P2 agentic wave (T-203.3), re-homing the old "15. RAG_and_LLM_Applications" and
-# "16. Agentic_AI" folders. The other seven sections still sit under 20 ordinal,
-# space-and-dot-named folders ("00. Basics" .. "21. Frontier_and_Staying_Current") that
-# T-86 has not yet restructured — declaring them here would require inventing folder
-# moves and content splits that are that task's job, not this file's. They are
-# reported as a gap, not fabricated (authoring-contract Rule 3: "restructure with the
-# content that exists").
+# SCOPE (2026-08-04, T-86): seven of the charter's eight sections are declared here -
+# foundations, core-machine-learning, deep-learning, modalities-and-generative-models,
+# deployment-and-mlops and specialized-studies, alongside the
+# llms-applications-and-agents section that landed earlier in the P2 agentic wave and is
+# carried through unchanged. The twenty legacy ordinal folders ("00. Basics" ..
+# "21. Frontier_and_Staying_Current") were restructured into the chartered kebab-case tree
+# in the same change; every path below exists on disk.
 #
-# ROOT-FOLDER NAME (2026-08-04): the module root is still `AI-ML-learning-resources/`
-# on disk (this repo's own name) — the charter's target name `learning-resources/`
-# rides T-86 together with the section restructure. `module.id` already uses the
-# charter's target id so no downstream reference needs to change again when the
-# folder rename lands; only the WIRED_COURSES `moduleDir` value does.
+# NOT DECLARED, deliberately:
+#   - world-models-and-embodied-intelligence - the charter's eighth section has NO content
+#     on disk. Authoring-contract Rule 3 ("restructure with the content that exists") and
+#     the T-86 brief both forbid stubbing it, so it is reported as a gap, not fabricated.
+#   - foundations/ai-paradigms-and-knowledge, deep-learning/sequence-modeling,
+#     deep-learning/scientific-and-specialized-deep-learning,
+#     specialized-studies/neuro-symbolic-and-structured-intelligence - chartered sub-areas
+#     with no pages yet; they carry no enum entry because no page declares them.
+#   - modalities-and-generative-models/{multimodal-learning,video-understanding,
+#     audio-and-speech} - these hold a curated README only. The folder is real, the
+#     category has no lesson, so nothing is declared and nothing is stubbed.
+#   - "09. LLMs/" - its twenty topics belong to llms-applications-and-agents, whose
+#     declaration this wave was told to leave untouched. The folder therefore keeps its
+#     legacy ordinal name until the LLM wave re-homes it; that wave also owns the
+#     charter's deep-learning/attention-and-transformers/efficient-attention page, which
+#     currently sits at "09. LLMs/06-Efficient-Attention-FlashAttention".
+#   - every README.md, metadata.yaml, images/, code/, notebooks/ and tools/ folder, and
+#     every *.references.md companion - teaching assets and repo-facing catalogues, not
+#     lessons with a nav entry.
 #
-# GROUP_BY (resolves one of the charter's two open questions, for this section only):
-# llms-applications-and-agents is a clean two-level tree — section -> sub-area ->
-# topic-package (each topic-package is a single lesson page that owns its own
-# code/references, so Rule 3's more-than-one-page nesting test never fires and no
-# `parent:` section is needed). `category` = the sub-area folder
-# (rag-and-knowledge-systems / agentic-ai / inference-and-runtime /
-# reasoning-evaluation-and-alignment), matching Rule 6 ("the grouping value equals the
-# folder it lives in"). The three-level sections (core-machine-learning,
-# deep-learning's neuro-symbolic corner, specialized-studies) are NOT part of this
-# file and their group_by ambiguity is still open, unresolved here.
+# GROUP_BY DEPTH - resolves the charter's recorded open question. The charter states the
+# tree is two levels deep in most sections and three in core-machine-learning, and records
+# both readings without choosing. Resolution taken here: where a section is three levels
+# deep AND has real content, the MIDDLE folder becomes a `parent:`-nested section
+# (cml-supervised-learning, cml-unsupervised-learning, cml-reinforcement-learning) and the
+# LEAF folder is the `category`. Folder = URL = nav holds with no Rule 1 violation, and
+# only schema vocabulary is used: `parent:` nests exactly one level and adds no URL
+# segment, so a page still addresses
+# core-machine-learning/supervised-learning/regression/linear-regression/linear-regression.
+# The charter's alternative - dropping a level from the nav - was rejected because it
+# leaves a folder the nav never shows, which Rule 1 forbids.
 #
-# NOT DECLARED, deliberately: each sub-area's `overview.md` (still narrates topics by
-# their pre-move location per the P2 mapping notes; T-203.5 content-pass REFACTOR is
-# pending, so it is not presented as a course chapter yet), `images/`, `code/`,
-# `tools/`, and `.gitignore` — teaching assets, not lessons.
+# ENUM BINDING - `categories` is therefore the LEAF grouping folder, which is the
+# second-level sub-area in the two-level sections and the third-level sub-area in
+# core-machine-learning. That differs from the charter's "49 second-level sub-area
+# folders" sentence, which assumed the unresolved two-level reading.
+#
+# ROOT-FOLDER NAME - the module root is still `AI-ML-learning-resources/` (this repo's own
+# name); the charter's target `learning-resources/` needs the shared WIRED_COURSES
+# `moduleDir`/`moduleRoute` values changed, which this wave is not permitted to touch.
 version: 1
 
 module:
@@ -50,8 +65,301 @@ enums:
     - agentic-ai
     - inference-and-runtime
     - reasoning-evaluation-and-alignment
+    - ai-ml-orientation
+    - programming-and-data-foundations
+    - mathematical-foundations
+    - data-preparation
+    - tools-and-frameworks
+    - research-literacy
+    - model-selection-and-evaluation
+    - regression
+    - classification
+    - trees-and-ensembles
+    - clustering
+    - dimensionality-reduction
+    - density-estimation
+    - anomaly-detection
+    - association-rules
+    - foundations
+    - value-based-learning
+    - policy-learning
+    - model-based-reinforcement-learning
+    - offline-reinforcement-learning
+    - multi-agent-reinforcement-learning
+    - neural-network-foundations
+    - optimization-and-training
+    - stabilization-and-architectural-blocks
+    - neural-architectures
+    - attention-and-transformers
+    - self-supervised-learning
+    - natural-language-processing
+    - computer-vision
+    - generative-models
+    - diffusion-models
+    - lifecycle-and-reproducibility
+    - data-and-training-platforms
+    - packaging-and-serving
+    - release-and-deployment
+    - monitoring-and-reliability
+    - governance-and-economics
+    - advanced-mathematics-for-ai-research
+    - neuroscience-and-brain-inspired-ai
 
 sections:
+  - id: foundations
+    title: Foundations
+    kind: lesson
+    group_by: category
+    chapters:
+      # ai-ml-orientation
+      - path: foundations/ai-ml-orientation/what-is-ai-ml-deep-learning/what-is-ai-ml-deep-learning.md
+      - path: foundations/ai-ml-orientation/types-of-machine-learning/types-of-machine-learning.md
+      - path: foundations/ai-ml-orientation/the-ml-workflow-and-lifecycle/the-ml-workflow-and-lifecycle.md
+      - path: foundations/ai-ml-orientation/how-models-learn/how-models-learn.md
+      - path: foundations/ai-ml-orientation/overfitting-and-underfitting/overfitting-and-underfitting.md
+      # programming-and-data-foundations
+      - path: foundations/programming-and-data-foundations/python-for-ml/python-for-ml.md
+      - path: foundations/programming-and-data-foundations/numpy-essentials/numpy-essentials.md
+      - path: foundations/programming-and-data-foundations/pandas-essentials/pandas-essentials.md
+      - path: foundations/programming-and-data-foundations/data-visualization-basics/data-visualization-basics.md
+      - path: foundations/programming-and-data-foundations/jupyter-and-google-colab/jupyter-and-google-colab.md
+      - path: foundations/programming-and-data-foundations/environments-and-package-management/environments-and-package-management.md
+      - path: foundations/programming-and-data-foundations/your-first-ml-project/your-first-ml-project.md
+      # mathematical-foundations
+      - path: foundations/mathematical-foundations/vectors-and-vector-spaces/vectors-and-vector-spaces.md
+      - path: foundations/mathematical-foundations/matrices-and-matrix-operations/matrices-and-matrix-operations.md
+      - path: foundations/mathematical-foundations/norms-inner-products-and-orthogonality/norms-inner-products-and-orthogonality.md
+      - path: foundations/mathematical-foundations/eigenvalues-and-eigenvectors/eigenvalues-and-eigenvectors.md
+      - path: foundations/mathematical-foundations/matrix-decompositions/matrix-decompositions.md
+      - path: foundations/mathematical-foundations/singular-value-decomposition/singular-value-decomposition.md
+      - path: foundations/mathematical-foundations/principal-component-analysis-math/principal-component-analysis-math.md
+      - path: foundations/mathematical-foundations/derivatives-and-gradients/derivatives-and-gradients.md
+      - path: foundations/mathematical-foundations/the-chain-rule/the-chain-rule.md
+      - path: foundations/mathematical-foundations/jacobian-and-hessian/jacobian-and-hessian.md
+      - path: foundations/mathematical-foundations/taylor-expansion/taylor-expansion.md
+      - path: foundations/mathematical-foundations/convexity/convexity.md
+      - path: foundations/mathematical-foundations/gradient-descent-theory/gradient-descent-theory.md
+      - path: foundations/mathematical-foundations/lagrange-multipliers-constrained-optimization/lagrange-multipliers-constrained-optimization.md
+      - path: foundations/mathematical-foundations/probability-and-bayes-theorem/probability-and-bayes-theorem.md
+      - path: foundations/mathematical-foundations/random-variables-and-distributions/random-variables-and-distributions.md
+      - path: foundations/mathematical-foundations/expectation-variance-covariance/expectation-variance-covariance.md
+      - path: foundations/mathematical-foundations/lln-and-clt/lln-and-clt.md
+      - path: foundations/mathematical-foundations/maximum-likelihood-estimation/maximum-likelihood-estimation.md
+      - path: foundations/mathematical-foundations/bayesian-inference/bayesian-inference.md
+      - path: foundations/mathematical-foundations/hypothesis-testing-and-confidence-intervals/hypothesis-testing-and-confidence-intervals.md
+      - path: foundations/mathematical-foundations/entropy/entropy.md
+      - path: foundations/mathematical-foundations/cross-entropy-and-kl-divergence/cross-entropy-and-kl-divergence.md
+      - path: foundations/mathematical-foundations/mutual-information/mutual-information.md
+      # data-preparation
+      - path: foundations/data-preparation/exploratory-data-analysis/exploratory-data-analysis.md
+      - path: foundations/data-preparation/feature-scaling-and-normalization/feature-scaling-and-normalization.md
+      - path: foundations/data-preparation/encoding-categorical-variables/encoding-categorical-variables.md
+      - path: foundations/data-preparation/missing-data-imputation/missing-data-imputation.md
+      - path: foundations/data-preparation/outlier-detection-and-treatment/outlier-detection-and-treatment.md
+      - path: foundations/data-preparation/feature-engineering/feature-engineering.md
+      - path: foundations/data-preparation/feature-selection/feature-selection.md
+      - path: foundations/data-preparation/date-time-and-cyclical-features/date-time-and-cyclical-features.md
+      - path: foundations/data-preparation/text-and-image-preprocessing-overview/text-and-image-preprocessing-overview.md
+      - path: foundations/data-preparation/train-validation-test-splits/train-validation-test-splits.md
+      - path: foundations/data-preparation/data-leakage/data-leakage.md
+      - path: foundations/data-preparation/imbalanced-data/imbalanced-data.md
+      - path: foundations/data-preparation/data-pipelines/data-pipelines.md
+      # tools-and-frameworks
+      - path: foundations/tools-and-frameworks/numpy/numpy.md
+      - path: foundations/tools-and-frameworks/pandas/pandas.md
+      - path: foundations/tools-and-frameworks/data-visualization/data-visualization.md
+      - path: foundations/tools-and-frameworks/scikit-learn/scikit-learn.md
+      - path: foundations/tools-and-frameworks/pytorch/pytorch.md
+      - path: foundations/tools-and-frameworks/tensorflow-and-keras/tensorflow-and-keras.md
+      - path: foundations/tools-and-frameworks/jax-and-flax/jax-and-flax.md
+      - path: foundations/tools-and-frameworks/hugging-face/hugging-face.md
+      - path: foundations/tools-and-frameworks/onnx-and-model-interchange/onnx-and-model-interchange.md
+      - path: foundations/tools-and-frameworks/ray/ray.md
+      - path: foundations/tools-and-frameworks/jupyter-and-colab/jupyter-and-colab.md
+      - path: foundations/tools-and-frameworks/weights-and-biases/weights-and-biases.md
+      - path: foundations/tools-and-frameworks/gradio-and-streamlit/gradio-and-streamlit.md
+      # research-literacy
+      - path: foundations/research-literacy/how-to-read-ml-papers/how-to-read-ml-papers.md
+      - path: foundations/research-literacy/arxiv-and-papers-with-code/arxiv-and-papers-with-code.md
+      - path: foundations/research-literacy/key-conferences-and-venues/key-conferences-and-venues.md
+      - path: foundations/research-literacy/newsletters-and-blogs-to-follow/newsletters-and-blogs-to-follow.md
+      - path: foundations/research-literacy/following-researchers-and-communities/following-researchers-and-communities.md
+      - path: foundations/research-literacy/benchmarks-and-leaderboards-to-watch/benchmarks-and-leaderboards-to-watch.md
+      - path: foundations/research-literacy/reproducing-papers-code/reproducing-papers-code.md
+      - path: foundations/research-literacy/survey-papers-how-to-use-them/survey-papers-how-to-use-them.md
+      - path: foundations/research-literacy/building-a-stay-current-routine/building-a-stay-current-routine.md
+      - path: foundations/research-literacy/open-model-hubs-and-demos/open-model-hubs-and-demos.md
+      - path: foundations/research-literacy/evaluating-hype-vs-substance/evaluating-hype-vs-substance.md
+  - id: core-machine-learning
+    title: Core Machine Learning
+    kind: lesson
+    group_by: category
+    chapters:
+      # model-selection-and-evaluation
+      - path: core-machine-learning/model-selection-and-evaluation/bias-variance-tradeoff/bias-variance-tradeoff.md
+      - path: core-machine-learning/model-selection-and-evaluation/cross-validation/cross-validation.md
+  - id: cml-supervised-learning
+    title: Supervised Learning
+    kind: lesson
+    parent: core-machine-learning
+    group_by: category
+    chapters:
+      # regression
+      - path: core-machine-learning/supervised-learning/regression/linear-regression/linear-regression.md
+      - path: core-machine-learning/supervised-learning/regression/regularization-linear-models/regularization-linear-models.md
+      - path: core-machine-learning/supervised-learning/regression/regression-metrics/regression-metrics.md
+      # classification
+      - path: core-machine-learning/supervised-learning/classification/logistic-regression/logistic-regression.md
+      - path: core-machine-learning/supervised-learning/classification/k-nearest-neighbors/k-nearest-neighbors.md
+      - path: core-machine-learning/supervised-learning/classification/naive-bayes/naive-bayes.md
+      - path: core-machine-learning/supervised-learning/classification/support-vector-machines/support-vector-machines.md
+      - path: core-machine-learning/supervised-learning/classification/classification-metrics/classification-metrics.md
+      # trees-and-ensembles
+      - path: core-machine-learning/supervised-learning/trees-and-ensembles/decision-trees/decision-trees.md
+      - path: core-machine-learning/supervised-learning/trees-and-ensembles/bagging/bagging.md
+      - path: core-machine-learning/supervised-learning/trees-and-ensembles/random-forests/random-forests.md
+      - path: core-machine-learning/supervised-learning/trees-and-ensembles/gradient-boosting-xgboost/gradient-boosting-xgboost.md
+      - path: core-machine-learning/supervised-learning/trees-and-ensembles/stacking-and-blending/stacking-and-blending.md
+  - id: cml-unsupervised-learning
+    title: Unsupervised Learning
+    kind: lesson
+    parent: core-machine-learning
+    group_by: category
+    chapters:
+      # clustering
+      - path: core-machine-learning/unsupervised-learning/clustering/k-means-clustering/k-means-clustering.md
+      - path: core-machine-learning/unsupervised-learning/clustering/hierarchical-clustering/hierarchical-clustering.md
+      - path: core-machine-learning/unsupervised-learning/clustering/dbscan/dbscan.md
+      - path: core-machine-learning/unsupervised-learning/clustering/gaussian-mixture-models-and-em/gaussian-mixture-models-and-em.md
+      - path: core-machine-learning/unsupervised-learning/clustering/spectral-clustering/spectral-clustering.md
+      # dimensionality-reduction
+      - path: core-machine-learning/unsupervised-learning/dimensionality-reduction/dimensionality-reduction-overview/dimensionality-reduction-overview.md
+      - path: core-machine-learning/unsupervised-learning/dimensionality-reduction/t-sne/t-sne.md
+      - path: core-machine-learning/unsupervised-learning/dimensionality-reduction/umap/umap.md
+      # density-estimation
+      - path: core-machine-learning/unsupervised-learning/density-estimation/kernel-density-estimation/kernel-density-estimation.md
+      # anomaly-detection
+      - path: core-machine-learning/unsupervised-learning/anomaly-detection/anomaly-outlier-detection/anomaly-outlier-detection.md
+      # association-rules
+      - path: core-machine-learning/unsupervised-learning/association-rules/association-rule-learning/association-rule-learning.md
+  - id: cml-reinforcement-learning
+    title: Reinforcement Learning
+    kind: lesson
+    parent: core-machine-learning
+    group_by: category
+    chapters:
+      # foundations
+      - path: core-machine-learning/reinforcement-learning/foundations/markov-decision-processes/markov-decision-processes.md
+      - path: core-machine-learning/reinforcement-learning/foundations/bellman-equations/bellman-equations.md
+      - path: core-machine-learning/reinforcement-learning/foundations/dynamic-programming-value-and-policy-iteration/dynamic-programming-value-and-policy-iteration.md
+      - path: core-machine-learning/reinforcement-learning/foundations/exploration-vs-exploitation/exploration-vs-exploitation.md
+      - path: core-machine-learning/reinforcement-learning/foundations/multi-armed-bandits/multi-armed-bandits.md
+      - path: core-machine-learning/reinforcement-learning/foundations/reward-shaping/reward-shaping.md
+      # value-based-learning
+      - path: core-machine-learning/reinforcement-learning/value-based-learning/monte-carlo-methods/monte-carlo-methods.md
+      - path: core-machine-learning/reinforcement-learning/value-based-learning/temporal-difference-learning/temporal-difference-learning.md
+      - path: core-machine-learning/reinforcement-learning/value-based-learning/q-learning/q-learning.md
+      - path: core-machine-learning/reinforcement-learning/value-based-learning/sarsa/sarsa.md
+      - path: core-machine-learning/reinforcement-learning/value-based-learning/deep-q-networks-dqn/deep-q-networks-dqn.md
+      # policy-learning
+      - path: core-machine-learning/reinforcement-learning/policy-learning/policy-gradients-reinforce/policy-gradients-reinforce.md
+      - path: core-machine-learning/reinforcement-learning/policy-learning/actor-critic-a2c-a3c/actor-critic-a2c-a3c.md
+      - path: core-machine-learning/reinforcement-learning/policy-learning/trust-region-policy-optimization-trpo/trust-region-policy-optimization-trpo.md
+      - path: core-machine-learning/reinforcement-learning/policy-learning/proximal-policy-optimization-ppo/proximal-policy-optimization-ppo.md
+      - path: core-machine-learning/reinforcement-learning/policy-learning/continuous-control-ddpg-td3-sac/continuous-control-ddpg-td3-sac.md
+      # model-based-reinforcement-learning
+      - path: core-machine-learning/reinforcement-learning/model-based-reinforcement-learning/model-based-rl/model-based-rl.md
+      # offline-reinforcement-learning
+      - path: core-machine-learning/reinforcement-learning/offline-reinforcement-learning/offline-rl/offline-rl.md
+      # multi-agent-reinforcement-learning
+      - path: core-machine-learning/reinforcement-learning/multi-agent-reinforcement-learning/multi-agent-rl/multi-agent-rl.md
+  - id: deep-learning
+    title: Deep Learning
+    kind: lesson
+    group_by: category
+    chapters:
+      # neural-network-foundations
+      - path: deep-learning/neural-network-foundations/perceptron-and-mlp/perceptron-and-mlp.md
+      - path: deep-learning/neural-network-foundations/backpropagation-and-computational-graphs/backpropagation-and-computational-graphs.md
+      # optimization-and-training
+      - path: deep-learning/optimization-and-training/loss-functions/loss-functions.md
+      - path: deep-learning/optimization-and-training/weight-initialization/weight-initialization.md
+      - path: deep-learning/optimization-and-training/vanishing-exploding-gradients/vanishing-exploding-gradients.md
+      - path: deep-learning/optimization-and-training/optimizers/optimizers.md
+      - path: deep-learning/optimization-and-training/learning-rate-schedules-and-warmup/learning-rate-schedules-and-warmup.md
+      - path: deep-learning/optimization-and-training/regularization/regularization.md
+      - path: deep-learning/optimization-and-training/hyperparameter-tuning/hyperparameter-tuning.md
+      # stabilization-and-architectural-blocks
+      - path: deep-learning/stabilization-and-architectural-blocks/activation-functions/activation-functions.md
+      - path: deep-learning/stabilization-and-architectural-blocks/dropout/dropout.md
+      - path: deep-learning/stabilization-and-architectural-blocks/normalization/normalization.md
+      - path: deep-learning/stabilization-and-architectural-blocks/residual-skip-connections/residual-skip-connections.md
+      # neural-architectures
+      - path: deep-learning/neural-architectures/cnns-and-convolution/cnns-and-convolution.md
+      - path: deep-learning/neural-architectures/rnn-lstm-gru/rnn-lstm-gru.md
+      - path: deep-learning/neural-architectures/autoencoders/autoencoders.md
+      # attention-and-transformers
+      - path: deep-learning/attention-and-transformers/attention-mechanism/attention-mechanism.md
+      - path: deep-learning/attention-and-transformers/transformer-architecture/transformer-architecture.md
+      - path: deep-learning/attention-and-transformers/positional-encoding/positional-encoding.md
+      # self-supervised-learning
+      - path: deep-learning/self-supervised-learning/contrastive-self-supervised-learning/contrastive-self-supervised-learning.md
+  - id: modalities-and-generative-models
+    title: Modalities and Generative Models
+    kind: lesson
+    group_by: category
+    chapters:
+      # natural-language-processing
+      - path: modalities-and-generative-models/natural-language-processing/text-preprocessing-and-normalization/text-preprocessing-and-normalization.md
+      - path: modalities-and-generative-models/natural-language-processing/tokenization-and-subword-algorithms/tokenization-and-subword-algorithms.md
+      - path: modalities-and-generative-models/natural-language-processing/bag-of-words-and-tf-idf/bag-of-words-and-tf-idf.md
+      - path: modalities-and-generative-models/natural-language-processing/n-gram-language-models-and-smoothing/n-gram-language-models-and-smoothing.md
+      - path: modalities-and-generative-models/natural-language-processing/word-embeddings-word2vec-glove-fasttext/word-embeddings-word2vec-glove-fasttext.md
+      - path: modalities-and-generative-models/natural-language-processing/contextual-embeddings-elmo-bert/contextual-embeddings-elmo-bert.md
+      - path: modalities-and-generative-models/natural-language-processing/sentence-and-document-embeddings/sentence-and-document-embeddings.md
+      - path: modalities-and-generative-models/natural-language-processing/sequence-to-sequence-and-encoder-decoder/sequence-to-sequence-and-encoder-decoder.md
+      - path: modalities-and-generative-models/natural-language-processing/sequence-labeling-pos-and-ner/sequence-labeling-pos-and-ner.md
+      - path: modalities-and-generative-models/natural-language-processing/text-classification-and-sentiment-analysis/text-classification-and-sentiment-analysis.md
+      - path: modalities-and-generative-models/natural-language-processing/question-answering/question-answering.md
+      - path: modalities-and-generative-models/natural-language-processing/machine-translation/machine-translation.md
+      - path: modalities-and-generative-models/natural-language-processing/text-summarization/text-summarization.md
+      - path: modalities-and-generative-models/natural-language-processing/coreference-resolution/coreference-resolution.md
+      - path: modalities-and-generative-models/natural-language-processing/topic-modeling-lda-nmf/topic-modeling-lda-nmf.md
+      - path: modalities-and-generative-models/natural-language-processing/information-retrieval-and-semantic-search/information-retrieval-and-semantic-search.md
+      - path: modalities-and-generative-models/natural-language-processing/decoding-strategies/decoding-strategies.md
+      - path: modalities-and-generative-models/natural-language-processing/nlp-evaluation-metrics/nlp-evaluation-metrics.md
+      # computer-vision
+      - path: modalities-and-generative-models/computer-vision/image-representation-and-filtering/image-representation-and-filtering.md
+      - path: modalities-and-generative-models/computer-vision/pooling-and-receptive-fields/pooling-and-receptive-fields.md
+      - path: modalities-and-generative-models/computer-vision/classic-cnn-architectures/classic-cnn-architectures.md
+      - path: modalities-and-generative-models/computer-vision/image-classification/image-classification.md
+      - path: modalities-and-generative-models/computer-vision/transfer-learning-for-vision/transfer-learning-for-vision.md
+      - path: modalities-and-generative-models/computer-vision/data-augmentation/data-augmentation.md
+      - path: modalities-and-generative-models/computer-vision/object-detection/object-detection.md
+      - path: modalities-and-generative-models/computer-vision/semantic-segmentation/semantic-segmentation.md
+      - path: modalities-and-generative-models/computer-vision/instance-segmentation/instance-segmentation.md
+      - path: modalities-and-generative-models/computer-vision/detection-and-segmentation-metrics/detection-and-segmentation-metrics.md
+      - path: modalities-and-generative-models/computer-vision/vision-transformers/vision-transformers.md
+      - path: modalities-and-generative-models/computer-vision/self-supervised-vision/self-supervised-vision.md
+      - path: modalities-and-generative-models/computer-vision/pose-estimation/pose-estimation.md
+      - path: modalities-and-generative-models/computer-vision/optical-flow-and-video/optical-flow-and-video.md
+      - path: modalities-and-generative-models/computer-vision/ocr/ocr.md
+      - path: modalities-and-generative-models/computer-vision/3d-and-depth-estimation/3d-and-depth-estimation.md
+      # generative-models
+      - path: modalities-and-generative-models/generative-models/variational-autoencoders-vae-elbo/variational-autoencoders-vae-elbo.md
+      - path: modalities-and-generative-models/generative-models/gans-and-dcgan/gans-and-dcgan.md
+      - path: modalities-and-generative-models/generative-models/gan-training-and-wgan/gan-training-and-wgan.md
+      - path: modalities-and-generative-models/generative-models/normalizing-flows/normalizing-flows.md
+      - path: modalities-and-generative-models/generative-models/energy-based-models/energy-based-models.md
+      - path: modalities-and-generative-models/generative-models/autoregressive-image-generation-pixelcnn/autoregressive-image-generation-pixelcnn.md
+      - path: modalities-and-generative-models/generative-models/evaluation-of-generative-models/evaluation-of-generative-models.md
+      # diffusion-models
+      - path: modalities-and-generative-models/diffusion-models/conditional-generation-and-classifier-free-guidance/conditional-generation-and-classifier-free-guidance.md
+      - path: modalities-and-generative-models/diffusion-models/diffusion-models-ddpm/diffusion-models-ddpm.md
+      - path: modalities-and-generative-models/diffusion-models/score-based-and-sde-diffusion/score-based-and-sde-diffusion.md
+      - path: modalities-and-generative-models/diffusion-models/latent-diffusion-stable-diffusion/latent-diffusion-stable-diffusion.md
+      - path: modalities-and-generative-models/diffusion-models/text-to-image-systems/text-to-image-systems.md
+      - path: modalities-and-generative-models/diffusion-models/sampling-and-guidance-techniques/sampling-and-guidance-techniques.md
   - id: llms-applications-and-agents
     title: LLMs, Applications and Agents
     kind: lesson
@@ -90,3 +398,66 @@ sections:
       - path: llms-applications-and-agents/inference-and-runtime/caching-and-cost-optimization/caching-and-cost-optimization.md
       # reasoning-evaluation-and-alignment
       - path: llms-applications-and-agents/reasoning-evaluation-and-alignment/hallucination-and-grounding/hallucination-and-grounding.md
+  - id: deployment-and-mlops
+    title: Deployment and MLOps
+    kind: lesson
+    group_by: category
+    chapters:
+      # lifecycle-and-reproducibility
+      - path: deployment-and-mlops/lifecycle-and-reproducibility/ml-lifecycle-and-mlops-maturity/ml-lifecycle-and-mlops-maturity.md
+      - path: deployment-and-mlops/lifecycle-and-reproducibility/reproducibility/reproducibility.md
+      - path: deployment-and-mlops/lifecycle-and-reproducibility/experiment-tracking/experiment-tracking.md
+      - path: deployment-and-mlops/lifecycle-and-reproducibility/data-and-model-versioning/data-and-model-versioning.md
+      # data-and-training-platforms
+      - path: deployment-and-mlops/data-and-training-platforms/feature-stores/feature-stores.md
+      - path: deployment-and-mlops/data-and-training-platforms/ml-pipelines-and-orchestration/ml-pipelines-and-orchestration.md
+      # packaging-and-serving
+      - path: deployment-and-mlops/packaging-and-serving/model-packaging-and-containerization/model-packaging-and-containerization.md
+      - path: deployment-and-mlops/packaging-and-serving/model-serving/model-serving.md
+      - path: deployment-and-mlops/packaging-and-serving/scaling-inference/scaling-inference.md
+      # release-and-deployment
+      - path: deployment-and-mlops/release-and-deployment/cicd-for-ml-and-continuous-training/cicd-for-ml-and-continuous-training.md
+      - path: deployment-and-mlops/release-and-deployment/ab-testing-shadow-and-canary-deployment/ab-testing-shadow-and-canary-deployment.md
+      # monitoring-and-reliability
+      - path: deployment-and-mlops/monitoring-and-reliability/model-monitoring-and-observability/model-monitoring-and-observability.md
+      - path: deployment-and-mlops/monitoring-and-reliability/data-and-concept-drift-detection/data-and-concept-drift-detection.md
+      # governance-and-economics
+      - path: deployment-and-mlops/governance-and-economics/model-registry-and-governance/model-registry-and-governance.md
+      - path: deployment-and-mlops/governance-and-economics/llmops/llmops.md
+      - path: deployment-and-mlops/governance-and-economics/cost-optimization/cost-optimization.md
+  - id: specialized-studies
+    title: Specialized Studies
+    kind: lesson
+    group_by: category
+    chapters:
+      # advanced-mathematics-for-ai-research
+      - path: specialized-studies/advanced-mathematics-for-ai-research/measure-theory-and-probability-foundations/measure-theory-and-probability-foundations.md
+      - path: specialized-studies/advanced-mathematics-for-ai-research/functional-analysis/functional-analysis.md
+      - path: specialized-studies/advanced-mathematics-for-ai-research/hilbert-spaces-and-rkhs/hilbert-spaces-and-rkhs.md
+      - path: specialized-studies/advanced-mathematics-for-ai-research/convex-analysis-and-duality/convex-analysis-and-duality.md
+      - path: specialized-studies/advanced-mathematics-for-ai-research/statistical-learning-theory-pac/statistical-learning-theory-pac.md
+      - path: specialized-studies/advanced-mathematics-for-ai-research/vc-dimension/vc-dimension.md
+      - path: specialized-studies/advanced-mathematics-for-ai-research/rademacher-complexity-and-generalization-bounds/rademacher-complexity-and-generalization-bounds.md
+      - path: specialized-studies/advanced-mathematics-for-ai-research/information-geometry/information-geometry.md
+      - path: specialized-studies/advanced-mathematics-for-ai-research/optimal-transport-wasserstein/optimal-transport-wasserstein.md
+      - path: specialized-studies/advanced-mathematics-for-ai-research/differential-geometry-and-manifolds/differential-geometry-and-manifolds.md
+      - path: specialized-studies/advanced-mathematics-for-ai-research/spectral-graph-theory/spectral-graph-theory.md
+      - path: specialized-studies/advanced-mathematics-for-ai-research/fourier-analysis-and-signal-processing/fourier-analysis-and-signal-processing.md
+      - path: specialized-studies/advanced-mathematics-for-ai-research/random-matrix-theory/random-matrix-theory.md
+      - path: specialized-studies/advanced-mathematics-for-ai-research/causal-inference/causal-inference.md
+      - path: specialized-studies/advanced-mathematics-for-ai-research/game-theory-and-multi-agent-math/game-theory-and-multi-agent-math.md
+      # neuroscience-and-brain-inspired-ai
+      - path: specialized-studies/neuroscience-and-brain-inspired-ai/biological-neurons-and-synapses/biological-neurons-and-synapses.md
+      - path: specialized-studies/neuroscience-and-brain-inspired-ai/neural-coding/neural-coding.md
+      - path: specialized-studies/neuroscience-and-brain-inspired-ai/spiking-neural-networks/spiking-neural-networks.md
+      - path: specialized-studies/neuroscience-and-brain-inspired-ai/hebbian-learning-and-stdp/hebbian-learning-and-stdp.md
+      - path: specialized-studies/neuroscience-and-brain-inspired-ai/neuromorphic-computing/neuromorphic-computing.md
+      - path: specialized-studies/neuroscience-and-brain-inspired-ai/predictive-coding/predictive-coding.md
+      - path: specialized-studies/neuroscience-and-brain-inspired-ai/free-energy-principle-active-inference/free-energy-principle-active-inference.md
+      - path: specialized-studies/neuroscience-and-brain-inspired-ai/visual-cortex-and-cnn-inspiration/visual-cortex-and-cnn-inspiration.md
+      - path: specialized-studies/neuroscience-and-brain-inspired-ai/dopamine-and-rl-in-the-brain/dopamine-and-rl-in-the-brain.md
+      - path: specialized-studies/neuroscience-and-brain-inspired-ai/memory-systems-hippocampus-replay/memory-systems-hippocampus-replay.md
+      - path: specialized-studies/neuroscience-and-brain-inspired-ai/attention-and-working-memory-biological/attention-and-working-memory-biological.md
+      - path: specialized-studies/neuroscience-and-brain-inspired-ai/brain-computer-interfaces/brain-computer-interfaces.md
+      - path: specialized-studies/neuroscience-and-brain-inspired-ai/connectomics/connectomics.md
+      - path: specialized-studies/neuroscience-and-brain-inspired-ai/biologically-plausible-backprop-alternatives/biologically-plausible-backprop-alternatives.md

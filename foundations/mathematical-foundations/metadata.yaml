@@ -1,0 +1,28 @@
+# Reading order for this category. `page-order:` is the ONE ordering key
+# estate-wide (structure-authoring-contract Rule 4); entries are relative
+# and extension-less. README.md is repo-facing and deliberately absent.
+page-order:
+  - vectors-and-vector-spaces/vectors-and-vector-spaces
+  - matrices-and-matrix-operations/matrices-and-matrix-operations
+  - norms-inner-products-and-orthogonality/norms-inner-products-and-orthogonality
+  - eigenvalues-and-eigenvectors/eigenvalues-and-eigenvectors
+  - matrix-decompositions/matrix-decompositions
+  - singular-value-decomposition/singular-value-decomposition
+  - principal-component-analysis-math/principal-component-analysis-math
+  - derivatives-and-gradients/derivatives-and-gradients
+  - the-chain-rule/the-chain-rule
+  - jacobian-and-hessian/jacobian-and-hessian
+  - taylor-expansion/taylor-expansion
+  - convexity/convexity
+  - gradient-descent-theory/gradient-descent-theory
+  - lagrange-multipliers-constrained-optimization/lagrange-multipliers-constrained-optimization
+  - probability-and-bayes-theorem/probability-and-bayes-theorem
+  - random-variables-and-distributions/random-variables-and-distributions
+  - expectation-variance-covariance/expectation-variance-covariance
+  - lln-and-clt/lln-and-clt
+  - maximum-likelihood-estimation/maximum-likelihood-estimation
+  - bayesian-inference/bayesian-inference
+  - hypothesis-testing-and-confidence-intervals/hypothesis-testing-and-confidence-intervals
+  - entropy/entropy
+  - cross-entropy-and-kl-divergence/cross-entropy-and-kl-divergence
+  - mutual-information/mutual-information

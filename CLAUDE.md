@@ -15,12 +15,20 @@ Two complementary layers per topic:
 Doubles as a **dataset** for the interview-prep app, so formats must stay consistent and parseable.
 
 ## Structure (ONE pattern — do not deviate)
-- **One `README.md` per topic folder.** No `Links.md` / `Notes.md` / `Resources/` (deleted).
-- Each topic README = **YAML frontmatter** (`id`, `topic`, `level`, `prereqs`, `updated`) +
+- **The tree is `section/sub-area/topic-package/`, all kebab-case** — the chartered shape
+  landed by T-86 (`docs/plans/structure-rework/ai-ml-blueprints/ai-ml-learning-resources-structure.md`).
+  No ordinal prefixes, no spaces, no underscores, nothing about order or difficulty in a name.
+- **`course.yaml` at the repo root declares every section**; a `metadata.yaml` carrying
+  `page-order:` (the ONE ordering key estate-wide) fixes reading order inside every sub-area.
+- **A topic package is a folder**: `<topic>/<topic>.md` plus its `<topic>.references.md`
+  companion and its own `images/`, `code/` and `notebooks/`.
+- **One `README.md` per sub-area** — the curated resource index. No `Links.md` / `Notes.md` /
+  `Resources/` (deleted). It is repo-facing and is deliberately never a declared chapter.
+- Each sub-area README = **YAML frontmatter** (`id`, `topic`, `level`, `prereqs`, `updated`) +
   curated sections in this order: **⭐ Start here · 🎓 Courses · 🎥 Videos · 📄 Papers ·
   📰 Articles · 📚 Books · 🔗 In this platform**. ~2 entries per section, format
   `[Title](url) — **Author/Institution** — why it's the best.`
-- Canonical example: [05. Deep_Learning/README.md](05.%20Deep_Learning/README.md).
+- Canonical example: [deep-learning/README.md](deep-learning/README.md).
 
 ## Concept pages (deep teaching content) — the two-file standard
 
@@ -114,26 +122,48 @@ This **intentionally inverts** the old "curated links only — don't duplicate d
 `concepts/` pages: when a concept has no `AI-ML-intuition` page, its concept page is the canonical
 deep home. (Topic-level `README.md`s stay link-only as described above.)
 
-## Topics (numbered folders; **zero-padded** `NN. Name` so they sort correctly everywhere, incl. GitHub)
-Ordered by learning progression: 00 Basics · 01 Foundations (+ `Maths for AI-ML/` deep math curriculum) ·
-02 Data-Preprocessing · 03 Supervised · 04 Unsupervised · 05 Deep-Learning · 06 NLP · 07 Computer-Vision ·
-08 Reinforcement-Learning · 09 LLMs · 10 GenAI · 11 Diffusion · 12 Multimodal · 13 Video-Understanding ·
-14 Audio-and-Speech · 17 Tools-and-Frameworks ·
-18 MLOps-and-Deployment · 19 Advanced-Research-Math · 20 Neuroscience · 21 Frontier-Staying-Current.
-(Renumbered 2026-07-14, decision-10 in the parent store: 11–14 inserted after GenAI, old 11–17 → 15–21.
-Former 15 RAG-and-LLM-Apps + 16 Agentic-AI re-homed 2026-07-31 into the unnumbered
-`llms-applications-and-agents/` tree — the numbering intentionally skips 15–16.)
+## Sections (chartered, kebab-case — the ordinal `NN. Name` folders are gone)
+Ordered by learning progression, each declared as a section in `course.yaml`:
 
-Specialization folders (07/17/18) hold deeper *curricula* (what/why/resources by sub-module);
-`llm_systems_curriculum.md` is the 14-chapter LLM-systems syllabus. The root `README.md` is the
-master index.
+- **`foundations/`** — ai-ml-orientation · programming-and-data-foundations ·
+  mathematical-foundations (+ the `maths-for-ai-ml/` deep math curriculum) · data-preparation ·
+  tools-and-frameworks · research-literacy.
+- **`core-machine-learning/`** — supervised-learning (regression · classification ·
+  trees-and-ensembles) · unsupervised-learning (clustering · dimensionality-reduction ·
+  density-estimation · anomaly-detection · association-rules) · reinforcement-learning
+  (foundations · value-based-learning · policy-learning · model-based · offline · multi-agent) ·
+  model-selection-and-evaluation.
+- **`deep-learning/`** — neural-network-foundations · optimization-and-training ·
+  stabilization-and-architectural-blocks · neural-architectures · attention-and-transformers ·
+  self-supervised-learning.
+- **`modalities-and-generative-models/`** — natural-language-processing · computer-vision ·
+  generative-models · diffusion-models · multimodal-learning · video-understanding ·
+  audio-and-speech.
+- **`llms-applications-and-agents/`** — rag-and-knowledge-systems · agentic-ai ·
+  inference-and-runtime · reasoning-evaluation-and-alignment.
+- **`deployment-and-mlops/`** — lifecycle-and-reproducibility · data-and-training-platforms ·
+  packaging-and-serving · release-and-deployment · monitoring-and-reliability ·
+  governance-and-economics.
+- **`specialized-studies/`** — advanced-mathematics-for-ai-research ·
+  neuroscience-and-brain-inspired-ai.
+
+`09. LLMs/` is the **one folder still on its legacy name**: its twenty topics belong to
+`llms-applications-and-agents/`, and the LLM wave re-homes them together with its
+`course.yaml` section. `world-models-and-embodied-intelligence/` is chartered but has no
+content yet, so it is deliberately absent rather than stubbed.
+
+`llm_systems_curriculum.md` is the 14-chapter LLM-systems syllabus. The root `README.md` is
+the master index.
 
 ## How to help here
-- **Topic `README.md`s**: add/curate resources, keep the bar high (best explainer, free, with a
-  "why"); keep the one-README-per-topic pattern + frontmatter (the dataset contract). These stay
-  link-only — don't put concept depth here.
-- **`concepts/` pages**: author/raise them to the two-file standard above (deep content + separate
-  references). These *are* allowed to carry full depth; they're the canonical deep home for a
-  concept when no `AI-ML-intuition` page exists.
+- **Sub-area `README.md`s**: add/curate resources, keep the bar high (best explainer, free, with
+  a "why"); keep the one-README-per-sub-area pattern + frontmatter (the dataset contract). These
+  stay link-only — don't put concept depth here.
+- **Topic pages** (`<topic>/<topic>.md`): author/raise them to the two-file standard above (deep
+  content + separate `<topic>.references.md`). These *are* allowed to carry full depth; they're
+  the canonical deep home for a concept when no `AI-ML-intuition` page exists.
+- **Adding a topic**: create `<section>/<sub-area>/<topic>/<topic>.md`, give it `title`,
+  `minutes` and a `category` equal to its sub-area folder, add the path to `course.yaml`, and
+  add it to that sub-area's `metadata.yaml` `page-order:` at the right position.
 - Cross-link into [`AI-ML-intuition`](../AI-ML-intuition/) (the *why*) and
   [`AI-ML-problemsets`](../AI-ML-problemsets/) (the *practice*) where those pages exist.

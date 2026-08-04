@@ -1,0 +1,19 @@
+# Reading order for this category. `page-order:` is the ONE ordering key
+# estate-wide (structure-authoring-contract Rule 4); entries are relative
+# and extension-less. README.md is repo-facing and deliberately absent.
+page-order:
+  - measure-theory-and-probability-foundations/measure-theory-and-probability-foundations
+  - functional-analysis/functional-analysis
+  - hilbert-spaces-and-rkhs/hilbert-spaces-and-rkhs
+  - convex-analysis-and-duality/convex-analysis-and-duality
+  - statistical-learning-theory-pac/statistical-learning-theory-pac
+  - vc-dimension/vc-dimension
+  - rademacher-complexity-and-generalization-bounds/rademacher-complexity-and-generalization-bounds
+  - information-geometry/information-geometry
+  - optimal-transport-wasserstein/optimal-transport-wasserstein
+  - differential-geometry-and-manifolds/differential-geometry-and-manifolds
+  - spectral-graph-theory/spectral-graph-theory
+  - fourier-analysis-and-signal-processing/fourier-analysis-and-signal-processing
+  - random-matrix-theory/random-matrix-theory
+  - causal-inference/causal-inference
+  - game-theory-and-multi-agent-math/game-theory-and-multi-agent-math

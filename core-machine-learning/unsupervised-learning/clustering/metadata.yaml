@@ -1,0 +1,9 @@
+# Reading order for this category. `page-order:` is the ONE ordering key
+# estate-wide (structure-authoring-contract Rule 4); entries are relative
+# and extension-less. README.md is repo-facing and deliberately absent.
+page-order:
+  - k-means-clustering/k-means-clustering
+  - hierarchical-clustering/hierarchical-clustering
+  - dbscan/dbscan
+  - gaussian-mixture-models-and-em/gaussian-mixture-models-and-em
+  - spectral-clustering/spectral-clustering
