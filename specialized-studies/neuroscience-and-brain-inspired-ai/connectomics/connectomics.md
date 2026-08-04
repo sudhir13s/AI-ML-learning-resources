@@ -58,6 +58,6 @@ honest caveat — a static map doesn't give you the dynamics.
 - [Neuronal Dynamics — **Ch. 12 (Neuronal Populations)**](https://neuronaldynamics.epfl.ch/online/Ch12.html) — **Gerstner et al.** — population/circuit structure and its dynamics, free online.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 1.04 Graph Representations](../../../../AI-ML-intuition/Module_1_Representation/1.04_Graph_Representations.md) — the graph formalism a connectome is analyzed with.
+- Concept depth (the *why*): [AI-ML-intuition 1.04 Graph Representations](../../../../AI-ML-intuition/representation/embedding-spaces/graph-representations-intuition.md) — the graph formalism a connectome is analyzed with.
 - Prereqs in this section: [01 Biological Neurons & Synapses](../biological-neurons-and-synapses/biological-neurons-and-synapses.md)
 - Related domains: [05. Deep Learning](../../../deep-learning/README.md) · [07. Computer Vision](../../../modalities-and-generative-models/computer-vision/README.md)

@@ -50,7 +50,7 @@ updated: 2026-06-22
 
 **In this platform**:
 - Concept page (full explanation): [Regression Metrics](regression-metrics.md)
-- Concept depth (the *why*): [AI-ML-intuition 3.01 Mean Squared Error (MSE / L2)](../../../../../AI-ML-intuition/Module_3_Evaluation/3.01_Mean_Squared_Error_MSE_L2_Loss.md) · [3.02 Mean Absolute Error (MAE / L1)](../../../../../AI-ML-intuition/Module_3_Evaluation/3.02_Mean_Absolute_Error_MAE_L1_Loss.md)
+- Concept depth (the *why*): [AI-ML-intuition 3.01 Mean Squared Error (MSE / L2)](../../../../../AI-ML-intuition/objectives-and-evaluation/training-objectives/mean-squared-error-intuition.md) · [3.02 Mean Absolute Error (MAE / L1)](../../../../../AI-ML-intuition/objectives-and-evaluation/training-objectives/mean-absolute-error-intuition.md)
 - Related: [Linear Regression](../linear-regression/linear-regression.md) (the model these score) · [Classification Metrics](../../classification/classification-metrics/classification-metrics.md) (the discrete-target counterpart) · [Cross-Validation](../../../model-selection-and-evaluation/cross-validation/cross-validation.md) (how you estimate these reliably) · [Bias–Variance Tradeoff](../../../model-selection-and-evaluation/bias-variance-tradeoff/bias-variance-tradeoff.md)
 - Math prerequisites: [01. Foundations](../../../../foundations/mathematical-foundations/README.md) — variance, residuals, L1 vs L2 norms
 - Related domain: [5. Deep Learning](../../../../deep-learning/README.md) — MSE/MAE are the standard regression losses for neural nets too

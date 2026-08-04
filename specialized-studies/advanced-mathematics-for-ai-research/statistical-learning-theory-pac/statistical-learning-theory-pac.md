@@ -58,7 +58,7 @@ complexity (card 7).
 
 ## 🔗 In this platform
 - Foundations (the basics this builds on): [Law of Large Numbers & the CLT](../../../foundations/mathematical-foundations/lln-and-clt/lln-and-clt.md) · [Hypothesis Testing & Confidence Intervals](../../../foundations/mathematical-foundations/hypothesis-testing-and-confidence-intervals/hypothesis-testing-and-confidence-intervals.md)
-- Concept depth (the *why*): [AI-ML-intuition 3.07 Bias–Variance & Generalization](../../../../AI-ML-intuition/Module_3_Evaluation/3.07_Bias_Variance_and_Generalization.md)
+- Concept depth (the *why*): [AI-ML-intuition 3.07 Bias–Variance & Generalization](../../../../AI-ML-intuition/objectives-and-evaluation/generalization/bias-variance-tradeoff-intuition.md)
 - Prerequisite & next: [01 Measure Theory & Probability](../measure-theory-and-probability-foundations/measure-theory-and-probability-foundations.md) · [06 VC Dimension](../vc-dimension/vc-dimension.md) · [07 Rademacher Complexity & Generalization Bounds](../rademacher-complexity-and-generalization-bounds/rademacher-complexity-and-generalization-bounds.md)
 - Related domain: [03. Supervised Learning](../../../core-machine-learning/supervised-learning/README.md)
 </content>

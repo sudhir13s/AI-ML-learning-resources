@@ -59,5 +59,5 @@ and why MADDPG's centralized critic helps, the difference between cooperative/co
 - [Reinforcement Learning: An Introduction (2nd ed.) — **Ch. 13 (policy gradients) & §1.5 (the agent–environment interface)**](http://incompleteideas.net/book/RLbook2020.pdf) — **Sutton & Barto** — the single-agent backbone MARL extends.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 6.02 Policy Gradients (REINFORCE)](../../../../../AI-ML-intuition/Module_6_Reinforcement_Learning/6.02_Policy_Gradients_REINFORCE.md)
+- Concept depth (the *why*): [AI-ML-intuition 6.02 Policy Gradients (REINFORCE)](../../../../../AI-ML-intuition/decision-making-and-control/policy-learning/policy-gradients-intuition.md)
 - Prereq: [10 Actor-Critic](../../policy-learning/actor-critic-a2c-a3c/actor-critic-a2c-a3c.md) · [13 Continuous Control (DDPG/TD3/SAC)](../../policy-learning/continuous-control-ddpg-td3-sac/continuous-control-ddpg-td3-sac.md)

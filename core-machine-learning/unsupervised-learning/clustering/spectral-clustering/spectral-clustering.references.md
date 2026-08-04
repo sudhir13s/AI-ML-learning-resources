@@ -53,6 +53,6 @@ updated: 2026-06-22
 - Concept page (full explanation): [Spectral Clustering](spectral-clustering.md)
 - Compare with the siblings: [K-Means Clustering](../k-means-clustering/k-means-clustering.md) (runs *inside* the spectral embedding) · [Hierarchical Clustering](../hierarchical-clustering/hierarchical-clustering.md) · [DBSCAN](../dbscan/dbscan.md) (the other arbitrary-shape method) · [Gaussian Mixture Models & EM](../gaussian-mixture-models-and-em/gaussian-mixture-models-and-em.md)
 - Manifold cousins (same Laplacian-eigenvector machinery): [t-SNE](../../dimensionality-reduction/t-sne/t-sne.md) · [UMAP](../../dimensionality-reduction/umap/umap.md)
-- Foundations (the eigendecomposition it relies on): [AI-ML-intuition 1.05 Spectral Methods (PCA / SVD)](../../../../../AI-ML-intuition/Module_1_Representation/1.05_Spectral_Methods_PCA_SVD.md)
+- Foundations (the eigendecomposition it relies on): [AI-ML-intuition 1.05 Spectral Methods (PCA / SVD)](../../../../../AI-ML-intuition/representation/dimensionality-and-latent-structure/pca-and-svd-intuition.md)
 - Prereq math: [Foundations — Linear Algebra (vectors & matrices)](../../../../foundations/mathematical-foundations/maths-for-ai-ml/linear-algebra/vectorsandmatrices.md)
 - Field overview: [4. Unsupervised Learning](../../README.md)

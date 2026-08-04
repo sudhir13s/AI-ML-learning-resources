@@ -30,7 +30,7 @@ comparisons inflate false positives.
 2. **p-values, correctly** — watch [StatQuest: p-values, what they are and how to interpret them](https://www.youtube.com/watch?v=vemZtEM63GY). *Kills the most common misinterpretation.*
 3. **Confidence intervals** — watch [StatQuest: Confidence Intervals, Clearly Explained](https://www.youtube.com/watch?v=TqOeMYtOc1w). *What the interval does and doesn't say.*
 4. **Formalize** — read [OpenStax Introductory Statistics — Hypothesis Testing & CIs](https://openstax.org/books/introductory-statistics/pages/9-introduction). *Test statistics, errors, power, and interval construction.*
-5. **Connect to ML** — read [AI-ML-intuition 0.05 Hypothesis Testing & Confidence Intervals](../../../../AI-ML-intuition/Module_0_Foundations/0.05_Hypothesis_Testing_Confidence_Intervals.md). *Evaluating model comparisons honestly.*
+5. **Connect to ML** — read [AI-ML-intuition 0.05 Hypothesis Testing & Confidence Intervals](../../../../AI-ML-intuition/foundational-mental-models/probability-and-belief/hypothesis-testing-and-confidence-intuition.md). *Evaluating model comparisons honestly.*
 
 ## 🎓 Courses (free)
 - [Harvard Stat 110 → inference](https://projects.iq.harvard.edu/stat110/home) — **Joe Blitzstein (Harvard)** — the probability foundations behind tests and intervals, free.
@@ -55,7 +55,7 @@ comparisons inflate false positives.
 - [Think Stats — **Ch. 9 (Hypothesis Testing)**](https://greenteapress.com/wp/think-stats-2e/) — **Allen B. Downey** — computational hypothesis testing in Python; free.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 0.05 Hypothesis Testing & Confidence Intervals](../../../../AI-ML-intuition/Module_0_Foundations/0.05_Hypothesis_Testing_Confidence_Intervals.md)
+- Concept depth (the *why*): [AI-ML-intuition 0.05 Hypothesis Testing & Confidence Intervals](../../../../AI-ML-intuition/foundational-mental-models/probability-and-belief/hypothesis-testing-and-confidence-intuition.md)
 - Curriculum context: [Maths for AI-ML — Phase 4 (Statistics, row 4.2)](../maths-for-ai-ml/README.md)
 - Prereq: [18 Law of Large Numbers & the CLT](../lln-and-clt/lln-and-clt.md)
 </content>

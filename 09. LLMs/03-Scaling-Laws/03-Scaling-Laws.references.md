@@ -55,4 +55,4 @@ updated: 2026-06-22
 - The architecture being scaled: [Decoder-only Architecture](../04-Decoder-only-Architecture/04-Decoder-only-Architecture.md)
 - Why inference cost reshapes the optimum: [KV Cache](../05-KV-Cache/05-KV-Cache.md) · [Inference Optimization & Serving](../09-Inference-Optimization-and-Serving/09-Inference-Optimization-and-Serving.md) · [Quantization](../10-Quantization/10-Quantization.md)
 - A different way to scale parameters cheaply: [Mixture-of-Experts](../07-Mixture-of-Experts/07-Mixture-of-Experts.md)
-- Concept depth (the *why*): [Module 7.01 Neural Scaling Laws / Chinchilla](../../../AI-ML-intuition/Module_7_Scaling_and_Adaptation/7.01_Neural_Scaling_Laws_Chinchilla.md)
+- Concept depth (the *why*): [Module 7.01 Neural Scaling Laws / Chinchilla](../../../AI-ML-intuition/scaling-adaptation-and-efficiency/scaling-behavior/neural-scaling-laws-and-chinchilla-intuition.md)

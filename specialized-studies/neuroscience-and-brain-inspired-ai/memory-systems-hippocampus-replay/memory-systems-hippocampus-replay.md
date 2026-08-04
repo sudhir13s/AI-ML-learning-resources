@@ -56,7 +56,7 @@ clearest case where a memory mechanism crossed from neuroscience into a working 
 - [Neuronal Dynamics — **Ch. 17 (Memory & Attractor Dynamics)**](https://neuronaldynamics.epfl.ch/online/Ch17.html) — **Gerstner et al.** — attractor networks and working/long-term memory, free online.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 6.01 Bellman Optimality & Q-Learning](../../../../AI-ML-intuition/Module_6_Reinforcement_Learning/6.01_Bellman_Optimality_Q-Learning.md) — the value learning that experience replay (inspired by hippocampal replay) stabilizes.
+- Concept depth (the *why*): [AI-ML-intuition 6.01 Bellman Optimality & Q-Learning](../../../../AI-ML-intuition/decision-making-and-control/value-learning/bellman-equation-and-q-learning-intuition.md) — the value learning that experience replay (inspired by hippocampal replay) stabilizes.
 - Prereqs in this section: [04 Hebbian Learning & STDP](../hebbian-learning-and-stdp/hebbian-learning-and-stdp.md) · [09 Dopamine & RL in the Brain](../dopamine-and-rl-in-the-brain/dopamine-and-rl-in-the-brain.md)
 - Next concepts: [11 Attention & Working Memory (biological)](../attention-and-working-memory-biological/attention-and-working-memory-biological.md)
 - Related domain: [10. Reinforcement Learning](../../../core-machine-learning/reinforcement-learning/README.md)

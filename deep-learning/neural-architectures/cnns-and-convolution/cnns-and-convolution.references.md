@@ -59,7 +59,7 @@ updated: 2026-07-03
 **In this platform**:
 - Concept page (full explanation): [CNNs & Convolution](cnns-and-convolution.md)
 - Runnable code: [the from-scratch convolution module `cnn.py`](code/cnn.py) · [the step-by-step notebook](code/cnns-and-convolution.ipynb) — the module implements conv forward *and* backward, gradient-checks and autograd-checks them, cross-checks against `scipy`/`torch`, and trains a CNN against a larger MLP on real digits; the notebook runs it one measurement at a time.
-- Concept depth (the *why*): [AI-ML-intuition 4.13 Convolution](../../../../AI-ML-intuition/Module_4_Stabilization/4B_Architectural_Motifs/4.13_Convolution.md)
+- Concept depth (the *why*): [AI-ML-intuition 4.13 Convolution](../../../../AI-ML-intuition/architectural-mechanisms/locality-and-weight-sharing/convolution-intuition.md)
 - The backward pass a conv plugs into: [02 Backpropagation & Computational Graphs](../../neural-network-foundations/backpropagation-and-computational-graphs/backpropagation-and-computational-graphs.md) — a conv layer's backward pass *is* backprop; all three of its gradients are themselves convolutions (the matmul VJP, specialized to a weight-shared sparse matrix)
 - The dense layer a conv replaces: [01 Perceptron & MLP](../../neural-network-foundations/perceptron-and-mlp/perceptron-and-mlp.md)
 - Normalization in conv blocks: [11 Normalization](../../stabilization-and-architectural-blocks/normalization/normalization.md) (BatchNorm normalizes per channel over batch+space — natural for weight-shared kernels)

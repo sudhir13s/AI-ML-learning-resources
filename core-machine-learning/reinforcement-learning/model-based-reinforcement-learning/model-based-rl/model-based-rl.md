@@ -57,5 +57,5 @@ planning–acting loop, what MPC does, and why MuZero's learned latent model + M
 - [Algorithms for Reinforcement Learning — **§2 (planning in MDPs)**](https://sites.ualberta.ca/~szepesva/papers/RLAlgsInMDPs.pdf) — **Csaba Szepesvári** — the planning foundations.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 6.01 Bellman Optimality & Q-Learning](../../../../../AI-ML-intuition/Module_6_Reinforcement_Learning/6.01_Bellman_Optimality_Q-Learning.md)
+- Concept depth (the *why*): [AI-ML-intuition 6.01 Bellman Optimality & Q-Learning](../../../../../AI-ML-intuition/decision-making-and-control/value-learning/bellman-equation-and-q-learning-intuition.md)
 - Prereq: [03 Dynamic Programming](../../foundations/dynamic-programming-value-and-policy-iteration/dynamic-programming-value-and-policy-iteration.md) · Contrast: [06 Q-Learning](../../value-based-learning/q-learning/q-learning.md) (model-free)

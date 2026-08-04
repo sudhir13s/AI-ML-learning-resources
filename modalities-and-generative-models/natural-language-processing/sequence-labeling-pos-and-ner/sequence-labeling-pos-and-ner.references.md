@@ -54,7 +54,7 @@ updated: 2026-06-27
 
 **In this platform**:
 - Concept page (full explanation): [Sequence Labeling — POS & NER](sequence-labeling-pos-and-ner.md)
-- Foundations (the *why* behind probabilities): [Probability & Bayes Theorem](../../../../AI-ML-intuition/Module_0_Foundations/0.01_Probability_and_Bayes_Theorem.md)
+- Foundations (the *why* behind probabilities): [Probability & Bayes Theorem](../../../../AI-ML-intuition/foundational-mental-models/probability-and-belief/probability-and-bayes-intuition.md)
 - The encoder used today: [Contextual Embeddings (ELMo, BERT)](../contextual-embeddings-elmo-bert/contextual-embeddings-elmo-bert.md) — BERT token-classification heads.
 - The recurrent backbone of biLSTM-CRF: [RNN, LSTM & GRU](../../../deep-learning/neural-architectures/rnn-lstm-gru/rnn-lstm-gru.md)
 - How you score it: [NLP Evaluation Metrics](../nlp-evaluation-metrics/nlp-evaluation-metrics.md) — entity-level precision/recall/F1.

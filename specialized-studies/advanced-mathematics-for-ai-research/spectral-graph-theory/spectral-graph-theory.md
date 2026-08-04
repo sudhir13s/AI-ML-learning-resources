@@ -58,7 +58,7 @@ learning (card 10). Cheeger's inequality is a classic theory talking point.
 - [Mathematics for Machine Learning — **Ch. 4 (Matrix Decompositions: eigen/spectral)**](https://mml-book.github.io/book/mml-book.pdf) — **Deisenroth, Faisal & Ong** — the eigen-decomposition background, free.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 1.04 Graph Representations](../../../../AI-ML-intuition/Module_1_Representation/1.04_Graph_Representations.md) · [1.05 Spectral Methods (PCA/SVD)](../../../../AI-ML-intuition/Module_1_Representation/1.05_Spectral_Methods_PCA_SVD.md)
+- Concept depth (the *why*): [AI-ML-intuition 1.04 Graph Representations](../../../../AI-ML-intuition/representation/embedding-spaces/graph-representations-intuition.md) · [1.05 Spectral Methods (PCA/SVD)](../../../../AI-ML-intuition/representation/dimensionality-and-latent-structure/pca-and-svd-intuition.md)
 - Foundations (the basics this builds on): [Eigenvalues & Eigenvectors](../../../foundations/mathematical-foundations/eigenvalues-and-eigenvectors/eigenvalues-and-eigenvectors.md) · [Matrix Decompositions](../../../foundations/mathematical-foundations/matrix-decompositions/matrix-decompositions.md)
 - Prerequisite & next: [10 Differential Geometry & Manifolds](../differential-geometry-and-manifolds/differential-geometry-and-manifolds.md) · [12 Fourier Analysis & Signal Processing](../fourier-analysis-and-signal-processing/fourier-analysis-and-signal-processing.md) · [13 Random Matrix Theory](../random-matrix-theory/random-matrix-theory.md)
 - Related domain (clustering): [04. Unsupervised Learning](../../../core-machine-learning/unsupervised-learning/README.md)

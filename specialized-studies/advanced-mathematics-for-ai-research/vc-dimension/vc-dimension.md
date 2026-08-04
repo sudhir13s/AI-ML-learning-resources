@@ -58,7 +58,7 @@ shatter a set? what's the VC dimension of intervals / half-spaces?"). It's the b
 - [Foundations of Machine Learning — companion site (Ch. 3: Rademacher & VC)](https://www.cs.nyu.edu/~mohri/mlbook/) — **Mohri, Rostamizadeh & Talwalkar** — rigorous VC/Rademacher chapter with free errata & slides.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 3.07 Bias–Variance & Generalization](../../../../AI-ML-intuition/Module_3_Evaluation/3.07_Bias_Variance_and_Generalization.md) · [3.08 Ensembles (Bagging/Boosting)](../../../../AI-ML-intuition/Module_3_Evaluation/3.08_Ensembles_Bagging_Boosting.md)
+- Concept depth (the *why*): [AI-ML-intuition 3.07 Bias–Variance & Generalization](../../../../AI-ML-intuition/objectives-and-evaluation/generalization/bias-variance-tradeoff-intuition.md) · [3.08 Ensembles (Bagging/Boosting)](../../../../AI-ML-intuition/architectural-mechanisms/composition/bagging-and-boosting-intuition.md)
 - Prerequisite & next: [05 Statistical Learning Theory (PAC)](../statistical-learning-theory-pac/statistical-learning-theory-pac.md) · [07 Rademacher Complexity & Generalization Bounds](../rademacher-complexity-and-generalization-bounds/rademacher-complexity-and-generalization-bounds.md)
 - Related domain: [03. Supervised Learning](../../../core-machine-learning/supervised-learning/README.md)
 </content>

@@ -56,6 +56,6 @@ decomposition, re-planning on failure, and search-based methods (ToT) fit togeth
 - [Artificial Intelligence: A Modern Approach — **Ch. 11 "Automated Planning"**](https://aima.cs.berkeley.edu/) — **Russell & Norvig** — the classical planning foundations LLM planners echo (free chapter PDFs).
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 8.03 Agents & Tool Use](../../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.03_Agents_and_Tool_Use.md)
+- Concept depth (the *why*): [AI-ML-intuition 8.03 Agents & Tool Use](../../../../AI-ML-intuition/reasoning-and-agency/agents-and-tools/agent-loop-and-tool-use-intuition.md)
 - Prev / next: [02 ReAct](../reason-and-act/reason-and-act.md) · [05 Reflection & Self-Critique](../reflection/reflection.md) · [07 Multi-Agent Systems](../multi-agent-systems/multi-agent-systems.md)
 - Related (canonical home): [Chain-of-Thought Reasoning](../../../09.%20LLMs/17-Chain-of-Thought-Reasoning/17-Chain-of-Thought-Reasoning.md)

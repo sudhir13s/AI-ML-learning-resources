@@ -52,7 +52,7 @@ updated: 2026-06-22
 
 **In this platform**:
 - Concept page (full explanation): [Vanishing / Exploding Gradients](vanishing-exploding-gradients.md)
-- Concept depth (the *why*): [AI-ML-intuition 4.10 Gradient Clipping](../../../../AI-ML-intuition/Module_4_Stabilization/4C_Training_Stability/4.10_Gradient_Clipping.md) · [4.12 Weight Initialization](../../../../AI-ML-intuition/Module_4_Stabilization/4C_Training_Stability/4.12_Weight_Initialization_Xavier_He.md)
+- Concept depth (the *why*): [AI-ML-intuition 4.10 Gradient Clipping](../../../../AI-ML-intuition/training-stability/gradient-health/gradient-clipping-intuition.md) · [4.12 Weight Initialization](../../../../AI-ML-intuition/training-stability/gradient-health/weight-initialization-intuition.md)
 - Prerequisite: [Backpropagation & Computational Graphs](../../neural-network-foundations/backpropagation-and-computational-graphs/backpropagation-and-computational-graphs.md)
 - Related: [Activation Functions](../../stabilization-and-architectural-blocks/activation-functions/activation-functions.md) (saturation) · [Weight Initialization](../weight-initialization/weight-initialization.md) · [Normalization](../../stabilization-and-architectural-blocks/normalization/normalization.md) · [Residual / Skip Connections](../../stabilization-and-architectural-blocks/residual-skip-connections/residual-skip-connections.md) · [RNN / LSTM / GRU](../../neural-architectures/rnn-lstm-gru/rnn-lstm-gru.md) (through-time fix) · [Transformer Architecture](../../attention-and-transformers/transformer-architecture/transformer-architecture.md)
 - Field overview: [Deep Learning](../../README.md)

@@ -29,7 +29,7 @@ degrees-of-freedom arguments fall straight out of it.
 1. **Build geometric intuition** — watch [3Blue1Brown: Vectors](https://www.youtube.com/watch?v=fNk_zzaMoSs) then [Linear combinations, span & basis](https://www.youtube.com/watch?v=k7RM-ot2NWY). *See vectors as arrows and "span" as the region you can reach before any algebra.*
 2. **Pin down the definitions** — read [MML Ch. 2.1–2.4](https://mml-book.github.io/book/mml-book.pdf) (vector spaces, linear independence, basis & rank). *Turns the pictures into precise, exam-ready definitions.*
 3. **Work problems** — do [Khan Academy: Vectors & spaces](https://www.khanacademy.org/math/linear-algebra/vectors-and-spaces). *Repetition on independence/span is what makes it stick.*
-4. **Connect to ML** — read why features-as-vectors and span matter in [AI-ML-intuition 1.01 One-Hot](../../../../AI-ML-intuition/Module_1_Representation/1.01_One-Hot_Encoding.md). *Grounds the abstraction in real representation choices.*
+4. **Connect to ML** — read why features-as-vectors and span matter in [AI-ML-intuition 1.01 One-Hot](../../../../AI-ML-intuition/representation/discrete-representations/one-hot-encoding-intuition.md). *Grounds the abstraction in real representation choices.*
 
 ## 🎓 Courses (free)
 - [MIT 18.06 — The Geometry of Linear Equations (Lec 1)](https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/) — **Gilbert Strang (MIT OCW)** — starts from vectors and linear combinations; the canonical course.
@@ -54,7 +54,7 @@ degrees-of-freedom arguments fall straight out of it.
 - [Introduction to Applied Linear Algebra (VMLS) — **Ch. 1–5**](https://web.stanford.edu/~boyd/vmls/vmls.pdf) — **Boyd & Vandenberghe** — vectors, linear functions, norms; applied and free.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 1.01 One-Hot Encoding](../../../../AI-ML-intuition/Module_1_Representation/1.01_One-Hot_Encoding.md) · [1.02 Dense Embeddings](../../../../AI-ML-intuition/Module_1_Representation/1.02_Dense_Embeddings.md)
+- Concept depth (the *why*): [AI-ML-intuition 1.01 One-Hot Encoding](../../../../AI-ML-intuition/representation/discrete-representations/one-hot-encoding-intuition.md) · [1.02 Dense Embeddings](../../../../AI-ML-intuition/representation/embedding-spaces/dense-embeddings-intuition.md)
 - Curriculum context: [Maths for AI-ML — Phase 1 (Linear Algebra)](../maths-for-ai-ml/README.md)
 - Next concepts: [02 Matrices & Matrix Operations](../matrices-and-matrix-operations/matrices-and-matrix-operations.md) · [03 Norms, Inner Products & Orthogonality](../norms-inner-products-and-orthogonality/norms-inner-products-and-orthogonality.md)
 </content>

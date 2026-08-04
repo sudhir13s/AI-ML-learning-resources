@@ -69,4 +69,4 @@ learning path plus the best **free, open** courses, videos, papers, articles, an
 - [Reinforcement Learning: An Introduction](http://incompleteideas.net/book/the-book-2nd.html) — **Sutton & Barto** — free; *the* RL textbook.
 
 ## 🔗 In this platform
-- Math: [AI-ML-intuition Module 6 (RL & Alignment)](../../../AI-ML-intuition/Module_6_Reinforcement_Learning/)
+- Math: [AI-ML-intuition Module 6 (RL & Alignment)](../../../AI-ML-intuition/decision-making-and-control/)

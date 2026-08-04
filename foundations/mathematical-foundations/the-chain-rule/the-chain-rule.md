@@ -29,7 +29,7 @@ chain rule.
 2. **From chain rule to backprop** — watch [3B1B: Backpropagation, intuitively](https://www.youtube.com/watch?v=Ilg3gGewQ5U) then [Backpropagation calculus](https://www.youtube.com/watch?v=tIeHLnjs5U8). *The exact moment the chain rule becomes a learning algorithm.*
 3. **Build it yourself** — watch [Karpathy: micrograd — the spelled-out intro to backprop](https://www.youtube.com/watch?v=VMj-3S1tku0). *Implementing reverse-mode autodiff cements it forever.*
 4. **Matrix/vector form** — read [Matrix Calculus for Deep Learning](https://explained.ai/matrix-calculus/). *The vector chain rule and Jacobian-product view used in real frameworks.*
-5. **Connect to ML** — read [AI-ML-intuition 2.02 Backpropagation (The Chain Rule)](../../../../AI-ML-intuition/Module_2_Optimization/2.02_Backpropagation_The_Chain_Rule.md). *The platform's deep dive on credit assignment.*
+5. **Connect to ML** — read [AI-ML-intuition 2.02 Backpropagation (The Chain Rule)](../../../../AI-ML-intuition/learning-and-optimization/gradients-and-credit-assignment/chain-rule-and-backpropagation-intuition.md). *The platform's deep dive on credit assignment.*
 
 ## 🎓 Courses (free)
 - [Stanford CS231n — Backpropagation notes](https://cs231n.github.io/optimization-2/) — **Stanford** — the chain rule on computational graphs, with worked gradient flows.
@@ -54,7 +54,7 @@ chain rule.
 - [Dive into Deep Learning — **§2.5 (Automatic Differentiation), §5.3 (Backprop)**](https://d2l.ai/chapter_preliminaries/autograd.html) — **Zhang et al.** — chain rule, autograd, and backprop with runnable code.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 2.02 Backpropagation (The Chain Rule)](../../../../AI-ML-intuition/Module_2_Optimization/2.02_Backpropagation_The_Chain_Rule.md) · [2.04 Computational Graphs / Autograd](../../../../AI-ML-intuition/Module_2_Optimization/2.04_Computational_Graphs_Autograd.md)
+- Concept depth (the *why*): [AI-ML-intuition 2.02 Backpropagation (The Chain Rule)](../../../../AI-ML-intuition/learning-and-optimization/gradients-and-credit-assignment/chain-rule-and-backpropagation-intuition.md) · [2.04 Computational Graphs / Autograd](../../../../AI-ML-intuition/learning-and-optimization/gradients-and-credit-assignment/computational-graphs-and-autograd-intuition.md)
 - Curriculum context: [Maths for AI-ML — Phase 2 (Calculus, row 2.2)](../maths-for-ai-ml/README.md)
 - Prereq: [08 Derivatives & Gradients](../derivatives-and-gradients/derivatives-and-gradients.md) · Next: [10 Jacobian & Hessian](../jacobian-and-hessian/jacobian-and-hessian.md)
 </content>

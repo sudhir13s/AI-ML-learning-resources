@@ -62,7 +62,7 @@ updated: 2026-06-22
 
 **In this platform**:
 - Concept page (full explanation): [Regularization](regularization.md)
-- Concept depth (the *why*): [AI-ML-intuition 2.10 Regularization (L1/L2)](../../../../AI-ML-intuition/Module_2_Optimization/2.10_Regularization_L1_L2.md) · [3.07 Bias–Variance & Generalization](../../../../AI-ML-intuition/Module_3_Evaluation/3.07_Bias_Variance_and_Generalization.md)
+- Concept depth (the *why*): [AI-ML-intuition 2.10 Regularization (L1/L2)](../../../../AI-ML-intuition/learning-and-optimization/objective-shaping/l1-and-l2-regularization-intuition.md) · [3.07 Bias–Variance & Generalization](../../../../AI-ML-intuition/objectives-and-evaluation/generalization/bias-variance-tradeoff-intuition.md)
 - Prerequisite: [Loss Functions](../loss-functions/loss-functions.md)
 - Related (deep-learning): [Dropout](../../stabilization-and-architectural-blocks/dropout/dropout.md) (the stochastic regularizer in full) · [Optimizers](../optimizers/optimizers.md) (AdamW and decoupled weight decay) · [Normalization](../../stabilization-and-architectural-blocks/normalization/normalization.md) (BatchNorm's regularizing side-effect) · [Residual / Skip Connections](../../stabilization-and-architectural-blocks/residual-skip-connections/residual-skip-connections.md) (the identity path stochastic depth rides on)
 - Related (linear models): [Regularization for Linear Models — Ridge · Lasso · Elastic-Net](../../../core-machine-learning/supervised-learning/regression/regularization-linear-models/regularization-linear-models.md) (the diamond-vs-circle geometry + closed forms) · [Bias–Variance Tradeoff](../../../core-machine-learning/model-selection-and-evaluation/bias-variance-tradeoff/bias-variance-tradeoff.md) (double descent)

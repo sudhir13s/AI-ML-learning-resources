@@ -29,7 +29,7 @@ be fluent with conditional probability, independence, and decomposing joint dist
 2. **The base-rate trap** — watch [Veritasium: The Bayesian Trap](https://www.youtube.com/watch?v=R13BD8qKeTg). *Why ignoring priors produces the famous medical-test mistake.*
 3. **Pin the rules** — read [CS229 Probability Review](https://cs229.stanford.edu/section/cs229-prob.pdf): conditional probability, independence, Bayes, total probability. *The ML reference sheet.*
 4. **Go deeper** — watch a few [Harvard Stat 110 lectures](https://projects.iq.harvard.edu/stat110/home) (Blitzstein) on conditional probability and Bayes. *The gold-standard probability course, free.*
-5. **Connect to ML** — read [AI-ML-intuition 0.01 Probability & Bayes' Theorem](../../../../AI-ML-intuition/Module_0_Foundations/0.01_Probability_and_Bayes_Theorem.md). *The platform's deep dive and ML framing.*
+5. **Connect to ML** — read [AI-ML-intuition 0.01 Probability & Bayes' Theorem](../../../../AI-ML-intuition/foundational-mental-models/probability-and-belief/probability-and-bayes-intuition.md). *The platform's deep dive and ML framing.*
 
 ## 🎓 Courses (free)
 - [Harvard Stat 110: Probability](https://projects.iq.harvard.edu/stat110/home) — **Joe Blitzstein (Harvard)** — the gold-standard probability course; full lectures + book free.
@@ -54,7 +54,7 @@ be fluent with conditional probability, independence, and decomposing joint dist
 - [Mathematics for Machine Learning — **Ch. 6 (Probability & Distributions)**](https://mml-book.github.io/book/mml-book.pdf) — **Deisenroth et al.** — probability and Bayes scoped for ML.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 0.01 Probability & Bayes' Theorem](../../../../AI-ML-intuition/Module_0_Foundations/0.01_Probability_and_Bayes_Theorem.md)
+- Concept depth (the *why*): [AI-ML-intuition 0.01 Probability & Bayes' Theorem](../../../../AI-ML-intuition/foundational-mental-models/probability-and-belief/probability-and-bayes-intuition.md)
 - Curriculum context: [Maths for AI-ML — Phase 3 (Probability, row 3.1)](../maths-for-ai-ml/README.md)
 - Next: [16 Random Variables & Distributions](../random-variables-and-distributions/random-variables-and-distributions.md) · [20 Bayesian Inference](../bayesian-inference/bayesian-inference.md)
 </content>

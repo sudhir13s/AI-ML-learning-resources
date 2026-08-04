@@ -27,7 +27,7 @@ theorem hold?"
 
 **⭐ Start here — suggested path:**
 
-1. **Recall the trick** — skim the platform's [Kernel Trick intuition](../../../../AI-ML-intuition/Module_1_Representation/1.16_The_Kernel_Trick.md). *Know the "what" before formalizing the "why".*
+1. **Recall the trick** — skim the platform's [Kernel Trick intuition](../../../../AI-ML-intuition/representation/similarity-and-distance/kernel-trick-intuition.md). *Know the "what" before formalizing the "why".*
 2. **Build the RKHS** — watch [Lecture 2 on kernel methods: RKHS](https://www.youtube.com/watch?v=2uvpOKoiYoI) (Mairal). *Constructs the space from a kernel and derives the reproducing property.*
 3. **Read the primer** — work [A Primer on RKHS](https://arxiv.org/abs/1408.0952) or [Twelve Pages or Less](http://users.umiacs.umd.edu/~hal3//docs/daume04rkhs.pdf). *Mercer → feature map → reproducing property, tightly.*
 4. **Connect to GPs** — watch [Understanding Kernels and Gaussian Processes](https://www.youtube.com/watch?v=1U5sIaTD6xA) (Hennig). *The function-space view: a GP prior is a distribution over an RKHS-flavored space.*
@@ -60,7 +60,7 @@ theorem hold?"
 - [Mathematics for Machine Learning — **Ch. 3 (inner-product geometry)**](https://mml-book.github.io/book/mml-book.pdf) — **Deisenroth, Faisal & Ong** — the finite-dimensional intuition that generalizes to RKHS.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 1.16 The Kernel Trick](../../../../AI-ML-intuition/Module_1_Representation/1.16_The_Kernel_Trick.md) · [1.06 Scaled Dot-Product](../../../../AI-ML-intuition/Module_1_Representation/1.06_Vector_Similarities_The_Scaled_Dot-Product.md)
+- Concept depth (the *why*): [AI-ML-intuition 1.16 The Kernel Trick](../../../../AI-ML-intuition/representation/similarity-and-distance/kernel-trick-intuition.md) · [1.06 Scaled Dot-Product](../../../../AI-ML-intuition/representation/similarity-and-distance/scaled-dot-product-intuition.md)
 - Foundations (the basics this builds on): [Norms, Inner Products & Orthogonality](../../../foundations/mathematical-foundations/norms-inner-products-and-orthogonality/norms-inner-products-and-orthogonality.md)
 - Prerequisite & next: [02 Functional Analysis](../functional-analysis/functional-analysis.md) · [08 Information Geometry](../information-geometry/information-geometry.md)
 - Related domain: [04. Unsupervised Learning](../../../core-machine-learning/unsupervised-learning/README.md)

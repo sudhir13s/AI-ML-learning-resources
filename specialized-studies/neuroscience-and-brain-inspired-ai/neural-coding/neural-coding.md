@@ -28,7 +28,7 @@ efficient-coding view also rhymes directly with information bottleneck and entro
 
 1. **Frame the question** — read [Scholarpedia: Spike-timing dependent plasticity](http://www.scholarpedia.org/article/Spike-timing_dependent_plasticity) intro for the spike-timing-matters case, then skim a tuning-curve overview. *Why timing and population pattern carry information beyond a mean rate.*
 2. **Get the formal coding math** — [Theoretical Neuroscience Ch. 1–3](https://www.gatsby.ucl.ac.uk/~dayan/book/) (Dayan & Abbott). *Encoding/decoding, spike-triggered averages, Fisher information — the rigorous core.*
-3. **Connect to information theory** — relate it to [entropy / mutual information](../../../../AI-ML-intuition/Module_5_Generation/5.01_Information_Theory_Entropy_KL_Divergence.md). *Efficient coding = maximize information per spike given a metabolic budget.*
+3. **Connect to information theory** — relate it to [entropy / mutual information](../../../../AI-ML-intuition/foundational-mental-models/information-and-dependence/entropy-and-kl-divergence-intuition.md). *Efficient coding = maximize information per spike given a metabolic budget.*
 4. **See it in spiking nets** — read [snnTorch — Spike Encoding tutorial](https://snntorch.readthedocs.io/en/latest/tutorials/tutorial_1.html). *Rate, latency, and delta encoders implemented in code.*
 5. **Go deeper on population codes** — [Neuromatch Computational Neuroscience](https://compneuro.neuromatch.io/) coding notebooks. *Decode a stimulus from a population of tuning curves yourself.*
 
@@ -56,6 +56,6 @@ efficient-coding view also rhymes directly with information bottleneck and entro
 - [Neuronal Dynamics — **Ch. 7 (spike-train statistics)**](https://neuronaldynamics.epfl.ch/online/Ch7.html) — **Gerstner et al.** — variability, renewal processes, and rate estimation, free online.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 5.01 Information Theory — Entropy & KL](../../../../AI-ML-intuition/Module_5_Generation/5.01_Information_Theory_Entropy_KL_Divergence.md) · [0.01 Probability & Bayes' Theorem](../../../../AI-ML-intuition/Module_0_Foundations/0.01_Probability_and_Bayes_Theorem.md)
+- Concept depth (the *why*): [AI-ML-intuition 5.01 Information Theory — Entropy & KL](../../../../AI-ML-intuition/foundational-mental-models/information-and-dependence/entropy-and-kl-divergence-intuition.md) · [0.01 Probability & Bayes' Theorem](../../../../AI-ML-intuition/foundational-mental-models/probability-and-belief/probability-and-bayes-intuition.md)
 - Next concepts: [03 Spiking Neural Networks](../spiking-neural-networks/spiking-neural-networks.md) · [04 Hebbian Learning & STDP](../hebbian-learning-and-stdp/hebbian-learning-and-stdp.md)
 - Related domain: [05. Deep Learning](../../../deep-learning/README.md)

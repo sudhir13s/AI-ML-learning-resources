@@ -59,6 +59,6 @@ assignment local, forward-forward removes the backward pass entirely.
 - [Neuronal Dynamics — **Ch. 19 (Synaptic Plasticity & Learning)**](https://neuronaldynamics.epfl.ch/online/Ch19.html) — **Gerstner et al.** — biologically-realizable plasticity, the target of all these methods.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 2.02 Backpropagation — The Chain Rule](../../../../AI-ML-intuition/Module_2_Optimization/2.02_Backpropagation_The_Chain_Rule.md) — the algorithm these methods aim to replace with local, plausible learning.
+- Concept depth (the *why*): [AI-ML-intuition 2.02 Backpropagation — The Chain Rule](../../../../AI-ML-intuition/learning-and-optimization/gradients-and-credit-assignment/chain-rule-and-backpropagation-intuition.md) — the algorithm these methods aim to replace with local, plausible learning.
 - Prereqs in this section: [04 Hebbian Learning & STDP](../hebbian-learning-and-stdp/hebbian-learning-and-stdp.md) · [06 Predictive Coding](../predictive-coding/predictive-coding.md)
 - Related domain: [05. Deep Learning](../../../deep-learning/README.md)

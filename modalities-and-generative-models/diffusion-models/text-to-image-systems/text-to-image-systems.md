@@ -63,7 +63,7 @@ rendering).
 - [Probabilistic Machine Learning: Advanced Topics — **Ch. 25 "Diffusion models"**](https://probml.github.io/pml-book/book2.html) — **Kevin Murphy** — free PDF; conditional generation and guidance.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 5.03 Diffusion Models](../../../../AI-ML-intuition/Module_5_Generation/5.03_Diffusion_Models.md)
+- Concept depth (the *why*): [AI-ML-intuition 5.03 Diffusion Models](../../../../AI-ML-intuition/generation/diffusion-and-score-models/diffusion-forward-and-reverse-process-intuition.md)
 - Prereq: [07 Latent Diffusion & Stable Diffusion](../latent-diffusion-stable-diffusion/latent-diffusion-stable-diffusion.md) · [04 Conditional Generation & CFG](../conditional-generation-and-classifier-free-guidance/conditional-generation-and-classifier-free-guidance.md) · [05 Diffusion Models (DDPM)](../diffusion-models-ddpm/diffusion-models-ddpm.md)
 - Related: [Deep Learning — Transformer Architecture](../../../deep-learning/attention-and-transformers/transformer-architecture/transformer-architecture.md) (the text encoders) · [LLMs](../../../09.%20LLMs/README.md)
 - Next concepts: [12 Evaluation of Generative Models](../../generative-models/evaluation-of-generative-models/evaluation-of-generative-models.md) · [13 Sampling & Guidance Techniques](../sampling-and-guidance-techniques/sampling-and-guidance-techniques.md)

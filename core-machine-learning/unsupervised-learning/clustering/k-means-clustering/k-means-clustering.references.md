@@ -52,7 +52,7 @@ updated: 2026-07-03
 
 **In this platform**:
 - Concept page (full explanation): [K-Means Clustering](k-means-clustering.md)
-- Concept depth (the *why*): [AI-ML-intuition 1.18 K-Means Clustering](../../../../../AI-ML-intuition/Module_1_Representation/1.18_KMeans_Clustering.md)
+- Concept depth (the *why*): [AI-ML-intuition 1.18 K-Means Clustering](../../../../../AI-ML-intuition/representation/representation-learning/clustering-as-structure-discovery-intuition.md)
 - Next concepts: [02 Hierarchical Clustering](../hierarchical-clustering/hierarchical-clustering.md) · [03 DBSCAN](../dbscan/dbscan.md) · [04 Gaussian Mixture Models & EM](../gaussian-mixture-models-and-em/gaussian-mixture-models-and-em.md) · [05 Spectral Clustering](../spectral-clustering/spectral-clustering.md)
 - Always scale first: [02 Feature Scaling & Normalization](../../../../foundations/data-preparation/feature-scaling-and-normalization/feature-scaling-and-normalization.md) — k-means uses Euclidean distance, so standardize features (as we do on Wine) before clustering.
 - Reduce dimension first: [Foundations 06 — Singular Value Decomposition](../../../../foundations/mathematical-foundations/singular-value-decomposition/singular-value-decomposition.md) · [Foundations 07 — Principal Component Analysis](../../../../foundations/mathematical-foundations/principal-component-analysis-math/principal-component-analysis-math.md) — PCA-then-cluster tames the curse of dimensionality that degrades k-means in high dimensions.

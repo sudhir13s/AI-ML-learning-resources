@@ -48,6 +48,6 @@ updated: 2026-06-27
 
 **In this platform**:
 - Concept page (full explanation): [Document Chunking Strategies](chunking.md)
-- Prereq (the pipeline this fits in): [01 RAG Fundamentals](../rag-foundations/rag-foundations.md) · [AI-ML-intuition 8.02 Retrieval-Augmented Generation](../../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.02_Retrieval_Augmented_Generation.md)
+- Prereq (the pipeline this fits in): [01 RAG Fundamentals](../rag-foundations/rag-foundations.md) · [AI-ML-intuition 8.02 Retrieval-Augmented Generation](../../../../AI-ML-intuition/memory-retrieval-and-context/retrieval-augmented-generation/rag-intuition.md)
 - Foundations (tokens & sentence embeddings): [06. NLP — Tokenization & Subword Algorithms](../../../modalities-and-generative-models/natural-language-processing/tokenization-and-subword-algorithms/tokenization-and-subword-algorithms.md) · [06. NLP — Sentence & Document Embeddings](../../../modalities-and-generative-models/natural-language-processing/sentence-and-document-embeddings/sentence-and-document-embeddings.md)
 - Next in this domain (retrieve better): [03 Embedding Models for Retrieval](../embedding-models/embedding-models.md) · [04 Vector Databases & ANN Indexes](../vector-search/vector-search.md) · [06 Re-ranking with Cross-Encoders](../reranking/reranking.md)

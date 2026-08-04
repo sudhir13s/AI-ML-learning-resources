@@ -29,7 +29,7 @@ the chain rule — is the single most important idea connecting neuroscience to 
 1. **Get the principle** — read [Wikipedia: Hebbian theory](https://en.wikipedia.org/wiki/Hebbian_theory) for "fire together, wire together" and its instability (why you need normalization). *The one-line rule and its catch.*
 2. **Get STDP precisely** — [Scholarpedia: Spike-Timing Dependent Plasticity](http://www.scholarpedia.org/article/Spike-timing_dependent_plasticity). *The asymmetric LTP/LTD timing window, authoritative and free.*
 3. **Read the modern review** — [The spike timing dependence of plasticity](https://pmc.ncbi.nlm.nih.gov/articles/PMC3431193/) (Feldman, 2012). *Experimental evidence and what STDP does and doesn't explain.*
-4. **See the credit-assignment contrast** — compare with [backprop](../../../../AI-ML-intuition/Module_2_Optimization/2.02_Backpropagation_The_Chain_Rule.md). *Local correlation vs. global gradient — the field's open analogy gap.*
+4. **See the credit-assignment contrast** — compare with [backprop](../../../../AI-ML-intuition/learning-and-optimization/gradients-and-credit-assignment/chain-rule-and-backpropagation-intuition.md). *Local correlation vs. global gradient — the field's open analogy gap.*
 5. **Get the math** — [Neuronal Dynamics Ch. 19 (Synaptic Plasticity & Learning)](https://neuronaldynamics.epfl.ch/online/Ch19.html). *Hebbian/STDP as differential equations you can simulate.*
 
 ## 🎓 Courses (free)
@@ -56,7 +56,7 @@ the chain rule — is the single most important idea connecting neuroscience to 
 - [Theoretical Neuroscience — **Ch. 8 (Plasticity & Learning)**](https://www.gatsby.ucl.ac.uk/~dayan/book/) — **Dayan & Abbott** — Hebb rule, stability, Oja's rule, and unsupervised learning in neurons.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 2.02 Backpropagation — The Chain Rule](../../../../AI-ML-intuition/Module_2_Optimization/2.02_Backpropagation_The_Chain_Rule.md) — the global learning rule Hebbian/STDP is contrasted against.
+- Concept depth (the *why*): [AI-ML-intuition 2.02 Backpropagation — The Chain Rule](../../../../AI-ML-intuition/learning-and-optimization/gradients-and-credit-assignment/chain-rule-and-backpropagation-intuition.md) — the global learning rule Hebbian/STDP is contrasted against.
 - Prereqs in this section: [01 Biological Neurons & Synapses](../biological-neurons-and-synapses/biological-neurons-and-synapses.md) · [02 Neural Coding](../neural-coding/neural-coding.md)
 - Next concepts: [09 Dopamine & RL in the Brain](../dopamine-and-rl-in-the-brain/dopamine-and-rl-in-the-brain.md) · [14 Biologically-Plausible Backprop Alternatives](../biologically-plausible-backprop-alternatives/biologically-plausible-backprop-alternatives.md)
 - Related domain: [05. Deep Learning](../../../deep-learning/README.md)

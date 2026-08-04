@@ -60,6 +60,6 @@ scaling buys EfficientNet. These backbones are also the default feature extracto
 - [Computer Vision: Algorithms and Applications, 2nd ed. — **Ch. 5 (Deep Learning)**](https://szeliski.org/Book/) — **Richard Szeliski** — the architectures in context, free.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 4.06 Residual / Skip Connections](../../../../AI-ML-intuition/Module_4_Stabilization/4B_Architectural_Motifs/4.06_Residual_Skip_Connections.md) · [4.01 Batch Normalization](../../../../AI-ML-intuition/Module_4_Stabilization/4A_Normalization/4.01_Batch_Normalization.md)
+- Concept depth (the *why*): [AI-ML-intuition 4.06 Residual / Skip Connections](../../../../AI-ML-intuition/training-stability/gradient-health/residual-connections-intuition.md) · [4.01 Batch Normalization](../../../../AI-ML-intuition/training-stability/normalization/batch-normalization-intuition.md)
 - Foundation: [Deep Learning › CNNs & Convolution](../../../deep-learning/neural-architectures/cnns-and-convolution/cnns-and-convolution.md) · [Deep Learning › Residual / Skip Connections](../../../deep-learning/stabilization-and-architectural-blocks/residual-skip-connections/residual-skip-connections.md)
 - Next concepts: [04 Image Classification](../image-classification/image-classification.md) · [05 Transfer Learning for Vision](../transfer-learning-for-vision/transfer-learning-for-vision.md)

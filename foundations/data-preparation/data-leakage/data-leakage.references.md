@@ -61,5 +61,5 @@ updated: 2026-07-03
 - The structural cure in a real pipeline (`Pipeline` + `ColumnTransformer`): [13 Data Pipelines](../data-pipelines/data-pipelines.md)
 - Building past-only features so time series don't leak: [08 Date-Time & Cyclical Features](../date-time-and-cyclical-features/date-time-and-cyclical-features.md)
 - Why an inflated score is really an overfitting/generalization story: [00 Basics — 05 Overfitting & Underfitting](../../ai-ml-orientation/overfitting-and-underfitting/overfitting-and-underfitting.md)
-- The concept depth (the *why* of generalization): [AI-ML-intuition 3.07 Bias–Variance & Generalization](../../../../AI-ML-intuition/Module_3_Evaluation/3.07_Bias_Variance_and_Generalization.md)
+- The concept depth (the *why* of generalization): [AI-ML-intuition 3.07 Bias–Variance & Generalization](../../../../AI-ML-intuition/objectives-and-evaluation/generalization/bias-variance-tradeoff-intuition.md)
 - Where leakage meets production — train/serve skew: [14 Deployment & MLOps](../../../deployment-and-mlops/README.md) · [Data and Concept Drift Detection](../../../deployment-and-mlops/monitoring-and-reliability/data-and-concept-drift-detection/data-and-concept-drift-detection.md)

@@ -50,6 +50,6 @@ updated: 2026-06-22
 
 **In this platform**:
 - Concept page (full explanation): [Naive Bayes](naive-bayes.md)
-- Concept depth (the *why*): [AI-ML-intuition 3.04 Maximum Likelihood Estimation](../../../../../AI-ML-intuition/Module_3_Evaluation/3.04_Maximum_Likelihood_Estimation.md) · [3.05 Classification Metrics](../../../../../AI-ML-intuition/Module_3_Evaluation/3.05_Classification_Metrics_Precision_Recall_F1.md)
+- Concept depth (the *why*): [AI-ML-intuition 3.04 Maximum Likelihood Estimation](../../../../../AI-ML-intuition/objectives-and-evaluation/statistical-objectives/maximum-likelihood-intuition.md) · [3.05 Classification Metrics](../../../../../AI-ML-intuition/objectives-and-evaluation/predictive-evaluation/classification-metrics-intuition.md)
 - Related: [Logistic Regression](../logistic-regression/logistic-regression.md) (its discriminative twin — same linear form) · [Classification Metrics](../classification-metrics/classification-metrics.md) (how to score it) · [Cross-Validation](../../../model-selection-and-evaluation/cross-validation/cross-validation.md) (tune `alpha`)
 - Math prerequisites: [01. Foundations](../../../../foundations/mathematical-foundations/README.md) — probability, Bayes' theorem, conditional independence, MAP

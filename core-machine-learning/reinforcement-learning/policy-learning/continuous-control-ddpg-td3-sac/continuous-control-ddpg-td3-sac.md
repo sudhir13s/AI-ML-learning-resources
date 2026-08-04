@@ -60,5 +60,5 @@ robustness, and how the temperature α is auto-tuned).
 - [Algorithms for Reinforcement Learning — **§4 (policy search)**](https://sites.ualberta.ca/~szepesva/papers/RLAlgsInMDPs.pdf) — **Csaba Szepesvári** — the policy-gradient framing for continuous actions.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 6.02 Policy Gradients (REINFORCE)](../../../../../AI-ML-intuition/Module_6_Reinforcement_Learning/6.02_Policy_Gradients_REINFORCE.md)
+- Concept depth (the *why*): [AI-ML-intuition 6.02 Policy Gradients (REINFORCE)](../../../../../AI-ML-intuition/decision-making-and-control/policy-learning/policy-gradients-intuition.md)
 - Prereq: [08 Deep Q-Networks](../../value-based-learning/deep-q-networks-dqn/deep-q-networks-dqn.md) · [10 Actor-Critic](../actor-critic-a2c-a3c/actor-critic-a2c-a3c.md) · [12 PPO](../proximal-policy-optimization-ppo/proximal-policy-optimization-ppo.md)

@@ -56,7 +56,7 @@ updated: 2026-06-22
 
 **In this platform**:
 - Concept page (full explanation): [RNN / LSTM / GRU](rnn-lstm-gru.md)
-- Concept depth (the *why*): [AI-ML-intuition 4.07 Gating Mechanisms (LSTM/GRU)](../../../../AI-ML-intuition/Module_4_Stabilization/4B_Architectural_Motifs/4.07_Gating_Mechanisms_LSTM_GRU.md)
+- Concept depth (the *why*): [AI-ML-intuition 4.07 Gating Mechanisms (LSTM/GRU)](../../../../AI-ML-intuition/architectural-mechanisms/memory-and-gating/lstm-and-gru-gates-intuition.md)
 - Prerequisite: [Backpropagation & Computational Graphs](../../neural-network-foundations/backpropagation-and-computational-graphs/backpropagation-and-computational-graphs.md) (BPTT is backprop on the unrolled graph)
 - Related: [Vanishing / Exploding Gradients](../../optimization-and-training/vanishing-exploding-gradients/vanishing-exploding-gradients.md) (why RNNs forget) · [Residual / Skip Connections](../../stabilization-and-architectural-blocks/residual-skip-connections/residual-skip-connections.md) (the same additive-highway trick) · [Attention Mechanism](../../attention-and-transformers/attention-mechanism/attention-mechanism.md) (what fixed the seq2seq bottleneck) · [Transformer Architecture](../../attention-and-transformers/transformer-architecture/transformer-architecture.md) (what replaced RNNs) · [KV Cache](../../../09.%20LLMs/05-KV-Cache/05-KV-Cache.md) (the inference-memory contrast) · [06. NLP](../../../modalities-and-generative-models/natural-language-processing/README.md)
 - Field overview: [Deep Learning](../../README.md)

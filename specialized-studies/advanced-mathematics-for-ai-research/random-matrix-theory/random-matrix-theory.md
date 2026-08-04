@@ -60,7 +60,7 @@ interview hook: "what does the Marchenko–Pastur distribution tell you about a 
 - [Random Matrices (lecture notes) — **full text**](http://www.math.uni-sb.de/ag/speicher/lehre/ZMsose18/random_matrices_notes.pdf) — **Roland Speicher** — a complete free course.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 1.05 Spectral Methods (PCA/SVD)](../../../../AI-ML-intuition/Module_1_Representation/1.05_Spectral_Methods_PCA_SVD.md)
+- Concept depth (the *why*): [AI-ML-intuition 1.05 Spectral Methods (PCA/SVD)](../../../../AI-ML-intuition/representation/dimensionality-and-latent-structure/pca-and-svd-intuition.md)
 - Foundations (the basics this builds on): [Eigenvalues & Eigenvectors](../../../foundations/mathematical-foundations/eigenvalues-and-eigenvectors/eigenvalues-and-eigenvectors.md) · [SVD](../../../foundations/mathematical-foundations/singular-value-decomposition/singular-value-decomposition.md) · [Expectation, Variance & Covariance](../../../foundations/mathematical-foundations/expectation-variance-covariance/expectation-variance-covariance.md)
 - Prerequisite & related: [01 Measure Theory & Probability](../measure-theory-and-probability-foundations/measure-theory-and-probability-foundations.md) · [11 Spectral Graph Theory](../spectral-graph-theory/spectral-graph-theory.md) · [07 Rademacher Complexity & Generalization Bounds](../rademacher-complexity-and-generalization-bounds/rademacher-complexity-and-generalization-bounds.md)
 </content>

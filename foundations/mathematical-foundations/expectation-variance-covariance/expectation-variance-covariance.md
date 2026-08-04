@@ -30,7 +30,7 @@ their algebra (e.g. `Var(X) = E[X²] − E[X]²`).
 2. **Variance & covariance** — watch [StatQuest: Covariance, Clearly Explained](https://www.youtube.com/watch?v=qtaqvPAeEJY). *How covariance encodes co-movement (and its sign).*
 3. **The covariance matrix** — watch [ritvikmath: The Covariance Matrix](https://www.youtube.com/watch?v=152tSYtiQbw). *The object PCA and the multivariate Gaussian are built on.*
 4. **Formalize** — read [MML Ch. 6.4 (Summary Statistics & Independence)](https://mml-book.github.io/book/mml-book.pdf). *Moments, covariance, and their algebra.*
-5. **Connect to ML** — read [AI-ML-intuition 0.03 Expectation, Variance, Covariance](../../../../AI-ML-intuition/Module_0_Foundations/0.03_Expectation_Variance_Covariance.md). *Where moments power ML reasoning.*
+5. **Connect to ML** — read [AI-ML-intuition 0.03 Expectation, Variance, Covariance](../../../../AI-ML-intuition/foundational-mental-models/probability-and-belief/expectation-variance-and-covariance-intuition.md). *Where moments power ML reasoning.*
 
 ## 🎓 Courses (free)
 - [Harvard Stat 110: Probability — expectation & variance](https://projects.iq.harvard.edu/stat110/home) — **Joe Blitzstein (Harvard)** — rigorous treatment of moments, linearity, and covariance.
@@ -55,7 +55,7 @@ their algebra (e.g. `Var(X) = E[X²] − E[X]²`).
 - [Mathematics for Machine Learning — **Ch. 6.4 (Summary Statistics)**](https://mml-book.github.io/book/mml-book.pdf) — **Deisenroth et al.** — moments and covariance for ML.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 0.03 Expectation, Variance, Covariance](../../../../AI-ML-intuition/Module_0_Foundations/0.03_Expectation_Variance_Covariance.md) · [1.05 Spectral Methods (covariance → PCA)](../../../../AI-ML-intuition/Module_1_Representation/1.05_Spectral_Methods_PCA_SVD.md)
+- Concept depth (the *why*): [AI-ML-intuition 0.03 Expectation, Variance, Covariance](../../../../AI-ML-intuition/foundational-mental-models/probability-and-belief/expectation-variance-and-covariance-intuition.md) · [1.05 Spectral Methods (covariance → PCA)](../../../../AI-ML-intuition/representation/dimensionality-and-latent-structure/pca-and-svd-intuition.md)
 - Curriculum context: [Maths for AI-ML — Phase 3 (Probability, row 3.3)](../maths-for-ai-ml/README.md)
 - Prereq: [16 Random Variables & Distributions](../random-variables-and-distributions/random-variables-and-distributions.md) · Next: [18 LLN & CLT](../lln-and-clt/lln-and-clt.md) · Related: [07 PCA — the math](../principal-component-analysis-math/principal-component-analysis-math.md)
 </content>

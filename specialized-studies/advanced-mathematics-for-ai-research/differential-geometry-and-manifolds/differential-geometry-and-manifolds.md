@@ -30,7 +30,7 @@ and geometric deep learning (card 11) reuse.
 1. **Build manifold intuition** — watch [Manifolds, Tangent Spaces, and Coordinate Basis](https://www.youtube.com/watch?v=Ys_8Ty_I5XI). *"Locally like ℝⁿ" plus the tangent space, visually.*
 2. **Nail the tangent space** — watch [Differential structures: tangent vector spaces (Schuller, Lec 09)](https://www.youtube.com/watch?v=UPGoXBfm6Js). *The rigorous definition — derivations vs curves — that everything else builds on.*
 3. **Read a gentle text** — work [MML Ch. 3 (geometry) + Pennsylvania's Riemannian notes, early chapters](https://www.cis.upenn.edu/~cis6100/Riemann.pdf). *Metrics, geodesics, and the exponential map.*
-4. **See it in ML** — connect to the manifold hypothesis via the [t-SNE/UMAP intuition](../../../../AI-ML-intuition/Module_1_Representation/1.11-1.12_Dimensionality_Reduction_for_Representation_t-SNE_UMAP.md). *Where "data on a manifold" stops being a metaphor.*
+4. **See it in ML** — connect to the manifold hypothesis via the [t-SNE/UMAP intuition](../../../../AI-ML-intuition/representation/dimensionality-and-latent-structure/tsne-and-umap-intuition.md). *Where "data on a manifold" stops being a metaphor.*
 5. **Optimize on manifolds** — read the Riemannian-optimization chapter (gradient → retraction), then bridge to [information geometry](../information-geometry/information-geometry.md). *Natural gradient is Riemannian gradient descent on a statistical manifold.*
 
 ## 🎓 Courses (free)
@@ -57,7 +57,7 @@ and geometric deep learning (card 11) reuse.
 - [Mathematics for Machine Learning — **Ch. 3 (Analytic Geometry) & Ch. 5 (Vector Calculus)**](https://mml-book.github.io/book/mml-book.pdf) — **Deisenroth, Faisal & Ong** — the calculus-on-curved-spaces prerequisites, free.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 1.11–1.12 Dimensionality Reduction (t-SNE/UMAP)](../../../../AI-ML-intuition/Module_1_Representation/1.11-1.12_Dimensionality_Reduction_for_Representation_t-SNE_UMAP.md) · [1.10 Mahalanobis Distance](../../../../AI-ML-intuition/Module_1_Representation/1.10_Mahalanobis_Distance.md)
+- Concept depth (the *why*): [AI-ML-intuition 1.11–1.12 Dimensionality Reduction (t-SNE/UMAP)](../../../../AI-ML-intuition/representation/dimensionality-and-latent-structure/tsne-and-umap-intuition.md) · [1.10 Mahalanobis Distance](../../../../AI-ML-intuition/representation/similarity-and-distance/mahalanobis-distance-intuition.md)
 - Foundations (the basics this builds on): [Derivatives & Gradients](../../../foundations/mathematical-foundations/derivatives-and-gradients/derivatives-and-gradients.md) · [Jacobian & Hessian](../../../foundations/mathematical-foundations/jacobian-and-hessian/jacobian-and-hessian.md)
 - Prerequisite & next: [08 Information Geometry](../information-geometry/information-geometry.md) · [11 Spectral Graph Theory](../spectral-graph-theory/spectral-graph-theory.md)
 - Related domain (dimensionality reduction): [04. Unsupervised Learning](../../../core-machine-learning/unsupervised-learning/README.md)

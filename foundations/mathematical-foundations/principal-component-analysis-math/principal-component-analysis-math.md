@@ -30,7 +30,7 @@ of the covariance) and minimize reconstruction error — and explain the SVD rou
 2. **The two derivations** — read [MML Ch. 10 (Dimensionality Reduction with PCA)](https://mml-book.github.io/book/mml-book.pdf). *Max-variance and min-reconstruction-error views, both worked.*
 3. **The SVD route** — watch [Steve Brunton: PCA](https://www.youtube.com/watch?v=fkf4IBRSeEc). *Why PCA is just SVD of the centered data matrix.*
 4. **Pin the prerequisites** — review [04 Eigenvalues](../eigenvalues-and-eigenvectors/eigenvalues-and-eigenvectors.md) + [06 SVD](../singular-value-decomposition/singular-value-decomposition.md). *PCA is their direct application; make sure the covariance-eigenvector link is solid.*
-5. **Connect to ML** — read [AI-ML-intuition 1.05 Spectral Methods (PCA/SVD)](../../../../AI-ML-intuition/Module_1_Representation/1.05_Spectral_Methods_PCA_SVD.md). *The ML payoff and how PCA sits next to t-SNE/UMAP.*
+5. **Connect to ML** — read [AI-ML-intuition 1.05 Spectral Methods (PCA/SVD)](../../../../AI-ML-intuition/representation/dimensionality-and-latent-structure/pca-and-svd-intuition.md). *The ML payoff and how PCA sits next to t-SNE/UMAP.*
 
 ## 🎓 Courses (free)
 - [Stanford CS229 — Lecture notes on PCA](https://cs229.stanford.edu/notes2021fall/cs229-notes10.pdf) — **Stanford (Ng et al.)** — the rigorous variance-maximization derivation.
@@ -55,7 +55,7 @@ of the covariance) and minimize reconstruction error — and explain the SVD rou
 - [An Introduction to Statistical Learning — **Ch. 12 (Unsupervised Learning / PCA)**](https://www.statlearning.com/) — **James, Witten, Hastie & Tibshirani** — applied PCA with the variance-explained view.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 1.05 Spectral Methods (PCA/SVD)](../../../../AI-ML-intuition/Module_1_Representation/1.05_Spectral_Methods_PCA_SVD.md) · [1.11–1.12 t-SNE/UMAP](../../../../AI-ML-intuition/Module_1_Representation/1.11-1.12_Dimensionality_Reduction_for_Representation_t-SNE_UMAP.md)
+- Concept depth (the *why*): [AI-ML-intuition 1.05 Spectral Methods (PCA/SVD)](../../../../AI-ML-intuition/representation/dimensionality-and-latent-structure/pca-and-svd-intuition.md) · [1.11–1.12 t-SNE/UMAP](../../../../AI-ML-intuition/representation/dimensionality-and-latent-structure/tsne-and-umap-intuition.md)
 - Curriculum context: [Maths for AI-ML — Phase 1 (Linear Algebra, row 1.6)](../maths-for-ai-ml/README.md)
 - Prereqs: [04 Eigenvalues](../eigenvalues-and-eigenvectors/eigenvalues-and-eigenvectors.md) · [06 SVD](../singular-value-decomposition/singular-value-decomposition.md)
 - Applied: nonlinear dimensionality reduction (t-SNE/UMAP) → [Unsupervised Learning](../../../core-machine-learning/unsupervised-learning/README.md)

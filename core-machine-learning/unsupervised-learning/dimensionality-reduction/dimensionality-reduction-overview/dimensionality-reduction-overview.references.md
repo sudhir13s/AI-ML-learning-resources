@@ -56,7 +56,7 @@ updated: 2026-06-22
 **In this platform:**
 - Concept page (full explanation): [Dimensionality Reduction — Overview](dimensionality-reduction-overview.md)
 - Non-linear siblings (the manifold methods): [t-SNE](../t-sne/t-sne.md) · [UMAP](../umap/umap.md)
-- The PCA/SVD math foundations (the *why*): [Foundations — Maths for AI-ML](../../../../foundations/mathematical-foundations/maths-for-ai-ml/README.md) · [AI-ML-intuition 1.05 Spectral Methods (PCA / SVD)](../../../../../AI-ML-intuition/Module_1_Representation/1.05_Spectral_Methods_PCA_SVD.md)
+- The PCA/SVD math foundations (the *why*): [Foundations — Maths for AI-ML](../../../../foundations/mathematical-foundations/maths-for-ai-ml/README.md) · [AI-ML-intuition 1.05 Spectral Methods (PCA / SVD)](../../../../../AI-ML-intuition/representation/dimensionality-and-latent-structure/pca-and-svd-intuition.md)
 - The failure mode that motivates reduction: [k-Nearest Neighbors (curse of dimensionality)](../../../supervised-learning/classification/k-nearest-neighbors/k-nearest-neighbors.md)
 - Learned non-linear compression: [Autoencoders → Deep Learning](../../../../deep-learning/README.md)
 - Acutely relevant preprocessing: [2. Data Preprocessing](../../../../foundations/data-preparation/README.md) — scaling/standardization, which PCA depends on

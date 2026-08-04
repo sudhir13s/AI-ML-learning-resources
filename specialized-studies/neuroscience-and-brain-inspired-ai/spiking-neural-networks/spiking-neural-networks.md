@@ -56,7 +56,7 @@ energy savings — the efficiency argument that ties this card to quantization a
 - [Theoretical Neuroscience — **Ch. 5–7 (model neurons & network models)**](https://www.gatsby.ucl.ac.uk/~dayan/book/) — **Dayan & Abbott** — the network-level dynamics behind spiking circuits.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 2.02 Backpropagation — The Chain Rule](../../../../AI-ML-intuition/Module_2_Optimization/2.02_Backpropagation_The_Chain_Rule.md) — what surrogate gradients have to approximate.
+- Concept depth (the *why*): [AI-ML-intuition 2.02 Backpropagation — The Chain Rule](../../../../AI-ML-intuition/learning-and-optimization/gradients-and-credit-assignment/chain-rule-and-backpropagation-intuition.md) — what surrogate gradients have to approximate.
 - Prereqs in this section: [01 Biological Neurons & Synapses](../biological-neurons-and-synapses/biological-neurons-and-synapses.md) · [02 Neural Coding](../neural-coding/neural-coding.md)
 - Next concepts: [05 Neuromorphic Computing](../neuromorphic-computing/neuromorphic-computing.md) · [14 Biologically-Plausible Backprop Alternatives](../biologically-plausible-backprop-alternatives/biologically-plausible-backprop-alternatives.md)
 - Related domain: [05. Deep Learning](../../../deep-learning/README.md)

@@ -59,7 +59,7 @@ is the right tool when VC dimension is infinite or vacuous (e.g. over-parameteri
 - [Learning Theory from First Principles — **Ch. 4 (capacity & generalization)**](https://www.di.ens.fr/~fbach/ltfp_book.pdf) — **Francis Bach** — Rademacher in context of the whole generalization toolkit, free.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 3.07 Bias–Variance & Generalization](../../../../AI-ML-intuition/Module_3_Evaluation/3.07_Bias_Variance_and_Generalization.md)
+- Concept depth (the *why*): [AI-ML-intuition 3.07 Bias–Variance & Generalization](../../../../AI-ML-intuition/objectives-and-evaluation/generalization/bias-variance-tradeoff-intuition.md)
 - Foundations (the basics this builds on): [Law of Large Numbers & the CLT](../../../foundations/mathematical-foundations/lln-and-clt/lln-and-clt.md) · [Expectation, Variance & Covariance](../../../foundations/mathematical-foundations/expectation-variance-covariance/expectation-variance-covariance.md)
 - Prerequisite & next: [05 Statistical Learning Theory (PAC)](../statistical-learning-theory-pac/statistical-learning-theory-pac.md) · [06 VC Dimension](../vc-dimension/vc-dimension.md) · [01 Measure Theory & Probability](../measure-theory-and-probability-foundations/measure-theory-and-probability-foundations.md)
 </content>

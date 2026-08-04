@@ -62,7 +62,7 @@ higher `s` gives better prompt adherence but less diversity and possible artifac
 - [Dive into Deep Learning — **Ch. 20 "Generative Adversarial Networks"**](https://d2l.ai/chapter_generative-adversarial-networks/index.html) — **Zhang et al.** — free, with conditional-GAN code to adapt.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 5.03 Diffusion Models](../../../../AI-ML-intuition/Module_5_Generation/5.03_Diffusion_Models.md) · [5.04 GANs & WGAN](../../../../AI-ML-intuition/Module_5_Generation/5.04_GANs_and_WGAN.md)
+- Concept depth (the *why*): [AI-ML-intuition 5.03 Diffusion Models](../../../../AI-ML-intuition/generation/diffusion-and-score-models/diffusion-forward-and-reverse-process-intuition.md) · [5.04 GANs & WGAN](../../../../AI-ML-intuition/generation/adversarial-generation/gans-and-wasserstein-gans-intuition.md)
 - Prereq: [02 GANs & DCGAN](../../generative-models/gans-and-dcgan/gans-and-dcgan.md) · [05 Diffusion Models (DDPM)](../diffusion-models-ddpm/diffusion-models-ddpm.md)
 - Next concepts: [07 Latent Diffusion & Stable Diffusion](../latent-diffusion-stable-diffusion/latent-diffusion-stable-diffusion.md) · [11 Text-to-Image Systems](../text-to-image-systems/text-to-image-systems.md) · [13 Sampling & Guidance Techniques](../sampling-and-guidance-techniques/sampling-and-guidance-techniques.md)
 - Field overview: [9. Generative AI](../../generative-models/README.md)

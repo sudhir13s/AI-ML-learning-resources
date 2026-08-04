@@ -55,7 +55,7 @@ updated: 2026-06-22
 - Concept page (full explanation): [UMAP](umap.md)
 - The closest comparison (slower, weaker global structure, no reusable transform): [t-SNE](../t-sne/t-sne.md)
 - The linear baseline (fast, faithful-but-limited): [Dimensionality Reduction — Overview (PCA)](../dimensionality-reduction-overview/dimensionality-reduction-overview.md)
-- Concept depth (the *why*): [AI-ML-intuition 1.11–1.12 Dimensionality Reduction (t-SNE / UMAP)](../../../../../AI-ML-intuition/Module_1_Representation/1.11-1.12_Dimensionality_Reduction_for_Representation_t-SNE_UMAP.md)
+- Concept depth (the *why*): [AI-ML-intuition 1.11–1.12 Dimensionality Reduction (t-SNE / UMAP)](../../../../../AI-ML-intuition/representation/dimensionality-and-latent-structure/tsne-and-umap-intuition.md)
 - Often the next step after UMAP (its author also wrote HDBSCAN): [DBSCAN](../../clustering/dbscan/dbscan.md) · [Spectral Clustering](../../clustering/spectral-clustering/spectral-clustering.md)
 - The failure mode UMAP helps fix in retrieval: [k-Nearest Neighbors (curse of dimensionality)](../../../supervised-learning/classification/k-nearest-neighbors/k-nearest-neighbors.md)
 - Prereq math: [Foundations — Linear Algebra (vectors & matrices)](../../../../foundations/mathematical-foundations/maths-for-ai-ml/linear-algebra/vectorsandmatrices.md)

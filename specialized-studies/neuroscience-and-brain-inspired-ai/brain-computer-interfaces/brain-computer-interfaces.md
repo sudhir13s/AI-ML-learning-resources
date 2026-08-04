@@ -57,7 +57,7 @@ covered earlier in this section.
 - [Neuronal Dynamics — **Ch. 7 (Variability of spike trains)**](https://neuronaldynamics.epfl.ch/online/Ch7.html) — **Gerstner et al.** — the signal statistics a real-time decoder contends with.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 5.01 Information Theory — Entropy & KL](../../../../AI-ML-intuition/Module_5_Generation/5.01_Information_Theory_Entropy_KL_Divergence.md) — the information limits on how much a decoder can extract.
+- Concept depth (the *why*): [AI-ML-intuition 5.01 Information Theory — Entropy & KL](../../../../AI-ML-intuition/foundational-mental-models/information-and-dependence/entropy-and-kl-divergence-intuition.md) — the information limits on how much a decoder can extract.
 - Prereqs in this section: [02 Neural Coding](../neural-coding/neural-coding.md) · [01 Biological Neurons & Synapses](../biological-neurons-and-synapses/biological-neurons-and-synapses.md)
 - Next concepts: [13 Connectomics](../connectomics/connectomics.md)
 - Related domain: [05. Deep Learning](../../../deep-learning/README.md)

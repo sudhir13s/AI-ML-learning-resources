@@ -54,7 +54,7 @@ updated: 2026-06-22
 
 **In this platform**:
 - Concept page (full explanation): [Normalization](normalization.md)
-- Concept depth (the *why*): [AI-ML-intuition 4.01 Batch Normalization](../../../../AI-ML-intuition/Module_4_Stabilization/4A_Normalization/4.01_Batch_Normalization.md) · [4.02 Layer Normalization](../../../../AI-ML-intuition/Module_4_Stabilization/4A_Normalization/4.02_Layer_Normalization.md) · [4.03 Group Normalization](../../../../AI-ML-intuition/Module_4_Stabilization/4A_Normalization/4.03_Group_Normalization.md) · [4.05 RMSNorm](../../../../AI-ML-intuition/Module_4_Stabilization/4A_Normalization/4.05_RMSNorm.md)
+- Concept depth (the *why*): [AI-ML-intuition 4.01 Batch Normalization](../../../../AI-ML-intuition/training-stability/normalization/batch-normalization-intuition.md) · [4.02 Layer Normalization](../../../../AI-ML-intuition/training-stability/normalization/layer-normalization-intuition.md) · [4.03 Group Normalization](../../../../AI-ML-intuition/training-stability/normalization/group-normalization-intuition.md) · [4.05 RMSNorm](../../../../AI-ML-intuition/training-stability/normalization/rmsnorm-intuition.md)
 - Prerequisite: [Vanishing / Exploding Gradients](../../optimization-and-training/vanishing-exploding-gradients/vanishing-exploding-gradients.md)
 - Related: [Dropout](../dropout/dropout.md) (often chosen alongside or instead of normalization) · [Transformer Architecture](../../attention-and-transformers/transformer-architecture/transformer-architecture.md) (where LayerNorm/RMSNorm + pre-norm live)
 - Field overview: [Deep Learning](../../README.md)

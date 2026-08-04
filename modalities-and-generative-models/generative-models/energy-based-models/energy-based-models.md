@@ -60,7 +60,7 @@ in production than diffusion.
 - [Probabilistic Machine Learning: Advanced Topics — **Ch. 24 "Energy-based models"**](https://probml.github.io/pml-book/book2.html) — **Kevin Murphy** — free PDF; the modern, unified treatment.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 5.01 Entropy & KL Divergence](../../../../AI-ML-intuition/Module_5_Generation/5.01_Information_Theory_Entropy_KL_Divergence.md)
+- Concept depth (the *why*): [AI-ML-intuition 5.01 Entropy & KL Divergence](../../../../AI-ML-intuition/foundational-mental-models/information-and-dependence/entropy-and-kl-divergence-intuition.md)
 - Closely related: [06 Score-Based & SDE Diffusion](../../diffusion-models/score-based-and-sde-diffusion/score-based-and-sde-diffusion.md) (the score is the negative energy gradient; both sample by Langevin)
 - Compare with: [02 GANs & DCGAN](../gans-and-dcgan/gans-and-dcgan.md) (the discriminator is an implicit energy) · [08 Normalizing Flows](../normalizing-flows/normalizing-flows.md)
 - Field overview: [9. Generative AI](../README.md)

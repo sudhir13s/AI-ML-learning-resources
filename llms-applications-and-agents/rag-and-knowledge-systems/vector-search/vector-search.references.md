@@ -57,5 +57,5 @@ updated: 2026-07-02
 - Concept page (full explanation): [Vector Databases & ANN Indexes](vector-search.md)
 - Prereq (what gets indexed): [03 Embedding Models for Retrieval](../embedding-models/embedding-models.md) · [01 RAG Fundamentals](../rag-foundations/rag-foundations.md)
 - The math under IVF (the partitioning): [04. Unsupervised Learning — K-Means Clustering](../../../core-machine-learning/unsupervised-learning/clustering/k-means-clustering/k-means-clustering.md)
-- Foundations (the geometry of "near"): [AI-ML-intuition 1.07–1.08 Euclidean vs Cosine](../../../../AI-ML-intuition/Module_1_Representation/1.07-1.08_Similarities_Distances_Euclidean_vs_Cosine.md) · [1.06 Vector Similarities](../../../../AI-ML-intuition/Module_1_Representation/1.06_Vector_Similarities_The_Scaled_Dot-Product.md)
+- Foundations (the geometry of "near"): [AI-ML-intuition 1.07–1.08 Euclidean vs Cosine](../../../../AI-ML-intuition/representation/similarity-and-distance/cosine-vs-euclidean-distance-intuition.md) · [1.06 Vector Similarities](../../../../AI-ML-intuition/representation/similarity-and-distance/scaled-dot-product-intuition.md)
 - Next in this domain (sharpen what the index returns): [05 Hybrid Search (BM25 + Dense)](../hybrid-search/hybrid-search.md) · [06 Re-ranking with Cross-Encoders](../reranking/reranking.md)

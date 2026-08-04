@@ -50,6 +50,6 @@ updated: 2026-06-22
 
 **In this platform**:
 - Concept page (full explanation): [Linear Regression](linear-regression.md)
-- Concept depth (the *why*): [AI-ML-intuition 3.01 MSE / L2 Loss](../../../../../AI-ML-intuition/Module_3_Evaluation/3.01_Mean_Squared_Error_MSE_L2_Loss.md) · [2.05 Gradient Descent & SGD](../../../../../AI-ML-intuition/Module_2_Optimization/2.05_Gradient_Descent_and_SGD.md)
+- Concept depth (the *why*): [AI-ML-intuition 3.01 MSE / L2 Loss](../../../../../AI-ML-intuition/objectives-and-evaluation/training-objectives/mean-squared-error-intuition.md) · [2.05 Gradient Descent & SGD](../../../../../AI-ML-intuition/learning-and-optimization/first-order-optimization/gradient-descent-and-stochastic-gradient-descent-intuition.md)
 - Related: [Logistic Regression](../../classification/logistic-regression/logistic-regression.md) (linear regression through a sigmoid) · [Loss Functions](../../../../deep-learning/optimization-and-training/loss-functions/loss-functions.md) (MSE = Gaussian MLE) · [Regularization (Linear Models)](../regularization-linear-models/regularization-linear-models.md) (Ridge/Lasso)
 - Math prerequisites: [01. Foundations](../../../../foundations/mathematical-foundations/README.md) — linear algebra, gradient descent, maximum likelihood

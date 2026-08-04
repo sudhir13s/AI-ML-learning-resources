@@ -57,6 +57,6 @@ training folds only** — never before the split.
 - [An Introduction to Statistical Learning (Python) — **Ch. 4 "Classification"**](https://www.statlearning.com/) — **James et al.** — thresholds, confusion matrices, and why accuracy misleads; free PDF.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 3.05 Precision, Recall, F1](../../../../AI-ML-intuition/Module_3_Evaluation/3.05_Classification_Metrics_Precision_Recall_F1.md) · [3.06 ROC/AUC & PR Curves](../../../../AI-ML-intuition/Module_3_Evaluation/3.06_ROC_AUC_PR_Curves.md)
+- Concept depth (the *why*): [AI-ML-intuition 3.05 Precision, Recall, F1](../../../../AI-ML-intuition/objectives-and-evaluation/predictive-evaluation/classification-metrics-intuition.md) · [3.06 ROC/AUC & PR Curves](../../../../AI-ML-intuition/objectives-and-evaluation/predictive-evaluation/roc-and-pr-curves-intuition.md)
 - Next concepts: [10 Train/Validation/Test Splits](../train-validation-test-splits/train-validation-test-splits.md) · [11 Data Leakage](../data-leakage/data-leakage.md)
 - Related domain: [03. Supervised Learning](../../../core-machine-learning/supervised-learning/README.md)

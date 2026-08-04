@@ -54,7 +54,7 @@ updated: 2026-06-22
 **In this platform**:
 - Concept page (full explanation): [RLHF & DPO](15-RLHF-and-DPO.md)
 - Hands-on project: [RLHF & Alignment workflow](../../../Practitioner-Workflows/RLHF-and-Alignment/RLHF-and-Alignment.md) (collect pairs → reward model → PPO → DPO, step by step)
-- Concept depth (the *why*): [AI-ML-intuition 6.03 PPO and RLHF](../../../AI-ML-intuition/Module_6_Reinforcement_Learning/6.03_PPO_and_RLHF.md) · [6.02 Policy Gradients / REINFORCE](../../../AI-ML-intuition/Module_6_Reinforcement_Learning/6.02_Policy_Gradients_REINFORCE.md)
+- Concept depth (the *why*): [AI-ML-intuition 6.03 PPO and RLHF](../../../AI-ML-intuition/decision-making-and-control/stable-policy-optimization/ppo-and-rl-from-human-feedback-intuition.md) · [6.02 Policy Gradients / REINFORCE](../../../AI-ML-intuition/decision-making-and-control/policy-learning/policy-gradients-intuition.md)
 - Prerequisites: [Supervised Fine-Tuning](../13-Supervised-Fine-Tuning/13-Supervised-Fine-Tuning.md) · [Instruction Tuning](../14-Instruction-Tuning/14-Instruction-Tuning.md)
 - RL foundations: [Reinforcement Learning](../../core-machine-learning/reinforcement-learning/README.md) (PPO & policy gradients)
 - Related: [Hallucination & Alignment Basics](../20-Hallucination-and-Alignment-Basics/20-Hallucination-and-Alignment-Basics.md)

@@ -56,7 +56,7 @@ updated: 2026-07-02
 
 **In this platform**:
 - Concept page (full explanation): [Caching & Cost Optimization](caching-and-cost-optimization.md)
-- Concept depth (the *why*): [AI-ML-intuition 8.02 Retrieval-Augmented Generation](../../../../AI-ML-intuition/Module_8_LLMs_and_Agentic_Systems/8.02_Retrieval_Augmented_Generation.md) · [1.02 Dense Embeddings](../../../../AI-ML-intuition/Module_1_Representation/1.02_Dense_Embeddings.md) (the basis of semantic caching)
+- Concept depth (the *why*): [AI-ML-intuition 8.02 Retrieval-Augmented Generation](../../../../AI-ML-intuition/memory-retrieval-and-context/retrieval-augmented-generation/rag-intuition.md) · [1.02 Dense Embeddings](../../../../AI-ML-intuition/representation/embedding-spaces/dense-embeddings-intuition.md) (the basis of semantic caching)
 - Reused here: [05 Hybrid Search (the DenseRetriever/encoder)](../../rag-and-knowledge-systems/hybrid-search/hybrid-search.md) · [12 Long-Context vs RAG (the token cost model)](../../rag-and-knowledge-systems/long-context-vs-rag/long-context-vs-rag.md) · [14 Guardrails (the same threshold-tradeoff shape)](../../reasoning-evaluation-and-alignment/hallucination-and-grounding/hallucination-and-grounding.md)
 - Foundations: [01 RAG Fundamentals](../../rag-and-knowledge-systems/rag-foundations/rag-foundations.md) · [04 Vector Databases & ANN (fast cache lookup)](../../rag-and-knowledge-systems/vector-search/vector-search.md) · [15 LLM App Orchestration](../../agentic-ai/llm-app-orchestration/llm-app-orchestration.md)
 - Related domain: [09. LLMs — KV Cache](../../../09.%20LLMs/05-KV-Cache/05-KV-Cache.md) · [09. LLMs — Inference Optimization & Serving (vLLM)](../../../09.%20LLMs/09-Inference-Optimization-and-Serving/09-Inference-Optimization-and-Serving.md)

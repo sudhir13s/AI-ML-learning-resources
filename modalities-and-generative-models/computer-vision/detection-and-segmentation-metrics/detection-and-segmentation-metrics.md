@@ -56,5 +56,5 @@ tests whether you actually understand how your model is scored, not just how it'
 - [Dive into Deep Learning — **Ch. 14 (Computer Vision)**](https://d2l.ai/chapter_computer-vision/index.html) — **Zhang et al.** — detection foundations these metrics evaluate, with code.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 3.06 ROC / AUC / PR Curves](../../../../AI-ML-intuition/Module_3_Evaluation/3.06_ROC_AUC_PR_Curves.md) (mAP = AP per class) · [3.05 Precision / Recall / F1](../../../../AI-ML-intuition/Module_3_Evaluation/3.05_Classification_Metrics_Precision_Recall_F1.md)
+- Concept depth (the *why*): [AI-ML-intuition 3.06 ROC / AUC / PR Curves](../../../../AI-ML-intuition/objectives-and-evaluation/predictive-evaluation/roc-and-pr-curves-intuition.md) (mAP = AP per class) · [3.05 Precision / Recall / F1](../../../../AI-ML-intuition/objectives-and-evaluation/predictive-evaluation/classification-metrics-intuition.md)
 - Foundation: [Object Detection](../object-detection/object-detection.md) · [Instance Segmentation](../instance-segmentation/instance-segmentation.md) · [Semantic Segmentation](../semantic-segmentation/semantic-segmentation.md)

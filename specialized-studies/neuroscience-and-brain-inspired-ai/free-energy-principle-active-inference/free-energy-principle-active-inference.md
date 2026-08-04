@@ -57,6 +57,6 @@ variational objectives you already know from generative modeling.
 - [Neuronal Dynamics — **Ch. 19 (Synaptic Plasticity & Learning)**](https://neuronaldynamics.epfl.ch/online/Ch19.html) — **Gerstner et al.** — the local learning that free-energy minimization implies in circuits.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 0.01 Probability & Bayes' Theorem](../../../../AI-ML-intuition/Module_0_Foundations/0.01_Probability_and_Bayes_Theorem.md) · [5.01 Information Theory — Entropy & KL](../../../../AI-ML-intuition/Module_5_Generation/5.01_Information_Theory_Entropy_KL_Divergence.md) — the Bayesian + KL machinery free energy is built from.
+- Concept depth (the *why*): [AI-ML-intuition 0.01 Probability & Bayes' Theorem](../../../../AI-ML-intuition/foundational-mental-models/probability-and-belief/probability-and-bayes-intuition.md) · [5.01 Information Theory — Entropy & KL](../../../../AI-ML-intuition/foundational-mental-models/information-and-dependence/entropy-and-kl-divergence-intuition.md) — the Bayesian + KL machinery free energy is built from.
 - Prereqs in this section: [06 Predictive Coding](../predictive-coding/predictive-coding.md)
 - Related domain: [05. Deep Learning](../../../deep-learning/README.md)

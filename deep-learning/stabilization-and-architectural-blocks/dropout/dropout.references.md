@@ -54,7 +54,7 @@ updated: 2026-06-22
 
 **In this platform**:
 - Concept page (full explanation): [Dropout](dropout.md)
-- Concept depth (the *why*): [AI-ML-intuition 2.11 Dropout](../../../../AI-ML-intuition/Module_2_Optimization/2.11_Dropout.md)
+- Concept depth (the *why*): [AI-ML-intuition 2.11 Dropout](../../../../AI-ML-intuition/training-stability/generalization-stability/dropout-intuition.md)
 - Prerequisite: [Regularization](../../optimization-and-training/regularization/regularization.md) (L1/L2, early stopping — the family dropout belongs to)
 - Related: [Normalization](../normalization/normalization.md) (BatchNorm — the variance-shift conflict; LayerNorm pairs with dropout) · [Residual / Skip Connections](../residual-skip-connections/residual-skip-connections.md) (stochastic depth / DropPath, dropout at the block level) · [Transformer Architecture](../../attention-and-transformers/transformer-architecture/transformer-architecture.md) (where attention / residual / FFN dropout live)
 - Field overview: [Deep Learning](../../README.md)

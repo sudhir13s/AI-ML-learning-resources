@@ -54,5 +54,5 @@ theorem), their complexity, and why DP needs a known model — which motivates M
 - [Algorithms for Reinforcement Learning — **§2 (planning in MDPs)**](https://sites.ualberta.ca/~szepesva/papers/RLAlgsInMDPs.pdf) — **Csaba Szepesvári** — the math behind why DP converges.
 
 ## 🔗 In this platform
-- Concept depth (the *why*): [AI-ML-intuition 6.01 Bellman Optimality & Q-Learning](../../../../../AI-ML-intuition/Module_6_Reinforcement_Learning/6.01_Bellman_Optimality_Q-Learning.md)
+- Concept depth (the *why*): [AI-ML-intuition 6.01 Bellman Optimality & Q-Learning](../../../../../AI-ML-intuition/decision-making-and-control/value-learning/bellman-equation-and-q-learning-intuition.md)
 - Prereq: [02 Bellman Equations](../bellman-equations/bellman-equations.md) · Next: [04 Monte Carlo Methods](../../value-based-learning/monte-carlo-methods/monte-carlo-methods.md) · [05 Temporal-Difference Learning](../../value-based-learning/temporal-difference-learning/temporal-difference-learning.md)
