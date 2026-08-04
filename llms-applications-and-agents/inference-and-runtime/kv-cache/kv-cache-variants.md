@@ -5,13 +5,13 @@ parent: "09-llms"
 chapter_of: "09-llms/kv-cache"
 chapter: 1
 level: advanced
-built_from: ["kv-cache"]
+built_from: ["09-llms/kv-cache"]
 interview_frequency: high
 template: concept-chapter
 updated: 2026-07-14
 tier: flagship
 est_minutes: 25
-leads_to: ["kv-cache/optimization-ladder"]
+leads_to: ["09-llms/kv-cache/optimization-ladder"]
 title: "KV Cache — Variants"
 minutes: 25
 category: inference-and-runtime

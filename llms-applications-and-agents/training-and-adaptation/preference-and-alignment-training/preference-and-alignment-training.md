@@ -3,13 +3,13 @@ id: "09-llms/rlhf-and-dpo"
 topic: "RLHF & DPO (preference alignment)"
 parent: "09-llms"
 level: advanced
-built_from: ["supervised-fine-tuning", "policy-gradients", "kl-divergence", "cross-entropy"]
+built_from: ["09-llms/supervised-fine-tuning", "policy-gradients", "kl-divergence", "cross-entropy"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-06-22
 tier: standard
 est_minutes: 45
-leads_to: ["prompting-and-in-context-learning"]
+leads_to: ["09-llms/prompting-and-in-context-learning"]
 title: "RLHF & DPO (preference alignment)"
 minutes: 45
 category: training-and-adaptation

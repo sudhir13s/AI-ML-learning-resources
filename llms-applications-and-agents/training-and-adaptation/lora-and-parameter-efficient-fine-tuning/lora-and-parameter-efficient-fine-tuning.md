@@ -3,13 +3,13 @@ id: "09-llms/lora-and-peft"
 topic: "LoRA / PEFT (parameter-efficient fine-tuning)"
 parent: "09-llms"
 level: advanced
-built_from: ["fine-tuning", "linear-algebra", "decoder-only-architecture", "quantization"]
+built_from: ["fine-tuning", "linear-algebra", "09-llms/decoder-only-architecture", "09-llms/quantization"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-06-26
 tier: flagship
 est_minutes: 30
-leads_to: ["supervised-fine-tuning"]
+leads_to: ["09-llms/supervised-fine-tuning"]
 title: "LoRA / PEFT (parameter-efficient fine-tuning)"
 minutes: 30
 category: training-and-adaptation

@@ -3,7 +3,7 @@ id: "09-llms/hallucination-and-alignment-basics"
 topic: "Hallucination & Alignment Basics"
 parent: "09-llms"
 level: advanced
-built_from: ["decoding-and-sampling", "rlhf-and-dpo", "llm-evaluation-and-benchmarks", "chain-of-thought-reasoning"]
+built_from: ["09-llms/decoding-and-sampling", "09-llms/rlhf-and-dpo", "09-llms/llm-evaluation-and-benchmarks", "09-llms/chain-of-thought-reasoning"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-27

@@ -5,13 +5,13 @@ parent: "09-llms"
 chapter_of: "09-llms/kv-cache"
 chapter: 2
 level: advanced
-built_from: ["kv-cache", "kv-cache/variants"]
+built_from: ["09-llms/kv-cache", "09-llms/kv-cache/variants"]
 interview_frequency: high
 template: concept-chapter
 updated: 2026-07-14
 tier: flagship
 est_minutes: 25
-leads_to: ["kv-cache/flashattention-flashdecoding", "kv-cache/production"]
+leads_to: ["09-llms/kv-cache/flashattention-flashdecoding", "09-llms/kv-cache/production"]
 title: "KV Cache — The Optimization Ladder"
 minutes: 25
 category: inference-and-runtime

@@ -3,13 +3,13 @@ id: "09-llms/decoder-only-architecture"
 topic: "Decoder-only Architecture (the GPT family)"
 parent: "09-llms"
 level: advanced
-built_from: ["transformer-architecture", "attention", "language-modeling-objectives"]
+built_from: ["transformer-architecture", "attention", "09-llms/language-modeling-objectives"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-06-26
 tier: standard
 est_minutes: 45
-leads_to: ["kv-cache", "efficient-attention-flashattention"]
+leads_to: ["09-llms/kv-cache", "09-llms/efficient-attention-flashattention"]
 title: "Decoder-only Architecture (the GPT family)"
 minutes: 45
 category: large-language-model-foundations

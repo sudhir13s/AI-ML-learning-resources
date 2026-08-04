@@ -3,13 +3,13 @@ id: "09-llms/decoding-and-sampling"
 topic: "Decoding & Sampling (greedy · beam · temperature · top-k · top-p)"
 parent: "09-llms"
 level: intermediate
-built_from: ["language-modeling-objectives", "softmax", "decoder-only-architecture"]
+built_from: ["09-llms/language-modeling-objectives", "softmax", "09-llms/decoder-only-architecture"]
 interview_frequency: very-high
 template: concept-deep
 updated: 2026-06-27
 tier: flagship
 est_minutes: 25
-leads_to: ["llm-evaluation-and-benchmarks"]
+leads_to: ["09-llms/llm-evaluation-and-benchmarks"]
 title: "Decoding & Sampling (greedy · beam · temperature · top-k · top-p)"
 minutes: 25
 category: inference-and-runtime

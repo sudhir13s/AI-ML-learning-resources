@@ -3,13 +3,13 @@ id: "09-llms/chain-of-thought-reasoning"
 topic: "Chain-of-Thought Reasoning"
 parent: "09-llms"
 level: advanced
-built_from: ["prompting-and-in-context-learning", "decoding-and-sampling"]
+built_from: ["09-llms/prompting-and-in-context-learning", "09-llms/decoding-and-sampling"]
 interview_frequency: high
 template: concept-deep
 updated: 2026-06-27
 tier: standard
 est_minutes: 30
-leads_to: ["decoding-and-sampling"]
+leads_to: ["09-llms/decoding-and-sampling"]
 title: "Chain-of-Thought Reasoning"
 minutes: 30
 category: reasoning-evaluation-and-alignment
