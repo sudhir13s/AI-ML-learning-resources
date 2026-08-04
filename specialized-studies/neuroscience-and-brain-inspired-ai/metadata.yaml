@@ -1,0 +1,18 @@
+# Reading order for this category. `page-order:` is the ONE ordering key
+# estate-wide (structure-authoring-contract Rule 4); entries are relative
+# and extension-less. README.md is repo-facing and deliberately absent.
+page-order:
+  - biological-neurons-and-synapses/biological-neurons-and-synapses
+  - neural-coding/neural-coding
+  - spiking-neural-networks/spiking-neural-networks
+  - hebbian-learning-and-stdp/hebbian-learning-and-stdp
+  - neuromorphic-computing/neuromorphic-computing
+  - predictive-coding/predictive-coding
+  - free-energy-principle-active-inference/free-energy-principle-active-inference
+  - visual-cortex-and-cnn-inspiration/visual-cortex-and-cnn-inspiration
+  - dopamine-and-rl-in-the-brain/dopamine-and-rl-in-the-brain
+  - memory-systems-hippocampus-replay/memory-systems-hippocampus-replay
+  - attention-and-working-memory-biological/attention-and-working-memory-biological
+  - brain-computer-interfaces/brain-computer-interfaces
+  - connectomics/connectomics
+  - biologically-plausible-backprop-alternatives/biologically-plausible-backprop-alternatives

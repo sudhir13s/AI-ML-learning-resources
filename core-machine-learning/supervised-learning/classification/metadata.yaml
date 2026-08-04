@@ -1,0 +1,9 @@
+# Reading order for this category. `page-order:` is the ONE ordering key
+# estate-wide (structure-authoring-contract Rule 4); entries are relative
+# and extension-less. README.md is repo-facing and deliberately absent.
+page-order:
+  - logistic-regression/logistic-regression
+  - k-nearest-neighbors/k-nearest-neighbors
+  - naive-bayes/naive-bayes
+  - support-vector-machines/support-vector-machines
+  - classification-metrics/classification-metrics

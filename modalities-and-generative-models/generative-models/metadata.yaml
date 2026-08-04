@@ -1,0 +1,11 @@
+# Reading order for this category. `page-order:` is the ONE ordering key
+# estate-wide (structure-authoring-contract Rule 4); entries are relative
+# and extension-less. README.md is repo-facing and deliberately absent.
+page-order:
+  - variational-autoencoders-vae-elbo/variational-autoencoders-vae-elbo
+  - gans-and-dcgan/gans-and-dcgan
+  - gan-training-and-wgan/gan-training-and-wgan
+  - normalizing-flows/normalizing-flows
+  - energy-based-models/energy-based-models
+  - autoregressive-image-generation-pixelcnn/autoregressive-image-generation-pixelcnn
+  - evaluation-of-generative-models/evaluation-of-generative-models

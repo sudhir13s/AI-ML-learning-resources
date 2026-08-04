@@ -1,0 +1,10 @@
+# Reading order for this category. `page-order:` is the ONE ordering key
+# estate-wide (structure-authoring-contract Rule 4); entries are relative
+# and extension-less. README.md is repo-facing and deliberately absent.
+page-order:
+  - markov-decision-processes/markov-decision-processes
+  - bellman-equations/bellman-equations
+  - dynamic-programming-value-and-policy-iteration/dynamic-programming-value-and-policy-iteration
+  - exploration-vs-exploitation/exploration-vs-exploitation
+  - multi-armed-bandits/multi-armed-bandits
+  - reward-shaping/reward-shaping

@@ -1,0 +1,17 @@
+# Reading order for this category. `page-order:` is the ONE ordering key
+# estate-wide (structure-authoring-contract Rule 4); entries are relative
+# and extension-less. README.md is repo-facing and deliberately absent.
+page-order:
+  - exploratory-data-analysis/exploratory-data-analysis
+  - feature-scaling-and-normalization/feature-scaling-and-normalization
+  - encoding-categorical-variables/encoding-categorical-variables
+  - missing-data-imputation/missing-data-imputation
+  - outlier-detection-and-treatment/outlier-detection-and-treatment
+  - feature-engineering/feature-engineering
+  - feature-selection/feature-selection
+  - date-time-and-cyclical-features/date-time-and-cyclical-features
+  - text-and-image-preprocessing-overview/text-and-image-preprocessing-overview
+  - train-validation-test-splits/train-validation-test-splits
+  - data-leakage/data-leakage
+  - imbalanced-data/imbalanced-data
+  - data-pipelines/data-pipelines

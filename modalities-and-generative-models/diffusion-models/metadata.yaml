@@ -1,0 +1,10 @@
+# Reading order for this category. `page-order:` is the ONE ordering key
+# estate-wide (structure-authoring-contract Rule 4); entries are relative
+# and extension-less. README.md is repo-facing and deliberately absent.
+page-order:
+  - conditional-generation-and-classifier-free-guidance/conditional-generation-and-classifier-free-guidance
+  - diffusion-models-ddpm/diffusion-models-ddpm
+  - score-based-and-sde-diffusion/score-based-and-sde-diffusion
+  - latent-diffusion-stable-diffusion/latent-diffusion-stable-diffusion
+  - text-to-image-systems/text-to-image-systems
+  - sampling-and-guidance-techniques/sampling-and-guidance-techniques

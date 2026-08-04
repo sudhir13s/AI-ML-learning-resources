@@ -12,61 +12,69 @@
 - Every entry says **who made it and why it's the best**.
 
 ## Structure (one pattern, everywhere)
-Each topic is a folder with a single **`README.md`** carrying YAML frontmatter
-(`id`, `topic`, `level`, `prereqs`) + curated sections (Courses / Videos / Papers / Articles /
-Books) + platform cross-links. *This consistent, parseable format lets the library double as a
-dataset for the interview-prep project.*
+The tree is the chartered one: **section → sub-area → topic package**, all kebab-case, with
+`course.yaml` declaring the sections and a `metadata.yaml` (`page-order:`) fixing the reading
+order inside every sub-area. A topic package holds its teaching page, its
+`*.references.md` companion, and its own `images/`, `code/` and `notebooks/` assets. Sub-areas
+keep a single **`README.md`** — the curated resource index, with YAML frontmatter
+(`id`, `topic`, `level`, `prereqs`) and sections for Courses / Videos / Papers / Articles /
+Books. *This consistent, parseable format lets the library double as a dataset for the
+interview-prep project.*
 
-## 🗺️ Topics
+## 🗺️ Sections
 
-### Foundations
-| # | Topic | Level |
-| :-- | :--- | :--- |
-| 00 | [Getting Started](00.%20Basics/README.md) | beginner |
-| 01 | [Math & Programming Foundations](01.%20Foundations/README.md) — incl. [full math curriculum](01.%20Foundations/Maths%20for%20AI-ML/README.md) | beginner |
-| 02 | [Data Handling & Feature Engineering](02.%20Data_Preprocessing/README.md) | beginner |
+### [Foundations](foundations/README.md)
+| Sub-area | Level |
+| :--- | :--- |
+| [AI/ML Orientation](foundations/README.md) | beginner |
+| [Programming and Data Foundations](foundations/README.md) | beginner |
+| [Mathematical Foundations](foundations/mathematical-foundations/README.md) — incl. the [full math curriculum](foundations/mathematical-foundations/maths-for-ai-ml/README.md) | beginner |
+| [Data Preparation](foundations/data-preparation/README.md) | beginner |
+| [Tools and Frameworks](foundations/tools-and-frameworks/README.md) | beginner |
+| [Research Literacy](foundations/research-literacy/README.md) | advanced |
 
 ### Core Machine Learning
-| # | Topic | Level |
-| :-- | :--- | :--- |
-| 03 | [Supervised Learning](03.%20Supervised_Learning/README.md) | intermediate |
-| 04 | [Unsupervised Learning](04.%20Unsupervised_Learning/README.md) | intermediate |
-| 05 | [Deep Learning](05.%20Deep_Learning/README.md) | intermediate |
+| Sub-area | Level |
+| :--- | :--- |
+| [Supervised Learning](core-machine-learning/supervised-learning/README.md) | intermediate |
+| [Unsupervised Learning](core-machine-learning/unsupervised-learning/README.md) | intermediate |
+| [Reinforcement Learning](core-machine-learning/reinforcement-learning/README.md) | advanced |
+| Model Selection and Evaluation | intermediate |
 
-### Domains & Modalities
-| # | Topic | Level |
-| :-- | :--- | :--- |
-| 06 | [Natural Language Processing](06.%20NLP/README.md) | intermediate |
-| 07 | [Computer Vision](07.%20Computer%20Vision/README.md) | intermediate |
-| 08 | [Reinforcement Learning](08.%20Reinforcement_Learning/README.md) | advanced |
-| 13 | [Video Understanding](13.%20Video_Understanding/README.md) | advanced |
-| 14 | [Audio & Speech](14.%20Audio_and_Speech/README.md) | advanced |
+### [Deep Learning](deep-learning/README.md)
+Neural-network foundations · optimization and training · stabilization and architectural
+blocks · neural architectures · attention and transformers · self-supervised learning.
 
-### Generative AI & LLMs
-| # | Topic | Level |
-| :-- | :--- | :--- |
-| 09 | [Large Language Models](09.%20LLMs/README.md) | advanced |
-| 10 | [Generative AI](10.%20GenAI/README.md) | advanced |
-| 11 | [Diffusion Models](11.%20Diffusion/README.md) | advanced |
-| 12 | [Multimodal Models](12.%20Multimodal/README.md) | advanced |
-| 15 | [RAG & LLM Applications](llms-applications-and-agents/rag-and-knowledge-systems/overview.md) | advanced |
-| 16 | [Agentic AI & Tool Use](llms-applications-and-agents/agentic-ai/overview.md) | advanced |
+### Modalities and Generative Models
+| Sub-area | Level |
+| :--- | :--- |
+| [Natural Language Processing](modalities-and-generative-models/natural-language-processing/README.md) | intermediate |
+| [Computer Vision](modalities-and-generative-models/computer-vision/README.md) | intermediate |
+| [Generative Models](modalities-and-generative-models/generative-models/README.md) | advanced |
+| [Diffusion Models](modalities-and-generative-models/diffusion-models/README.md) | advanced |
+| [Multimodal Learning](modalities-and-generative-models/multimodal-learning/README.md) | advanced |
+| [Video Understanding](modalities-and-generative-models/video-understanding/README.md) | advanced |
+| [Audio and Speech](modalities-and-generative-models/audio-and-speech/README.md) | advanced |
 
-### Engineering & Production
-| # | Topic | Level |
-| :-- | :--- | :--- |
-| 17 | [Tools & Frameworks](17.%20Tools_and_Frameworks/README.md) | beginner |
-| 18 | [MLOps & Deployment](18.%20Deployment_and_MLOps/README.md) | advanced |
+### LLMs, Applications and Agents
+| Sub-area | Level |
+| :--- | :--- |
+| [RAG and Knowledge Systems](llms-applications-and-agents/rag-and-knowledge-systems/overview.md) | advanced |
+| [Agentic AI](llms-applications-and-agents/agentic-ai/overview.md) | advanced |
+| [Large Language Models](09.%20LLMs/README.md) — still on its legacy folder name; re-homed by the LLM wave | advanced |
 
-### Advanced & Frontier
-| # | Topic | Level |
-| :-- | :--- | :--- |
-| 19 | [Advanced Research Math](19.%20Advanced_Research_Mathematics/README.md) | advanced |
-| 20 | [Neuroscience & Brain-Inspired AI](20.%20Neuroscience_and_Brain_Inspired_AI/README.md) | advanced |
-| 21 | [Frontier & Staying Current](21.%20Frontier_and_Staying_Current/README.md) | advanced |
+### [Deployment and MLOps](deployment-and-mlops/README.md)
+Lifecycle and reproducibility · data and training platforms · packaging and serving ·
+release and deployment · monitoring and reliability · governance and economics.
+
+### Specialized Studies
+| Sub-area | Level |
+| :--- | :--- |
+| [Advanced Mathematics for AI Research](specialized-studies/advanced-mathematics-for-ai-research/README.md) | advanced |
+| [Neuroscience and Brain-Inspired AI](specialized-studies/neuroscience-and-brain-inspired-ai/README.md) | advanced |
 
 ### Specializations (deep-dive curricula)
-- [Computer Vision math](07.%20Computer%20Vision/README.md) · [Neuroscience & Brain-Inspired AI](20.%20Neuroscience_and_Brain_Inspired_AI/README.md) · [Advanced Research Math](19.%20Advanced_Research_Mathematics/README.md) — full what/why/resources curricula
+- [Computer Vision math](modalities-and-generative-models/computer-vision/README.md) · [Neuroscience & Brain-Inspired AI](specialized-studies/neuroscience-and-brain-inspired-ai/README.md) · [Advanced Research Math](specialized-studies/advanced-mathematics-for-ai-research/README.md) — full what/why/resources curricula
 - [LLM Systems Engineering curriculum](llm_systems_curriculum.md) — 14-chapter inference-stack syllabus
 
 ## 🔗 Sibling projects

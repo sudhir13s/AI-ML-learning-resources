@@ -1,0 +1,8 @@
+# Reading order for this category. `page-order:` is the ONE ordering key
+# estate-wide (structure-authoring-contract Rule 4); entries are relative
+# and extension-less. README.md is repo-facing and deliberately absent.
+page-order:
+  - activation-functions/activation-functions
+  - dropout/dropout
+  - normalization/normalization
+  - residual-skip-connections/residual-skip-connections

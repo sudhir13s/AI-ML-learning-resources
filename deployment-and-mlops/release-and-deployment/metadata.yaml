@@ -1,0 +1,6 @@
+# Reading order for this category. `page-order:` is the ONE ordering key
+# estate-wide (structure-authoring-contract Rule 4); entries are relative
+# and extension-less. README.md is repo-facing and deliberately absent.
+page-order:
+  - cicd-for-ml-and-continuous-training/cicd-for-ml-and-continuous-training
+  - ab-testing-shadow-and-canary-deployment/ab-testing-shadow-and-canary-deployment

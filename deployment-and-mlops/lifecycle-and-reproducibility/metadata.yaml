@@ -1,0 +1,8 @@
+# Reading order for this category. `page-order:` is the ONE ordering key
+# estate-wide (structure-authoring-contract Rule 4); entries are relative
+# and extension-less. README.md is repo-facing and deliberately absent.
+page-order:
+  - ml-lifecycle-and-mlops-maturity/ml-lifecycle-and-mlops-maturity
+  - reproducibility/reproducibility
+  - experiment-tracking/experiment-tracking
+  - data-and-model-versioning/data-and-model-versioning

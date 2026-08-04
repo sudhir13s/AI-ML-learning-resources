@@ -1,0 +1,9 @@
+# Reading order for this category. `page-order:` is the ONE ordering key
+# estate-wide (structure-authoring-contract Rule 4); entries are relative
+# and extension-less. README.md is repo-facing and deliberately absent.
+page-order:
+  - policy-gradients-reinforce/policy-gradients-reinforce
+  - actor-critic-a2c-a3c/actor-critic-a2c-a3c
+  - trust-region-policy-optimization-trpo/trust-region-policy-optimization-trpo
+  - proximal-policy-optimization-ppo/proximal-policy-optimization-ppo
+  - continuous-control-ddpg-td3-sac/continuous-control-ddpg-td3-sac
