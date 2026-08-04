@@ -9,6 +9,9 @@ template: concept-deep
 updated: 2026-07-01
 tier: core
 est_minutes: 20
+title: "Advanced RAG (Parent-Document · RAG-Fusion · Self-RAG)"
+minutes: 20
+category: rag-and-knowledge-systems
 ---
 
 # Advanced RAG: decouple the units, then let the model check its own work

@@ -9,6 +9,9 @@ template: concept-deep
 updated: 2026-07-02
 tier: core
 est_minutes: 30
+title: "GraphRAG"
+minutes: 30
+category: rag-and-knowledge-systems
 ---
 
 # GraphRAG: turn the pile of documents into a connected map

@@ -9,6 +9,9 @@ template: concept-deep
 updated: 2026-06-27
 tier: core
 est_minutes: 30
+title: "Hybrid Search (BM25 + Dense)"
+minutes: 30
+category: rag-and-knowledge-systems
 ---
 
 # Hybrid Search: two lenses, fused

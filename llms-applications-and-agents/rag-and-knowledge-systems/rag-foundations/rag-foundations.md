@@ -9,6 +9,9 @@ template: concept-deep
 updated: 2026-06-27
 tier: core
 est_minutes: 25
+title: "RAG Fundamentals (retrieve-then-generate)"
+minutes: 25
+category: rag-and-knowledge-systems
 ---
 
 # RAG Fundamentals: retrieve, then generate

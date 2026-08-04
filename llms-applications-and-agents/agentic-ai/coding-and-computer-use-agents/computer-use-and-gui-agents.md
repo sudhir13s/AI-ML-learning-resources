@@ -8,6 +8,9 @@ interview_frequency: medium
 updated: 2026-06-20
 tier: core
 est_minutes: 10
+title: "Computer-Use & GUI Agents"
+minutes: 10
+category: agentic-ai
 ---
 
 # Computer-Use & GUI Agents

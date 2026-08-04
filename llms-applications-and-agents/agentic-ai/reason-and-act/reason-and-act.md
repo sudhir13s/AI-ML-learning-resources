@@ -9,6 +9,9 @@ template: concept-deep
 updated: 2026-07-02
 tier: core
 est_minutes: 25
+title: "ReAct — Reason + Act"
+minutes: 25
+category: agentic-ai
 ---
 
 # ReAct: teaching a language model to think *and* act

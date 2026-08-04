@@ -9,6 +9,9 @@ template: concept-deep
 updated: 2026-07-02
 tier: core
 est_minutes: 25
+title: "Citations & Attribution (post-hoc attribution · citation precision/recall)"
+minutes: 25
+category: rag-and-knowledge-systems
 ---
 
 # Citations & Attribution: make every claim checkable

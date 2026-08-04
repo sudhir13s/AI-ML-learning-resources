@@ -9,6 +9,9 @@ template: concept-deep
 updated: 2026-07-02
 tier: core
 est_minutes: 35
+title: "Vector Databases & ANN Indexes (HNSW · IVF)"
+minutes: 35
+category: rag-and-knowledge-systems
 ---
 
 # Vector Databases & ANN Indexes: searching millions of vectors in milliseconds

@@ -9,6 +9,9 @@ template: concept-deep
 updated: 2026-07-02
 tier: core
 est_minutes: 20
+title: "RAG Evaluation (RAGAS · faithfulness · groundedness)"
+minutes: 20
+category: rag-and-knowledge-systems
 ---
 
 # RAG Evaluation: measure retrieval AND generation

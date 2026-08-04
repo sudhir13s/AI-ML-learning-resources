@@ -8,6 +8,9 @@ interview_frequency: high
 updated: 2026-06-20
 tier: core
 est_minutes: 10
+title: "Memory for Agents (short- & long-term)"
+minutes: 10
+category: agentic-ai
 ---
 
 # Memory for Agents (short- & long-term)

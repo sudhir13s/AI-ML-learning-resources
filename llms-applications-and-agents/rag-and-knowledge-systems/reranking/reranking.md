@@ -9,6 +9,9 @@ template: concept-deep
 updated: 2026-07-02
 tier: core
 est_minutes: 35
+title: "Re-ranking (Cross-Encoders)"
+minutes: 35
+category: rag-and-knowledge-systems
 ---
 
 # Re-ranking with Cross-Encoders: cheap recall, then expensive precision
