@@ -370,18 +370,23 @@ sections:
     chapters:
       # rag-and-knowledge-systems
       - path: llms-applications-and-agents/rag-and-knowledge-systems/advanced-rag/advanced-rag.md
+      - path: llms-applications-and-agents/rag-and-knowledge-systems/advanced-rag/production-rag-at-scale.md
       - path: llms-applications-and-agents/rag-and-knowledge-systems/agentic-rag/agentic-rag.md
       - path: llms-applications-and-agents/rag-and-knowledge-systems/chunking/chunking.md
+      - path: llms-applications-and-agents/rag-and-knowledge-systems/chunking/rag-chunking-strategies.md
       - path: llms-applications-and-agents/rag-and-knowledge-systems/citations-and-attribution/citations-and-attribution.md
       - path: llms-applications-and-agents/rag-and-knowledge-systems/embedding-models/embedding-models.md
+      - path: llms-applications-and-agents/rag-and-knowledge-systems/embedding-models/embeddings-and-similarity-search.md
       - path: llms-applications-and-agents/rag-and-knowledge-systems/graph-rag/graph-rag.md
       - path: llms-applications-and-agents/rag-and-knowledge-systems/hybrid-search/hybrid-search.md
       - path: llms-applications-and-agents/rag-and-knowledge-systems/long-context-vs-rag/long-context-vs-rag.md
       - path: llms-applications-and-agents/rag-and-knowledge-systems/query-transformation/query-transformation.md
       - path: llms-applications-and-agents/rag-and-knowledge-systems/rag-evaluation/rag-evaluation.md
       - path: llms-applications-and-agents/rag-and-knowledge-systems/rag-foundations/rag-foundations.md
+      - path: llms-applications-and-agents/rag-and-knowledge-systems/rag-foundations/rag-pipeline-under-a-latency-budget.md
       - path: llms-applications-and-agents/rag-and-knowledge-systems/reranking/reranking.md
       - path: llms-applications-and-agents/rag-and-knowledge-systems/vector-search/vector-search.md
+      - path: llms-applications-and-agents/rag-and-knowledge-systems/vector-search/vector-indexing-with-hnsw-and-ivf.md
       # agentic-ai
       - path: llms-applications-and-agents/agentic-ai/agent-evaluation/agent-evaluation.md
       - path: llms-applications-and-agents/agentic-ai/agent-foundations/agent-foundations.md
@@ -420,6 +425,7 @@ sections:
       - path: llms-applications-and-agents/inference-and-runtime/decoding-and-sampling/decoding-and-sampling.md
       - path: llms-applications-and-agents/inference-and-runtime/quantization/quantization.md
       - path: llms-applications-and-agents/inference-and-runtime/inference-optimization/inference-optimization.md
+      - path: llms-applications-and-agents/inference-and-runtime/inference-optimization/vllm-and-paged-attention.md
       - path: llms-applications-and-agents/inference-and-runtime/caching-and-cost-optimization/caching-and-cost-optimization.md
       # reasoning-evaluation-and-alignment
       - path: llms-applications-and-agents/reasoning-evaluation-and-alignment/prompting-and-in-context-learning/prompting-and-in-context-learning.md
