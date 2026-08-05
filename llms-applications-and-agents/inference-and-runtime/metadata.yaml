@@ -10,4 +10,5 @@ page-order:
   - decoding-and-sampling/decoding-and-sampling
   - quantization/quantization
   - inference-optimization/inference-optimization
+  - inference-optimization/vllm-and-paged-attention
   - caching-and-cost-optimization/caching-and-cost-optimization

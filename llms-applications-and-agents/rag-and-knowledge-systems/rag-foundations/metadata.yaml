@@ -1,0 +1,6 @@
+# Reading order for this topic. `page-order:` is the ONE ordering key
+# estate-wide (structure-authoring-contract Rule 4); entries are relative
+# and extension-less.
+page-order:
+  - rag-foundations
+  - rag-pipeline-under-a-latency-budget
