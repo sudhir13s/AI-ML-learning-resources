@@ -564,7 +564,7 @@ This is the table from §6 of *Attention Is All You Need*, and it's the one-slid
 
 - **Every transformer.** Encoder self-attention (BERT), decoder causal self-attention (GPT), and encoder–decoder cross-attention (T5, the original NMT model) are all this one mechanism, differing only in the source of Q/K/V and the mask.
 - **Beyond text.** Vision Transformers (ViT) attend over image patches; attention drives speech models (Whisper), protein structure (AlphaFold's Evoformer), diffusion-model backbones, graph networks, and recommender systems.
-- **Cross-attention as the universal "read" primitive.** Anywhere one stream pulls relevant information from another — multimodal models grounding text on images, [retrieval-augmented generation](/ai-ml/ai-ml-learning-resources/llms-applications-and-agents/rag-and-knowledge-systems/rag-foundations/rag-foundations) attending over fetched documents — cross-attention is the glue.
+- **Cross-attention as the universal "read" primitive.** Anywhere one stream pulls relevant information from another — multimodal models grounding text on images, [retrieval-augmented generation](/ai-ml/ai-ml-learning-resources/llms-applications-and-agents/rag-foundations/notes-theory) attending over fetched documents — cross-attention is the glue.
 
 > **Tip:** the heuristic for *when* to reach for attention: if a model needs to relate *every* element to *every* other and you can afford $O(n^2)$ (or its efficient approximations), attention is almost always the right primitive. When $n$ is huge, that "can you afford it" is precisely when you reach for the efficiency variants above.
 

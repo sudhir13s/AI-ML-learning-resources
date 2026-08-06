@@ -53,5 +53,5 @@ updated: 2026-06-22
 - Puts it to work: [Anomaly / Outlier Detection](../../anomaly-detection/anomaly-outlier-detection/anomaly-outlier-detection.md) — low estimated density = outlier
 - Method tie: [The Kernel Trick (intuition)](../../../../../AI-ML-intuition/representation/similarity-and-distance/kernel-trick-intuition.md) — the same Gaussian bump, used for inner products rather than density
 - Foundations (the *why*): [Distributions & the Gaussian (intuition)](../../../../../AI-ML-intuition/foundational-mental-models/probability-and-belief/distributions-and-gaussians-intuition.md) — the kernel is usually a Gaussian bump
-- Prereq math: [Foundations — Linear Algebra (vectors & matrices)](../../../../foundations/mathematical-foundations/maths-for-ai-ml/linear-algebra/vectorsandmatrices.md)
+- Prereq math: [Vectors and Vector Spaces](/ai-ml/ai-ml-learning-resources/foundations/vectors-and-vector-spaces/notes-theory) and [Matrices and Matrix Operations](/ai-ml/ai-ml-learning-resources/foundations/matrices-and-matrix-operations/notes-theory)
 - Field overview: [4. Unsupervised Learning](../../README.md)
