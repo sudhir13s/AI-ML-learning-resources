@@ -93,6 +93,24 @@
 #   - every README.md, metadata.yaml, images/, code/, notebooks/ and tools/ folder,
 #     and every *.references.md companion — teaching assets and repo-facing
 #     catalogues, not lessons with a nav entry.
+#   - llms-applications-and-agents/agentic-ai/overview.md and
+#     llms-applications-and-agents/rag-and-knowledge-systems/overview.md (T-203.5).
+#     These are the SAME catalogue class as the README.md clause above — they were
+#     `15. RAG_and_LLM_Applications/README.md` and `16. Agentic_AI/README.md` until
+#     the P2 move renamed them, and the rename is the only reason the clause did
+#     not already cover them. Naming them here closes that gap. Two reasons they
+#     stay out: the nav already renders each family's ordered page list, so a
+#     declared index would be a second, drifting ordering source; and the card-slug
+#     layer projects BOTH files onto an `.../llms-applications-and-agents/overview/`
+#     parent, disambiguating the second as `overview-2` — a generated collision
+#     suffix is not a chartered URL to publish a nav page at. Their content was
+#     repaired in the same pass (every file-path link is now a canonical frontend
+#     URL, emoji left the headings) so what a reader reaching them sees is correct.
+#   - foundations/mathematical-foundations/maths-for-ai-ml/linear-algebra/
+#     vectorsandmatrices.md is GONE, not excluded (T-203.5): a 1-byte empty file
+#     that eight *.references.md companions linked to as "Prereq math". Deleted,
+#     and all eight corrected to the declared vectors-and-vector-spaces and
+#     matrices-and-matrix-operations pages by canonical URL. No redirect.
 apiVersion: estate/v2
 kind: Course
 

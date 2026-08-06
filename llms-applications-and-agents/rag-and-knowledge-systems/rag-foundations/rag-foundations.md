@@ -416,7 +416,7 @@ RAG is the backbone of nearly every knowledge-grounded LLM product shipping toda
 
 This page owns the **mechanism** — what RAG is, the math the retriever runs, and the failure modes. Three other homes take it from here, and none of them repeats what you just read:
 
-- **Build one yourself, stage by stage** — [RAG Pipeline: grounding an LLM in your own documents](/ai-ml/practitioner-workflows/workflow-library/llm-application-workflows/rag-pipeline/rag-pipeline) walks load, chunk, embed, index, retrieve, rerank, assemble, generate and evaluate as a workflow you follow to a working system.
+- **Build one yourself, stage by stage** — [RAG Pipeline: grounding an LLM in your own documents](/ai-ml/practitioner-workflows/llm-application-workflows/rag-pipeline) walks load, chunk, embed, index, retrieve, rerank, assemble, generate and evaluate as a workflow you follow to a working system.
 - **Design one as a system** — [Document Q&A and RAG: the shared architecture](/ai-system-design/system-families/document-qa-rag/shared-architecture) covers the serving topology, the ingestion path, capacity and the failure domains an interviewer will push on.
 - **Read a production service** — [RAG document search](/python/python-production-examples/rag-document-search/readme) is a running Python service with the same stages wired end to end, laid out the way real code is.
 

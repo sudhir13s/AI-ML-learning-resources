@@ -58,5 +58,5 @@ updated: 2026-06-22
 - Concept depth (the *why*): [AI-ML-intuition 1.11–1.12 Dimensionality Reduction (t-SNE / UMAP)](../../../../../AI-ML-intuition/representation/dimensionality-and-latent-structure/tsne-and-umap-intuition.md)
 - Often the next step after UMAP (its author also wrote HDBSCAN): [DBSCAN](../../clustering/dbscan/dbscan.md) · [Spectral Clustering](../../clustering/spectral-clustering/spectral-clustering.md)
 - The failure mode UMAP helps fix in retrieval: [k-Nearest Neighbors (curse of dimensionality)](../../../supervised-learning/classification/k-nearest-neighbors/k-nearest-neighbors.md)
-- Prereq math: [Foundations — Linear Algebra (vectors & matrices)](../../../../foundations/mathematical-foundations/maths-for-ai-ml/linear-algebra/vectorsandmatrices.md)
+- Prereq math: [Vectors and Vector Spaces](/ai-ml/ai-ml-learning-resources/foundations/vectors-and-vector-spaces/notes-theory) and [Matrices and Matrix Operations](/ai-ml/ai-ml-learning-resources/foundations/matrices-and-matrix-operations/notes-theory)
 - Field overview: [4. Unsupervised Learning](../../README.md)
