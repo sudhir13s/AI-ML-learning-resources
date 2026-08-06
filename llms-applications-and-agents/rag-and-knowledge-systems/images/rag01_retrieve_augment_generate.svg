@@ -1,0 +1,139 @@
+<svg viewBox="0 0 900 452" xmlns="http://www.w3.org/2000/svg" font-family="DejaVu Sans, Verdana, sans-serif">
+  <!-- Animated retrieve -> augment -> generate loop (12s, SMIL), replaying the REAL run
+       recorded in code/01-RAG-Fundamentals.ipynb over rag-datasets/rag-mini-wikipedia:
+       FAISS returns doc[144] cos=0.539, doc[145] 0.530, doc[140] 0.420 (ranks 4-5 fall
+       below the top-3 cutoff at 0.374 / 0.368); those three passages become the numbered
+       context of the augmented prompt; Llama-3.1-8B answers "reversed by Carolus Linnaeus
+       ... [1]" from them, where the same model answered "Anders Celsius" from memory alone.
+       Every id, score, timing and string below is a pasted notebook output - nothing is
+       invented. The query is visible at t=0 so the first frame is never empty. -->
+  <style>
+    .panel  { font-size: 13px; font-weight: bold; fill: #1C2530; }
+    .lab    { font-size: 10.5px; fill: #4A5B6E; }
+    .mono   { font-size: 10.5px; font-family: "DejaVu Sans Mono", Menlo, monospace; fill: #1C2530; }
+    .monodim{ font-size: 10.5px; font-family: "DejaVu Sans Mono", Menlo, monospace; fill: #7C8794; }
+    .score  { font-size: 10.5px; font-family: "DejaVu Sans Mono", Menlo, monospace; font-weight: bold; fill: #2E7A5A; }
+    .bad    { font-size: 10.5px; font-family: "DejaVu Sans Mono", Menlo, monospace; fill: #8B3B4A; }
+    .ans    { font-size: 11.5px; font-family: "DejaVu Sans Mono", Menlo, monospace; font-weight: bold; fill: #1C2530; }
+  </style>
+
+  <rect x="0" y="0" width="900" height="452" fill="#ffffff"/>
+  <rect x="10" y="10" width="425" height="432" rx="6" fill="#fbfbfc" stroke="#D4D9DF"/>
+  <rect x="465" y="10" width="425" height="432" rx="6" fill="#fbfbfc" stroke="#D4D9DF"/>
+
+  <!-- ============================ LEFT: retrieve ============================ -->
+  <text x="24" y="34" class="panel">1. Retrieve</text>
+  <text x="100" y="34" class="lab">real FAISS search, real cosine scores</text>
+
+  <!-- the query (visible from t=0) -->
+  <rect x="24" y="46" width="397" height="52" rx="4" fill="#7A6528" fill-opacity="0.14" stroke="#7A6528"/>
+  <text x="34" y="66" class="mono">query: "What was reversed about the temperature</text>
+  <text x="34" y="84" class="mono">scale in 1745?"</text>
+
+  <!-- query -> index -->
+  <path d="M222 100 L222 116" stroke="#4A5B6E" stroke-width="1.4" marker-end="url(#arw)"/>
+  <defs>
+    <marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#4A5B6E"/>
+    </marker>
+  </defs>
+
+  <rect x="24" y="118" width="397" height="34" rx="4" fill="#4A5B6E" fill-opacity="0.12" stroke="#4A5B6E"/>
+  <text x="34" y="132" class="mono">embed query (all-MiniLM-L6-v2, 384-d) then search</text>
+  <text x="34" y="146" class="mono">FAISS IndexFlatIP over 3,200 vectors — 27.5 ms</text>
+
+  <!-- top-3 hits, lighting up one at a time -->
+  <g opacity="0">
+    <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.12;0.15;1" dur="12s" repeatCount="indefinite"/>
+    <rect x="24" y="168" width="397" height="32" rx="4" fill="#2E7A5A" fill-opacity="0.16" stroke="#2E7A5A"/>
+    <text x="34" y="182" class="score">1. doc[144]  cos=0.539</text>
+    <text x="34" y="195" class="mono">"…the scale was reversed by Carolus Linnaeus in 1745"</text>
+  </g>
+
+  <g opacity="0">
+    <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.20;0.23;1" dur="12s" repeatCount="indefinite"/>
+    <rect x="24" y="206" width="397" height="32" rx="4" fill="#2E7A5A" fill-opacity="0.16" stroke="#2E7A5A"/>
+    <text x="34" y="220" class="score">2. doc[145]  cos=0.530</text>
+    <text x="34" y="233" class="mono">"Anders Celsius was the first to perform and publish…"</text>
+  </g>
+
+  <g opacity="0">
+    <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.28;0.31;1" dur="12s" repeatCount="indefinite"/>
+    <rect x="24" y="244" width="397" height="32" rx="4" fill="#2E7A5A" fill-opacity="0.16" stroke="#2E7A5A"/>
+    <text x="34" y="258" class="score">3. doc[140]  cos=0.420</text>
+    <text x="34" y="271" class="mono">"The observatory of Anders Celsius, from an engraving."</text>
+  </g>
+
+  <!-- the top-k cutoff and what falls below it -->
+  <line x1="24" y1="286" x2="421" y2="286" stroke="#8B3B4A" stroke-width="1.2" stroke-dasharray="5 4"/>
+  <text x="421" y="283" class="lab" text-anchor="end" fill="#8B3B4A">top-k cutoff (k = 3)</text>
+  <text x="34" y="304" class="monodim">4. doc[237]  cos=0.374  "Pascal replicated the experiment…"</text>
+  <text x="34" y="320" class="monodim">5. doc[139]  cos=0.368  "Anders Celsius"</text>
+
+  <text x="24" y="352" class="lab">Retrieval is nearest-neighbour search: the passage that</text>
+  <text x="24" y="367" class="lab">carries the fact scores highest, and everything below</text>
+  <text x="24" y="382" class="lab">the cutoff never reaches the model.</text>
+
+  <text x="24" y="412" class="lab">Recorded run — see code/01-RAG-Fundamentals.ipynb,</text>
+  <text x="24" y="427" class="lab">steps 3 to 5. Corpus: rag-mini-wikipedia.</text>
+
+  <!-- ======================= RIGHT: augment + generate ======================= -->
+  <text x="479" y="34" class="panel">2. Augment, then generate</text>
+  <text x="655" y="34" class="lab">the real prompt, the real answer</text>
+
+  <text x="479" y="56" class="lab">augmented prompt — instruction + context + question</text>
+  <rect x="479" y="62" width="397" height="26" rx="4" fill="#5D4A8A" fill-opacity="0.12" stroke="#5D4A8A"/>
+  <text x="489" y="79" class="mono">"Answer using ONLY the context below… cite [n]."</text>
+
+  <g opacity="0">
+    <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.38;0.41;1" dur="12s" repeatCount="indefinite"/>
+    <rect x="479" y="94" width="397" height="30" rx="4" fill="#2E7A5A" fill-opacity="0.14" stroke="#2E7A5A"/>
+    <text x="489" y="108" class="mono">[1] Celsius founded the Uppsala Observatory in 1741…</text>
+    <text x="489" y="120" class="mono">    The scale was reversed by Carolus Linnaeus in 1745.</text>
+  </g>
+
+  <g opacity="0">
+    <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.44;0.47;1" dur="12s" repeatCount="indefinite"/>
+    <rect x="479" y="130" width="397" height="30" rx="4" fill="#2E7A5A" fill-opacity="0.14" stroke="#2E7A5A"/>
+    <text x="489" y="144" class="mono">[2] Anders Celsius was the first to perform and publish</text>
+    <text x="489" y="156" class="mono">    careful experiments on a temperature scale…</text>
+  </g>
+
+  <g opacity="0">
+    <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.50;0.53;1" dur="12s" repeatCount="indefinite"/>
+    <rect x="479" y="166" width="397" height="22" rx="4" fill="#2E7A5A" fill-opacity="0.14" stroke="#2E7A5A"/>
+    <text x="489" y="181" class="mono">[3] The observatory of Anders Celsius, an engraving.</text>
+  </g>
+
+  <g opacity="0">
+    <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.56;0.59;1" dur="12s" repeatCount="indefinite"/>
+    <rect x="479" y="194" width="397" height="26" rx="4" fill="#3A6B96" fill-opacity="0.14" stroke="#3A6B96"/>
+    <text x="489" y="211" class="mono">Q: What was reversed about the temperature scale in 1745?</text>
+  </g>
+
+  <g opacity="0">
+    <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.62;0.65;1" dur="12s" repeatCount="indefinite"/>
+    <path d="M677 226 L677 242" stroke="#4A5B6E" stroke-width="1.4" marker-end="url(#arw)"/>
+    <text x="690" y="240" class="lab">Llama-3.1-8B-Instruct · 1.08 s</text>
+  </g>
+
+  <g opacity="0">
+    <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.68;0.72;1" dur="12s" repeatCount="indefinite"/>
+    <rect x="479" y="248" width="397" height="46" rx="5" fill="#2E7A5A" fill-opacity="0.22" stroke="#2E7A5A" stroke-width="1.6"/>
+    <text x="489" y="266" class="ans">grounded: The temperature scale was reversed by</text>
+    <text x="489" y="282" class="ans">Carolus Linnaeus in 1745, to how it is today [1].</text>
+  </g>
+
+  <!-- the contrast the whole page turns on -->
+  <g opacity="0">
+    <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.78;0.82;1" dur="12s" repeatCount="indefinite"/>
+    <rect x="479" y="306" width="397" height="42" rx="5" fill="#8B3B4A" fill-opacity="0.13" stroke="#8B3B4A" stroke-dasharray="5 4"/>
+    <text x="489" y="323" class="bad">same model, no retrieval:</text>
+    <text x="489" y="339" class="bad">"reversed by Anders Celsius" — confident, and wrong</text>
+  </g>
+
+  <text x="479" y="376" class="lab">Nothing about the model changed between those two</text>
+  <text x="479" y="391" class="lab">answers. The only difference is that the true sentence</text>
+  <text x="479" y="406" class="lab">was sitting in the prompt when it answered — which is</text>
+  <text x="479" y="421" class="lab">the whole of retrieval-augmented generation.</text>
+</svg>

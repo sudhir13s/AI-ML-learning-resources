@@ -3,12 +3,12 @@ id: "15-rag-and-llm-apps/rag-fundamentals/references"
 topic: "RAG Fundamentals — References"
 parent: "15-rag-and-llm-apps/rag-fundamentals"
 type: references
-updated: 2026-06-27
+updated: 2026-08-06
 ---
 
 # RAG Fundamentals — references and further reading
 
-> Companion link library for **[RAG Fundamentals](rag-foundations.md)** (the concept page). This file holds the curated links — external sources *and* internal links to related pages on this platform — kept separate so it can be reused as a standalone reference list. Grouped by type, best-first. Every entry is a free, no-paywall link from a primary author or a recognized deep explainer — chosen for depth on *this* topic (retrieve-then-generate fundamentals), not popularity.
+> Companion link library for **[RAG Fundamentals](/ai-ml/ai-ml-learning-resources/llms-applications-and-agents/rag-foundations/notes-theory)** (the concept page). This file holds the curated links — external sources *and* internal links to related pages on this platform — kept separate so it can be reused as a standalone reference list. Grouped by type, best-first. Every entry is a free, no-paywall link from a primary author or a recognized deep explainer — chosen for depth on *this* topic (retrieve-then-generate fundamentals), not popularity.
 
 **Start here — suggested path**:
 1. **Get the one-paragraph mental model** — watch [What is Retrieval-Augmented Generation (RAG)?](https://www.youtube.com/watch?v=T-D1OfcDW1M) (**IBM Technology**). *Five minutes to the "retrieve facts, then answer with sources" picture before any code.*
@@ -16,6 +16,13 @@ updated: 2026-06-27
 3. **Read the source** — skim [Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks](https://arxiv.org/abs/2005.11401) (**Lewis et al. 2020**). *Where "RAG" was coined; the retriever + generator framing and the marginalization equation.*
 4. **Build one end-to-end** — follow [RAG from Scratch](https://github.com/langchain-ai/rag-from-scratch) (**LangChain**) or watch [Learn RAG From Scratch](https://www.youtube.com/watch?v=sVcwVQRHIc8) (**freeCodeCamp**). *Wiring loader → splitter → embedder → vector store → retriever → LLM cements every term.*
 5. **Ground it in theory** — read [SLP3 Ch. 14 (IR + RAG)](https://web.stanford.edu/~jurafsky/slp3/14.pdf) (**Jurafsky & Martin**). *Retrieve-then-read and evaluation, from the standard NLP textbook.*
+
+**Real components used on this page** (every result on the concept page is produced by running these):
+- [`rag-datasets/rag-mini-wikipedia`](https://huggingface.co/datasets/rag-datasets/rag-mini-wikipedia) — the real corpus: **3,200 Wikipedia passages + 918 QA pairs**, loaded via the `datasets` library.
+- [`sentence-transformers/all-MiniLM-L6-v2`](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2) — the real **384-dim bi-encoder** that embeds corpus and queries; see the [Sentence-Transformers docs](https://www.sbert.net/) for the bi-encoder / cross-encoder distinction.
+- [FAISS](https://github.com/facebookresearch/faiss) ([wiki](https://github.com/facebookresearch/faiss/wiki)) — the real **vector index** (`IndexFlatIP`, exact inner-product search); Facebook AI's similarity-search library.
+- [`cross-encoder/ms-marco-MiniLM-L-6-v2`](https://huggingface.co/cross-encoder/ms-marco-MiniLM-L-6-v2) — the real **cross-encoder reranker** that lifted recall@1 from 0.42 to 0.65 on this page.
+- [`meta-llama/Llama-3.1-8B-Instruct`](https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct) via the [Hugging Face Inference API](https://huggingface.co/docs/huggingface_hub/guides/inference) — the real **large language model (LLM)** that generates the grounded answers (`InferenceClient.chat_completion`, `temperature=0`).
 
 **Videos**:
 - [What is Retrieval-Augmented Generation (RAG)?](https://www.youtube.com/watch?v=T-D1OfcDW1M) — **IBM Technology (Marina Danilevsky)** — the clearest 6-minute conceptual overview; *why* retrieval beats memorization.
@@ -45,13 +52,15 @@ updated: 2026-06-27
 - [Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks](https://arxiv.org/abs/2005.11401) — **Lewis et al. (2020)** — the original RAG paper; **Eq. 1–2 give the marginalization $P(y\mid x)=\sum_z P(z\mid x)P(y\mid x,z)$** used on the concept page.
 - [Lost in the Middle: How Language Models Use Long Contexts](https://arxiv.org/abs/2307.03172) — **Liu et al. (2024, TACL)** — the U-shaped accuracy curve (evidence used best at the start/end of context, worst in the middle) behind the lost-in-the-middle figure.
 - [Retrieval-Augmented Generation for Large Language Models: A Survey](https://arxiv.org/abs/2312.10997) — **Gao et al. (2023)** — comprehensive survey; the taxonomy that organizes the rest of this domain.
+- [Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks](https://arxiv.org/abs/1908.10084) — **Reimers & Gurevych (2019)** — the bi-encoder architecture behind `all-MiniLM-L6-v2`, and the retrieve-with-bi-encoder / rerank-with-cross-encoder pattern this page measures.
 
 **Books (free, with chapters)**:
 - [Introduction to Information Retrieval — §6.3 "The vector space model" / cosine similarity](https://nlp.stanford.edu/IR-book/html/htmledition/dot-products-1.html) — **Manning, Raghavan & Schütze** — **derives cosine similarity** as the angle between document vectors, the source for the similarity formula on the concept page; full book free online.
 - [Speech and Language Processing, 3rd ed. — Ch. 14 "Question Answering, Information Retrieval, and RAG"](https://web.stanford.edu/~jurafsky/slp3/14.pdf) — **Jurafsky & Martin** — grounds RAG in IR theory: retrieve-then-read, dense retrieval, and evaluation (free PDF).
 
 **In this platform**:
-- Concept page (full explanation): [RAG Fundamentals](rag-foundations.md)
-- Foundations (the *why* behind embeddings & retrieval): [AI-ML-intuition 8.02 Retrieval-Augmented Generation](../../../../AI-ML-intuition/memory-retrieval-and-context/retrieval-augmented-generation/rag-intuition.md) · [8.01 In-Context Learning & Prompting](../../../../AI-ML-intuition/reasoning-and-agency/in-context-behavior/in-context-learning-and-prompting-intuition.md) · [06. NLP — Information Retrieval & Semantic Search](../../../modalities-and-generative-models/natural-language-processing/information-retrieval-and-semantic-search/information-retrieval-and-semantic-search.md)
-- Next in this domain (retrieve better): [02 Document Chunking Strategies](../chunking/chunking.md) · [03 Embedding Models for Retrieval](../embedding-models/embedding-models.md) · [04 Vector Databases & ANN Indexes](../vector-search/vector-search.md) · [05 Hybrid Search (BM25 + Dense)](../hybrid-search/hybrid-search.md) · [06 Re-ranking with Cross-Encoders](../reranking/reranking.md)
-- Weighing the alternative: [12 Long-Context vs RAG](../long-context-vs-rag/long-context-vs-rag.md) · [11 RAG Evaluation](../rag-evaluation/rag-evaluation.md)
+- Concept page (full explanation): [RAG Fundamentals](/ai-ml/ai-ml-learning-resources/llms-applications-and-agents/rag-foundations/notes-theory)
+- Foundations (the *why* behind embeddings and retrieval): [Retrieval-Augmented Generation — intuition](/ai-ml/ai-ml-intuitions/memory-retrieval-context/rag-intuition) · [In-Context Learning and Prompting — intuition](/ai-ml/ai-ml-intuitions/reasoning-agency/in-context-learning-and-prompting-intuition) · [Information Retrieval and Semantic Search](/ai-ml/ai-ml-learning-resources/modalities-and-generative-models/information-retrieval-and-semantic-search/notes-theory)
+- Next in this domain (retrieve better): [Chunking](/ai-ml/ai-ml-learning-resources/llms-applications-and-agents/chunking/notes-theory) · [Embedding Models](/ai-ml/ai-ml-learning-resources/llms-applications-and-agents/embedding-models/notes-theory) · [Vector Search](/ai-ml/ai-ml-learning-resources/llms-applications-and-agents/vector-search/notes-theory) · [Hybrid Search](/ai-ml/ai-ml-learning-resources/llms-applications-and-agents/hybrid-search/notes-theory) · [Reranking](/ai-ml/ai-ml-learning-resources/llms-applications-and-agents/reranking/notes-theory)
+- Weighing the alternative: [Long-Context vs RAG](/ai-ml/ai-ml-learning-resources/llms-applications-and-agents/long-context-vs-rag/notes-theory) · [RAG Evaluation](/ai-ml/ai-ml-learning-resources/llms-applications-and-agents/rag-evaluation/notes-theory)
+- Owned elsewhere in the estate (this page does not repeat them): [RAG Pipeline — the build workflow](/ai-ml/practitioner-workflows/workflow-library/llm-application-workflows/rag-pipeline/rag-pipeline) · [Document Q&A and RAG — the shared architecture](/ai-system-design/system-families/document-qa-rag/shared-architecture) · [RAG document search — a production Python service](/python/python-production-examples/rag-document-search/readme)
