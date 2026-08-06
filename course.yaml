@@ -1,5 +1,4 @@
-# course.yaml — AI/ML Learning Resources, in the estate/v2 declaration envelope
-# (T-246.7, the neutral envelope half).
+# course.yaml — AI/ML Learning Resources, in the estate/v2 declaration envelope.
 #
 # Spec:    docs/plans/structure-rework/commons/declaration-schema.md
 # Charter: docs/plans/structure-rework/ai-ml-blueprints/ai-ml-learning-resources-structure.md
@@ -25,13 +24,37 @@
 # proof this PR carries. A declaration wave that alters one exported byte has done
 # a content pass's work inside the declaration PR and must be split.
 #
-# WHAT IS DELIBERATELY NOT IN THIS PR. The charter calls this tab's `lr-<topic>`
-# topic packages "the tab's dominant shape, not an edge case", and v1 could not
-# express them: it had spent its one level of nesting on the core-machine-learning
-# middle folders above, so the eight multi-page topic packages under
-# llms-applications-and-agents stayed flat runs of pages. Restoring them CHANGES
-# the manifest by design, so it lands as its own PR with the diff explained
-# package by package. This PR moves nothing.
+# THE `lr-<topic>` TOPIC PACKAGES — restored (T-246.7 part 2), and the one place
+# this module's declaration is NOT output-neutral.
+#
+# The charter calls these packages "the tab's dominant shape, not an edge case".
+# v1 could not express them: `parent:` nested exactly one level and this module had
+# spent that level on the core-machine-learning middle folders above, so the eight
+# multi-page topic packages under llms-applications-and-agents had nowhere to go
+# and stayed a flat run of pages inside their section. They were dropped SILENTLY —
+# no error, no warning, nothing to notice.
+#
+# Every folder with more than one page is now its own section, nested under
+# llms-applications-and-agents, per authoring-contract Rule 3 ("a subject folder
+# with more than one page is declared as its own section, parented to its
+# category, so it renders as an ordered course rather than loose sibling pages").
+# Eight packages, 19 pages, listed in the order they were already declared in:
+#
+#   lr-advanced-rag ................... 2   lr-vector-search .............. 2
+#   lr-chunking ....................... 2   lr-coding-and-computer-use-agents  2
+#   lr-embedding-models ............... 2   lr-kv-cache ................... 5
+#   lr-rag-foundations ................ 2   lr-inference-optimization ..... 2
+#
+# WHAT THIS MOVES, AND WHAT IT DOES NOT. Sections go 10 -> 18. Chapters stay at
+# 289: not one page is added, removed or re-pathed — the 19 pages MOVE from their
+# section's flat run into the package that owns them, so llms-applications-and-agents
+# goes 58 -> 39 and the eight new sections hold the difference. URLs do not move
+# either: nesting changes the nav, never the address, so every page still addresses
+# its full folder path. The `validateCourse` issue list is unchanged at 0/0.
+#
+# Each package declares `pages:` and not `root:`. The reading order is the order
+# already declared, and adding `root:` beside `pages:` would make the folder
+# declaration a second ordering source — the exact ambiguity Rule 4 exists to end.
 #
 # GROUP_BY DEPTH — the charter's recorded open question, resolved the same way the
 # v1 document resolved it and carried through here unchanged. Where a section is
@@ -410,31 +433,19 @@ spec:
       group_by: category
       pages:
         # rag-and-knowledge-systems
-        - path: llms-applications-and-agents/rag-and-knowledge-systems/advanced-rag/advanced-rag.md
-        - path: llms-applications-and-agents/rag-and-knowledge-systems/advanced-rag/production-rag-at-scale.md
         - path: llms-applications-and-agents/rag-and-knowledge-systems/agentic-rag/agentic-rag.md
-        - path: llms-applications-and-agents/rag-and-knowledge-systems/chunking/chunking.md
-        - path: llms-applications-and-agents/rag-and-knowledge-systems/chunking/rag-chunking-strategies.md
         - path: llms-applications-and-agents/rag-and-knowledge-systems/citations-and-attribution/citations-and-attribution.md
-        - path: llms-applications-and-agents/rag-and-knowledge-systems/embedding-models/embedding-models.md
-        - path: llms-applications-and-agents/rag-and-knowledge-systems/embedding-models/embeddings-and-similarity-search.md
         - path: llms-applications-and-agents/rag-and-knowledge-systems/graph-rag/graph-rag.md
         - path: llms-applications-and-agents/rag-and-knowledge-systems/hybrid-search/hybrid-search.md
         - path: llms-applications-and-agents/rag-and-knowledge-systems/long-context-vs-rag/long-context-vs-rag.md
         - path: llms-applications-and-agents/rag-and-knowledge-systems/query-transformation/query-transformation.md
         - path: llms-applications-and-agents/rag-and-knowledge-systems/rag-evaluation/rag-evaluation.md
-        - path: llms-applications-and-agents/rag-and-knowledge-systems/rag-foundations/rag-foundations.md
-        - path: llms-applications-and-agents/rag-and-knowledge-systems/rag-foundations/rag-pipeline-under-a-latency-budget.md
         - path: llms-applications-and-agents/rag-and-knowledge-systems/reranking/reranking.md
-        - path: llms-applications-and-agents/rag-and-knowledge-systems/vector-search/vector-search.md
-        - path: llms-applications-and-agents/rag-and-knowledge-systems/vector-search/vector-indexing-with-hnsw-and-ivf.md
         # agentic-ai
         - path: llms-applications-and-agents/agentic-ai/agent-evaluation/agent-evaluation.md
         - path: llms-applications-and-agents/agentic-ai/agent-foundations/agent-foundations.md
         - path: llms-applications-and-agents/agentic-ai/agent-frameworks/agent-frameworks.md
         - path: llms-applications-and-agents/agentic-ai/agent-safety/agent-safety.md
-        - path: llms-applications-and-agents/agentic-ai/coding-and-computer-use-agents/code-agents.md
-        - path: llms-applications-and-agents/agentic-ai/coding-and-computer-use-agents/computer-use-and-gui-agents.md
         - path: llms-applications-and-agents/agentic-ai/llm-app-orchestration/llm-app-orchestration.md
         - path: llms-applications-and-agents/agentic-ai/memory/memory.md
         - path: llms-applications-and-agents/agentic-ai/model-context-protocol/model-context-protocol.md
@@ -458,15 +469,8 @@ spec:
         - path: llms-applications-and-agents/training-and-adaptation/knowledge-distillation/knowledge-distillation.md
         - path: llms-applications-and-agents/training-and-adaptation/preference-and-alignment-training/preference-and-alignment-training.md
         # inference-and-runtime
-        - path: llms-applications-and-agents/inference-and-runtime/kv-cache/kv-cache.md
-        - path: llms-applications-and-agents/inference-and-runtime/kv-cache/kv-cache-variants.md
-        - path: llms-applications-and-agents/inference-and-runtime/kv-cache/kv-cache-optimization-stack.md
-        - path: llms-applications-and-agents/inference-and-runtime/kv-cache/kv-cache-flashattention-and-flashdecoding.md
-        - path: llms-applications-and-agents/inference-and-runtime/kv-cache/kv-cache-in-production.md
         - path: llms-applications-and-agents/inference-and-runtime/decoding-and-sampling/decoding-and-sampling.md
         - path: llms-applications-and-agents/inference-and-runtime/quantization/quantization.md
-        - path: llms-applications-and-agents/inference-and-runtime/inference-optimization/inference-optimization.md
-        - path: llms-applications-and-agents/inference-and-runtime/inference-optimization/vllm-and-paged-attention.md
         - path: llms-applications-and-agents/inference-and-runtime/caching-and-cost-optimization/caching-and-cost-optimization.md
         # reasoning-evaluation-and-alignment
         - path: llms-applications-and-agents/reasoning-evaluation-and-alignment/prompting-and-in-context-learning/prompting-and-in-context-learning.md
@@ -474,6 +478,58 @@ spec:
         - path: llms-applications-and-agents/reasoning-evaluation-and-alignment/hallucination-and-grounding/hallucination-and-grounding.md
         - path: llms-applications-and-agents/reasoning-evaluation-and-alignment/llm-evaluation/llm-evaluation.md
         - path: llms-applications-and-agents/reasoning-evaluation-and-alignment/safety-and-alignment/safety-and-alignment.md
+      sections:
+        - id: lr-advanced-rag
+          title: Advanced RAG
+          kind: lesson
+          pages:
+            - path: llms-applications-and-agents/rag-and-knowledge-systems/advanced-rag/advanced-rag.md
+            - path: llms-applications-and-agents/rag-and-knowledge-systems/advanced-rag/production-rag-at-scale.md
+        - id: lr-chunking
+          title: Chunking
+          kind: lesson
+          pages:
+            - path: llms-applications-and-agents/rag-and-knowledge-systems/chunking/chunking.md
+            - path: llms-applications-and-agents/rag-and-knowledge-systems/chunking/rag-chunking-strategies.md
+        - id: lr-embedding-models
+          title: Embedding Models
+          kind: lesson
+          pages:
+            - path: llms-applications-and-agents/rag-and-knowledge-systems/embedding-models/embedding-models.md
+            - path: llms-applications-and-agents/rag-and-knowledge-systems/embedding-models/embeddings-and-similarity-search.md
+        - id: lr-rag-foundations
+          title: RAG Foundations
+          kind: lesson
+          pages:
+            - path: llms-applications-and-agents/rag-and-knowledge-systems/rag-foundations/rag-foundations.md
+            - path: llms-applications-and-agents/rag-and-knowledge-systems/rag-foundations/rag-pipeline-under-a-latency-budget.md
+        - id: lr-vector-search
+          title: Vector Search
+          kind: lesson
+          pages:
+            - path: llms-applications-and-agents/rag-and-knowledge-systems/vector-search/vector-search.md
+            - path: llms-applications-and-agents/rag-and-knowledge-systems/vector-search/vector-indexing-with-hnsw-and-ivf.md
+        - id: lr-coding-and-computer-use-agents
+          title: Coding and Computer-Use Agents
+          kind: lesson
+          pages:
+            - path: llms-applications-and-agents/agentic-ai/coding-and-computer-use-agents/code-agents.md
+            - path: llms-applications-and-agents/agentic-ai/coding-and-computer-use-agents/computer-use-and-gui-agents.md
+        - id: lr-kv-cache
+          title: KV Cache
+          kind: lesson
+          pages:
+            - path: llms-applications-and-agents/inference-and-runtime/kv-cache/kv-cache.md
+            - path: llms-applications-and-agents/inference-and-runtime/kv-cache/kv-cache-variants.md
+            - path: llms-applications-and-agents/inference-and-runtime/kv-cache/kv-cache-optimization-stack.md
+            - path: llms-applications-and-agents/inference-and-runtime/kv-cache/kv-cache-flashattention-and-flashdecoding.md
+            - path: llms-applications-and-agents/inference-and-runtime/kv-cache/kv-cache-in-production.md
+        - id: lr-inference-optimization
+          title: Inference Optimization
+          kind: lesson
+          pages:
+            - path: llms-applications-and-agents/inference-and-runtime/inference-optimization/inference-optimization.md
+            - path: llms-applications-and-agents/inference-and-runtime/inference-optimization/vllm-and-paged-attention.md
     - id: deployment-and-mlops
       title: Deployment and MLOps
       kind: lesson
